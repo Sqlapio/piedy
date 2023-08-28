@@ -17,56 +17,65 @@ class ProductosList extends Seeder
             [
                 'cod_producto' => 'Ps-'.random_int(11111, 99999),
                 'descripcion' => 'Crema esfoliante',
-                'existencia' => '15',
-                'creado_por' => 'administrador'
+                'existencia' => '100',
+                'creado_por' => 'admin@test.com',
+                'precio' => '40.00'
             ],
             [
                 'cod_producto' => 'Ps-'.random_int(11111, 99999),
                 'descripcion' => 'Crema mentolada',
-                'existencia' => '15',
-                'creado_por' => 'administrador'
+                'existencia' => '100',
+                'creado_por' => 'admin@test.com',
+                'precio' => '50.00'
             ],
             [
                 'cod_producto' => 'Ps-'.random_int(11111, 99999),
                 'descripcion' => 'Hidratante',
-                'existencia' => '15',
-                'creado_por' => 'administrador'
+                'existencia' => '100',
+                'creado_por' => 'admin@test.com',
+                'precio' => '20.00'
             ],
             [
                 'cod_producto' => 'Ps-'.random_int(11111, 99999),
                 'descripcion' => 'Antimicotico',
-                'existencia' => '15',
-                'creado_por' => 'administrador'
+                'existencia' => '100',
+                'creado_por' => 'admin@test.com',
+                'precio' => '20.00'
             ],
             [
                 'cod_producto' => 'Ps-'.random_int(11111, 99999),
                 'descripcion' => 'Cholas de fohami',
-                'existencia' => '15',
-                'creado_por' => 'administrador'
+                'existencia' => '100',
+                'creado_por' => 'admin@test.com',
+                'precio' => '600.00'
             ],
             [
                 'cod_producto' => 'Ps-'.random_int(11111, 99999),
                 'descripcion' => 'Mascarilla esfoliante de pies',
-                'existencia' => '15',
-                'creado_por' => 'administrador'
+                'existencia' => '100',
+                'creado_por' => 'admin@test.com',
+                'precio' => '40.00'
             ],
             [
                 'cod_producto' => 'Ps-'.random_int(11111, 99999),
                 'descripcion' => 'Pintura de uñas permanente',
-                'existencia' => '15',
-                'creado_por' => 'administrador'
+                'existencia' => '100',
+                'creado_por' => 'admin@test.com',
+                'precio' => '80.00'
             ],
             [
                 'cod_producto' => 'Ps-'.random_int(11111, 99999),
                 'descripcion' => 'Pintura de uñas semi-permanente',
-                'existencia' => '15',
-                'creado_por' => 'administrador'
+                'existencia' => '100',
+                'creado_por' => 'admin@test.com',
+                'precio' => '40.00'
             ],
             [
                 'cod_producto' => 'Ps-'.random_int(11111, 99999),
                 'descripcion' => 'Pintura de uñas en gel',
-                'existencia' => '15',
-                'creado_por' => 'administrador'
+                'existencia' => '100',
+                'creado_por' => 'admin@test.com',
+                'precio' => '10.00'
             ]
 
         ];

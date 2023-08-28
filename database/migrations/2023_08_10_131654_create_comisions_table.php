@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('ponderacion_id');
             $table->integer('venta_id');
             $table->string('creada_por');
-            $table->deciaml('porcentaje', 5, 2)->unique();
+            $table->decimal('porcentaje', 5, 2)->unique();
             $table->string('fecha_vence');
             $table->string('status');
             $table->timestamps();

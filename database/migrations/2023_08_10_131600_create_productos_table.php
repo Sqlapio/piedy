@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('descripcion');
             $table->integer('existencia');
             $table->string('creado_por');
+            $table->decimal('precio', 8, 2);
             $table->string('status')->default('activo');
 
             $table->timestamps();

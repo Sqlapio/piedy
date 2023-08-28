@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('comisions', function (Blueprint $table) {
             $table->id();
+            $table->string('cod_comision')->unique();
+            $table->integer('empleado_id');
+            $table->integer('ponderacion_id');
+            $table->string('creada_por');
+            $table->deciaml('porcentaje', 5, 2)->unique();
+            $table->string('fecha_vence');
+            $table->string('status');
             $table->timestamps();
         });
     }

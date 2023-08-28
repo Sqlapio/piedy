@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('ponderacions', function (Blueprint $table) {
             $table->id();
+            $table->string('estrellas');
+            $table->decimal('costo', 8, 2);
             $table->timestamps();
         });
     }

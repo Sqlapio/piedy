@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('apellido');
-            $table->string('cedula');
+            $table->string('cedula')->unique();
             $table->string('email');
             $table->string('telefono');
             $table->string('direccion_corta');

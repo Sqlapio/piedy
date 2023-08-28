@@ -20,8 +20,8 @@ class Ponderacion extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'num_estrellas',
-        'valor',
+        'estrellas',
+        'costo',
 
     ];
 }

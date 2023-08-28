@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Cita extends Model
+class ServicioPrestado extends Model
 {
     use HasFactory;
 
     /**
      * Define table
      */
-    protected $table = 'citas';
+    protected $table = 'servicio_prestados';
 
     /**
      * The attributes that are mass assignable.
@@ -20,12 +20,8 @@ class Cita extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'cod_cita',
-        'cliente_id',
+        'servicio_id',
         'empleado_id',
         'fecha',
-        'hora',
-        'servicio',
-        'status',
     ];
 }

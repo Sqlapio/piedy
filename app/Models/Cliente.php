@@ -25,7 +25,7 @@ class Cliente extends Model
         'cedula',
         'email',
         'telefono',
-        'direccion_corta'
+        'direccion_corta',
 
     ];
 }

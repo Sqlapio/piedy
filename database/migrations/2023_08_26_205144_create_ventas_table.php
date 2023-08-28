@@ -13,15 +13,10 @@ return new class extends Migration
     {
         Schema::create('ventas', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->integer('cantidad');
+            $table->integer('cliente_id');
+            $table->integer('empleado_id');
             $table->string('fecha');
             $table->decimal('total', 10, 2);
-            $table->timestamps();
-
-
-
-
             $table->timestamps();
         });
     }

@@ -26,7 +26,6 @@ class Empleado extends Model
         'email',
         'telefono',
         'direccion_corta',
-        'especialidad',
         'tipo_empleado',
         'Fecha_Contratación',
         'status'

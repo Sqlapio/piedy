@@ -21,10 +21,10 @@ class Servicio extends Model
      */
     protected $fillable = [
         'cod_servicio',
-        'owner',
+        'creado_por',
         'descripcion',
         'costo',
-        'duracion',
+        'duracion_max', //este valor debe ser expresado en minutos
         'status',
     ];
 }

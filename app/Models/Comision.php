@@ -21,9 +21,12 @@ class Comision extends Model
      */
     protected $fillable = [
         'cod_comision',
-        'owner',
+        'empleado_id',
+        'ponderacion_id',
+        'creada_por',
         'porcentaje',
-        'duracion',
+        'fecha_vence',
         'status',
     ];
 }
+ 

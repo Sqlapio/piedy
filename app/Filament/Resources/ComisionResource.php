@@ -6,6 +6,7 @@ use App\Filament\Resources\ComisionResource\Pages;
 use App\Filament\Resources\ComisionResource\RelationManagers;
 use App\Models\Comision;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -23,7 +24,13 @@ class ComisionResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('cod_comision')->default('Pco-'.random_int(11111, 99999)),
+                TextInput::make('porcentaje')
+                    ->prefix('%')
+                    ->numeric()
+                    ->minValue(1)
+                    ->maxValue(100)
+                    ->required(),
             ]);
     }
 

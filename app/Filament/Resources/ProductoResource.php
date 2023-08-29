@@ -6,6 +6,8 @@ use App\Filament\Resources\ProductoResource\Pages;
 use App\Filament\Resources\ProductoResource\RelationManagers;
 use App\Models\Producto;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -23,7 +25,28 @@ class ProductoResource extends Resource
     {
         return $form
             ->schema([
-                
+                TextInput::make('cod_producto')->default('Ppro-'.random_int(11111, 99999)),
+                TextInput::make('descripcion')->required(),
+                TextInput::make('existencia')
+                    ->numeric()
+                    ->minValue(5)
+                    ->required(),
+                TextInput::make('precio')
+                    ->prefix('$')
+                    ->numeric()
+                    ->minValue(5)
+                    ->required(),
+                Select::make('comision_id')
+                    ->relationship('comision', 'porcentaje')
+                    ->searchable()
+                    ->preload()
+                    ->createOptionForm([
+                        TextInput::make('cod_comision')->default('Pco-'.random_int(11111, 99999)),
+                        TextInput::make('porcentaje')
+                            ->prefix('%')
+                            ->required(),
+                    ])
+                    ->required()
             ]);
     }
 
@@ -33,9 +56,9 @@ class ProductoResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('cod_producto'),
                 Tables\Columns\TextColumn::make('descripcion'),
-                Tables\Columns\TextColumn::make('precio'),
                 Tables\Columns\TextColumn::make('existencia'),
-                Tables\Columns\TextColumn::make('comsion de venta'),
+                Tables\Columns\TextColumn::make('precio'),
+                Tables\Columns\TextColumn::make('comision.porcentaje'),
                 Tables\Columns\TextColumn::make('status'),
                 
             ])

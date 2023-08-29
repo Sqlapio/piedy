@@ -24,6 +24,7 @@ class Producto extends Model
         'cod_producto',
         'descripcion',
         'existencia',
+        'precio',
         'comision_id',
         'status',
     ];

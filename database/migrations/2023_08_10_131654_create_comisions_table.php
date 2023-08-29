@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('comisions', function (Blueprint $table) {
             $table->id();
             $table->string('cod_comision')->unique();
-            $table->decimal('porcentaje', 5, 2)->unique();
+            $table->decimal('porcentaje', 5, 2);
             $table->string('status')->default('activo');
             $table->timestamps();
         });

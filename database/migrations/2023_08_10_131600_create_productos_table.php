@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('cod_producto')->unique();
             $table->string('descripcion');
             $table->integer('existencia');
-            $table->string('creado_por');
             $table->decimal('precio', 8, 2);
+            $table->integer('comision_id');
             $table->string('status')->default('activo');
 
             $table->timestamps();

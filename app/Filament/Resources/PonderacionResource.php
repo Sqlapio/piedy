@@ -17,7 +17,7 @@ class PonderacionResource extends Resource
 {
     protected static ?string $model = Ponderacion::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-hand-thumb-up';
 
     public static function form(Form $form): Form
     {

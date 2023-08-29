@@ -23,7 +23,7 @@ class ProductoResource extends Resource
     {
         return $form
             ->schema([
-                //
+                
             ]);
     }
 
@@ -35,8 +35,9 @@ class ProductoResource extends Resource
                 Tables\Columns\TextColumn::make('descripcion'),
                 Tables\Columns\TextColumn::make('precio'),
                 Tables\Columns\TextColumn::make('existencia'),
-                Tables\Columns\TextColumn::make('creado_por'),
+                Tables\Columns\TextColumn::make('comsion de venta'),
                 Tables\Columns\TextColumn::make('status'),
+                
             ])
             ->filters([
                 //

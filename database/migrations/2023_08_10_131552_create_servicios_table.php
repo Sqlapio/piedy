@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('cod_servicio')->unique();
             $table->string('descripcion');
-            $table->string('creado_por');
             $table->decimal('costo', 8, 2);
             $table->string('duracion_max');
+            $table->integer('comision_id');
             $table->string('status')->default('activo');
 
             $table->timestamps();

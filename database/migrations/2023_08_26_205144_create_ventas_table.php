@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('cliente_id');
             $table->integer('empleado_id');
             $table->integer('producto_id');
+            $table->integer('comision_id');
             $table->string('fecha');
             $table->decimal('total', 10, 2);
             $table->timestamps();

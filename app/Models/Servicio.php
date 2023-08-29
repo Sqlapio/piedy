@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Servicio extends Model
@@ -22,16 +23,16 @@ class Servicio extends Model
      */
     protected $fillable = [
         'cod_servicio',
-        'creado_por',
         'descripcion',
         'costo',
         'duracion_max', //este valor debe ser expresado en minutos
+        'comision_id',
         'status',
     ];
 
-    // Un servicio puede haber sido prestado múltiples veces
-    public function serviciosPrestados():HasMany
+    public function comision():BelongsTo
     {
-        return $this->hasMany(ServicioPrestado::class, 'servicio_id');
+        return $this->belongsTo(Comision::class, 'comision_id', 'id');
     }
+
 }

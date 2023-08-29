@@ -6,6 +6,7 @@ use App\Filament\Resources\ServicioResource\Pages;
 use App\Filament\Resources\ServicioResource\RelationManagers;
 use App\Models\Servicio;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -28,6 +29,16 @@ class ServicioResource extends Resource
                 TextInput::make('descripcion')->required(),
                 TextInput::make('costo')->required(),
                 TextInput::make('duracion_max')->required(),
+                Select::make('comision_id')
+                ->relationship('comision', 'porcentaje')
+                ->searchable()
+                ->preload()
+                ->createOptionForm([
+                    TextInput::make('cod_comision')->default('Pco-'.random_int(11111, 99999)),
+                    TextInput::make('porcentaje')->required(),
+                    TextInput::make('status')->required(),
+                ])
+                ->required()
             ]);
     }
 
@@ -36,7 +47,6 @@ class ServicioResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('cod_servicio'),
-                Tables\Columns\TextColumn::make('creado_por'),
                 Tables\Columns\TextColumn::make('descripcion'),
                 Tables\Columns\TextColumn::make('costo'),
                 Tables\Columns\TextColumn::make('duracion_max'),

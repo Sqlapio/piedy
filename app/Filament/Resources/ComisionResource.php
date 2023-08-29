@@ -17,7 +17,7 @@ class ComisionResource extends Resource
 {
     protected static ?string $model = Comision::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
 
     public static function form(Form $form): Form
     {
@@ -31,7 +31,9 @@ class ComisionResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('cod_comision'),
+                Tables\Columns\TextColumn::make('porcentaje'),
+                Tables\Columns\TextColumn::make('status'),
             ])
             ->filters([
                 //

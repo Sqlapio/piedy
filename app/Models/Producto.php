@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Producto extends Model
 {
@@ -23,7 +24,13 @@ class Producto extends Model
         'cod_producto',
         'descripcion',
         'existencia',
-        'creado_por',
+        'comision_id',
         'status',
     ];
+
+    public function comision():BelongsTo
+    {
+        return $this->belongsTo(Comision::class, 'comision_id', 'id');
+    }
+    
 }

@@ -62,10 +62,14 @@ class ServicioResource extends Resource
                 TextColumn::make('comision.porcentaje'),
                 TextColumn::make('duracion_max'),
                 IconColumn::make('status')
-                    ->color(fn (string $state): string => match ($state) {
-                        'activo' => 'success',
-                        'inactivo' => 'warning',
-                })
+                ->options([
+                    'heroicon-o-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
+                    'heroicon-o-clock' => fn ($state, $record): bool => $record->status === 'inactivo',
+                ])
+                ->colors([
+                    'danger' => 'inactivo',
+                    'success' => 'activo',
+                ]),
             ])
             ->filters([
                 //

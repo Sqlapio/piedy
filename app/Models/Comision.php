@@ -22,6 +22,7 @@ class Comision extends Model
      */
     protected $fillable = [
         'cod_comision',
+        'aplicacion',
         'porcentaje',
         'status',
     ];

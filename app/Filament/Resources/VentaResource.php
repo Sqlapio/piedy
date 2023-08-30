@@ -39,7 +39,7 @@ class VentaResource extends Resource
                 TextColumn::make('producto.descripcion'),
                 TextColumn::make('comision.porcentaje'),
                 TextColumn::make('fecha'),
-                TextColumn::make('total'),
+                TextColumn::make('total')->money('USD'),
             ])
             ->filters([
                 //

@@ -6,6 +6,7 @@ use App\Filament\Resources\ComisionResource\Pages;
 use App\Filament\Resources\ComisionResource\RelationManagers;
 use App\Models\Comision;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -33,6 +34,11 @@ class ComisionResource extends Resource
                     ->minValue(1)
                     ->maxValue(100)
                     ->required(),
+                Select::make('aplicacion')
+                    ->options([
+                        'producto' => 'Producto',
+                        'servicio' => 'Servicio',
+                    ])
             ]);
     }
 
@@ -42,6 +48,7 @@ class ComisionResource extends Resource
             ->columns([
                 TextColumn::make('cod_comision'),
                 TextColumn::make('porcentaje'),
+                TextColumn::make('aplicacion'),
                 IconColumn::make('status')
                 ->options([
                     'heroicon-o-check-circle' => fn ($state, $record): bool => $record->status === 'activo',

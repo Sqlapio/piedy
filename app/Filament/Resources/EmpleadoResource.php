@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -40,7 +41,15 @@ class EmpleadoResource extends Resource
                 TextColumn::make('direccion_corta'),
                 TextColumn::make('tipo_empleado'),
                 TextColumn::make('Fecha_Contratación'),
-                TextColumn::make('status'),
+                IconColumn::make('status')
+                ->options([
+                    'heroicon-o-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
+                    'heroicon-o-clock' => fn ($state, $record): bool => $record->status === 'inactivo',
+                ])
+                ->colors([
+                    'danger' => 'inactivo',
+                    'success' => 'activo',
+                ]),
             ])
             ->filters([
                 //

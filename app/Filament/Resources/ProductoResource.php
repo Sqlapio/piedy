@@ -11,6 +11,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -59,7 +60,15 @@ class ProductoResource extends Resource
                 Tables\Columns\TextColumn::make('existencia'),
                 Tables\Columns\TextColumn::make('precio')->money('USD'),
                 Tables\Columns\TextColumn::make('comision.porcentaje'),
-                Tables\Columns\TextColumn::make('status'),
+                IconColumn::make('status')
+                ->options([
+                    'heroicon-o-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
+                    'heroicon-o-clock'        => fn ($state, $record): bool => $record->status === 'inactivo',
+                ])
+                ->colors([
+                    'danger' => 'inactivo',
+                    'success' => 'activo',
+                ]),
                 
             ])
             ->filters([

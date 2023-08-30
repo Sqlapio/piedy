@@ -22,6 +22,7 @@ class Ponderacion extends Model
     protected $fillable = [
         'estrellas',
         'costo',
+        'image'
 
     ];
 }

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('direccion_corta');
             $table->string('tipo_empleado');
             $table->string('Fecha_Contratación');
-            $table->string('status');
+            $table->string('status')->default('activo');
             $table->timestamps();
         });
     }

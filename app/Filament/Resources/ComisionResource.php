@@ -10,6 +10,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -38,9 +40,17 @@ class ComisionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('cod_comision'),
-                Tables\Columns\TextColumn::make('porcentaje'),
-                Tables\Columns\TextColumn::make('status'),
+                TextColumn::make('cod_comision'),
+                TextColumn::make('porcentaje'),
+                IconColumn::make('status')
+                ->options([
+                    'heroicon-o-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
+                    'heroicon-o-clock' => fn ($state, $record): bool => $record->status === 'inactivo',
+                ])
+                ->colors([
+                    'danger' => 'inactivo',
+                    'success' => 'activo',
+                ])
             ])
             ->filters([
                 //

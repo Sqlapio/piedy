@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\EmpleadoResource\Pages;
-use App\Filament\Resources\EmpleadoResource\RelationManagers;
-use App\Models\Empleado;
+use App\Filament\Resources\VentaResource\Pages;
+use App\Filament\Resources\VentaResource\RelationManagers;
+use App\Models\Cliente;
+use App\Models\Venta;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,11 +15,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class EmpleadoResource extends Resource
+class VentaResource extends Resource
 {
-    protected static ?string $model = Empleado::class;
+    protected static ?string $model = Venta::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-identification';
+    protected static ?string $navigationIcon = 'heroicon-o-calculator';
 
     public static function form(Form $form): Form
     {
@@ -30,17 +31,15 @@ class EmpleadoResource extends Resource
 
     public static function table(Table $table): Table
     {
+
         return $table
             ->columns([
-                TextColumn::make('nombre'),
-                TextColumn::make('apellido'),
-                TextColumn::make('cedula'),
-                TextColumn::make('email'),
-                TextColumn::make('telefono'),
-                TextColumn::make('direccion_corta'),
-                TextColumn::make('tipo_empleado'),
-                TextColumn::make('Fecha_Contratación'),
-                TextColumn::make('status'),
+                TextColumn::make('cliente.nombre'),
+                TextColumn::make('empleado.nombre'),
+                TextColumn::make('producto.descripcion'),
+                TextColumn::make('comision.porcentaje'),
+                TextColumn::make('fecha'),
+                TextColumn::make('total'),
             ])
             ->filters([
                 //
@@ -68,9 +67,9 @@ class EmpleadoResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEmpleados::route('/'),
-            'create' => Pages\CreateEmpleado::route('/create'),
-            'edit' => Pages\EditEmpleado::route('/{record}/edit'),
+            'index' => Pages\ListVentas::route('/'),
+            'create' => Pages\CreateVenta::route('/create'),
+            'edit' => Pages\EditVenta::route('/{record}/edit'),
         ];
     }    
 }

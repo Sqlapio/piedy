@@ -11,6 +11,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\TablesServiceProvider;
 use Illuminate\Database\Eloquent\Builder;
@@ -34,7 +36,7 @@ class ServicioResource extends Resource
                     ->minValue(1)
                     ->maxValue(100)
                     ->required(), 
-                TextInput::make('duracion maxima')
+                TextInput::make('duracion_max')
                     ->prefix('Minutos')
                     ->numeric()
                     ->required(),
@@ -54,12 +56,16 @@ class ServicioResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('cod_servicio'),
-                Tables\Columns\TextColumn::make('descripcion'),
-                Tables\Columns\TextColumn::make('costo'),
-                Tables\Columns\TextColumn::make('comision.porcentaje'),
-                Tables\Columns\TextColumn::make('duracion_max'),
-                Tables\Columns\TextColumn::make('status'),
+                TextColumn::make('cod_servicio'),
+                TextColumn::make('descripcion'),
+                TextColumn::make('costo')->money('USD'),
+                TextColumn::make('comision.porcentaje'),
+                TextColumn::make('duracion_max'),
+                IconColumn::make('status')
+                    ->color(fn (string $state): string => match ($state) {
+                        'activo' => 'success',
+                        'inactivo' => 'warning',
+                })
             ])
             ->filters([
                 //

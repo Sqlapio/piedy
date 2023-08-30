@@ -57,7 +57,7 @@ class ProductoResource extends Resource
                 Tables\Columns\TextColumn::make('cod_producto'),
                 Tables\Columns\TextColumn::make('descripcion'),
                 Tables\Columns\TextColumn::make('existencia'),
-                Tables\Columns\TextColumn::make('precio'),
+                Tables\Columns\TextColumn::make('precio')->money('USD'),
                 Tables\Columns\TextColumn::make('comision.porcentaje'),
                 Tables\Columns\TextColumn::make('status'),
                 

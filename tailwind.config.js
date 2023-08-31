@@ -19,5 +19,9 @@ export default {
         },
     },
 
-    plugins: [forms, typography],
+    plugins: [forms, typography, require("daisyui")],
 };
+
+// module.exports = {
+//     plugins: [require("daisyui")],
+// };

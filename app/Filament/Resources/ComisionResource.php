@@ -38,6 +38,18 @@ class ComisionResource extends Resource
                     ->options([
                         'producto' => 'Producto',
                         'servicio' => 'Servicio',
+                        'cupones' => 'Cupones',
+                    ]),
+                Select::make('beneficiario')
+                    ->options([
+                        'gerente' => 'Gerente',
+                        'empleado' => 'Empleado',
+                        'cupones' => 'Cupones',
+                    ]),
+                Select::make('status')
+                    ->options([
+                        '1' => 'Activo',
+                        '2' => 'Inactivo',
                     ])
             ]);
     }
@@ -49,14 +61,15 @@ class ComisionResource extends Resource
                 TextColumn::make('cod_comision'),
                 TextColumn::make('porcentaje'),
                 TextColumn::make('aplicacion'),
+                TextColumn::make('beneficiario'),
                 IconColumn::make('status')
                 ->options([
-                    'heroicon-o-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
-                    'heroicon-o-clock' => fn ($state, $record): bool => $record->status === 'inactivo',
+                    'heroicon-o-check-circle' => fn ($state, $record): bool => $record->status === '1',
+                    'heroicon-o-clock' => fn ($state, $record): bool => $record->status === '2',
                 ])
                 ->colors([
-                    'danger' => 'inactivo',
-                    'success' => 'activo',
+                    'danger' => '2',
+                    'success' => '1',
                 ])
             ])
             ->filters([

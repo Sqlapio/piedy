@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('cod_comision')->unique();
             $table->string('aplicacion');
+            $table->string('beneficiario');
             $table->decimal('porcentaje', 5, 2);
             $table->string('status')->default('activo');
             $table->string('image');

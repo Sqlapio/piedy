@@ -21,4 +21,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::get('/clientes', function () {
+        return view('clientes');
+    })->name('clientes');
 });

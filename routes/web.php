@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiClientesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,6 +26,23 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/clientes', function () {
         return view('clientes');
     })->name('clientes');
+
+    Route::get('/empleados', function () {
+        return view('empleados');
+    })->name('empleados');
+
+    Route::get('/servicios', function () {
+        return view('servicios');
+    })->name('servicios');
+
+    Route::get('/citas', function () {
+        return view('citas');
+    })->name('citas');
+
+    Route::get('/lista/clientes', [ApiClientesController::class, 'lista_clientes'])->name('api.clientes');
+    Route::get('/lista/empleados', [ApiClientesController::class, 'lista_empleados'])->name('api.empleados');
+    Route::get('/lista/servicios', [ApiClientesController::class, 'lista_servicios'])->name('api.servicios');
+
 
     Route::get('/{record}/edit', function () {
         return view('clientes');

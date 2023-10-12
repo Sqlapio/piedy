@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comisions', function (Blueprint $table) {
+        Schema::create('agendas', function (Blueprint $table) {
             $table->id();
-            $table->string('cod_comision')->unique();
-            $table->string('aplicacion');
-            $table->string('beneficiario');
-            $table->decimal('porcentaje', 5, 2);
-            $table->string('status')->default('activo');
             $table->timestamps();
         });
     }
@@ -27,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comisions');
+        Schema::dropIfExists('agendas');
     }
 };

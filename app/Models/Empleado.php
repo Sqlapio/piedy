@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Empleado extends Model
 {
@@ -28,7 +29,7 @@ class Empleado extends Model
         'telefono',
         'direccion_corta',
         'tipo_empleado',
-        'Fecha_Contratación',
+        'fecha_ingreso',
         'status'
     ];
 
@@ -48,5 +49,15 @@ class Empleado extends Model
     public function ventas():HasMany
     {
         return $this->hasMany(Venta::class, 'empleado_id');
+    }
+
+    public function disponible(): HasOne
+    {
+        return $this->hasOne(Disponible::class);
+    }
+
+    public function cita(): HasOne
+    {
+        return $this->hasOne(Cita::class);
     }
 }

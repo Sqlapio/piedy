@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('descripcion');
             $table->decimal('costo', 8, 2);
             $table->string('duracion_max');
-            $table->integer('comision_id');
             $table->string('status')->default('activo');
 
             $table->timestamps();

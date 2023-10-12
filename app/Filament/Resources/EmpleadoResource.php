@@ -6,6 +6,9 @@ use App\Filament\Resources\EmpleadoResource\Pages;
 use App\Filament\Resources\EmpleadoResource\RelationManagers;
 use App\Models\Empleado;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -25,7 +28,26 @@ class EmpleadoResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('nombre')
+                    ->required(),
+                TextInput::make('apellido')
+                    ->required(),
+                TextInput::make('cedula')
+                    ->required(),
+                TextInput::make('email')
+                    ->email()
+                    ->required(),
+                TextInput::make('telefono')
+                    ->mask('(9999)999-99-99')
+                    ->required(),
+                TextInput::make('direccion_corta'),
+                Select::make('tipo_empleado')
+                    ->options([
+                        'gerente' => 'Gerente',
+                        'empleado' => 'Empleado',
+                    ]),
+                DatePicker::make('fecha_ingreso')
+                    ->format('d/m/Y')
             ]);
     }
 
@@ -40,7 +62,7 @@ class EmpleadoResource extends Resource
                 TextColumn::make('telefono'),
                 TextColumn::make('direccion_corta'),
                 TextColumn::make('tipo_empleado'),
-                TextColumn::make('Fecha_Contratación'),
+                TextColumn::make('fecha_ingreso'),
                 IconColumn::make('status')
                 ->options([
                     'heroicon-o-check-circle' => fn ($state, $record): bool => $record->status === 'activo',

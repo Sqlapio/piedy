@@ -16,10 +16,11 @@ return new class extends Migration
             $table->string('cod_cita')->unique();
             $table->integer('cliente_id');
             $table->integer('empleado_id');
+            $table->integer('servicio_id');
             $table->string('fecha');
             $table->string('hora');
-            $table->string('servicio');
-            $table->string('status');
+            $table->string('responsable');
+            $table->integer('status')->default(1);
 
             $table->timestamps();
         });

@@ -40,15 +40,6 @@ class ServicioResource extends Resource
                     ->prefix('Minutos')
                     ->numeric()
                     ->required(),
-                Select::make('comision_id')
-                    ->relationship('comision', 'porcentaje')
-                    ->searchable()
-                    ->preload()
-                    ->createOptionForm([
-                        TextInput::make('cod_comision')->default('Pco-'.random_int(11111, 99999)),
-                        TextInput::make('porcentaje')->required(),
-                    ])
-                    ->required()
             ]);
     }
 
@@ -59,7 +50,6 @@ class ServicioResource extends Resource
                 TextColumn::make('cod_servicio'),
                 TextColumn::make('descripcion'),
                 TextColumn::make('costo')->money('USD'),
-                TextColumn::make('comision.porcentaje'),
                 TextColumn::make('duracion_max'),
                 IconColumn::make('status')
                 ->options([

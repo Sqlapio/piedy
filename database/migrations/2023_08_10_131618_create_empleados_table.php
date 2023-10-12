@@ -16,12 +16,13 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('apellido');
             $table->string('cedula')->unique();
-            $table->string('email');
+            $table->string('email')->unique();
             $table->string('telefono');
             $table->string('direccion_corta');
             $table->string('tipo_empleado');
-            $table->string('Fecha_Contratación');
+            $table->string('fecha_ingreso');
             $table->string('status')->default('activo');
+            $table->integer('disponible')->default(1);
             $table->timestamps();
         });
     }

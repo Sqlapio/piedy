@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Cita extends Model
+class Disponible extends Model
 {
     use HasFactory;
 
     /**
      * Define table
      */
-    protected $table = 'citas';
+    protected $table = 'disponibles';
 
     /**
      * The attributes that are mass assignable.
@@ -22,28 +22,29 @@ class Cita extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'cod_cita',
         'cliente_id',
         'empleado_id',
-        'fecha',
-        'hora',
         'servicio_id',
-        'responsable',
+        'costo',
+        'duracion',
+        'cabina',
         'status',
     ];
 
-    public function get_cliente(): BelongsTo
+    
+
+    public function cliente(): BelongsTo
     {
-        return $this->BelongsTo(Cliente::class, 'cliente_id');
+        return $this->belongsTo(Cliente::class);
     }
     
-    public function get_empleado(): BelongsTo
+    public function empleado(): BelongsTo
     {
-        return $this->belongsTo(Empleado::class, 'empleado_id');
+        return $this->belongsTo(Empleado::class);
     }
 
-    public function get_servicio(): BelongsTo
+    public function servicio(): BelongsTo
     {
-        return $this->belongsTo(Servicio::class, 'servicio_id');
+        return $this->belongsTo(Servicio::class);
     }
 }

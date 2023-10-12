@@ -28,12 +28,13 @@ class Cliente extends Model
         'email',
         'telefono',
         'direccion_corta',
+        'visitas'
 
     ];
 
-    public function citas():HasMany
+    public function get_citas(): HasMany
     {
-        return $this->hasMany(Cita::class, 'cliente_id');
+        return $this->hasMany(Cita::class, 'cliente_id', 'id');
     }
 
     public function ventas():HasMany

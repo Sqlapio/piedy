@@ -13,27 +13,27 @@
                     {{-- Descripcion --}}
                     <div class="p-2">
                         <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Nombre</label>
-                        <x-input icon="user" wire:model.defer="nombre"  class="focus:ring-check-blue focus:border-check-blue valLetras"/>
+                        <x-input icon="user" wire:model="nombre"  class="focus:ring-check-blue focus:border-check-blue valLetras"/>
                     </div>
                     <div class="p-2">
                         <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Apellido</label>
-                        <x-input icon="user" wire:model.defer="apellido"  class="focus:ring-check-blue focus:border-check-blue valLetras"/>
+                        <x-input icon="user" wire:model="apellido"  class="focus:ring-check-blue focus:border-check-blue valLetras"/>
                     </div>
                     <div class="p-2">
                         <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Cedula</label>
-                        <x-input icon="credit-card" wire:model.defer="cedula"  class="focus:ring-check-blue focus:border-check-blue valLetras"/>
+                        <x-input icon="credit-card" wire:model="cedula"  class="focus:ring-check-blue focus:border-check-blue valLetras"/>
                     </div>
                     <div class="p-2">
                         <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Email</label>
-                        <x-input icon="mail" wire:model.defer="email" type="email"  class="focus:ring-check-blue focus:border-check-blue valLetras"/>
+                        <x-input icon="mail" wire:model="email" type="email"  class="focus:ring-check-blue focus:border-check-blue valLetras"/>
                     </div>
                     <div class="p-2">
                         <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Teléfono</label>
-                        <x-inputs.phone icon="phone" wire:model.defer="telefono" mask="['(##) ####-####']" class="focus:ring-check-blue focus:border-check-blue valLetras"/>
+                        <x-input icon="phone" wire:model="telefono" class="focus:ring-check-blue focus:border-check-blue valLetras"/>
                     </div>
                     <div class="p-2">
                         <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Dirección</label>
-                        <x-input icon="map" wire:model.defer="direccion_corta"  class="focus:ring-check-blue focus:border-check-blue valLetras"/>
+                        <x-input icon="map" wire:model="direccion_corta"  class="focus:ring-check-blue focus:border-check-blue valLetras"/>
                     </div>
                 </div>
                 <div class="flex justify-end p-2 mt-auto">
@@ -84,7 +84,11 @@
                             </th>
     
                             <th scope="col" class="px-4 py-3.5 text-sm text-left rtl:text-right text-white rounded-r-lg font-extrabold">
-                                Dirección corta
+                                Dirección
+                            </th>
+
+                            <th scope="col" class="px-4 py-3.5 text-sm text-left rtl:text-right text-white rounded-r-lg font-extrabold">
+                                Acciones
                             </th>
     
                         </tr>
@@ -98,7 +102,11 @@
                             <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap rounded-lg">{{ $item->email }}</td>
                             <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap rounded-lg">{{ $item->telefono }}</td>
                             <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap rounded-lg">{{ $item->direccion_corta }}</td>
-                            
+                            <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 rounded-lg">
+                                <x-dropdown>
+                                    <x-dropdown.item label="Asignar servicio" type="submit" wire:click="asigna_servicio({{ $item->id }}, '2')"/>
+                                </x-dropdown>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>

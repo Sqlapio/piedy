@@ -2,25 +2,20 @@
 
 namespace App\Livewire;
 
+use App\Models\Servicio;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Servicios extends Component
 {
 
-    public $cod_servicio;
-    public $descripcion;
-    public $costo;
-    public $duracion_max; //este valor debe ser expresado en minutos
-    public $comision_id;
+    use WithPagination;
 
-    public $buscar;
-
-
-
-
-    
     public function render()
     {
-        return view('livewire.servicios');
+        return view('livewire.servicios', [
+            'data' => Servicio::orderBy('id', 'asc')                                   
+                ->paginate(8)
+        ]);
     }
 }

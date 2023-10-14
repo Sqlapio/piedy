@@ -39,6 +39,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('citas');
     })->name('citas');
 
+    Route::get('/cabinas', function () {
+        return view('cabinas');
+    })->name('cabinas');
+
     Route::get('/lista/clientes', [ApiClientesController::class, 'lista_clientes'])->name('api.clientes');
     Route::get('/lista/empleados', [ApiClientesController::class, 'lista_empleados'])->name('api.empleados');
     Route::get('/lista/servicios', [ApiClientesController::class, 'lista_servicios'])->name('api.servicios');

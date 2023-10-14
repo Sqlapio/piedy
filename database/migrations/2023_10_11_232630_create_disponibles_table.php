@@ -14,12 +14,10 @@ return new class extends Migration
         Schema::create('disponibles', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('cliente_id');
-            $table->unsignedBigInteger('empleado_id')->nullable();
+            $table->unsignedBigInteger('empleado_id');
             $table->unsignedBigInteger('servicio_id');
             $table->string('costo');
             $table->string('duracion');
-            $table->string('tiempo_restante')->nullable();
-            $table->string('cabina')->nullable();
             $table->string('status')->default('espera');
             $table->timestamps();
         });

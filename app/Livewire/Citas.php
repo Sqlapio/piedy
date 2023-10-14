@@ -72,44 +72,58 @@ class Citas extends Component
             $cita->responsable = $user->id;
 
             $citas = Cita::where('cliente_id', $cita->cliente_id)->latest()->first();
+            if($citas != null)
+            {
+                if ($citas->fecha == $cita->fecha && $citas->hora == $cita->hora) {
 
-            if ($citas->fecha == $cita->fecha && $citas->hora == $cita->hora) {
+                    Notification::make()
+                        ->title('Ya posee una cita')
+                        ->icon('heroicon-o-exclamation-triangle')
+                        ->iconColor('danger')
+                        ->body('Por favor intente agendar en horas diferentes.')
+                        ->send();
+                    
+                } else {
+                    $cita->save();
 
-                Notification::make()
-                    ->title('Ya posee una cita')
-                    ->icon('heroicon-o-exclamation-triangle')
-                    ->iconColor('danger')
-                    ->body('Por favor intente agendar en horas diferentes.')
-                    ->send();
-                
-            } else {
+                    $this->reset();
+    
+                    Notification::make()
+                        ->title('Cita agendada con éxito')
+                        ->icon('heroicon-o-document-text')
+                        ->iconColor('success')
+                        ->send();
+    
+                    $cliente = Cliente::where('id', $cita->cliente_id)->first();
+                    $type = 'cliente';
+                    
+                    $mailData = [
+                        'cliente_email' => $cliente->email,
+                        'cliente_fullname' => $cliente->nombre.' '.$cliente->apellido,
+                        'fecha_cita' => $cita->fecha,
+                        'hora_cita' => $cita->hora,
+                        'empleado_cita' => $cita->get_empleado->nombre.' '.$cita->get_empleado->apellido,
+                        'servicio' => $cita->get_servicio->descripcion,
+                        'costo' => $cita->get_servicio->costo,
+    
+                    ];
+    
+                    NotificacionesController::notification($mailData, $type);
+    
+                }
+            }else{
                 $cita->save();
+
+                
 
                 Notification::make()
                     ->title('Cita agendada con éxito')
                     ->icon('heroicon-o-document-text')
                     ->iconColor('success')
                     ->send();
-
-                $this->reset();
-
-                $cliente = Cliente::where('id', $cita->cliente_id)->first();
-                $type = 'cliente';
-                
-                $mailData = [
-                    'cliente_email' => $cliente->email,
-                    'cliente_fullname' => $cliente->nombre.' '.$cliente->apellido,
-                    'fecha_cita' => $cita->fecha,
-                    'hora_cita' => $cita->hora,
-                    'empleado_cita' => $cita->get_empleado->nombre.' '.$cita->get_empleado->apellido,
-                    'servicio' => $cita->get_servicio->descripcion,
-                    'costo' => $cita->get_servicio->costo,
-
-                ];
-
-                NotificacionesController::notification($mailData, $type);
-
             }
+
+            
                 
         } catch (\Throwable $th) {
             dd($th);

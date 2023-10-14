@@ -1,5 +1,6 @@
 <div>
     <div class="p-5">
+        @livewire('notifications')
         <h1 class="text-xl mb-4 font-bold text-[#bd9c95]">Modulo de Clientes</h1>
         {{-- <div class="py-5 mt-4">
             <div class="flex justify-between">

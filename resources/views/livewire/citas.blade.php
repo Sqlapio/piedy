@@ -1,4 +1,5 @@
 <div>
+    @livewire('notifications')
     <div class="p-5">
         <h1 class="text-xl mb-4 font-bold text-[#bd9c95]">Citas del dia</h1>
         {{-- tabla y boton del formulario de clientes --}}

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductoResource\Pages;
 use App\Filament\Resources\ProductoResource\RelationManagers;
+use App\Models\Comision;
 use App\Models\Producto;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -39,7 +40,9 @@ class ProductoResource extends Resource
                     ->required(),
                 Select::make('comision_id')
                     ->relationship('comision', 'porcentaje')
+                    ->options(Comision::where('aplicacion', 'producto')->pluck('porcentaje', 'id'))
                     ->searchable()
+                    
                     ->preload()
                     ->createOptionForm([
                         TextInput::make('cod_comision')->default('Pco-'.random_int(11111, 99999)),

@@ -10,7 +10,7 @@
         {{-- tabla y boton del formulario de clientes --}}
         <div class="bg-white rounded-xl {{ $ocultar_form_cliente }}">
             <div class="overflow-auto rounded-xl shadow-md md:block p-4">
-                <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-6 gap-4 mb-4 mt-8">
+                <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 mb-4 mt-8">
                     {{-- Descripcion --}}
                     <div class="p-2">
                         <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Nombre</label>
@@ -103,9 +103,9 @@
                             <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap rounded-lg">{{ $item->email }}</td>
                             <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap rounded-lg">{{ $item->telefono }}</td>
                             <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap rounded-lg">{{ $item->direccion_corta }}</td>
-                            <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 rounded-lg">
+                            <td class="px-4 py-4 text-sm text-gray-500 text-center dark:text-gray-300 rounded-lg">
                                 <x-dropdown>
-                                    <x-dropdown.item label="Asignar servicio" type="submit" wire:click="asigna_servicio({{ $item->id }}, '2')"/>
+                                    <x-dropdown.item label="Agendar cita" type="submit" wire:click="asigna_servicio({{ $item->id }}, '2')"/>
                                 </x-dropdown>
                             </td>
                         </tr>

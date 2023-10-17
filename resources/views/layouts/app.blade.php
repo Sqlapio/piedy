@@ -31,7 +31,7 @@
     <body class="font-sans antialiased">
         
         <x-banner />
-        <div class="min-h-screen bg-gray-100">
+        <div class="container mx-auto min-h-screen bg-white">
             @livewire('navigation-menu')
 
             <!-- Page Heading -->
@@ -52,6 +52,8 @@
         @filamentScripts
         
         @stack('modals')
+
+        @livewire('livewire-ui-modal')
 
         @livewireScripts
     </body>

@@ -7,36 +7,33 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Filament\Notifications\Notification;
+use Livewire\Attributes\Rule;
 
 class Clientes extends Component
 {
     use WithPagination;
 
+    #[Rule('required')]
     public $nombre;
+
+    #[Rule('required')]
     public $apellido;
+
+    #[Rule('required|numeric')]
     public $cedula;
+
+    #[Rule('required|email|unique:clientes')]
     public $email;
+
+    #[Rule('required')]
     public $telefono;
+
+    #[Rule('required')]
     public $direccion_corta;
 
     public $buscar;
     public $ocultar_form_cliente = 'hidden';
     public $ocultar_table_cliente = '';
-
-    /**
-     * Reglas de validación para todos los campos del formulario
-     */
-    public function validateDataCliente()
-    {
-        $this->validate([
-            'nombre'            => 'required',
-            'apellido'          => 'required',
-            'cedula'            => 'required|numeric',
-            'email'             => 'required|email|unique:clientes',
-            'telefono'          => 'required',
-            'direccion_corta'   => 'required'
-        ]);
-    }
 
     protected $messages = [
 
@@ -58,7 +55,8 @@ class Clientes extends Component
 
     public function store()
     {
-        $this->validateDataCliente();
+        
+        $this->validate(); 
 
         try {
 

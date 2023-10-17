@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ApiClientesController;
+use App\Http\Controllers\LoginController;
+use App\Livewire\Login;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,10 +20,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::post('/login', [LoginController::class, 'login'])->name('login');
+
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::get('/dashboard_empleado', function () {
+        return view('dashboard_empleado');
+    })->name('dashboard_empleado');
 
     Route::get('/clientes', function () {
         return view('clientes');
@@ -46,7 +54,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/lista/clientes', [ApiClientesController::class, 'lista_clientes'])->name('api.clientes');
     Route::get('/lista/empleados', [ApiClientesController::class, 'lista_empleados'])->name('api.empleados');
     Route::get('/lista/servicios', [ApiClientesController::class, 'lista_servicios'])->name('api.servicios');
-
 
     Route::get('/{record}/edit', function () {
         return view('clientes');

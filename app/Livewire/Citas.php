@@ -9,35 +9,29 @@ use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Filament\Support\Colors\Color;
-use Filament\Support\Facades\FilamentColor;
+use Livewire\Attributes\Rule; 
 
 class Citas extends Component
 {
     use WithPagination;
     
+    #[Rule('required')]
     public $fecha;
+
+    #[Rule('required')]
     public $hora;
+
+    #[Rule('required')]
     public $cliente_id;
+
+    #[Rule('required')]
     public $servicio_id;
-    public $empleado_id;
+    // public $empleado_id;
 
     public $ocultar = 'hidden';
     public $botton_agendar_cita = '';
 
-    /**
-     * Reglas de validación para todos los campos del formulario
-     */
-    public function validateDataCliente()
-    {
-        $this->validate([
-            'fecha'         => 'required',
-            'hora'          => 'required',
-            'cliente_id'    => 'required',
-            'servicio_id'   => 'required',
-            'empleado_id'   => 'required',
-        ]);
-    }
+    public bool $myModal = false;
 
     protected $messages = [
 
@@ -45,7 +39,6 @@ class Citas extends Component
         'hora'          => 'Campo requerido',
         'cliente_id'    => 'Campo requerido',
         'servicio_id'   => 'Campo requerido',
-        'empleado_id'   => 'Campo requerido',
 
     ];
 
@@ -56,7 +49,8 @@ class Citas extends Component
 
     public function store() 
     {
-        $this->validateDataCliente();
+
+        $this->validate(); 
 
         try {
 
@@ -68,7 +62,7 @@ class Citas extends Component
             $cita->hora = $this->hora;
             $cita->cliente_id = $this->cliente_id;
             $cita->servicio_id = $this->servicio_id;
-            $cita->empleado_id = $this->empleado_id;
+            // $cita->empleado_id = $this->empleado_id;
             $cita->responsable = $user->id;
 
             $citas = Cita::where('cliente_id', $cita->cliente_id)->latest()->first();
@@ -112,9 +106,8 @@ class Citas extends Component
     
                 }
             }else{
-                $cita->save();
-
                 
+                $cita->save();
 
                 Notification::make()
                     ->title('Cita agendada con éxito')

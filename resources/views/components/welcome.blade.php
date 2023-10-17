@@ -11,7 +11,7 @@
                   
             </div>
             <div class="ml-12 text-right">
-                <div class="mt-2 text-3xl text-black leading-7 font-bold">
+                <div class="mt-2 text-2xl text-black leading-7 font-bold">
                     CLIENTES
                 </div>
                     <div class="mt-3 text-right text-md font-semibold text-black">
@@ -30,7 +30,7 @@
                   
             </div>
             <div class="ml-12 text-right">
-                <div class="mt-2 text-3xl text-black leading-7 font-bold">
+                <div class="mt-2 text-2xl text-black leading-7 font-bold">
                     EMPLEADOS
                 </div>
                     <div class="mt-3 text-right text-md font-semibold text-black">
@@ -50,7 +50,7 @@
                   
             </div>
             <div class="ml-12 text-right">
-                <div class="mt-2 text-3xl text-black leading-7 font-bold">
+                <div class="mt-2 text-2xl text-black leading-7 font-bold">
                     AGENDA
                 </div>
                     <div class="mt-3 text-right text-md font-semibold text-black">
@@ -72,7 +72,7 @@
                   
             </div>
             <div class="ml-12 text-right">
-                <div class="mt-2 text-3xl text-black leading-7 font-bold">
+                <div class="mt-2 text-2xl text-black leading-7 font-bold">
                     PRODUCTOS
                 </div>
                     <div class="mt-3 text-right text-md font-semibold text-black">
@@ -93,7 +93,7 @@
                   
             </div>
             <div class="ml-12 text-right">
-                <div class="mt-2 text-3xl text-black text- leading-7 font-bold">
+                <div class="mt-2 text-2xl text-black text- leading-7 font-bold">
                     SERVICIOS
                 </div>
                     <div class="mt-3 text-right text-md font-semibold text-black">
@@ -114,7 +114,7 @@
                   
             </div>
             <div class="ml-12 text-right">
-                <div class="mt-2 text-3xl text-black leading-7 font-bold">
+                <div class="mt-2 text-2xl text-black leading-7 font-bold">
                     VENTAS
                 </div>
                     <div class="mt-3 text-right text-md font-semibold text-black">
@@ -135,7 +135,7 @@
                   
             </div>
             <div class="ml-12 text-right">
-                <div class="mt-2 text-3xl text-black leading-7 font-bold">
+                <div class="mt-2 text-2xl text-black leading-7 font-bold">
                     CABINAS
                 </div>
                     <div class="mt-3 text-right text-md font-semibold text-black">

@@ -39,7 +39,7 @@
                     </a>
                 @endif
 
-                <button type="submit" class="justify-end rounded-md border bg-[#7798a4] py-2 px-4 text-sm text-white font-bold shadow-sm hover:bg-green">
+                <button  type="submit" class="justify-end rounded-md border bg-[#7798a4] py-2 px-4 text-sm text-white font-bold shadow-sm hover:bg-green">
                     Login
                 </button>
             </div>

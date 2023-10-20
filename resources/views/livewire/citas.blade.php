@@ -10,6 +10,7 @@
                 <span>Agendar cita</span>
             </button>
         </div>
+        {{-- <button onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio' })">Modal</button> --}}
         {{-- tabla y boton del formulario de clientes --}}
         <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-4 mb-4 mt-8 {{ $ocultar }}">
             {{-- Descripcion --}}
@@ -41,13 +42,13 @@
         </div>
         
 
-        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             @foreach ($data as $item)
             <div class="bg-white p-4 rounded-lg shadow" style="background-image: url('https://wallpaper-house.com/data/out/8/wallpaper2you_256843.jpg'); background-size: cover;">
                 <div class="flex items-center justify-end mb-2">
                     <x-dropdown>
-                        <x-dropdown.item label="Activar servicio" type="submit" wire:click="asignar_serv({{ $item->id }}, '2')" />
-                            <x-dropdown.item label="Reagendar" type="submit" wire:click="reagendar_serv({{ $item->id }}, '2')" />
+                        <x-dropdown.item label="Asignar servicio" type="submit"  onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-dropdown.item label="Reagendar" type="submit" wire:click="reagendar_serv({{ $item->id }}, '2')" />
                     </x-dropdown>
                 </div>
                 <div class="text-right">

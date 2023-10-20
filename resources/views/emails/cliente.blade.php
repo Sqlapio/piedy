@@ -21,8 +21,8 @@
                 Fecha: {{ $mailData['fecha_cita'] }}
                 <br>
                 Hora: {{ $mailData['hora_cita'] }}
-                <br>
-                Especialista: {{ $mailData['empleado_cita'] }}
+                {{-- <br>
+                Especialista: {{ $mailData['empleado_cita'] }} --}}
                 <br>
                 servicio: {{ $mailData['servicio'] }}
                 <br>

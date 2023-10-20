@@ -96,7 +96,7 @@ class Citas extends Component
                         'cliente_fullname' => $cliente->nombre.' '.$cliente->apellido,
                         'fecha_cita' => $cita->fecha,
                         'hora_cita' => $cita->hora,
-                        'empleado_cita' => $cita->get_empleado->nombre.' '.$cita->get_empleado->apellido,
+                        // 'empleado_cita' => $cita->get_empleado->nombre.' '.$cita->get_empleado->apellido,
                         'servicio' => $cita->get_servicio->descripcion,
                         'costo' => $cita->get_servicio->costo,
     

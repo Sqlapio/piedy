@@ -30,14 +30,9 @@ class Servicio extends Model
         'status',
     ];
 
-    // public function comision():BelongsTo
-    // {
-    //     return $this->belongsTo(Comision::class, 'comision_id', 'id');
-    // }
-
-    public function disponible(): HasOne
+    public function disponible(): BelongsTo
     {
-        return $this->hasOne(Disponible::class, 'id', 'servicio_id');
+        return $this->belongsTo(Disponible::class);
     }
 
     public function cita(): HasOne

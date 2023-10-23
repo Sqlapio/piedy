@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Disponible extends Model
@@ -23,19 +24,22 @@ class Disponible extends Model
      */
     protected $fillable = [
         'cliente_id',
+        'cliente',
         'empleado_id',
+        'empleado',
         'servicio_id',
+        'servicio',
         'costo',
         'duracion',
-        'cabina',
+        'cubiculo_mesa',
         'status',
     ];
 
     
 
-    public function cliente(): BelongsTo
+    public function cliente(): HasOne
     {
-        return $this->belongsTo(Cliente::class);
+        return $this->hasOne(Cliente::class, 'cliente_id', 'id');
     }
     
     public function empleado(): BelongsTo
@@ -43,8 +47,8 @@ class Disponible extends Model
         return $this->belongsTo(Empleado::class);
     }
 
-    public function servicio(): BelongsTo
+    public function servicios(): HasMany
     {
-        return $this->belongsTo(Servicio::class);
+        return $this->hasMany(Servicio::class, 'id', 'servicio_id');
     }
 }

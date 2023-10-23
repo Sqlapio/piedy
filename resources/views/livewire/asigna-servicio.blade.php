@@ -8,7 +8,7 @@
             </div>
             <div class="mt-10 text-center sm:mt-5">
                 <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Asignación de servicio</h3>
-                <div class="p-2">
+                <div class="p-2 h-40">
                     <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Seleccione un técnico</label>
                     <x-select wire:change="$emit('selected', $event.target.value)" wire:model.defer="empleado_id" placeholder="Seleccion" :async-data="route('api.empleados')" option-label="nombre" option-value="id" />
                 </div>
@@ -17,8 +17,8 @@
                 </div> --}}
             </div>
         </div>
-    <div class="mt-40 sm:mt-6">
-            <button type="button" wire:click="asignar_tecnico()" class="mt-40 inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Go back to dashboard</button>
+    <div class="sm:mt-6">
+            <button type="button" wire:click="asignar_tecnico()" class="mt-48 inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Asignar técnico</button>
     </div>
 </div>
 

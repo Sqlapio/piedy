@@ -29,6 +29,8 @@
         @livewireStyles
     </head>
     <body class="font-sans antialiased">
+        <x-notifications z-index="z-50" />
+        <x-dialog z-index="z-50" blur="md" align="center" />
         
         <x-banner />
         <div class="container mx-auto min-h-screen bg-white">

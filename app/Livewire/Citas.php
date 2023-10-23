@@ -9,11 +9,14 @@ use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Rule; 
+use Livewire\Attributes\Rule;
+use WireUi\Traits\Actions;
 
 class Citas extends Component
 {
     use WithPagination;
+
+    use Actions;
     
     #[Rule('required')]
     public $fecha;
@@ -62,7 +65,6 @@ class Citas extends Component
             $cita->hora = $this->hora;
             $cita->cliente_id = $this->cliente_id;
             $cita->servicio_id = $this->servicio_id;
-            // $cita->empleado_id = $this->empleado_id;
             $cita->responsable = $user->id;
 
             $citas = Cita::where('cliente_id', $cita->cliente_id)->latest()->first();
@@ -82,11 +84,10 @@ class Citas extends Component
 
                     $this->reset();
     
-                    Notification::make()
-                        ->title('Cita agendada con éxito')
-                        ->icon('heroicon-o-document-text')
-                        ->iconColor('success')
-                        ->send();
+                    $this->dialog()->success(
+                        $title = 'Profile saved',
+                        $description = 'Your profile was successfully saved'
+                    );
     
                     $cliente = Cliente::where('id', $cita->cliente_id)->first();
                     $type = 'cliente';
@@ -102,18 +103,16 @@ class Citas extends Component
     
                     ];
     
-                    NotificacionesController::notification($mailData, $type);
+                    // NotificacionesController::notification($mailData, $type);
     
                 }
             }else{
                 
                 $cita->save();
-
-                Notification::make()
-                    ->title('Cita agendada con éxito')
-                    ->icon('heroicon-o-document-text')
-                    ->iconColor('success')
-                    ->send();
+                $this->dialog()->success(
+                    $title = 'Profile saved',
+                    $description = 'Your profile was successfully saved'
+                );
             }
 
             
@@ -127,7 +126,10 @@ class Citas extends Component
     {
         $date = date('Y-m-d');
         return view('livewire.citas', [
-            'data' => Cita::where('fecha', $date)->get()
+            'data' => Cita::where('fecha', $date)
+            // ->where('hora', '07:00')
+            ->where('status', 1)
+            ->get()
         ]);
     }
 }

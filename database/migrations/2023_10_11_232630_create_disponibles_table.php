@@ -13,12 +13,16 @@ return new class extends Migration
     {
         Schema::create('disponibles', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('cliente_id');
-            $table->unsignedBigInteger('empleado_id');
-            $table->unsignedBigInteger('servicio_id');
-            $table->string('costo');
+            $table->integer('cliente_id');
+            $table->string('cliente');
+            $table->integer('empleado_id');
+            $table->string('empleado');
+            $table->integer('servicio_id');
+            $table->string('servicio');
+            $table->decimal('costo', 8, 2);
             $table->string('duracion');
-            $table->string('status')->default('espera');
+            $table->string('cubiculo_mesa');
+            $table->string('status')->default('activo');
             $table->timestamps();
         });
     }

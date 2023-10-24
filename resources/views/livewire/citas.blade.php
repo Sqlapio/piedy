@@ -163,7 +163,7 @@
                 <div class="flex rounded-lg h-full bg-[#ffcc99] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
                     <div class="flex items-center mb-3 p-2">
                         <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/Clock.png') }}" alt="">
+                            <img src="{{ asset('images/stopwatch.png') }}" alt="">
                         </div>
                         <h2 class="text-white dark:text-black text-sm font-extrabold">11:00am - 11:30am</h2>
                     </div>

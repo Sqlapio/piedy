@@ -20,7 +20,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/login', [LoginController::class, 'login'])->name('login');
+// Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     Route::get('/dashboard', function () {

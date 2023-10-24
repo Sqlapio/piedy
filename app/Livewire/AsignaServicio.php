@@ -10,6 +10,7 @@ use App\Models\Servicio;
 use Filament\Notifications\Notification;
 use Livewire\Component;
 use App\Livewire\Citas;
+use Carbon\Carbon;
 use LivewireUI\Modal\ModalComponent;
 
 class AsignaServicio extends ModalComponent
@@ -52,6 +53,7 @@ class AsignaServicio extends ModalComponent
             $disponible->servicio = $servicio->descripcion;
             $disponible->costo = $servicio->costo;
             $disponible->duracion = $servicio->duracion_max;
+            $disponible->finalizacion = Carbon::now('America/Caracas')->addMinutes($servicio->duracion_max)->format('H:i:s');
             $disponible->cubiculo_mesa = $servicio->cubiculo_mesa;
 
             if ($count_disponible == 8) 

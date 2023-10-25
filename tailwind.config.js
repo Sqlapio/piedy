@@ -9,12 +9,17 @@ export default {
     content: [
         './app/Filament/**/*.php',
         './resources/views/**/*.blade.php',
+        './resources/**/*.js',
         './vendor/filament/**/*.blade.php',
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './vendor/laravel/jetstream/**/*.blade.php',
         './storage/framework/views/*.php',
         './vendor/wireui/wireui/resources/**/*.blade.php',
         './vendor/wireui/wireui/ts/**/*.ts',
-        './vendor/wireui/wireui/src/View/**/*.php'
+        './vendor/wireui/wireui/src/View/**/*.php',
+        './node_modules/flowbite/**/*.js'
+    ],
+    plugins: [
+        require('flowbite/plugin')
     ],
 }

@@ -6,6 +6,7 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -30,6 +31,11 @@ class UserResource extends Resource
                 TextInput::make('email')
                 ->email()
                 ->required(),
+                Select::make('tipo_usuario')
+                    ->options([
+                        'gerente' => 'Gerente',
+                        'empleado' => 'Empleado',
+                    ]),
                 TextInput::make('password')
                 ->password()
                 ->dehydrateStateUsing(fn ($state) => Hash::make($state))
@@ -44,6 +50,7 @@ class UserResource extends Resource
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('email'),
+                TextColumn::make('tipo_usuario'),
             ])
             ->filters([
                 //

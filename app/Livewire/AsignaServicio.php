@@ -10,6 +10,7 @@ use App\Models\Servicio;
 use Filament\Notifications\Notification;
 use Livewire\Component;
 use App\Livewire\Citas;
+use App\Models\DetalleAsignacion;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use LivewireUI\Modal\ModalComponent;
@@ -20,7 +21,6 @@ class AsignaServicio extends ModalComponent
     use Actions;
     
     public $empleado_id;
-    public $cubiculo_mesa;
     public Cita $cita;
 
     public $atr = 'mt-40';
@@ -29,10 +29,11 @@ class AsignaServicio extends ModalComponent
         'selected',
     ];
 
-    public function selected($value, $value2)
+    public function selected($value)
     {
         $count_disponible = Disponible::count();
         $this->empleado_id = $value;
+        dd($this->empleado_id);
     }
 
     public function asignar_tecnico()
@@ -60,9 +61,6 @@ class AsignaServicio extends ModalComponent
             $disponible->servicio_id    = $this->cita->servicio_id;
             $disponible->servicio       = $servicio->descripcion;
             $disponible->costo          = $servicio->costo;
-            // $disponible->duracion = $servicio->duracion_max;
-            // $disponible->finalizacion = Carbon::now('America/Caracas')->addMinutes($servicio->duracion_max)->format('H:i:s');
-            $disponible->cubiculo_mesa  = $servicio->cubiculo_mesa;
 
             if ($count_disponible == 8) 
             {
@@ -95,6 +93,20 @@ class AsignaServicio extends ModalComponent
                         ->update([
                             'status' => 2
                         ]);
+
+                    $detalle_asignacion = new DetalleAsignacion();
+                    $detalle_asignacion->cod_asignacion = $disponible->cod_asignacion;
+                    $detalle_asignacion->cod_servicio   = $disponible->cod_servicio;
+                    $detalle_asignacion->empleado_id    = $disponible->empleado_id;
+                    $detalle_asignacion->empleado       = $disponible->empleado;
+                    $detalle_asignacion->cliente_id     = $disponible->cliente_id;
+                    $detalle_asignacion->cliente        = $disponible->cliente;
+                    $detalle_asignacion->servicio_id    = $disponible->servicio_id;
+                    $detalle_asignacion->servicio       = $servicio->descripcion;
+                    $detalle_asignacion->costo          = $disponible->costo;
+                    $detalle_asignacion->fecha          = date('d-m-Y');
+
+                    $detalle_asignacion->save();
 
                     $this->redirect('/citas');
 

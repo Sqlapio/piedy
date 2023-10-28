@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string("empleado");
             $table->integer("servicio_id");
             $table->string("servicio");
+            $table->integer("cliente_id");
+            $table->string("cliente");
             $table->decimal('costo', 8, 2);
             $table->string("fecha");
             $table->integer("status")->default(1);

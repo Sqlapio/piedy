@@ -27,6 +27,7 @@ class Servicio extends Model
         'descripcion',
         'costo',
         'duracion_max', //este valor debe ser expresado en minutos
+        'categoria',
         'status',
     ];
 

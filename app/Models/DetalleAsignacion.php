@@ -26,6 +26,8 @@ class DetalleAsignacion extends Model
         'empleado',
         'servicio_id',
         'servicio',
+        'cliente_id',
+        'cliente',
         'costo',
         'fecha',
         'status',

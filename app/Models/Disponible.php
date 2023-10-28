@@ -33,9 +33,6 @@ class Disponible extends Model
         'servicio_id',
         'servicio',
         'costo',
-        // 'duracion',
-        // 'finalizacion',
-        'cubiculo_mesa',
         'status',
     ];
 

@@ -64,6 +64,7 @@ class ApiClientesController extends Controller
     {
         return Servicio::query()
             ->select('id', 'descripcion')
+            ->where('categoria', 'principal')
             ->orderBy('descripcion')
             ->when(
                 $request->search,

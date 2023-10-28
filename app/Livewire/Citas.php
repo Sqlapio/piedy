@@ -69,15 +69,6 @@ class Citas extends Component
 
             $citas = Cita::where('cliente_id', $cita->cliente_id)->latest()->first();
 
-            /**
-             * Evaluo que no sea el mismo cliente a la misma hora
-             */
-            if($citas != null){
-                if ($citas->fecha == $this->fecha && $citas->hora == $this->hora) {
-                }
-            }
-
-
             if($citas != null)
             {
                 if ($citas->fecha == $this->fecha && $citas->hora == $this->hora) {
@@ -117,6 +108,8 @@ class Citas extends Component
     
                 }
             }else{
+
+                $cita->save();
                 
                 $this->reset();
     
@@ -142,8 +135,6 @@ class Citas extends Component
                     // NotificacionesController::notification($mailData, $type);
             }
 
-            
-                
         } catch (\Throwable $th) {
             dd($th);
         }

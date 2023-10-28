@@ -30,6 +30,11 @@ class ServicioResource extends Resource
             ->schema([
                 TextInput::make('cod_servicio')->default('Sco-'.random_int(11111, 99999)),
                 TextInput::make('descripcion')->required(),
+                Select::make('categoria')
+                    ->options([
+                        'principal' => 'Principal',
+                        'adicional' => 'Adicional',
+                    ]),
                 TextInput::make('costo')
                     ->prefix('$')
                     ->numeric()
@@ -49,6 +54,7 @@ class ServicioResource extends Resource
             ->columns([
                 TextColumn::make('cod_servicio'),
                 TextColumn::make('descripcion'),
+                TextColumn::make('categoria'),
                 TextColumn::make('costo')->money('USD'),
                 TextColumn::make('duracion_max'),
                 IconColumn::make('status')

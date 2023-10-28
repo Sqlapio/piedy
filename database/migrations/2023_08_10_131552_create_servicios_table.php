@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('cod_servicio')->unique();
             $table->string('descripcion');
+            $table->string('categoria');
             $table->decimal('costo', 8, 2);
             $table->string('duracion_max');
             $table->string('status')->default('activo');

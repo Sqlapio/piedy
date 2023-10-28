@@ -28,7 +28,7 @@ class ServicioResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('cod_servicio')->default('Pco-'.random_int(11111, 99999)),
+                TextInput::make('cod_servicio')->default('Sco-'.random_int(11111, 99999)),
                 TextInput::make('descripcion')->required(),
                 TextInput::make('costo')
                     ->prefix('$')

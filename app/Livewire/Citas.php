@@ -68,9 +68,19 @@ class Citas extends Component
             $cita->responsable = $user->id;
 
             $citas = Cita::where('cliente_id', $cita->cliente_id)->latest()->first();
+
+            /**
+             * Evaluo que no sea el mismo cliente a la misma hora
+             */
+            if($citas != null){
+                if ($citas->fecha == $this->fecha && $citas->hora == $this->hora) {
+                }
+            }
+
+
             if($citas != null)
             {
-                if ($citas->fecha == $cita->fecha && $citas->hora == $cita->hora) {
+                if ($citas->fecha == $this->fecha && $citas->hora == $this->hora) {
 
                     Notification::make()
                         ->title('Ya posee una cita')
@@ -108,11 +118,28 @@ class Citas extends Component
                 }
             }else{
                 
-                $cita->save();
-                $this->dialog()->success(
-                    $title = 'Profile saved',
-                    $description = 'Your profile was successfully saved'
-                );
+                $this->reset();
+    
+                    $this->dialog()->success(
+                        $title = 'Cliente agendado',
+                        $description = 'El cliente fue agendado de forma exitosa'
+                    );
+    
+                    $cliente = Cliente::where('id', $cita->cliente_id)->first();
+                    $type = 'cliente';
+                    
+                    $mailData = [
+                        'cliente_email' => $cliente->email,
+                        'cliente_fullname' => $cliente->nombre.' '.$cliente->apellido,
+                        'fecha_cita' => $cita->fecha,
+                        'hora_cita' => $cita->hora,
+                        // 'empleado_cita' => $cita->get_empleado->nombre.' '.$cita->get_empleado->apellido,
+                        'servicio' => $cita->get_servicio->descripcion,
+                        'costo' => $cita->get_servicio->costo,
+    
+                    ];
+    
+                    // NotificacionesController::notification($mailData, $type);
             }
 
             
@@ -120,6 +147,11 @@ class Citas extends Component
         } catch (\Throwable $th) {
             dd($th);
         }
+    }
+
+    public function cancel($value){
+        
+
     }
 
     public function render()

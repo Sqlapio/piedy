@@ -6,6 +6,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                 </svg>
             </div>
+            {{ $data }}
             <div class="mt-10 text-center sm:mt-5">
                 <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Asignación de servicio</h3>
                 <div class="p-2">
@@ -21,7 +22,3 @@
         <button type="button" wire:click="cancel()" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Cancelar servicio</button>
     </div>
 </div>
-
-
-
-

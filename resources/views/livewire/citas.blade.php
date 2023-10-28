@@ -76,7 +76,7 @@
                         </div>
                         <h2 class="text-white dark:text-black text-sm font-extrabold">7:00am - 7:30am</h2>
                     </div>
-                    <div class="flex flex-col justify-between text-xs">
+                    <div class="flex flex-col justify-betweeCliente agendadon text-xs">
                         @foreach ($data as $item)
                             @if($item->hora == '07:00')
                                 <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})"/>

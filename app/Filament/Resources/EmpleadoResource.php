@@ -46,6 +46,18 @@ class EmpleadoResource extends Resource
                         'gerente' => 'Gerente',
                         'empleado' => 'Empleado',
                     ]),
+                Select::make('area_trabajo')
+                    ->options([
+                        'Cubiculo 1' => 'c1',
+                        'Cubiculo 2' => 'c2',
+                        'Cubiculo 3' => 'c3',
+                        'Cubiculo 4' => 'c4',
+                        'Mesa 1' => 'm1',
+                        'Mesa 2' => 'm2',
+                        'Mesa 3' => 'm3',
+                        'Mesa 4' => 'm4',
+                        'No aplica' => 'na',
+                    ]),
                 DatePicker::make('fecha_ingreso')
                     ->format('d/m/Y')
             ]);
@@ -62,6 +74,7 @@ class EmpleadoResource extends Resource
                 TextColumn::make('telefono'),
                 TextColumn::make('direccion_corta'),
                 TextColumn::make('tipo_empleado'),
+                TextColumn::make('area_trabajo'),
                 TextColumn::make('fecha_ingreso'),
                 IconColumn::make('status')
                 ->options([

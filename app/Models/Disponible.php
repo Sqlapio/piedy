@@ -23,15 +23,18 @@ class Disponible extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'cod_asignacion',
         'cliente_id',
         'cliente',
         'empleado_id',
         'empleado',
+        'area_trabajo',
+        'cod_servicio',
         'servicio_id',
         'servicio',
         'costo',
-        'duracion',
-        'finalizacion',
+        // 'duracion',
+        // 'finalizacion',
         'cubiculo_mesa',
         'status',
     ];

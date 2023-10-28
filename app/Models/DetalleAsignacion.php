@@ -4,16 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Rango extends Model
+class DetalleAsignacion extends Model
 {
     use HasFactory;
 
     /**
      * Define table
      */
-    protected $table = 'rangos';
+    protected $table = 'detalle_asignacions';
 
     /**
      * The attributes that are mass assignable.
@@ -21,13 +20,14 @@ class Rango extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'rango',
-        'comision_id',
+        'cod_asignacion',
+        'cod_servicio',
+        'empleado_id',
+        'empleado',
+        'servicio_id',
+        'servicio',
+        'costo',
+        'fecha',
+        'status',
     ];
-
-    public function comision(): HasOne
-    {
-        return $this->hasOne(Comision::class);
-    }
-    
 }

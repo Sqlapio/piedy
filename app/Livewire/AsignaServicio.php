@@ -11,10 +11,13 @@ use Filament\Notifications\Notification;
 use Livewire\Component;
 use App\Livewire\Citas;
 use App\Models\DetalleAsignacion;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use LivewireUI\Modal\ModalComponent;
 use WireUi\Traits\Actions;
+
+use function Psy\debug;
 
 class AsignaServicio extends ModalComponent
 {
@@ -33,7 +36,6 @@ class AsignaServicio extends ModalComponent
     {
         $count_disponible = Disponible::count();
         $this->empleado_id = $value;
-        dd($this->empleado_id);
     }
 
     public function asignar_tecnico()
@@ -42,25 +44,26 @@ class AsignaServicio extends ModalComponent
         try {
 
             $count_disponible = Disponible::count();
-            $empleado_id = Disponible::where('empleado_id', $this->empleado_id)->first();
+            $existe = Disponible::where('empleado_id', $this->empleado_id)->first();
 
 
             $cliente = Cliente::where('id', $this->cita->cliente_id)->first();
             $servicio = Servicio::where('id', $this->cita->servicio_id)->first();
-            $empleado = Empleado::where('id', $this->empleado_id)->first();
+            $empleado = User::where('id', $this->empleado_id)->first();
 
             $disponible = new Disponible();
-
             $disponible->cod_asignacion = 'Pca-'.random_int(11111111, 99999999);
             $disponible->cliente_id     = $this->cita->cliente_id;
             $disponible->cliente        = $cliente->nombre . ' ' . $cliente->apellido;
             $disponible->empleado_id    = $this->empleado_id;
-            $disponible->empleado       = $empleado->nombre . ' ' . $empleado->apellido;
+            $disponible->empleado       = $empleado->name;
             $disponible->area_trabajo   = $empleado->area_trabajo;
             $disponible->cod_servicio   = $servicio->cod_servicio;
             $disponible->servicio_id    = $this->cita->servicio_id;
             $disponible->servicio       = $servicio->descripcion;
             $disponible->costo          = $servicio->costo;
+
+
 
             if ($count_disponible == 8) 
             {
@@ -74,7 +77,7 @@ class AsignaServicio extends ModalComponent
 
             } else {
 
-                if ($empleado_id == null) 
+                if ($existe == null) 
                 {
 
                     $disponible->save();

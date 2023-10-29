@@ -33,6 +33,7 @@ class UserResource extends Resource
                 ->required(),
                 Select::make('tipo_usuario')
                     ->options([
+                        'administrador' => 'Administrador',
                         'gerente' => 'Gerente',
                         'empleado' => 'Empleado',
                     ]),

@@ -38,14 +38,14 @@ class ApiClientesController extends Controller
 
     public function lista_empleados(Request $request): Collection
     {
-        return Empleado::query()
-            ->select('id', 'nombre', 'apellido', 'email')
-            ->orderBy('nombre')
+        return User::query()
+            ->select('id', 'name', 'email')
+            ->where('tipo_usuario', 'empleado')
+            ->orderBy('name')
             ->when(
                 $request->search,
                 fn (Builder $query) => $query
-                    ->where('nombre', 'like', "%{$request->search}%")
-                    ->orWhere('apellido', 'like', "%{$request->search}%")
+                    ->where('name', 'like', "%{$request->search}%")
                     ->orWhere('email', 'like', "%{$request->search}%")
             )
             ->when(
@@ -54,9 +54,9 @@ class ApiClientesController extends Controller
                 fn (Builder $query) => $query->limit(10)
             )
             ->get()
-            ->map(function (Empleado $empleado) {
-                $empleado->nombre = $empleado->nombre.' '.$empleado->apellido;
-                return $empleado;
+            ->map(function (User $user) {
+                // $user->name = $empleado->nombre.' '.$empleado->apellido;
+                return $user;
             });
     }
 

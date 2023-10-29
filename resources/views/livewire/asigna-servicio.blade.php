@@ -10,7 +10,7 @@
                 <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Asignación de servicio</h3>
                 <div class="p-2">
                     <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Seleccione un técnico</label>
-                    <x-select wire:change="$emit('selected', $event.target.value)" wire:model.defer="empleado_id" placeholder="Seleccion" :async-data="route('api.empleados')" option-label="nombre" option-value="id" />
+                    <x-select wire:change="$emit('selected', $event.target.value)" wire:model.defer="empleado_id" placeholder="Seleccion" :async-data="route('api.empleados')" option-label="name" option-value="id" />
                 </div>
             </div>
         </div>

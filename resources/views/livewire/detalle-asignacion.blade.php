@@ -2,6 +2,7 @@
     <h5 class="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white">
         Cliente: Gustavo Camacho
     </h5>
+    {{ $data }}
     <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Servicio:</p>
     <ul class="my-4 space-y-3">
         <li>

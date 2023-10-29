@@ -86,6 +86,30 @@ class Clientes extends Component
 
     }
 
+    public function inicio(){
+        redirect()->to('/dashboard');
+    }
+
+    public function citas(){
+        redirect()->to('/citas');
+    }
+
+    public function clientes(){
+        redirect()->to('/clientes');
+    }
+
+    public function cabinas(){
+        redirect()->to('/cabinas');
+    }
+
+    public function productos(){
+        redirect()->to('/productos');
+    }
+
+    public function servicios(){
+        redirect()->to('/servicios');
+    }
+
 
     public function render()
     {
@@ -94,7 +118,7 @@ class Clientes extends Component
                 ->orWhere('nombre', 'like', "%{$this->buscar}%")
                 ->orWhere('apellido', 'like', "%{$this->buscar}%")
                 ->orWhere('cedula', 'like', "%{$this->buscar}%")                                      
-                ->paginate(5)
+                ->paginate(4)
         ]);
     }
 }

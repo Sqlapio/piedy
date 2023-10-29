@@ -24,10 +24,36 @@ class Cabinas extends Component
     public $atr_activo = '';
     public $atr_finalizado = 'hidden';
 
+    public $bg = 'bg-[#99ccff]';
+
     public function increment() {
         $this->hora = Carbon::now('America/Caracas')->toArray();
         $minutos = $this->hora['minute'];
         $this->count++;
+    }
+
+    public function inicio(){
+        redirect()->to('/dashboard');
+    }
+
+    public function citas(){
+        redirect()->to('/citas');
+    }
+
+    public function clientes(){
+        redirect()->to('/clientes');
+    }
+
+    public function cabinas(){
+        redirect()->to('/cabinas');
+    }
+
+    public function productos(){
+        redirect()->to('/productos');
+    }
+
+    public function servicios(){
+        redirect()->to('/servicios');
     }
 
     public function render()

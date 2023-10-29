@@ -23,8 +23,6 @@ return new class extends Migration
             $table->integer('servicio_id');
             $table->string('servicio');
             $table->decimal('costo', 8, 2);
-            // $table->string('duracion');
-            $table->string('cubiculo_mesa');
             $table->string('status')->default('activo');
             $table->timestamps();
         });

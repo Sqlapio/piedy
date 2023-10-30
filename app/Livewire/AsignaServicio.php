@@ -44,7 +44,7 @@ class AsignaServicio extends ModalComponent
         try {
 
             $count_disponible = Disponible::count();
-            $existe = Disponible::where('empleado_id', $this->empleado_id)->first();
+            $existe = Disponible::where('empleado_id', $this->empleado_id)->where('status', 'activo')->first();
 
 
             $cliente = Cliente::where('id', $this->cita->cliente_id)->first();
@@ -52,16 +52,17 @@ class AsignaServicio extends ModalComponent
             $empleado = User::where('id', $this->empleado_id)->first();
 
             $disponible = new Disponible();
-            $disponible->cod_asignacion = 'Pca-'.random_int(11111111, 99999999);
-            $disponible->cliente_id     = $this->cita->cliente_id;
-            $disponible->cliente        = $cliente->nombre . ' ' . $cliente->apellido;
-            $disponible->empleado_id    = $this->empleado_id;
-            $disponible->empleado       = $empleado->name;
-            $disponible->area_trabajo   = $empleado->area_trabajo;
-            $disponible->cod_servicio   = $servicio->cod_servicio;
-            $disponible->servicio_id    = $this->cita->servicio_id;
-            $disponible->servicio       = $servicio->descripcion;
-            $disponible->costo          = $servicio->costo;
+            $disponible->cod_asignacion     = 'Pca-'.random_int(11111111, 99999999);
+            $disponible->cliente_id         = $this->cita->cliente_id;
+            $disponible->cliente            = $cliente->nombre . ' ' . $cliente->apellido;
+            $disponible->empleado_id        = $this->empleado_id;
+            $disponible->empleado           = $empleado->name;
+            $disponible->area_trabajo       = $empleado->area_trabajo;
+            $disponible->cod_servicio       = $servicio->cod_servicio;
+            $disponible->servicio_id        = $this->cita->servicio_id;
+            $disponible->servicio           = $servicio->descripcion;
+            $disponible->servicio_categoria = $servicio->categoria;
+            $disponible->costo              = $servicio->costo;
 
 
 
@@ -98,16 +99,17 @@ class AsignaServicio extends ModalComponent
                         ]);
 
                     $detalle_asignacion = new DetalleAsignacion();
-                    $detalle_asignacion->cod_asignacion = $disponible->cod_asignacion;
-                    $detalle_asignacion->cod_servicio   = $disponible->cod_servicio;
-                    $detalle_asignacion->empleado_id    = $disponible->empleado_id;
-                    $detalle_asignacion->empleado       = $disponible->empleado;
-                    $detalle_asignacion->cliente_id     = $disponible->cliente_id;
-                    $detalle_asignacion->cliente        = $disponible->cliente;
-                    $detalle_asignacion->servicio_id    = $disponible->servicio_id;
-                    $detalle_asignacion->servicio       = $servicio->descripcion;
-                    $detalle_asignacion->costo          = $disponible->costo;
-                    $detalle_asignacion->fecha          = date('d-m-Y');
+                    $detalle_asignacion->cod_asignacion     = $disponible->cod_asignacion;
+                    $detalle_asignacion->cod_servicio       = $disponible->cod_servicio;
+                    $detalle_asignacion->empleado_id        = $disponible->empleado_id;
+                    $detalle_asignacion->empleado           = $disponible->empleado;
+                    $detalle_asignacion->cliente_id         = $disponible->cliente_id;
+                    $detalle_asignacion->cliente            = $disponible->cliente;
+                    $detalle_asignacion->servicio_id        = $disponible->servicio_id;
+                    $detalle_asignacion->servicio           = $servicio->descripcion;
+                    $detalle_asignacion->servicio_categoria = $servicio->categoria;
+                    $detalle_asignacion->costo              = $disponible->costo;
+                    $detalle_asignacion->fecha              = date('d-m-Y');
 
                     $detalle_asignacion->save();
 

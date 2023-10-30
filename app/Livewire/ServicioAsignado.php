@@ -24,6 +24,26 @@ class ServicioAsignado extends Component
     public $total_vista;
     public $buscar;
 
+    public function inicio()
+    {
+        redirect()->to('/dashboard');
+    }
+
+    public function historico()
+    {
+        redirect()->to('/historico/servicios');
+    }
+
+    public function asignados()
+    {
+        redirect()->to('/servicio/asignado');
+    }
+
+    public function perfil()
+    {
+        redirect()->to('/perfil');
+    }
+
     public function total()
     {
         $user = Auth::user();
@@ -49,16 +69,17 @@ class ServicioAsignado extends Component
         {
             $data_servicios = Servicio::where('id', $this->extra[$i])->first();
             $detalle_asignacion = new DetalleAsignacion();
-            $detalle_asignacion->cod_asignacion = $data->cod_asignacion;
-            $detalle_asignacion->cod_servicio   = $data->cod_servicio;
-            $detalle_asignacion->empleado_id    = $data->empleado_id;
-            $detalle_asignacion->empleado       = $data->empleado;
-            $detalle_asignacion->cliente_id     = $data->cliente_id;
-            $detalle_asignacion->cliente        = $data->cliente;
-            $detalle_asignacion->servicio_id    = $data_servicios->id;
-            $detalle_asignacion->servicio       = $data_servicios->descripcion;
-            $detalle_asignacion->costo          = $data_servicios->costo;
-            $detalle_asignacion->fecha          = date('d-m-Y');
+            $detalle_asignacion->cod_asignacion     = $data->cod_asignacion;
+            $detalle_asignacion->cod_servicio       = $data->cod_servicio;
+            $detalle_asignacion->empleado_id        = $data->empleado_id;
+            $detalle_asignacion->empleado           = $data->empleado;
+            $detalle_asignacion->cliente_id         = $data->cliente_id;
+            $detalle_asignacion->cliente            = $data->cliente;
+            $detalle_asignacion->servicio_id        = $data_servicios->id;
+            $detalle_asignacion->servicio           = $data_servicios->descripcion;
+            $detalle_asignacion->servicio_categoria = $data_servicios->categoria;
+            $detalle_asignacion->costo              = $data_servicios->costo;
+            $detalle_asignacion->fecha              = date('d-m-Y');
             $detalle_asignacion->save();
         }
 

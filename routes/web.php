@@ -3,6 +3,7 @@
 use App\Http\Controllers\ApiClientesController;
 use App\Http\Controllers\LoginController;
 use App\Livewire\Login;
+use App\Models\VentaServicio;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -43,6 +44,11 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('servicios');
     })->name('servicios');
 
+    Route::get('/productos', function () {
+        return view('productos');
+    })->name('productos');
+
+
     Route::get('/citas', function () {
         return view('citas');
     })->name('citas');
@@ -59,6 +65,11 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('servicio_asignado');
     })->name('servicio_asignado');
 
+    Route::get('/historico/servicios', function () {
+        return view('historico_servicios');
+    })->name('historico_servicios');
+
+
     Route::get('/lista/clientes', [ApiClientesController::class, 'lista_clientes'])->name('api.clientes');
     Route::get('/lista/empleados', [ApiClientesController::class, 'lista_empleados'])->name('api.empleados');
     Route::get('/lista/servicios', [ApiClientesController::class, 'lista_servicios'])->name('api.servicios');
@@ -66,4 +77,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/{record}/edit', function () {
         return view('clientes');
     })->name('cliente.edit');
+});
+
+Route::get('/pp', function () {
+    $venta_servicio = VentaServicio::where('cod_asignacion', 'Pca-73744285')->first();
+    dd($venta_servicio->detalle_asignacions);
 });

@@ -2,21 +2,11 @@
 use Carbon\Carbon;
 $h = Carbon::now('America/Caracas')->format('h:i:s');
 @endphp
-
-<div>
-    {{-- <div class="p-2">
-        <div class="flex align-items-center justify-center">
-            <div class="ml-3 items-center">
-                <div class="">Hora</div>
-                <h1 wire:poll.1000ms class="font-bold text-3xl sm:text-4xl lg:text-5xl leading-9 text-primary ml-2">{{ $h }}</h1>
-</div>
-</div>
-</div> --}}
 <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 mb-4 mt-4">
     {{-- Descripcion --}}
     @foreach ($data as $item)
     <div class="flex justify-between p-5">
-        <div class="w-full" type="submit"  onclick="Livewire.dispatch('openModal', { component: 'detalle-asignacion', arguments: { disponible: {{ $item->id }} }})">
+        <div class="w-full" type="submit"  onclick="Livewire.dispatch('openModal', { component: 'detalle-asignacion', arguments: { venta: {{ $item->id }} }})">
             @if($item->status != 'cerrado')
             <div class="flex justify-start rounded-full bg-green-500 px-6 py-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
                 <div class="flex items-center space-x-4 w-full">

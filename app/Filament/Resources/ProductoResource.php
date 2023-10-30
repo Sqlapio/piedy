@@ -40,7 +40,8 @@ class ProductoResource extends Resource
                     ->required(),
                 Select::make('comision_id')
                     ->relationship('comision', 'porcentaje')
-                    ->options(Comision::where('aplicacion', 'producto')->pluck('porcentaje', 'id'))
+                    // ->options(Comision::where('aplicacion', 'producto')->pluck('porcentaje', 'id'))
+                    ->options(Comision::all()->pluck('porcentaje', 'id'))
                     ->searchable()
                     
                     ->preload()

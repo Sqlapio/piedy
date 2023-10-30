@@ -2,10 +2,14 @@
 
 namespace App\Livewire;
 
+use App\Models\Producto;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Productos extends Component
 {
+
+    use WithPagination;
 
     public $cod_producto;
     public $descripcion;
@@ -42,6 +46,9 @@ class Productos extends Component
     
     public function render()
     {
-        return view('livewire.productos');
+        return view('livewire.productos', [
+            'data' => Producto::orderBy('id', 'asc')                                   
+                ->paginate(5)
+        ]);
     }
 }

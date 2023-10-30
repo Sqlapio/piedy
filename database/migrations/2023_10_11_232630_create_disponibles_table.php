@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('cod_servicio');
             $table->integer('servicio_id');
             $table->string('servicio');
+            $table->string('servicio_categoria');
             $table->decimal('costo', 8, 2);
             $table->string('status')->default('activo');
             $table->timestamps();

@@ -2,26 +2,26 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\VentaServicioResource\Pages;
-use App\Filament\Resources\VentaServicioResource\RelationManagers;
-use App\Models\VentaServicio;
+use App\Filament\Resources\DisponibleResource\Pages;
+use App\Filament\Resources\DisponibleResource\RelationManagers;
+use App\Models\Disponible;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Tables\Columns\TextColumn;
 
-class VentaServicioResource extends Resource
+class DisponibleResource extends Resource
 {
-    protected static ?string $model = VentaServicio::class;
+    protected static ?string $model = Disponible::class;
 
-    protected static ?string $navigationIcon = 'heroicon-m-chart-bar-square'; 
+    protected static ?string $navigationIcon = 'heroicon-m-swatch';
 
-    protected static ?string $navigationGroup = 'Ventas';
+    protected static ?string $navigationGroup = 'Tienda Sambil';
 
     public static function form(Form $form): Form
     {
@@ -38,17 +38,18 @@ class VentaServicioResource extends Resource
                 TextColumn::make('cod_asignacion')->searchable(),
                 TextColumn::make('cliente')->searchable(),
                 TextColumn::make('empleado')->searchable(),
-                TextColumn::make('fecha_venta')->searchable(),
-                TextColumn::make('metodo_pago')->searchable(),
-                TextColumn::make('referencia')->searchable(),
-                TextColumn::make('total')->money('USD')->searchable(),
-                TextColumn::make('comision_gerente')->money('USD')->searchable(),
-                TextColumn::make('total')
-                    ->summarize(Sum::make()),
-                TextColumn::make('comision_gerente')
-                    ->summarize(Sum::make()),
+                TextColumn::make('servicio')->searchable(),
+                TextColumn::make('servicio_categoria')->searchable(),
+                TextColumn::make('area_trabajo')->searchable(),
+                TextColumn::make('costo')->searchable(),
+                IconColumn::make('status')
+                ->options([
+                    'heroicon-o-users' => fn ($state, $record): bool => $record->status === 'activo',
+                ])
+                ->colors([
+                    'success' => 'activo',
+                ])
             ])
-            ->defaultGroup('empleado')
             ->filters([
                 //
             ])
@@ -72,9 +73,9 @@ class VentaServicioResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListVentaServicios::route('/'),
-            'create' => Pages\CreateVentaServicio::route('/create'),
-            'edit' => Pages\EditVentaServicio::route('/{record}/edit'),
+            'index' => Pages\ListDisponibles::route('/'),
+            'create' => Pages\CreateDisponible::route('/create'),
+            'edit' => Pages\EditDisponible::route('/{record}/edit'),
         ];
     }    
 }

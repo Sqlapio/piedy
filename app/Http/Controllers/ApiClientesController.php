@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use App\Models\Empleado;
+use App\Models\MetodoPago;
 use App\Models\Servicio;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -79,6 +80,27 @@ class ApiClientesController extends Controller
             ->get()
             ->map(function (Servicio $servicio) {
                 return $servicio;
+            });
+    }
+
+    public function metodo_pago(Request $request): Collection
+    {
+        return MetodoPago::query()
+            ->select('id', 'descripcion')
+            ->orderBy('descripcion')
+            ->when(
+                $request->search,
+                fn (Builder $query) => $query
+                    ->where('descripcion', 'like', "%{$request->search}%")
+            )
+            ->when(
+                $request->exists('selected'),
+                fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
+                fn (Builder $query) => $query->limit(10)
+            )
+            ->get()
+            ->map(function (MetodoPago $metodo_pago) {
+                return $metodo_pago;
             });
     }
 }

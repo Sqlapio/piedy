@@ -27,6 +27,7 @@ class VentaServicio extends Model
         'empleado',
         'empleado_id',
         'fecha_venta',
+        'comision_gerente',
         'total'
     ];
 

@@ -6,7 +6,7 @@ $h = Carbon::now('America/Caracas')->format('h:i:s');
     {{-- Descripcion --}}
     @foreach ($data as $item)
     <div class="flex justify-between p-5">
-        <div class="w-full" type="submit"  onclick="Livewire.dispatch('openModal', { component: 'detalle-asignacion', arguments: { venta: {{ $item->id }} }})">
+        <div class="w-full" type="submit"  onclick="Livewire.dispatch('openModal', { component: 'detalle-asignacion', arguments: { disponible: {{ $item->id }} }})">
             @if($item->status != 'cerrado')
             <div class="flex justify-start rounded-full bg-green-500 px-6 py-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
                 <div class="flex items-center space-x-4 w-full">

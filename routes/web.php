@@ -73,6 +73,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/lista/clientes', [ApiClientesController::class, 'lista_clientes'])->name('api.clientes');
     Route::get('/lista/empleados', [ApiClientesController::class, 'lista_empleados'])->name('api.empleados');
     Route::get('/lista/servicios', [ApiClientesController::class, 'lista_servicios'])->name('api.servicios');
+    Route::get('/lista/metodo/pago', [ApiClientesController::class, 'metodo_pago'])->name('api.metodo_pago');
 
     Route::get('/{record}/edit', function () {
         return view('clientes');

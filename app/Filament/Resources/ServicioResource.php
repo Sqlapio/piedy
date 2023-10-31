@@ -22,7 +22,9 @@ class ServicioResource extends Resource
 {
     protected static ?string $model = Servicio::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
+    protected static ?string $navigationIcon = 'heroicon-m-squares-plus';
+
+    protected static ?string $navigationGroup = 'Administración';
 
     public static function form(Form $form): Form
     {
@@ -52,15 +54,21 @@ class ServicioResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('cod_servicio'),
-                TextColumn::make('descripcion'),
-                TextColumn::make('categoria'),
-                TextColumn::make('costo')->money('USD'),
-                TextColumn::make('duracion_max'),
+                TextColumn::make('cod_servicio')->searchable(),
+                TextColumn::make('descripcion')->searchable(),
+                TextColumn::make('categoria')
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'principal' => 'success',
+                    'adicional' => 'warning',
+                })
+                ->searchable(),
+                TextColumn::make('costo')->money('USD')->searchable(),
+                TextColumn::make('duracion_max')->searchable(),
                 IconColumn::make('status')
                 ->options([
-                    'heroicon-o-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
-                    'heroicon-o-clock' => fn ($state, $record): bool => $record->status === 'inactivo',
+                    'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
+                    'heroicon-m-minus-circle' => fn ($state, $record): bool => $record->status === 'inactivo',
                 ])
                 ->colors([
                     'danger' => 'inactivo',

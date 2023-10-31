@@ -99,8 +99,8 @@ class Citas extends Component
                         'fecha_cita' => $cita->fecha,
                         'hora_cita' => $cita->hora,
                         // 'empleado_cita' => $cita->get_empleado->nombre.' '.$cita->get_empleado->apellido,
-                        'servicio' => $cita->get_servicio->descripcion,
-                        'costo' => $cita->get_servicio->costo,
+                        'servicio' => $cita->servicio->descripcion,
+                        'costo' => $cita->servicio->costo,
     
                     ];
     
@@ -127,8 +127,8 @@ class Citas extends Component
                         'fecha_cita' => $cita->fecha,
                         'hora_cita' => $cita->hora,
                         // 'empleado_cita' => $cita->get_empleado->nombre.' '.$cita->get_empleado->apellido,
-                        'servicio' => $cita->get_servicio->descripcion,
-                        'costo' => $cita->get_servicio->costo,
+                        'servicio' => $cita->servicio->descripcion,
+                        'costo' => $cita->servicio->costo,
     
                     ];
     

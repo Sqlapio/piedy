@@ -32,9 +32,9 @@ class Cita extends Model
         'status',
     ];
 
-    public function get_cliente(): BelongsTo
+    public function cliente(): BelongsTo
     {
-        return $this->BelongsTo(Cliente::class, 'cliente_id');
+        return $this->BelongsTo(Cliente::class, 'cliente_id', 'id');
     }
     
     public function get_empleado(): BelongsTo
@@ -42,8 +42,8 @@ class Cita extends Model
         return $this->belongsTo(Empleado::class, 'empleado_id');
     }
 
-    public function get_servicio(): BelongsTo
+    public function servicio(): BelongsTo
     {
-        return $this->belongsTo(Servicio::class, 'servicio_id');
+        return $this->belongsTo(Servicio::class, 'servicio_id', 'id');
     }
 }

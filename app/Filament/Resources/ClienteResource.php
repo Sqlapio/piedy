@@ -17,7 +17,9 @@ class ClienteResource extends Resource
 {
     protected static ?string $model = Cliente::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationIcon = 'heroicon-m-user-group';
+
+    protected static ?string $navigationGroup = 'Tienda Sambil';
 
     public static function form(Form $form): Form
     {
@@ -31,12 +33,12 @@ class ClienteResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nombre'),
-                Tables\Columns\TextColumn::make('apellido'),
-                Tables\Columns\TextColumn::make('cedula'),
-                Tables\Columns\TextColumn::make('email'),
-                Tables\Columns\TextColumn::make('telefono'),
-                Tables\Columns\TextColumn::make('direccion_corta'),
+                Tables\Columns\TextColumn::make('nombre')->searchable(),
+                Tables\Columns\TextColumn::make('apellido')->searchable(),
+                Tables\Columns\TextColumn::make('cedula')->searchable(),
+                Tables\Columns\TextColumn::make('email')->searchable(),
+                Tables\Columns\TextColumn::make('telefono')->searchable(),
+                Tables\Columns\TextColumn::make('direccion_corta')->searchable(),
             ])
             ->filters([
                 //

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('cod_asignacion');
             $table->string("cod_servicio");
+            $table->string("servicio_categoria");
             $table->integer("empleado_id");
             $table->string("empleado");
             $table->integer("servicio_id");

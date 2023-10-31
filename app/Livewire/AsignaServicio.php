@@ -12,6 +12,7 @@ use Livewire\Component;
 use App\Livewire\Citas;
 use App\Models\DetalleAsignacion;
 use App\Models\User;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use LivewireUI\Modal\ModalComponent;
@@ -64,6 +65,7 @@ class AsignaServicio extends ModalComponent
             $disponible->servicio_categoria = $servicio->categoria;
             $disponible->costo              = $servicio->costo;
 
+            Debugbar::info($disponible);
 
 
             if ($count_disponible == 8) 
@@ -111,6 +113,8 @@ class AsignaServicio extends ModalComponent
                     $detalle_asignacion->costo              = $disponible->costo;
                     $detalle_asignacion->fecha              = date('d-m-Y');
 
+                    Debugbar::info($detalle_asignacion);
+
                     $detalle_asignacion->save();
 
                     $this->redirect('/citas');
@@ -152,11 +156,11 @@ class AsignaServicio extends ModalComponent
             
             $this->forceClose()->closeModal();
 
-                    // Actualizamos status de la cita a 4 (cita eliminada)
+                    // Actualizamos status de la cita a 3 (cita cancelada)
 
                     Cita::where('id', $this->cita->id)
                         ->update([
-                            'status' => 4
+                            'status' => 3
                         ]);
 
                     $this->redirect('/citas');

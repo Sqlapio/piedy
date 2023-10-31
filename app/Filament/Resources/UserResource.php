@@ -21,7 +21,9 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-user-circle';
+
+    protected static ?string $navigationGroup = 'Sistema';
 
     public static function form(Form $form): Form
     {
@@ -37,6 +39,17 @@ class UserResource extends Resource
                         'gerente' => 'Gerente',
                         'empleado' => 'Empleado',
                     ]),
+                Select::make('area_trabajo')
+                    ->options([
+                        'm1' => 'Mesa-Manicure 1',
+                        'm2' => 'Mesa-Manicure 2',
+                        'm3' => 'Mesa-Manicure 3',
+                        'm4' => 'Mesa-Manicure 4',
+                        'c1' => 'Cubiculo-Podologia 1',
+                        'c2' => 'Cubiculo-Podologia 2',
+                        'c3' => 'Cubiculo-Podologia 3',
+                        'c4' => 'Cubiculo-Podologia 4',
+                    ])->searchable(),
                 TextInput::make('password')
                 ->password()
                 ->dehydrateStateUsing(fn ($state) => Hash::make($state))
@@ -49,9 +62,17 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('email'),
-                TextColumn::make('tipo_usuario'),
+                TextColumn::make('name')->searchable(),
+                TextColumn::make('email')->searchable(),
+                TextColumn::make('tipo_usuario')
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'administrador' => 'success',
+                    'gerente' => 'info',
+                    'empleado' => 'warning',
+                })
+                ->searchable(),
+                TextColumn::make('area_trabajo')->searchable(),
             ])
             ->filters([
                 //

@@ -2,45 +2,41 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PonderacionResource\Pages;
-use App\Filament\Resources\PonderacionResource\RelationManagers;
-use App\Models\Ponderacion;
+use App\Filament\Resources\MetodoPagoResource\Pages;
+use App\Filament\Resources\MetodoPagoResource\RelationManagers;
+use App\Models\MetodoPago;
 use Filament\Forms;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class PonderacionResource extends Resource
+class MetodoPagoResource extends Resource
 {
-    protected static ?string $model = Ponderacion::class;
+    protected static ?string $model = MetodoPago::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-hand-thumb-up';
+    protected static ?string $navigationIcon = 'heroicon-m-banknotes';
+
+    protected static ?string $navigationGroup = 'Administración';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('estrellas'),
-                TextInput::make('costo'),
-                FileUpload::make('image')->image()
+                TextInput::make('descripcion')->required(),
             ]);
     }
 
     public static function table(Table $table): Table
     {
-        
         return $table
             ->columns([
-                TextColumn::make('estrellas'),
-                TextColumn::make('costo')->money('USD'),
-                ImageColumn::make('image')
+                TextColumn::make('id')->searchable(),
+                TextColumn::make('descripcion')->searchable(),
             ])
             ->filters([
                 //
@@ -52,9 +48,6 @@ class PonderacionResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])
-            ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
             ]);
     }
     
@@ -68,9 +61,9 @@ class PonderacionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPonderacions::route('/'),
-            'create' => Pages\CreatePonderacion::route('/create'),
-            'edit' => Pages\EditPonderacion::route('/{record}/edit'),
+            'index' => Pages\ListMetodoPagos::route('/'),
+            'create' => Pages\CreateMetodoPago::route('/create'),
+            'edit' => Pages\EditMetodoPago::route('/{record}/edit'),
         ];
     }    
 }

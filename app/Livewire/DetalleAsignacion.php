@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Http\Controllers\UtilsController;
 use App\Models\Cita;
 use App\Models\Cliente;
 use App\Models\Disponible;
@@ -22,10 +23,14 @@ use WireUi\Traits\Actions;
 class DetalleAsignacion extends ModalComponent
 {
     use Actions;
+    public $descripcion;
+    public $referencia;
+
     public Disponible $disponible;
 
     public function cerrar_servicio() 
     {
+
         Debugbar::info($this->disponible->cod_asignacion);
 
         /**
@@ -54,13 +59,17 @@ class DetalleAsignacion extends ModalComponent
          * Cargo la venta en la tabla de ventas
          */
         $venta_servicio = new VentaServicio();
-        $venta_servicio->cod_asignacion = $this->disponible->cod_asignacion;
-        $venta_servicio->cliente        = $this->disponible->cliente;
-        $venta_servicio->cliente_id     = $this->disponible->cliente_id;
-        $venta_servicio->empleado       = $this->disponible->empleado;
-        $venta_servicio->empleado_id    = $this->disponible->empleado_id;
-        $venta_servicio->fecha_venta    = date('d-m-Y');
-        $venta_servicio->total          = $total->total;
+        $venta_servicio->cod_asignacion     = $this->disponible->cod_asignacion;
+        $venta_servicio->cliente            = $this->disponible->cliente;
+        $venta_servicio->cliente_id         = $this->disponible->cliente_id;
+        $venta_servicio->empleado           = $this->disponible->empleado;
+        $venta_servicio->empleado_id        = $this->disponible->empleado_id;
+        $venta_servicio->fecha_venta        = date('d-m-Y');
+        $venta_servicio->metodo_pago        = $this->descripcion;
+        $venta_servicio->referencia         = $this->referencia;
+        $venta_servicio->fecha_venta        = date('d-m-Y');
+        $venta_servicio->comision_gerente   = UtilsController::cal_comision_gerente($total->total);
+        $venta_servicio->total              = $total->total;
 
         $venta_servicio->save();
 

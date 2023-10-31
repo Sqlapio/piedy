@@ -56,10 +56,10 @@
                     <div class="flex flex-col justify-betweeCliente agendadon text-xs">
                         @foreach ($data as $item)
                         @if($item->hora == '07:00')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @if($item->hora == '07:30')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @endforeach
                     </div>
@@ -78,10 +78,10 @@
                     <div class="flex flex-col justify-between text-xs">
                         @foreach ($data as $item)
                         @if($item->hora == '08:00')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#66b3ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#66b3ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @if($item->hora == '08:30')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#66b3ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#66b3ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @endforeach
                     </div>
@@ -100,10 +100,10 @@
                     <div class="flex flex-col justify-between text-xs">
                         @foreach ($data as $item)
                         @if($item->hora == '09:00')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#9999ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#9999ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @if($item->hora == '09:30')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#9999ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#9999ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @endforeach
                     </div>
@@ -122,10 +122,10 @@
                     <div class="flex flex-col justify-between text-xs">
                         @foreach ($data as $item)
                         @if($item->hora == '10:00')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#b366ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#b366ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @if($item->hora == '10:30')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{$item->hora}}am" class="mb-2 bg-[#b366ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{$item->hora}}am" class="mb-2 bg-[#b366ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @endforeach
                     </div>
@@ -147,10 +147,10 @@
                     <div class="flex flex-col justify-between text-xs">
                         @foreach ($data as $item)
                         @if($item->hora == '11:00')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @if($item->hora == '11:30')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @endforeach
                     </div>
@@ -169,10 +169,10 @@
                     <div class="flex flex-col justify-between">
                         @foreach ($data as $item)
                         @if($item->hora == '12:00')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#66b3ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#66b3ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @if($item->hora == '12:30')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#66b3ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#66b3ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @endforeach
                     </div>
@@ -191,10 +191,10 @@
                     <div class="flex flex-col justify-between">
                         @foreach ($data as $item)
                         @if($item->hora == '13:00')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#9999ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#9999ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @if($item->hora == '13:30')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#9999ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#9999ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @endforeach
                     </div>
@@ -213,10 +213,10 @@
                     <div class="flex flex-col justify-between">
                         @foreach ($data as $item)
                         @if($item->hora == '14:00')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#b366ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#b366ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @if($item->hora == '14:30')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#b366ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#b366ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @endforeach
                     </div>
@@ -238,10 +238,10 @@
                     <div class="flex flex-col justify-between">
                         @foreach ($data as $item)
                         @if($item->hora == '15:00')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @if($item->hora == '15:30')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @endforeach
                     </div>
@@ -260,10 +260,10 @@
                     <div class="flex flex-col justify-between">
                         @foreach ($data as $item)
                         @if($item->hora == '16:00')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#66b3ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#66b3ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @if($item->hora == '16:30')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#66b3ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#66b3ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @endforeach
                     </div>
@@ -282,10 +282,10 @@
                     <div class="flex flex-col justify-between">
                         @foreach ($data as $item)
                         @if($item->hora == '17:00')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#9999ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#9999ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @if($item->hora == '17:30')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#9999ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#9999ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @endforeach
                     </div>
@@ -304,10 +304,10 @@
                     <div class="flex flex-col justify-between">
                         @foreach ($data as $item)
                         @if($item->hora == '18:00')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#b366ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#b366ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @if($item->hora == '18:30')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#b366ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#b366ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @endforeach
                     </div>
@@ -329,10 +329,10 @@
                     <div class="flex flex-col justify-between">
                         @foreach ($data as $item)
                         @if($item->hora == '19:00')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @if($item->hora == '19:30')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ffb366] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @endforeach
                     </div>
@@ -351,10 +351,10 @@
                     <div class="flex flex-col justify-between">
                         @foreach ($data as $item)
                         @if($item->hora == '20:00')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#66b3ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#66b3ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @if($item->hora == '20:30')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#66b3ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#66b3ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @endforeach
                     </div>
@@ -373,10 +373,10 @@
                     <div class="flex flex-col justify-between">
                         @foreach ($data as $item)
                         @if($item->hora == '21:00')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#9999ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#9999ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @if($item->hora == '21:30')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#9999ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#9999ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @endforeach
                     </div>
@@ -395,7 +395,7 @@
                     <div class="flex flex-col justify-between">
                         @foreach ($data as $item)
                         @if($item->hora == '22:00')
-                        <x-badge rounded label="{{ $item->get_cliente->nombre }} {{ $item->get_cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#b366ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
+                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#b366ff] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
                         @endif
                         @endforeach
                     </div>

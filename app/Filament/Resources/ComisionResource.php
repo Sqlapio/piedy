@@ -21,7 +21,9 @@ class ComisionResource extends Resource
 {
     protected static ?string $model = Comision::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+    protected static ?string $navigationIcon = 'heroicon-m-currency-dollar';
+
+    protected static ?string $navigationGroup = 'Administración';
 
     public static function form(Form $form): Form
     {
@@ -58,18 +60,18 @@ class ComisionResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('cod_comision'),
-                TextColumn::make('porcentaje'),
-                TextColumn::make('aplicacion'),
-                TextColumn::make('beneficiario'),
+                TextColumn::make('cod_comision')->searchable(),
+                TextColumn::make('porcentaje')->searchable(),
+                TextColumn::make('aplicacion')->searchable(),
+                TextColumn::make('beneficiario')->searchable(),
                 IconColumn::make('status')
                 ->options([
-                    'heroicon-o-check-circle' => fn ($state, $record): bool => $record->status === '1',
-                    'heroicon-o-clock' => fn ($state, $record): bool => $record->status === '2',
+                    'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === '1',
+                    'heroicon-m-minus-circle' => fn ($state, $record): bool => $record->status === '2',
                 ])
                 ->colors([
-                    'danger' => '2',
                     'success' => '1',
+                    'danger' => '2',
                 ])
             ])
             ->filters([

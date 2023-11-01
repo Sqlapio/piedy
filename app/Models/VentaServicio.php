@@ -27,8 +27,12 @@ class VentaServicio extends Model
         'empleado',
         'empleado_id',
         'fecha_venta',
+        'metodo_pago',
+        'referencia',
+        'comision_empleado',
         'comision_gerente',
-        'total'
+        'total_USD',
+        'total_BSD'
     ];
 
     public function detalle_asignacions():HasMany

@@ -18,15 +18,14 @@ return new class extends Migration
             $table->integer('empleado_id');
             $table->string('cliente');
             $table->integer('cliente_id');
-            $table->integer('cliente_id');
-            $table->string('metodo_pago');
-            $table->string('referencia');
+            $table->string('metodo_pago')->nullable();
+            $table->string('referencia')->nullable();
             $table->string('fecha_venta');
+            $table->decimal('comision_empleado', 8, 2)->default(0.00);
             $table->decimal('comision_gerente', 8, 2)->default(0.00);
-            $table->decimal('total', 8, 2)->default(0.00);
-            
-
-
+            $table->decimal('total_USD', 8, 2)->default(0.00);
+            $table->decimal('pago_usd', 8, 2)->default(0.00);
+            $table->decimal('pago_bsd', 8, 2)->default(0.00);
 
             $table->timestamps();
         });

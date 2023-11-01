@@ -35,18 +35,74 @@ class VentaServicioResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('cod_asignacion')->searchable(),
-                TextColumn::make('cliente')->searchable(),
-                TextColumn::make('empleado')->searchable(),
+                TextColumn::make('cod_asignacion')
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('cliente')
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('empleado')
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('fecha_venta')->searchable(),
                 TextColumn::make('metodo_pago')->searchable(),
                 TextColumn::make('referencia')->searchable(),
-                TextColumn::make('total')->money('USD')->searchable(),
-                TextColumn::make('comision_gerente')->money('USD')->searchable(),
-                TextColumn::make('total')
-                    ->summarize(Sum::make()),
-                TextColumn::make('comision_gerente')
-                    ->summarize(Sum::make()),
+
+                TextColumn::make('total_USD')
+                ->summarize(Sum::make()
+                ->money('USD')
+                ->numeric(
+                    decimalPlaces: 00,
+                    decimalSeparator: ',',
+                    thousandsSeparator: '.',
+                )
+                ->label('Venta Neta($)'))
+                ->searchable(),
+                // TextColumn::make('total_USD')->summarize(Sum::make()),
+
+                TextColumn::make('pago_usd')->money('USD')
+                ->summarize(Sum::make()
+                ->numeric(
+                    decimalPlaces: 00,
+                    decimalSeparator: ',',
+                    thousandsSeparator: '.',
+                )
+                ->label('Total($)'))
+                ->searchable(),
+
+                TextColumn::make('pago_bsd')->money('USD')
+                ->summarize(Sum::make()
+                ->numeric(
+                    decimalPlaces: 00,
+                    decimalSeparator: ',',
+                    thousandsSeparator: '.',
+                )
+                ->label('Total(Bs)'))
+                ->searchable(),
+
+                TextColumn::make('comision_empleado')->money('USD')
+                ->summarize(Sum::make()
+                ->numeric(
+                    decimalPlaces: 00,
+                    decimalSeparator: ',',
+                    thousandsSeparator: '.',
+                )
+                ->label('Neto Empleado'))
+                ->searchable(),
+
+                TextColumn::make('comision_gerente')->money('USD')
+                ->summarize(Sum::make()
+                ->numeric(
+                    decimalPlaces: 00,
+                    decimalSeparator: ',',
+                    thousandsSeparator: '.',
+                )
+                ->label('Neto Gerente'))
+                ->searchable(),
+                
+            ])
+            ->groups([
+                'metodo_pago',
             ])
             ->defaultGroup('empleado')
             ->filters([

@@ -50,7 +50,7 @@
             </a>
         </li>
     </ul>
-    <div class="mt-10 text-center sm:mt-7">
+    {{-- <div class="mt-10 text-center sm:mt-7">
         <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Método de pago</h3>
         <div class="p-2">
             <x-select wire:change="$emit('selected', $event.target.value)" wire:model.defer="descripcion" placeholder="Método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
@@ -59,7 +59,7 @@
     <div class="relative z-0 w-full mb-6 group p-2">
         <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Referencia</p>
         <x-input wire:model.defer="referencia" placeholder="12363456" />
-    </div>
+    </div> --}}
     <div class="sm:mt-2">
         <button type="button" wire:click="cerrar_servicio()" class="inline-flex w-full justify-center rounded-lg bg-red-600 px-3 py-3 mt-10 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Cerrar servicio</button>
     </div>

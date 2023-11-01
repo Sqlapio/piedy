@@ -18,4 +18,16 @@ class UtilsController extends Controller
 
         return $calculo;
     }
+
+    static function cal_comision_empleado($total_venta)
+    {
+        $porcentaje = Comision::where('aplicacion', 'servicio')
+        ->where('beneficiario', 'empleado')
+        ->first()
+        ->porcentaje;
+
+        $calculo = ($total_venta * $porcentaje) / 100;
+
+        return $calculo;
+    }
 }

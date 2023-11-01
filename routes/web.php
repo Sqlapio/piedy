@@ -48,7 +48,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('productos');
     })->name('productos');
 
-
     Route::get('/citas', function () {
         return view('citas');
     })->name('citas');
@@ -60,6 +59,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/perfil', function () {
         return view('perfil');
     })->name('perfil');
+
+    Route::get('/caja', function () {
+        return view('caja');
+    })->name('caja');
 
     Route::get('/servicio/asignado', function () {
         return view('servicio_asignado');

@@ -16,7 +16,7 @@ class StatsOverview extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Total Ventas', '$'.VentaServicio::sum('total'))
+            Stat::make('Total Ventas', '$'.VentaServicio::sum('total_USD'))
                 ->description('Total neto de ventas')
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success')

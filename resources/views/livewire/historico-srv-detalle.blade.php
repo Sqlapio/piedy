@@ -6,7 +6,7 @@
     </h5>
     <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Asociados al servicio selecionado</p>
     <ul class="my-4 space-y-3 overflow-auto">
-        @foreach ($data->detalle_asignacions as $item)
+        @foreach ($data as $item)
             <li>
                 <a href="#" class="flex items-center p-2 px-5 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">

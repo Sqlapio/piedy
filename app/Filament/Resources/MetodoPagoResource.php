@@ -23,6 +23,8 @@ class MetodoPagoResource extends Resource
 
     protected static ?string $navigationGroup = 'Administración';
 
+    protected static ?string $navigationLabel = 'Métodos de pago';
+
     public static function form(Form $form): Form
     {
         return $form

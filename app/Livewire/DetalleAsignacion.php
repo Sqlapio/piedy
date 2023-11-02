@@ -82,6 +82,16 @@ class DetalleAsignacion extends ModalComponent
         ->where('status', 'cerrado')
         ->delete();
 
+        /**
+         * Actualizamos en contador para el numero de visitas 
+         * del cliente
+         */
+        $visitas = Cliente::where('id', $this->disponible->cliente_id)->first();
+        Cliente::where('id', $this->disponible->cliente_id)
+        ->update([
+            'visitas' => $visitas->visitas + 1
+        ]);
+
         Notification::make()
             ->title('Cierre exitoso')
             ->icon('heroicon-o-shield-check')
@@ -91,7 +101,7 @@ class DetalleAsignacion extends ModalComponent
 
         $this->forceClose()->closeModal();
 
-        $this->redirect('/citas');
+        $this->redirect('/caja');
 
     }
     

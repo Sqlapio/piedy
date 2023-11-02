@@ -23,6 +23,8 @@ class DisponibleResource extends Resource
 
     protected static ?string $navigationGroup = 'Tienda Sambil';
 
+    protected static ?string $navigationLabel = 'Puestos activos';
+
     public static function form(Form $form): Form
     {
         return $form

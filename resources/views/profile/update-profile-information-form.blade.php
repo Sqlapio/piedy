@@ -4,7 +4,7 @@
     </x-slot>
 
     <x-slot name="description">
-        {{ __('Actualiza de forma rapida y segura tu nombre de usuario y tu dirección de correo electrónico. Debes registrar una dirección valida para poder recibir tus confirmaciones de servicios.') }}
+        {{-- {{ __('Actualiza de forma rapida y segura tu nombre de usuario y tu dirección de correo electrónico. Debes registrar una dirección valida para poder recibir tus confirmaciones de servicios.') }} --}}
     </x-slot>
 
     <x-slot name="form">
@@ -88,8 +88,8 @@
             {{ __('Saved.') }}
         </x-action-message>
 
-        <x-button wire:loading.attr="disabled" wire:target="photo">
+        {{-- <x-button wire:loading.attr="disabled" wire:target="photo">
             {{ __('Actulizar') }}
-        </x-button>
+        </x-button> --}}
     </x-slot>
 </x-form-section>

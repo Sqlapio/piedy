@@ -25,6 +25,8 @@ class ComisionResource extends Resource
 
     protected static ?string $navigationGroup = 'Administración';
 
+    protected static ?string $navigationLabel = 'Comisiones';
+
     public static function form(Form $form): Form
     {
         return $form

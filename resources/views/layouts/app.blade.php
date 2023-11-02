@@ -11,6 +11,17 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <style>
+            [x-cloak] {
+                display: none !important;
+            }
+        </style>
+
+        <!-- wireUI -->
+        <wireui:scripts />
+ 
+        @filamentStyles
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -18,8 +29,11 @@
         @livewireStyles
     </head>
     <body class="font-sans antialiased">
+        <x-notifications z-index="z-50" />
+        <x-dialog z-index="z-50" blur="md" align="center" />
+        
         <x-banner />
-        <div class="min-h-screen bg-gray-100">
+        <div class="container mx-auto min-h-screen bg-white">
             @livewire('navigation-menu')
 
             <!-- Page Heading -->
@@ -37,8 +51,14 @@
             </main>
         </div>
 
+        @filamentScripts
+        
         @stack('modals')
 
+        @livewire('livewire-ui-modal')
+
         @livewireScripts
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
     </body>
 </html>

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('beneficiario');
             $table->decimal('porcentaje', 5, 2);
             $table->string('status')->default('activo');
-            $table->string('image');
             $table->timestamps();
         });
     }

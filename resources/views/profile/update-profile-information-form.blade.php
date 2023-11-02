@@ -1,10 +1,10 @@
 <x-form-section submit="updateProfileInformation">
     <x-slot name="title">
-        {{ __('Profile Information') }}
+        {{ __('Información del Usuario') }}
     </x-slot>
 
     <x-slot name="description">
-        {{ __('Update your account\'s profile information and email address.') }}
+        {{-- {{ __('Actualiza de forma rapida y segura tu nombre de usuario y tu dirección de correo electrónico. Debes registrar una dirección valida para poder recibir tus confirmaciones de servicios.') }} --}}
     </x-slot>
 
     <x-slot name="form">
@@ -54,14 +54,14 @@
 
         <!-- Name -->
         <div class="col-span-6 sm:col-span-4">
-            <x-label for="name" value="{{ __('Name') }}" />
+            <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Nombre completo</label>
             <x-input id="name" type="text" class="mt-1 block w-full" wire:model.defer="state.name" required autocomplete="name" />
             <x-input-error for="name" class="mt-2" />
         </div>
 
         <!-- Email -->
         <div class="col-span-6 sm:col-span-4">
-            <x-label for="email" value="{{ __('Email') }}" />
+            <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Email</label>
             <x-input id="email" type="email" class="mt-1 block w-full" wire:model.defer="state.email" required autocomplete="username" />
             <x-input-error for="email" class="mt-2" />
 
@@ -88,8 +88,8 @@
             {{ __('Saved.') }}
         </x-action-message>
 
-        <x-button wire:loading.attr="disabled" wire:target="photo">
-            {{ __('Save') }}
-        </x-button>
+        {{-- <x-button wire:loading.attr="disabled" wire:target="photo">
+            {{ __('Actulizar') }}
+        </x-button> --}}
     </x-slot>
 </x-form-section>

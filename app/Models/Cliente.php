@@ -21,18 +21,20 @@ class Cliente extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'user_id',
         'nombre',
         'apellido',
         'cedula',
         'email',
         'telefono',
         'direccion_corta',
+        'visitas'
 
     ];
 
-    public function citas():HasMany
+    public function get_citas(): HasMany
     {
-        return $this->hasMany(Cita::class, 'cliente_id');
+        return $this->hasMany(Cita::class, 'cliente_id', 'id');
     }
 
     public function ventas():HasMany

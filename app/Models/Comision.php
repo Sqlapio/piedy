@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Comision extends Model
@@ -26,6 +27,7 @@ class Comision extends Model
         'beneficiario',
         'porcentaje',
         'status',
+        'rango_id',
     ];
 
     public function producto():HasOne
@@ -36,6 +38,11 @@ class Comision extends Model
     public function servicio():HasOne
     {
         return $this->hasOne(Servicio::class, 'comision_id', 'id');
+    }
+
+    public function comision():BelongsTo
+    {
+        return $this->belongsTo(Rango::class, 'rango_id', 'id');
     }
 
 }

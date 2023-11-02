@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\EmpleadoResource\Pages;
-use App\Filament\Resources\EmpleadoResource\RelationManagers;
-use App\Models\Empleado;
+use App\Filament\Resources\DisponibleResource\Pages;
+use App\Filament\Resources\DisponibleResource\RelationManagers;
+use App\Models\Disponible;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,11 +15,15 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class EmpleadoResource extends Resource
+class DisponibleResource extends Resource
 {
-    protected static ?string $model = Empleado::class;
+    protected static ?string $model = Disponible::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-identification';
+    protected static ?string $navigationIcon = 'heroicon-m-swatch';
+
+    protected static ?string $navigationGroup = 'Tienda Sambil';
+
+    protected static ?string $navigationLabel = 'Puestos activos';
 
     public static function form(Form $form): Form
     {
@@ -33,23 +37,20 @@ class EmpleadoResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('nombre'),
-                TextColumn::make('apellido'),
-                TextColumn::make('cedula'),
-                TextColumn::make('email'),
-                TextColumn::make('telefono'),
-                TextColumn::make('direccion_corta'),
-                TextColumn::make('tipo_empleado'),
-                TextColumn::make('Fecha_Contratación'),
+                TextColumn::make('cod_asignacion')->searchable(),
+                TextColumn::make('cliente')->searchable(),
+                TextColumn::make('empleado')->searchable(),
+                TextColumn::make('servicio')->searchable(),
+                TextColumn::make('servicio_categoria')->searchable(),
+                TextColumn::make('area_trabajo')->searchable(),
+                TextColumn::make('costo')->searchable(),
                 IconColumn::make('status')
                 ->options([
-                    'heroicon-o-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
-                    'heroicon-o-clock' => fn ($state, $record): bool => $record->status === 'inactivo',
+                    'heroicon-o-users' => fn ($state, $record): bool => $record->status === 'activo',
                 ])
                 ->colors([
-                    'danger' => 'inactivo',
                     'success' => 'activo',
-                ]),
+                ])
             ])
             ->filters([
                 //
@@ -61,9 +62,6 @@ class EmpleadoResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])
-            ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
             ]);
     }
     
@@ -77,9 +75,9 @@ class EmpleadoResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEmpleados::route('/'),
-            'create' => Pages\CreateEmpleado::route('/create'),
-            'edit' => Pages\EditEmpleado::route('/{record}/edit'),
+            'index' => Pages\ListDisponibles::route('/'),
+            'create' => Pages\CreateDisponible::route('/create'),
+            'edit' => Pages\EditDisponible::route('/{record}/edit'),
         ];
     }    
 }

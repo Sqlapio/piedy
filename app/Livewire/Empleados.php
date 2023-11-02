@@ -2,32 +2,20 @@
 
 namespace App\Livewire;
 
+use App\Models\Empleado;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Empleados extends Component
 {
 
-    public $nombre;
-    public $apellido;
-    public $cedula;
-    public $email;
-    public $telefono;
-    public $direccion_corta;
-    public $tipo_empleado;
-    public $Fecha_Contratación;
-
-    public $buscar;
-
-
-
-
-
-
-
-
+    use WithPagination;
 
     public function render()
     {
-        return view('livewire.empleados');
+        return view('livewire.empleados', [
+            'data' => Empleado::orderBy('id', 'asc')                                   
+                ->paginate(8)
+        ]);
     }
 }

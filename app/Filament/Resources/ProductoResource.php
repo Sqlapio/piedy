@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductoResource\Pages;
 use App\Filament\Resources\ProductoResource\RelationManagers;
+use App\Models\Comision;
 use App\Models\Producto;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -15,12 +16,19 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Widgets\Concerns\InteractsWithPageTable;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class ProductoResource extends Resource
 {
+
+    protected static ?string $navigationLabel = 'Productos';
+
     protected static ?string $model = Producto::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-group';
+    protected static ?string $navigationIcon = 'heroicon-m-shopping-cart';
+
+    protected static ?string $navigationGroup = 'Administración';
 
     public static function form(Form $form): Form
     {
@@ -39,7 +47,10 @@ class ProductoResource extends Resource
                     ->required(),
                 Select::make('comision_id')
                     ->relationship('comision', 'porcentaje')
+                    ->options(Comision::where('aplicacion', 'producto')->pluck('porcentaje', 'id'))
+                    // ->options(Comision::all()->pluck('porcentaje', 'id'))
                     ->searchable()
+                    
                     ->preload()
                     ->createOptionForm([
                         TextInput::make('cod_comision')->default('Pco-'.random_int(11111, 99999)),
@@ -55,15 +66,15 @@ class ProductoResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('cod_producto'),
-                Tables\Columns\TextColumn::make('descripcion'),
-                Tables\Columns\TextColumn::make('existencia'),
-                Tables\Columns\TextColumn::make('precio')->money('USD'),
-                Tables\Columns\TextColumn::make('comision.porcentaje'),
+                Tables\Columns\TextColumn::make('cod_producto')->searchable(),
+                Tables\Columns\TextColumn::make('descripcion')->searchable(),
+                Tables\Columns\TextColumn::make('existencia')->searchable(),
+                Tables\Columns\TextColumn::make('precio')->money('USD')->searchable(),
+                Tables\Columns\TextColumn::make('comision.porcentaje')->searchable(),
                 IconColumn::make('status')
                 ->options([
-                    'heroicon-o-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
-                    'heroicon-o-clock'        => fn ($state, $record): bool => $record->status === 'inactivo',
+                    'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
+                    'heroicon-m-minus-circle' => fn ($state, $record): bool => $record->status === 'inactivo',
                 ])
                 ->colors([
                     'danger' => 'inactivo',

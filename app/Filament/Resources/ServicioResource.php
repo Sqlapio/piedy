@@ -22,14 +22,21 @@ class ServicioResource extends Resource
 {
     protected static ?string $model = Servicio::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
+    protected static ?string $navigationIcon = 'heroicon-m-squares-plus';
+
+    protected static ?string $navigationGroup = 'Administración';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('cod_servicio')->default('Pco-'.random_int(11111, 99999)),
+                TextInput::make('cod_servicio')->default('Sco-'.random_int(11111, 99999)),
                 TextInput::make('descripcion')->required(),
+                Select::make('categoria')
+                    ->options([
+                        'principal' => 'Principal',
+                        'adicional' => 'Adicional',
+                    ]),
                 TextInput::make('costo')
                     ->prefix('$')
                     ->numeric()
@@ -40,15 +47,6 @@ class ServicioResource extends Resource
                     ->prefix('Minutos')
                     ->numeric()
                     ->required(),
-                Select::make('comision_id')
-                    ->relationship('comision', 'porcentaje')
-                    ->searchable()
-                    ->preload()
-                    ->createOptionForm([
-                        TextInput::make('cod_comision')->default('Pco-'.random_int(11111, 99999)),
-                        TextInput::make('porcentaje')->required(),
-                    ])
-                    ->required()
             ]);
     }
 
@@ -56,15 +54,21 @@ class ServicioResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('cod_servicio'),
-                TextColumn::make('descripcion'),
-                TextColumn::make('costo')->money('USD'),
-                TextColumn::make('comision.porcentaje'),
-                TextColumn::make('duracion_max'),
+                TextColumn::make('cod_servicio')->searchable(),
+                TextColumn::make('descripcion')->searchable(),
+                TextColumn::make('categoria')
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'principal' => 'success',
+                    'adicional' => 'warning',
+                })
+                ->searchable(),
+                TextColumn::make('costo')->money('USD')->searchable(),
+                TextColumn::make('duracion_max')->searchable(),
                 IconColumn::make('status')
                 ->options([
-                    'heroicon-o-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
-                    'heroicon-o-clock' => fn ($state, $record): bool => $record->status === 'inactivo',
+                    'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
+                    'heroicon-m-minus-circle' => fn ($state, $record): bool => $record->status === 'inactivo',
                 ])
                 ->colors([
                     'danger' => 'inactivo',

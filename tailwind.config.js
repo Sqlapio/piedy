@@ -1,27 +1,25 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
-import forms from '@tailwindcss/forms';
-import typography from '@tailwindcss/typography';
+import preset from './vendor/filament/support/tailwind.config.preset'
 
-/** @type {import('tailwindcss').Config} */
 export default {
+    presets: [
+
+        require('./vendor/wireui/wireui/tailwind.config.js')
+
+    ],
     content: [
+        './app/Filament/**/*.php',
+        './resources/views/**/*.blade.php',
+        './resources/**/*.js',
+        './vendor/filament/**/*.blade.php',
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './vendor/laravel/jetstream/**/*.blade.php',
         './storage/framework/views/*.php',
-        './resources/views/**/*.blade.php',
+        './vendor/wireui/wireui/resources/**/*.blade.php',
+        './vendor/wireui/wireui/ts/**/*.ts',
+        './vendor/wireui/wireui/src/View/**/*.php',
+        './node_modules/flowbite/**/*.js'
     ],
-
-    theme: {
-        extend: {
-            fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-            },
-        },
-    },
-
-    plugins: [forms, typography, require("daisyui")],
-};
-
-// module.exports = {
-//     plugins: [require("daisyui")],
-// };
+    plugins: [
+        require('flowbite/plugin')
+    ],
+}

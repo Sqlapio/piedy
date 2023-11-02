@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Cita extends Model
 {
@@ -25,7 +27,23 @@ class Cita extends Model
         'empleado_id',
         'fecha',
         'hora',
-        'servicio',
+        'servicio_id',
+        'responsable',
         'status',
     ];
+
+    public function cliente(): BelongsTo
+    {
+        return $this->BelongsTo(Cliente::class, 'cliente_id', 'id');
+    }
+    
+    public function get_empleado(): BelongsTo
+    {
+        return $this->belongsTo(Empleado::class, 'empleado_id');
+    }
+
+    public function servicio(): BelongsTo
+    {
+        return $this->belongsTo(Servicio::class, 'servicio_id', 'id');
+    }
 }

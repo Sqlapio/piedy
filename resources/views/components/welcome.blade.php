@@ -1,5 +1,20 @@
+@php
+use App\Models\TasaBcv as ModelsTasaBcv;
+    $tasa = ModelsTasaBcv::first()->tasa;
+@endphp
 <div class="py-8 my-auto">
     @if(Auth::user()->tipo_usuario == 'gerente')
+        {{-- BCV linea --}}
+    <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
+        {{-- TASA BCV --}}
+        <div class="flex items-center space-x-4" onclick="Livewire.dispatch('openModal', { component: 'tasa-bcv' })">
+            <img class="w-14 h-14 rounded-full" src="{{ asset('images/BCV.png') }}" alt="">
+            <div class="titulos">
+                <div class="font-bold dark:text-white">BCV</div>
+                <div class="text-sm text-gray-500 dark:text-gray-400">Tasa del dia: {{ $tasa }}</div>
+            </div>
+        </div>
+    </div>
     {{-- Primera linea --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         {{-- Clientes --}}
@@ -65,7 +80,7 @@
     </div>
 
     {{-- Segunda linea --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 mb-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2 mb-4">
         {{-- Productos --}}
         <div class="p-6 rounded-lg" style="background-image: url('https://cdn.pixabay.com/photo/2017/03/25/18/06/color-2174066_640.png'); background-size: cover;">
             <a href="{{ route('productos') }}">
@@ -110,7 +125,7 @@
         <div class="p-6 rounded-lg" 
                 style="background-image: url('https://static.vecteezy.com/system/resources/previews/000/406/488/original/background-wallpaper-with-polygons-in-gradient-colors-vector.jpg');
                 background-size: cover;">
-            <a href="">
+            <a href="{{ route('venta') }}">
             <div class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
@@ -128,6 +143,7 @@
             </div>
         </div>
     </div>
+
     @endif
 
     {{-- Primera linea para empleados --}}
@@ -189,7 +205,5 @@
         </div>
     </div>
     @endif
-    
-
 </div>
 

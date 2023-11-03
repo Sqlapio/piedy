@@ -1,4 +1,5 @@
 <div>
+    @livewire('notifications')
     @if ($data_user == null)
         <h1 class="text-xl mb-4 font-bold text-[#bd9c95]">No posee servicio asignado</h1>
     @endif
@@ -9,7 +10,7 @@
         <p class="font-normal text-gray-700 dark:text-gray-400">Servicio asignado: {{ $data_user->servicio }}</p>
         <p class="font-normal text-gray-700 dark:text-gray-400">Costo: ${{ $data_user->costo }}</p>
     </a>
-    <h1 class="text-xl mb-4 font-bold text-[#bd9c95]">Servicios adicionales</h1>
+    <h1 class="text-xl mb-4 mt-10 font-bold text-[#bd9c95]">Servicios adicionales</h1>
     <div class="flex justify-start mb-4">
         <input wire:model.live="buscar" type="search" id="search" name="buscar" class="border-b border-gray-200 py-2 text-sm rounded-full sm:w-1/3 md:w-1/4 shadow-lg focus:ring-check-blue focus:border-check-blue" placeholder="Buscar servicio adicional" autocomplete="off">
         <svg wire:click="reset_filtros" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 font-bold text-gray-500 my-auto ml-3">

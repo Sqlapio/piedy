@@ -2,7 +2,7 @@
 use Carbon\Carbon;
 $h = Carbon::now('America/Caracas')->format('h:i:s');
 @endphp
-<div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 mb-4 mt-4">
+<div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 mb-4 mt-4">
     {{-- Descripcion --}}
     @foreach ($data as $item)
     <div class="flex justify-between p-5">

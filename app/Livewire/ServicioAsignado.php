@@ -95,6 +95,8 @@ class ServicioAsignado extends Component
                 'status' => 'cerrado'
             ]);
 
+        redirect()->to('/dashboard');
+
     }
 
     public function render()

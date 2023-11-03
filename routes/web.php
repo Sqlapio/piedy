@@ -56,6 +56,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('cabinas');
     })->name('cabinas');
 
+    Route::get('/venta', function () {
+        return view('venta');
+    })->name('venta');
+
     Route::get('/perfil', function () {
         return view('perfil');
     })->name('perfil');

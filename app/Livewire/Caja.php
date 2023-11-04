@@ -228,7 +228,7 @@ class Caja extends Component
         /**
          * Pago total en PUNTO DE VENTA
          */
-        if($this->descripcion == 'Pago de venta')
+        if($this->descripcion == 'Punto de venta')
         {
             $this->validate();
             $facturar = DB::table('venta_servicios')

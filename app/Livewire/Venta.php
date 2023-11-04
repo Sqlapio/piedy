@@ -58,7 +58,7 @@ class Venta extends Component implements HasForms, HasTable
                 ->label('Total($)'))
                 ->searchable(),
 
-                TextColumn::make('pago_bsd')->money('USD')
+                TextColumn::make('pago_bsd')
                 ->summarize(Sum::make()
                 ->numeric(
                     decimalPlaces: 00,
@@ -71,7 +71,9 @@ class Venta extends Component implements HasForms, HasTable
             ])
             ->groups([
                 'metodo_pago',
+                'cliente',
                 'empleado',
+                'fecha_venta'
             ])
             // ->defaultGroup('empleado')
             ->filters([

@@ -49,7 +49,8 @@ class Caja extends Component
             $this->descripcion == 'Transferncia' || 
             $this->descripcion == 'Zelle' || 
             $this->descripcion == 'Efectivo Usd' ||
-            $this->descripcion == 'Efectivo Bsd')
+            $this->descripcion == 'Efectivo Bsd' ||
+            $this->descripcion == 'Punto de venta')
         {
             $this->ref_hidden = '';
         }

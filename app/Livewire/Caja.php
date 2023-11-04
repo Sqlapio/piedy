@@ -159,7 +159,6 @@ class Caja extends Component
         if($this->descripcion == 'Efectivo Usd')
         {
             $this->validate();
-            dd('efectivo usd', $total_vista);
             $facturar = DB::table('venta_servicios')
                 ->where('cod_asignacion', $item->cod_asignacion)
                 ->update([
@@ -177,7 +176,6 @@ class Caja extends Component
         if($this->descripcion == 'Efectivo Bsd')
         {
             $this->validate();
-            dd('efectivo bsd', ($total_vista * $tasa_bcv));
             $facturar = DB::table('venta_servicios')
                 ->where('cod_asignacion', $item->cod_asignacion)
                 ->update([
@@ -195,7 +193,6 @@ class Caja extends Component
         if($this->descripcion == 'Pago movil')
         {
             $this->validate();
-            dd('efectivo Pago movil', ($total_vista * $tasa_bcv));
             $facturar = DB::table('venta_servicios')
                 ->where('cod_asignacion', $item->cod_asignacion)
                 ->update([
@@ -213,7 +210,6 @@ class Caja extends Component
         if($this->descripcion == 'Pago de venta')
         {
             $this->validate();
-            dd('efectivo Pago movil', ($total_vista * $tasa_bcv));
             $facturar = DB::table('venta_servicios')
                 ->where('cod_asignacion', $item->cod_asignacion)
                 ->update([
@@ -231,7 +227,6 @@ class Caja extends Component
         if($this->descripcion == 'Transferencia')
         {
             $this->validate();
-            dd('efectivo Transferencia', ($total_vista * $tasa_bcv));
             $facturar = DB::table('venta_servicios')
                 ->where('cod_asignacion', $item->cod_asignacion)
                 ->update([
@@ -249,7 +244,6 @@ class Caja extends Component
         if($this->descripcion == 'Zelle')
         {
             $this->validate();
-            dd('efectivo Zelle', $total_vista);
             $facturar = DB::table('venta_servicios')
                 ->where('cod_asignacion', $item->cod_asignacion)
                 ->update([

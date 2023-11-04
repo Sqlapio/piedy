@@ -2,9 +2,9 @@
 
 return [
 
-    'title' => 'Edit :label',
+    'title' => 'Editar :label',
 
-    'breadcrumb' => 'Edit',
+    'breadcrumb' => 'Editar',
 
     'form' => [
 
@@ -25,7 +25,7 @@ return [
     'content' => [
 
         'tab' => [
-            'label' => 'Edit',
+            'label' => 'Editar',
         ],
 
     ],

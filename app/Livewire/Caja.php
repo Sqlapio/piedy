@@ -31,8 +31,7 @@ class Caja extends Component
     public $descripcion;
     public $op1_hidden = 'hidden';
     public $op2_hidden = 'hidden';
-    public $ref_hidden = 'hidden';
-    
+    public $ref_hidden = 'hidden'; 
 
     protected $messages = [
 
@@ -158,6 +157,7 @@ class Caja extends Component
          */
         if($this->descripcion == 'Efectivo Usd')
         {
+
             $this->validate();
             $facturar = DB::table('venta_servicios')
                 ->where('cod_asignacion', $item->cod_asignacion)
@@ -168,6 +168,13 @@ class Caja extends Component
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
+
+                Notification::make()
+                ->title('La factura fue cerrada con exito')
+                ->success()
+                ->send();
+
+            $this->redirect('/citas');
         }
 
         /**
@@ -185,6 +192,13 @@ class Caja extends Component
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
+            
+                Notification::make()
+                ->title('La factura fue cerrada con exito')
+                ->success()
+                ->send();
+
+            $this->redirect('/citas');
         }
 
         /**
@@ -202,6 +216,13 @@ class Caja extends Component
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
+            
+                Notification::make()
+                ->title('La factura fue cerrada con exito')
+                ->success()
+                ->send();
+
+            $this->redirect('/citas');
         }
 
         /**
@@ -219,6 +240,13 @@ class Caja extends Component
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
+
+                Notification::make()
+                ->title('La factura fue cerrada con exito')
+                ->success()
+                ->send();
+
+            $this->redirect('/citas');
         }
 
         /**
@@ -236,6 +264,13 @@ class Caja extends Component
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
+            
+                Notification::make()
+                ->title('La factura fue cerrada con exito')
+                ->success()
+                ->send();
+
+            $this->redirect('/citas');
         }
 
         /**
@@ -253,6 +288,13 @@ class Caja extends Component
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
+            
+                Notification::make()
+                ->title('La factura fue cerrada con exito')
+                ->success()
+                ->send();
+
+            $this->redirect('/citas');
         }
 
         /**

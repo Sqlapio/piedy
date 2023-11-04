@@ -64,24 +64,6 @@ use App\Models\TasaBcv as ModelsTasaBcv;
             <div class="mt-8 space-y-6">
                 <div class="px-2">
                     <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Forma de pago:</p>
-                    {{-- <x-native-select
-    label="Select Status"
-    :options="[
-        ['metodo' => '',  'id' => 1],
-        ['metodo' => 'Pago ', 'id' => 2],
-        ['metodo' => 'Stuck',   'id' => 3],
-        ['metodo' => 'Done',    'id' => 4],
-        ['metodo' => 'Stuck',   'id' => 3],
-        ['metodo' => 'Stuck',   'id' => 3],
-        ['metodo' => 'Stuck',   'id' => 3],
-        ['metodo' => 'Stuck',   'id' => 3],
-        ['metodo' => 'Stuck',   'id' => 3],
-        ['metodo' => 'Stuck',   'id' => 3],
-    ]"
-    option-label="metodo"
-    option-value="id"
-    wire:model="model"
-/> --}}
                     <x-select wire:change="$emit('metodo', $event.target.value)" wire:model.live="descripcion" placeholder="Método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
                 </div>
                 <div class="px-2 {{ $ref_hidden }}">

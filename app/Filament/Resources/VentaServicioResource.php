@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\Action;
 
 class VentaServicioResource extends Resource
 {
@@ -70,7 +71,7 @@ class VentaServicioResource extends Resource
                 ->label('Total($)'))
                 ->searchable(),
 
-                TextColumn::make('pago_bsd')->money('USD')
+                TextColumn::make('pago_bsd')
                 ->summarize(Sum::make()
                 ->numeric(
                     decimalPlaces: 00,
@@ -103,8 +104,16 @@ class VentaServicioResource extends Resource
             ])
             ->groups([
                 'metodo_pago',
+                'empleado',
+                'cod_asignacion',
+                'fecha_venta'
             ])
-            ->defaultGroup('empleado')
+            // ->groupRecordsTriggerAction(
+            //     fn (Action $action) => $action
+            //         ->button()
+            //         ->label('Group records'),
+            // )
+            //->defaultGroup('empleado')
             ->filters([
                 //
             ])

@@ -104,6 +104,12 @@ class CitaResource extends Resource
                     'danger' => 3,
                 ])
             ])
+            ->groups([
+                'cliente.nombre',
+                'servicio.descripcion',
+                'fecha',
+                'hora'
+            ])
             ->filters([
                 //
             ])

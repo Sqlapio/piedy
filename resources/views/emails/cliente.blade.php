@@ -4,14 +4,12 @@
     <title>SqlapioTechnology LLC.</title>
 </head>
 <body>
-    <img style="display: block; margin-left: auto; margin-right: auto; width: 300px; height: auto;" src="{{ asset('images/logo.png') }}">
+    <img style="display: block; margin-left: auto; margin-right: auto; width: 600px; height: auto;" src="{{ asset('images/banner_notificacion.png') }}">
     <div style="margin: auto; width: 600px; padding: 10px;">
         <p style="text-align: justify; margin-left: 20px;">
             <h2 style="text-align: justify; margin-left: 20px;">Sr(a). {{ $mailData['cliente_fullname'] }}</h2>
         </p>
         <p style="text-align: justify; margin-left: 20px;">
-            Espero se encuentre muy bien.
-            <br>
             Usted acaba de agendar una cita en PiedyCcs,
             <br>
             Los detalles a continuacion:
@@ -21,8 +19,6 @@
                 Fecha: {{ $mailData['fecha_cita'] }}
                 <br>
                 Hora: {{ $mailData['hora_cita'] }}
-                {{-- <br>
-                Especialista: {{ $mailData['empleado_cita'] }} --}}
                 <br>
                 servicio: {{ $mailData['servicio'] }}
                 <br>
@@ -33,14 +29,15 @@
             Para cualquier consulta o asistencia adicional que necesite, puede comunicarse las 24
             horas del dia con nuestro equipo a traves de piedyccs@gmail.com
         </p>
-        <p style="text-align: justify; margin-left: 20px;">
+        <p style="text-align: justify; margin-left: 20px; font-size: 9px">
+            <br>
             Atentamente,
             <br>
             <br>
             <img style="
                     display: block;
                     margin-left: 0px;
-                    width: 100px;
+                    width: 80px;
                     height: auto;" src="{{ asset('img/notification_email/fir_jm.png') }}">
             Ing. Jhonny Martinez<br>CEO
         </p>

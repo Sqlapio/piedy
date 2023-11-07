@@ -11,6 +11,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Rule;
 use WireUi\Traits\Actions;
+use Carbon\Carbon;
 
 class Citas extends Component
 {
@@ -96,15 +97,14 @@ class Citas extends Component
                     $mailData = [
                         'cliente_email' => $cliente->email,
                         'cliente_fullname' => $cliente->nombre.' '.$cliente->apellido,
-                        'fecha_cita' => $cita->fecha,
-                        'hora_cita' => $cita->hora,
-                        // 'empleado_cita' => $cita->get_empleado->nombre.' '.$cita->get_empleado->apellido,
+                        'fecha_cita' => Carbon::createFromFormat('Y-m-d', $cita->fecha)->format('d-m-Y'),
+                        'hora_cita' => Carbon::createFromFormat('H:i', $cita->hora)->timezone('America/Caracas')->format('h:i A'),
                         'servicio' => $cita->servicio->descripcion,
                         'costo' => $cita->servicio->costo,
     
                     ];
     
-                    // NotificacionesController::notification($mailData, $type);
+                    NotificacionesController::notification($mailData, $type);
     
                 }
             }else{

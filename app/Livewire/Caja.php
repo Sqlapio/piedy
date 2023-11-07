@@ -3,10 +3,13 @@
 namespace App\Livewire;
 
 use App\Http\Controllers\UtilsController;
+use App\Http\Controllers\NotificacionesController;
 use App\Models\DetalleAsignacion;
 use App\Models\TasaBcv;
+use App\Models\User;
 use App\Models\VentaServicio;
 use Barryvdh\Debugbar\Facades\Debugbar;
+use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Rule;
@@ -260,7 +263,7 @@ class Caja extends Component
         {
 
             $facturar = DB::table('venta_servicios')
-                ->where('cod_asignacion', $item->cod_asignacion)
+            ->where('cod_asignacion', $item->cod_asignacion)
                 ->update([
                     'metodo_pago' => $this->descripcion,
                     'referencia' => $this->referencia,
@@ -269,12 +272,24 @@ class Caja extends Component
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
 
-                Notification::make()
+            Notification::make()
                 ->title('La factura fue cerrada con exito')
                 ->success()
                 ->send();
 
             $this->redirect('/citas');
+
+            $user = User::where('id', $item->empleado_id)->first();
+            $type = 'servicio';
+            $mailData = [
+                'codigo' => $item->cod_asignacion,
+                'user_email' => $user->email,
+                'user_fullname' => $item->empleado,
+                'cliente_fullname' => $item->cliente,
+                'fecha_venta' => $item->fecha_venta,
+            ];
+
+            NotificacionesController::notification($mailData, $type);
         }
 
         /**
@@ -299,6 +314,18 @@ class Caja extends Component
                 ->send();
 
             $this->redirect('/citas');
+
+            $user = User::where('id', $item->empleado_id)->first();
+            $type = 'servicio';
+            $mailData = [
+                'codigo' => $item->cod_asignacion,
+                'user_email' => $user->email,
+                'user_fullname' => $item->empleado,
+                'cliente_fullname' => $item->cliente,
+                'fecha_venta' => $item->fecha_venta,
+            ];
+
+            NotificacionesController::notification($mailData, $type);
         }
 
         /**
@@ -323,6 +350,18 @@ class Caja extends Component
                 ->send();
 
             $this->redirect('/citas');
+
+            $user = User::where('id', $item->empleado_id)->first();
+            $type = 'servicio';
+            $mailData = [
+                'codigo' => $item->cod_asignacion,
+                'user_email' => $user->email,
+                'user_fullname' => $item->empleado,
+                'cliente_fullname' => $item->cliente,
+                'fecha_venta' => $item->fecha_venta,
+            ];
+
+            NotificacionesController::notification($mailData, $type);
         }
 
         /**
@@ -347,6 +386,18 @@ class Caja extends Component
                 ->send();
 
             $this->redirect('/citas');
+
+            $user = User::where('id', $item->empleado_id)->first();
+            $type = 'servicio';
+            $mailData = [
+                'codigo' => $item->cod_asignacion,
+                'user_email' => $user->email,
+                'user_fullname' => $item->empleado,
+                'cliente_fullname' => $item->cliente,
+                'fecha_venta' => $item->fecha_venta,
+            ];
+
+            NotificacionesController::notification($mailData, $type);
         }
 
         /**
@@ -371,6 +422,18 @@ class Caja extends Component
                 ->send();
 
             $this->redirect('/citas');
+
+            $user = User::where('id', $item->empleado_id)->first();
+            $type = 'servicio';
+            $mailData = [
+                'codigo' => $item->cod_asignacion,
+                'user_email' => $user->email,
+                'user_fullname' => $item->empleado,
+                'cliente_fullname' => $item->cliente,
+                'fecha_venta' => $item->fecha_venta,
+            ];
+
+            NotificacionesController::notification($mailData, $type);
         }
 
         /**
@@ -395,6 +458,18 @@ class Caja extends Component
                 ->send();
 
             $this->redirect('/citas');
+
+            $user = User::where('id', $item->empleado_id)->first();
+            $type = 'servicio';
+            $mailData = [
+                'codigo' => $item->cod_asignacion,
+                'user_email' => $user->email,
+                'user_fullname' => $item->empleado,
+                'cliente_fullname' => $item->cliente,
+                'fecha_venta' => $item->fecha_venta,
+            ];
+
+            NotificacionesController::notification($mailData, $type);
         }
 
         /**
@@ -421,11 +496,7 @@ class Caja extends Component
                             $title = 'Error !!!',
                             $description = 'Los monto deben ser mayores a cero.'
                         );
-                    }
-                    
-                    
-                    
-                    else{
+                    }else{
                         $this->referencia = 'pago multiple';
                         $facturar = DB::table('venta_servicios')
                             ->where('cod_asignacion', $item->cod_asignacion)
@@ -444,6 +515,18 @@ class Caja extends Component
                             ->send();
 
                         $this->redirect('/citas');
+
+                        $user = User::where('id', $item->empleado_id)->first();
+                        $type = 'servicio';
+                        $mailData = [
+                            'codigo' => $item->cod_asignacion,
+                            'user_email' => $user->email,
+                            'user_fullname' => $item->empleado,
+                            'cliente_fullname' => $item->cliente,
+                            'fecha_venta' => $item->fecha_venta,
+                        ];
+
+                        NotificacionesController::notification($mailData, $type);
                     }
                     
                 }
@@ -480,6 +563,18 @@ class Caja extends Component
                             ->send();
 
                         $this->redirect('/citas');
+
+                        $user = User::where('id', $item->empleado_id)->first();
+                        $type = 'servicio';
+                        $mailData = [
+                            'codigo' => $item->cod_asignacion,
+                            'user_email' => $user->email,
+                            'user_fullname' => $item->empleado,
+                            'cliente_fullname' => $item->cliente,
+                            'fecha_venta' => $item->fecha_venta,
+                        ];
+
+                        NotificacionesController::notification($mailData, $type);
                     }
                     
                 }
@@ -516,6 +611,18 @@ class Caja extends Component
                             ->send();
 
                         $this->redirect('/citas');
+
+                        $user = User::where('id', $item->empleado_id)->first();
+                        $type = 'servicio';
+                        $mailData = [
+                            'codigo' => $item->cod_asignacion,
+                            'user_email' => $user->email,
+                            'user_fullname' => $item->empleado,
+                            'cliente_fullname' => $item->cliente,
+                            'fecha_venta' => $item->fecha_venta,
+                        ];
+
+                        NotificacionesController::notification($mailData, $type);
                     }
                     
                 }

@@ -73,11 +73,11 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 <div class="grid grid-cols-2 gap-2">
                     <div class="px-2 {{ $op1_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método 1</p>
-                        <x-select wire:change="$emit('metodo1', $event.target.value)" wire:model.live="op1" placeholder="Método 1" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
+                        <x-select wire:change="$emit('metodo1', $event.target.value)" wire:model.live="op1" placeholder="Seleccione método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
                     </div>
                     <div class="px-2 {{ $op2_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método 2</p>
-                        <x-select wire:change="$emit('metodo2', $event.target.value)" wire:model.live="op2" placeholder="Método 2" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
+                        <x-select wire:change="$emit('metodo2', $event.target.value)" wire:model.live="op2" placeholder="Seleccione método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-2">

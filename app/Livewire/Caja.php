@@ -46,7 +46,7 @@ class Caja extends Component
     public function event()
     {
         if($this->descripcion == 'Pago movil' || 
-            $this->descripcion == 'Transferncia' || 
+            $this->descripcion == 'Transferencia' || 
             $this->descripcion == 'Zelle' || 
             $this->descripcion == 'Efectivo Usd' ||
             $this->descripcion == 'Efectivo Bsd' ||
@@ -59,6 +59,7 @@ class Caja extends Component
         {
             $this->op1_hidden = '';
             $this->op2_hidden = '';
+            $this->ref_hidden = 'hidden';
         }
 
         if($this->descripcion == ''){
@@ -83,34 +84,135 @@ class Caja extends Component
 
         $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
 
-        //Caso 1
-        if ($this->op1 == 'Efectivo Usd' || $this->op1 == 'Zelle') {
-            if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta') {
-                $calculo_valor_dos = $total_vista - $this->valor_uno;
-                $this->valor_uno = number_format($this->valor_uno, 2, ",", ".");
-                $this->valor_dos = number_format(($calculo_valor_dos * $tasa_bcv), 2, ",", ".");
+        /**
+         * Caso 1
+         * Pago en efectivo usd o transferencia en zelle y el restante en
+         * calquier metodo de pago en bolivares.
+         * ---------------------------------------------------------------
+         */
+        if ($this->op1 == 'Efectivo Usd' || $this->op1 == 'Zelle') 
+        {
+            //Evalua que el segundo metodo de pago no este vacio
+            //--------------------------------------------------
+            if($this->op2 == '')
+            {
+                $this->dialog()->error(
+                    $title = 'Error !!!',
+                    $description = 'Debe seleccionar el segundo metodo de pago antes de ejecutar el calculo.'
+                );
+
+                $this->reset(['valor_uno']);
+            }
+
+            if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta') 
+            {
+                //Evalua que el monto a calcular no sea mayor o igual al total de la venta
+                //------------------------------------------------------------------------
+                if($this->valor_uno >= $total_vista){
+                    $this->dialog()->error(
+                        $title = 'Error !!!',
+                        $description = 'El monto debe ser menor al valor total de la venta.'
+                    );
+                    $this->reset(['valor_uno']);
+                }else{
+                    $calculo_valor_dos = $total_vista - $this->valor_uno;
+                    $this->valor_uno = number_format($this->valor_uno, 2, ",", ".");
+                    $this->valor_dos = number_format(($calculo_valor_dos * $tasa_bcv), 2, ",", ".");
+                }
+                
             }
         }
 
-        //Caso 2
-        if ($this->op1 == 'Efectivo Bsd' || $this->op1 == 'Pago movil' || $this->op1 == 'Transferencia' || $this->op1 == 'Punto de venta') {
-            if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta') {
-                $calculo_valor_uno = $this->valor_uno * $tasa_bcv;
-                $this->valor_uno = number_format(($calculo_valor_uno), 2, ",", ".");
+        /**
+         * Caso 2
+         * Este contempla los metodos de pago en bolivares conbinados
+         * ----------------------------------------------------------
+         */
+        if ($this->op1 == 'Efectivo Bsd' || $this->op1 == 'Pago movil' || $this->op1 == 'Transferencia' || $this->op1 == 'Punto de venta') 
+        {
+            //Evalua que el segundo metodo de pago no este vacio
+            //--------------------------------------------------
+            if($this->op2 == '')
+            {
+                $this->dialog()->error(
+                    $title = 'Error !!!',
+                    $description = 'Debe seleccionar el segundo metodo de pago antes de ejecutar el calculo.'
+                );
 
-                $calculo_valor_dos = $total_vista_bsd - $calculo_valor_uno;
-                $this->valor_dos = number_format(($calculo_valor_dos), 2, ",", ".");
+                $this->reset(['valor_uno']);
+            }
+
+            if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta') 
+            {
+                //Evalua que el monto a calcular no sea mayor o igual al total de la venta
+                //------------------------------------------------------------------------
+                if($this->valor_uno >= $total_vista){
+                    $this->dialog()->error(
+                        $title = 'Error !!!',
+                        $description = 'El monto debe ser menor al valor total de la venta.'
+                    );
+                    $this->reset(['valor_uno']);
+
+                }else{
+                    $calculo_valor_uno = $this->valor_uno * $tasa_bcv;
+                    $this->valor_uno = number_format(($calculo_valor_uno), 2, ",", ".");
+
+                    $calculo_valor_dos = $total_vista_bsd - $calculo_valor_uno;
+                    $this->valor_dos = number_format(($calculo_valor_dos), 2, ",", ".");
+                }
+                
             }
         }
 
-        //Caso3
-        if ($this->op1 == 'Efectivo Usd') {
-            if ($this->op2 == 'Zelle') {
-                $calculo_valor_dos = $total_vista - $this->valor_uno;
-                $this->valor_uno = number_format($this->valor_uno, 2, ",", ".");
-                $this->valor_dos = number_format($calculo_valor_dos, 2, ",", ".");
+        /**
+         * Caso 2
+         * Este contempla el pago en efectivo emn usd y el restante en
+         * un transferncia en zelle
+         * -----------------------------------------------------------
+         */
+        if ($this->op1 == 'Efectivo Usd') 
+        {
+            //Evalua que el segundo metodo de pago no este vacio
+            //--------------------------------------------------
+            if($this->op2 == '')
+            {
+                $this->dialog()->error(
+                    $title = 'Error !!!',
+                    $description = 'Debe seleccionar el segundo metodo de pago antes de ejecutar el calculo.'
+                );
+
+                $this->reset(['valor_uno']);
+            }
+
+            if ($this->op2 == 'Zelle') 
+            {
+                //Evalua que el monto a calcular no sea mayor o igual al total de la venta
+                //------------------------------------------------------------------------
+                if($this->valor_uno >= $total_vista){
+                    $this->dialog()->error(
+                        $title = 'Error !!!',
+                        $description = 'El monto debe ser menor al valor total de la venta.'
+                    );
+                    $this->reset(['valor_uno']);
+                }else{
+                    $calculo_valor_dos = $total_vista - $this->valor_uno;
+                    $this->valor_uno = number_format($this->valor_uno, 2, ",", ".");
+                    $this->valor_dos = number_format($calculo_valor_dos, 2, ",", ".");
+                }
+                
             }
         }
+
+        //Caso4
+        if ($this->op1 == $this->op2) 
+        {
+            $this->dialog()->error(
+                $title = 'Error !!!',
+                $description = 'Seleccione un método de pago distinto.'
+            );
+            $this->reset(['op2', 'valor_uno']);
+        }
+
 
     }
 

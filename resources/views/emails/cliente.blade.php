@@ -29,7 +29,7 @@
             Para cualquier consulta o asistencia adicional que necesite, puede comunicarse las 24
             horas del dia con nuestro equipo a traves de piedyccs@gmail.com
         </p>
-        <p style="text-align: justify; margin-left: 20px; font-size: 9px">
+        {{-- <p style="text-align: justify; margin-left: 20px; font-size: 9px">
             <br>
             Atentamente,
             <br>
@@ -40,7 +40,7 @@
                     width: 80px;
                     height: auto;" src="{{ asset('img/notification_email/fir_jm.png') }}">
             Ing. Jhonny Martinez<br>CEO
-        </p>
+        </p> --}}
     </div>
 
 </body>

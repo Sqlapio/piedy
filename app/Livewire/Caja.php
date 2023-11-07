@@ -48,8 +48,6 @@ class Caja extends Component
         if($this->descripcion == 'Pago movil' || 
             $this->descripcion == 'Transferencia' || 
             $this->descripcion == 'Zelle' || 
-            $this->descripcion == 'Efectivo Usd' ||
-            $this->descripcion == 'Efectivo Bsd' ||
             $this->descripcion == 'Punto de venta')
         {
             $this->ref_hidden = '';
@@ -146,7 +144,7 @@ class Caja extends Component
             {
                 //Evalua que el monto a calcular no sea mayor o igual al total de la venta
                 //------------------------------------------------------------------------
-                if($this->valor_uno >= $total_vista){
+                if($this->valor_uno >= $total_vista_bsd){
                     $this->dialog()->error(
                         $title = 'Error !!!',
                         $description = 'El monto debe ser menor al valor total de la venta.'
@@ -154,7 +152,7 @@ class Caja extends Component
                     $this->reset(['valor_uno']);
 
                 }else{
-                    $calculo_valor_uno = $this->valor_uno * $tasa_bcv;
+                    $calculo_valor_uno = $this->valor_uno;
                     $this->valor_uno = number_format(($calculo_valor_uno), 2, ",", ".");
 
                     $calculo_valor_dos = $total_vista_bsd - $calculo_valor_uno;
@@ -261,7 +259,6 @@ class Caja extends Component
         if($this->descripcion == 'Efectivo Usd')
         {
 
-            $this->validate();
             $facturar = DB::table('venta_servicios')
                 ->where('cod_asignacion', $item->cod_asignacion)
                 ->update([
@@ -285,7 +282,7 @@ class Caja extends Component
          */
         if($this->descripcion == 'Efectivo Bsd')
         {
-            $this->validate();
+
             $facturar = DB::table('venta_servicios')
                 ->where('cod_asignacion', $item->cod_asignacion)
                 ->update([
@@ -417,9 +414,18 @@ class Caja extends Component
                     {
                         $this->dialog()->error(
                             $title = 'Error !!!',
-                            $description = 'Los monto deben ser myor a 0.'
+                            $description = 'El monto debe coincidir con el valor de factura.'
                         );
-                    }else{
+                    }elseif($this->valor_uno == 0){
+                        $this->dialog()->error(
+                            $title = 'Error !!!',
+                            $description = 'Los monto deben ser mayores a cero.'
+                        );
+                    }
+                    
+                    
+                    
+                    else{
                         $this->referencia = 'pago multiple';
                         $facturar = DB::table('venta_servicios')
                             ->where('cod_asignacion', $item->cod_asignacion)

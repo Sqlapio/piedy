@@ -405,6 +405,7 @@ class Caja extends Component
          */
         if($this->descripcion == 'Multiple')
         {
+            
             /**
              * CASO 1
              */
@@ -412,24 +413,33 @@ class Caja extends Component
             {
                 if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta') 
                 {
-                    $this->referencia = 'pago multiple';
-                    $facturar = DB::table('venta_servicios')
-                    ->where('cod_asignacion', $item->cod_asignacion)
-                    ->update([
-                        'metodo_pago' => $this->descripcion,
-                        'referencia' => $this->referencia,
-                        'pago_usd' => floatval($this->valor_uno),
-                        'pago_bsd' => Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
-                        'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                        'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
-                    ]);
+                    if($this->valor_uno == '' and $this->valor_dos == '')
+                    {
+                        $this->dialog()->error(
+                            $title = 'Error !!!',
+                            $description = 'Los monto deben ser myor a 0.'
+                        );
+                    }else{
+                        $this->referencia = 'pago multiple';
+                        $facturar = DB::table('venta_servicios')
+                            ->where('cod_asignacion', $item->cod_asignacion)
+                            ->update([
+                                'metodo_pago' => $this->descripcion,
+                                'referencia' => $this->referencia,
+                                'pago_usd' => floatval($this->valor_uno),
+                                'pago_bsd' => Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
+                                'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
+                                'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                            ]);
 
-                    Notification::make()
-                        ->title('La factura fue cerrada con exito')
-                        ->success()
-                        ->send();
+                        Notification::make()
+                            ->title('La factura fue cerrada con exito')
+                            ->success()
+                            ->send();
 
-                    $this->redirect('/citas');
+                        $this->redirect('/citas');
+                    }
+                    
                 }
             }
 
@@ -440,24 +450,32 @@ class Caja extends Component
             {
                 if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta') 
                 {
+                    if($this->valor_uno == '' and $this->valor_dos == '')
+                    {
+                        $this->dialog()->error(
+                            $title = 'Error !!!',
+                            $description = 'Los monto deben ser myor a 0.'
+                        );
+                    }else{
+                        $this->referencia = 'pago multiple';
+                        $facturar = DB::table('venta_servicios')
+                            ->where('cod_asignacion', $item->cod_asignacion)
+                            ->update([
+                                'metodo_pago' => $this->descripcion,
+                                'referencia' => $this->referencia,
+                                'pago_bsd' => $total_vista_bsd,
+                                'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
+                                'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                            ]);
 
-                    $this->referencia = 'pago multiple';
-                    $facturar = DB::table('venta_servicios')
-                    ->where('cod_asignacion', $item->cod_asignacion)
-                    ->update([
-                        'metodo_pago' => $this->descripcion,
-                        'referencia' => $this->referencia,
-                        'pago_bsd' => $total_vista_bsd,
-                        'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                        'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
-                    ]);
+                        Notification::make()
+                            ->title('La factura fue cerrada con exito')
+                            ->success()
+                            ->send();
 
-                    Notification::make()
-                        ->title('La factura fue cerrada con exito')
-                        ->success()
-                        ->send();
-
-                    $this->redirect('/citas');
+                        $this->redirect('/citas');
+                    }
+                    
                 }
             }
 
@@ -468,23 +486,32 @@ class Caja extends Component
             {
                 if ($this->op2 == 'Zelle') 
                 {
-                    $this->referencia = 'pago multiple';
-                    $facturar = DB::table('venta_servicios')
-                    ->where('cod_asignacion', $item->cod_asignacion)
-                    ->update([
-                        'metodo_pago' => $this->descripcion,
-                        'referencia' => $this->referencia,
-                        'pago_usd' => $total_vista,
-                        'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                        'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
-                    ]);
+                    if($this->valor_uno == '' and $this->valor_dos == '')
+                    {
+                        $this->dialog()->error(
+                            $title = 'Error !!!',
+                            $description = 'Los monto deben ser myor a 0.'
+                        );
+                    }else{
+                        $this->referencia = 'pago multiple';
+                        $facturar = DB::table('venta_servicios')
+                            ->where('cod_asignacion', $item->cod_asignacion)
+                            ->update([
+                                'metodo_pago' => $this->descripcion,
+                                'referencia' => $this->referencia,
+                                'pago_usd' => $total_vista,
+                                'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
+                                'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                            ]);
 
-                    Notification::make()
-                        ->title('La factura fue cerrada con exito')
-                        ->success()
-                        ->send();
+                        Notification::make()
+                            ->title('La factura fue cerrada con exito')
+                            ->success()
+                            ->send();
 
-                    $this->redirect('/citas');
+                        $this->redirect('/citas');
+                    }
+                    
                 }
             }
 

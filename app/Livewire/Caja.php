@@ -280,6 +280,7 @@ class Caja extends Component
             $this->redirect('/citas');
 
             $user = User::where('id', $item->empleado_id)->first();
+            $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
             $type = 'servicio';
             $mailData = [
                 'codigo' => $item->cod_asignacion,
@@ -287,6 +288,7 @@ class Caja extends Component
                 'user_fullname' => $item->empleado,
                 'cliente_fullname' => $item->cliente,
                 'fecha_venta' => $item->fecha_venta,
+                'detalle' => $detalle,
             ];
 
             NotificacionesController::notification($mailData, $type);
@@ -316,6 +318,7 @@ class Caja extends Component
             $this->redirect('/citas');
 
             $user = User::where('id', $item->empleado_id)->first();
+            $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
             $type = 'servicio';
             $mailData = [
                 'codigo' => $item->cod_asignacion,
@@ -323,6 +326,7 @@ class Caja extends Component
                 'user_fullname' => $item->empleado,
                 'cliente_fullname' => $item->cliente,
                 'fecha_venta' => $item->fecha_venta,
+                'detalle' => $detalle,
             ];
 
             NotificacionesController::notification($mailData, $type);
@@ -352,6 +356,7 @@ class Caja extends Component
             $this->redirect('/citas');
 
             $user = User::where('id', $item->empleado_id)->first();
+            $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
             $type = 'servicio';
             $mailData = [
                 'codigo' => $item->cod_asignacion,
@@ -359,6 +364,7 @@ class Caja extends Component
                 'user_fullname' => $item->empleado,
                 'cliente_fullname' => $item->cliente,
                 'fecha_venta' => $item->fecha_venta,
+                'detalle' => $detalle,
             ];
 
             NotificacionesController::notification($mailData, $type);
@@ -388,6 +394,7 @@ class Caja extends Component
             $this->redirect('/citas');
 
             $user = User::where('id', $item->empleado_id)->first();
+            $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
             $type = 'servicio';
             $mailData = [
                 'codigo' => $item->cod_asignacion,
@@ -395,6 +402,7 @@ class Caja extends Component
                 'user_fullname' => $item->empleado,
                 'cliente_fullname' => $item->cliente,
                 'fecha_venta' => $item->fecha_venta,
+                'detalle' => $detalle,
             ];
 
             NotificacionesController::notification($mailData, $type);
@@ -424,6 +432,7 @@ class Caja extends Component
             $this->redirect('/citas');
 
             $user = User::where('id', $item->empleado_id)->first();
+            $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
             $type = 'servicio';
             $mailData = [
                 'codigo' => $item->cod_asignacion,
@@ -431,6 +440,7 @@ class Caja extends Component
                 'user_fullname' => $item->empleado,
                 'cliente_fullname' => $item->cliente,
                 'fecha_venta' => $item->fecha_venta,
+                'detalle' => $detalle,
             ];
 
             NotificacionesController::notification($mailData, $type);
@@ -460,6 +470,7 @@ class Caja extends Component
             $this->redirect('/citas');
 
             $user = User::where('id', $item->empleado_id)->first();
+            $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
             $type = 'servicio';
             $mailData = [
                 'codigo' => $item->cod_asignacion,
@@ -467,6 +478,7 @@ class Caja extends Component
                 'user_fullname' => $item->empleado,
                 'cliente_fullname' => $item->cliente,
                 'fecha_venta' => $item->fecha_venta,
+                'detalle' => $detalle,
             ];
 
             NotificacionesController::notification($mailData, $type);
@@ -517,6 +529,7 @@ class Caja extends Component
                         $this->redirect('/citas');
 
                         $user = User::where('id', $item->empleado_id)->first();
+                        $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
                         $type = 'servicio';
                         $mailData = [
                             'codigo' => $item->cod_asignacion,
@@ -524,6 +537,7 @@ class Caja extends Component
                             'user_fullname' => $item->empleado,
                             'cliente_fullname' => $item->cliente,
                             'fecha_venta' => $item->fecha_venta,
+                            'detalle' => $detalle,
                         ];
 
                         NotificacionesController::notification($mailData, $type);
@@ -565,6 +579,7 @@ class Caja extends Component
                         $this->redirect('/citas');
 
                         $user = User::where('id', $item->empleado_id)->first();
+                        $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
                         $type = 'servicio';
                         $mailData = [
                             'codigo' => $item->cod_asignacion,
@@ -572,6 +587,7 @@ class Caja extends Component
                             'user_fullname' => $item->empleado,
                             'cliente_fullname' => $item->cliente,
                             'fecha_venta' => $item->fecha_venta,
+                            'detalle' => $detalle,
                         ];
 
                         NotificacionesController::notification($mailData, $type);
@@ -613,6 +629,7 @@ class Caja extends Component
                         $this->redirect('/citas');
 
                         $user = User::where('id', $item->empleado_id)->first();
+                        $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
                         $type = 'servicio';
                         $mailData = [
                             'codigo' => $item->cod_asignacion,
@@ -620,6 +637,7 @@ class Caja extends Component
                             'user_fullname' => $item->empleado,
                             'cliente_fullname' => $item->cliente,
                             'fecha_venta' => $item->fecha_venta,
+                            'detalle' => $detalle,
                         ];
 
                         NotificacionesController::notification($mailData, $type);

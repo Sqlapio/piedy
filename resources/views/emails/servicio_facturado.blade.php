@@ -12,7 +12,6 @@
         <p style="text-align: justify; margin-left: 20px;">
             Su servício fue facturado de forma exitosa,
             <br>
-            Los detalles a continuacion:
         </p>
         <p style="text-align: justify; margin-left: 20px;">
             <h3 style="text-align: justify; margin-left: 20px;">
@@ -22,6 +21,16 @@
                 <br>
                 Codigo de servicio: {{ $mailData['codigo'] }}
             </h3>
+        </p>
+        <p style="text-align: justify; margin-left: 20px;">
+            Detalle:
+        </p>
+        @foreach($mailData['detalle'] as $item)
+        <h3 style="text-align: justify; margin-left: 20px;">
+            - {{ $item->servicio }}
+            <br>
+        </h3>
+        @endforeach
         </p>
         <p style="text-align: justify; margin-left: 20px;">
             Para cualquier consulta o asistencia adicional que necesite, puede comunicarse las 24

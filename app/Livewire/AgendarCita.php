@@ -56,7 +56,7 @@ class AgendarCita extends ModalComponent
             $cita->responsable = $user->id;
 
             $citas = Cita::where('cliente_id', $cita->cliente_id)->latest()->first();
-            dd($citas, $this->horario->hora);
+
             if($citas != null)
             {
                 if ($citas->fecha == $this->fecha && $citas->hora == $this->horario->hora) {
@@ -139,6 +139,7 @@ class AgendarCita extends ModalComponent
     
     public function render()
     {
-        return view('livewire.agendar-cita');
+        $hora = $this->horario->hora;
+        return view('livewire.agendar-cita', compact('hora'));
     }
 }

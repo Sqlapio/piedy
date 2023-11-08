@@ -7,6 +7,7 @@
                 </svg>
             </div>
             <h3 class="text-base text-center font-semibold leading-6 text-gray-900" id="modal-title">Agenda</h3>
+            <h1 class="text-base text-center font-semibold leading-6 text-gray-900" id="modal-title">{{ $hora }}</h1>
             <div class="mt-10 text-left sm:mt-5">
                 
                 <div class="p-2">

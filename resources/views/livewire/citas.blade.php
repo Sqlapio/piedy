@@ -37,7 +37,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 ">
 
             <!-- card group 1 -->
-            <div class="p-2" onclick="Livewire.dispatch('openModal', { component: 'agendar-cita' , arguments: {horario: 1}})">
+            <div class="p-2">
                 <div class="flex rounded-lg h-full bg-[#4bbcf4] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
                     <div class="flex items-center mb-3 p-2">
                         <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
@@ -59,7 +59,7 @@
             </div>
 
             <!-- card group 1 -->
-            <div class="p-2" onclick="Livewire.dispatch('openModal', { component: 'agendar-cita' , arguments: {horario: 2}})">
+            <div class="p-2">
                 <div class="flex rounded-lg h-full bg-[#61c0bf] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
                     <div class="flex items-center mb-3 p-2">
                         <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
@@ -81,7 +81,7 @@
             </div>
 
             <!-- card group 1 -->
-            <div class="p-2" onclick="Livewire.dispatch('openModal', { component: 'agendar-cita' , arguments: {horario: 3}})">
+            <div class="p-2">
                 <div class="flex rounded-lg h-full bg-[#9ec0b8] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
                     <div class="flex items-center mb-3 p-2">
                         <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">

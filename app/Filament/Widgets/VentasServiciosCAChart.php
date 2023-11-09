@@ -7,14 +7,12 @@ use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 
-class VentaServicioChart extends ChartWidget
+class VentasServiciosCAChart extends ChartWidget
 {
-    protected static ?string $heading = 'Ventas';
+    protected static ?string $heading = 'Clientes';
 
     protected function getData(): array
     {
-        $activeFilter = $this->filter;
-
         $data = Trend::model(VentaServicio::class)
             ->between(
                 start: now()->startOfMonth(),
@@ -22,13 +20,12 @@ class VentaServicioChart extends ChartWidget
             )
             // ->perMonth()
             ->perDay()
-            ->sum('total_USD');
-            // ->count();
+            ->count('cliente');
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Ventas por servicio',
+                    'label' => 'Clientes atendidos',
                     'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                     'backgroundColor' => '#36A2EB',
                     'borderColor' => '#22c55e',
@@ -40,7 +37,7 @@ class VentaServicioChart extends ChartWidget
 
     public function getDescription(): ?string
     {
-        return 'Ventas netas diarias';
+        return 'Total de clientes atendidos por día';
     }
 
     protected function getType(): string

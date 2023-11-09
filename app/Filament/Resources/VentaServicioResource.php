@@ -15,12 +15,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\Action;
+use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 
 class VentaServicioResource extends Resource
 {
     protected static ?string $model = VentaServicio::class;
 
-    protected static ?string $navigationIcon = 'heroicon-m-chart-bar-square'; 
+    protected static ?string $navigationIcon = 'heroicon-m-chart-bar-square';
 
     protected static ?string $navigationGroup = 'Ventas';
 
@@ -100,7 +101,7 @@ class VentaServicioResource extends Resource
                 )
                 ->label('Neto Gerente'))
                 ->searchable(),
-                
+
             ])
             ->groups([
                 'metodo_pago',
@@ -115,7 +116,8 @@ class VentaServicioResource extends Resource
             // )
             //->defaultGroup('empleado')
             ->filters([
-                //
+                DateRangeFilter::make('created_at')
+                ->timezone('America/Caracas'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -126,14 +128,14 @@ class VentaServicioResource extends Resource
                 ]),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -141,5 +143,5 @@ class VentaServicioResource extends Resource
             'create' => Pages\CreateVentaServicio::route('/create'),
             'edit' => Pages\EditVentaServicio::route('/{record}/edit'),
         ];
-    }    
+    }
 }

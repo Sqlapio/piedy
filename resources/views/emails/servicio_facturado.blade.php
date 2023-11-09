@@ -7,10 +7,11 @@
     <img style="display: block; margin-left: auto; margin-right: auto; width: 600px; height: auto;" src="{{ asset('images/banner_notificacion.png') }}">
     <div style="margin: auto; width: 600px; padding: 10px;">
         <p style="text-align: justify; margin-left: 20px;">
-            <h2 style="text-align: justify; margin-left: 20px;">Sr(a). {{ $mailData['user_fullname'] }}</h2>
+            <h2 style="text-align: justify; margin-left: 20px;">Estimada Sr(a). {{ $mailData['user_fullname'] }}</h2>
         </p>
         <p style="text-align: justify; margin-left: 20px;">
-            Su servício fue facturado de forma exitosa,
+            Nos complace informarle que su servicio a sido facturado con éxito. <br>
+            A continuación, encontrará los detalles pertinentes de la transacción para su registro y referencia:
             <br>
         </p>
         <p style="text-align: justify; margin-left: 20px;">
@@ -23,31 +24,20 @@
             </h3>
         </p>
         <p style="text-align: justify; margin-left: 20px;">
-            Detalle:
+            Detalle de servicio:
         </p>
         @foreach($mailData['detalle'] as $item)
-        <h3 style="text-align: justify; margin-left: 20px;">
+        <h2 style="text-align: justify; margin-left: 20px;">
             - {{ $item->servicio }}
             <br>
-        </h3>
+        </h2>
         @endforeach
         </p>
         <p style="text-align: justify; margin-left: 20px;">
-            Para cualquier consulta o asistencia adicional que necesite, puede comunicarse las 24
-            horas del dia con nuestro equipo a traves de piedyccs@gmail.com
+            Esta notificación confirma que el proceso de facturación asociado a su trabajo ha sido completado correctamente. <br> 
+            Agradecemos su esfuerzo continuo y la dedicación con la que lleva a cabo cada servicio, lo cual es fundamental para nuestro compromiso con la excelencia. <br>
+            Si tiene alguna pregunta o necesita asistencia adicional, no dude en ponerse en contacto con nosotros.
         </p>
-        {{-- <p style="text-align: justify; margin-left: 20px; font-size: 9px">
-            <br>
-            Atentamente,
-            <br>
-            <br>
-            <img style="
-                    display: block;
-                    margin-left: 0px;
-                    width: 80px;
-                    height: auto;" src="{{ asset('img/notification_email/fir_jm.png') }}">
-            Ing. Jhonny Martinez<br>CEO
-        </p> --}}
     </div>
 
 </body>

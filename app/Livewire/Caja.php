@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Http\Controllers\UtilsController;
 use App\Http\Controllers\NotificacionesController;
 use App\Models\DetalleAsignacion;
+use App\Models\Disponible;
 use App\Models\TasaBcv;
 use App\Models\User;
 use App\Models\VentaServicio;
@@ -34,7 +35,7 @@ class Caja extends Component
     public $descripcion;
     public $op1_hidden = 'hidden';
     public $op2_hidden = 'hidden';
-    public $ref_hidden = 'hidden'; 
+    public $ref_hidden = 'hidden';
 
     protected $messages = [
 
@@ -48,12 +49,11 @@ class Caja extends Component
 
     public function event()
     {
-        if($this->descripcion == 'Pago movil' || 
-            $this->descripcion == 'Transferencia' || 
-            $this->descripcion == 'Zelle' || 
-            $this->descripcion == 'Punto de venta')
+        if($this->descripcion == 'Pago movil' || $this->descripcion == 'Transferencia' || $this->descripcion == 'Zelle' || $this->descripcion == 'Punto de venta')
         {
             $this->ref_hidden = '';
+            $this->op1_hidden = 'hidden';
+            $this->op2_hidden = 'hidden';
         }
 
         if($this->descripcion == 'Multiple')
@@ -61,6 +61,13 @@ class Caja extends Component
             $this->op1_hidden = '';
             $this->op2_hidden = '';
             $this->ref_hidden = 'hidden';
+        }
+
+        if($this->descripcion == 'Efectivo Usd' || $this->descripcion == 'Efectivo Bsd')
+        {
+            $this->ref_hidden = 'hidden';
+            $this->op1_hidden = 'hidden';
+            $this->op2_hidden = 'hidden';
         }
 
         if($this->descripcion == ''){
@@ -75,7 +82,7 @@ class Caja extends Component
         $total = DB::table('detalle_asignacions')
         ->select(DB::raw('SUM(costo) as total'))
         ->where('cod_asignacion', $item->cod_asignacion)
-            ->where('status', '2')
+            ->where('status', '1')
             ->first();
 
         $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
@@ -91,7 +98,7 @@ class Caja extends Component
          * calquier metodo de pago en bolivares.
          * ---------------------------------------------------------------
          */
-        if ($this->op1 == 'Efectivo Usd' || $this->op1 == 'Zelle') 
+        if ($this->op1 == 'Efectivo Usd' || $this->op1 == 'Zelle')
         {
             //Evalua que el segundo metodo de pago no este vacio
             //--------------------------------------------------
@@ -105,7 +112,7 @@ class Caja extends Component
                 $this->reset(['valor_uno']);
             }
 
-            if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta') 
+            if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta')
             {
                 //Evalua que el monto a calcular no sea mayor o igual al total de la venta
                 //------------------------------------------------------------------------
@@ -120,7 +127,7 @@ class Caja extends Component
                     $this->valor_uno = number_format($this->valor_uno, 2, ",", ".");
                     $this->valor_dos = number_format(($calculo_valor_dos * $tasa_bcv), 2, ",", ".");
                 }
-                
+
             }
         }
 
@@ -129,7 +136,7 @@ class Caja extends Component
          * Este contempla los metodos de pago en bolivares conbinados
          * ----------------------------------------------------------
          */
-        if ($this->op1 == 'Efectivo Bsd' || $this->op1 == 'Pago movil' || $this->op1 == 'Transferencia' || $this->op1 == 'Punto de venta') 
+        if ($this->op1 == 'Efectivo Bsd' || $this->op1 == 'Pago movil' || $this->op1 == 'Transferencia' || $this->op1 == 'Punto de venta')
         {
             //Evalua que el segundo metodo de pago no este vacio
             //--------------------------------------------------
@@ -143,7 +150,7 @@ class Caja extends Component
                 $this->reset(['valor_uno']);
             }
 
-            if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta') 
+            if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta')
             {
                 //Evalua que el monto a calcular no sea mayor o igual al total de la venta
                 //------------------------------------------------------------------------
@@ -161,7 +168,7 @@ class Caja extends Component
                     $calculo_valor_dos = $total_vista_bsd - $calculo_valor_uno;
                     $this->valor_dos = number_format(($calculo_valor_dos), 2, ",", ".");
                 }
-                
+
             }
         }
 
@@ -171,7 +178,7 @@ class Caja extends Component
          * un transferncia en zelle
          * -----------------------------------------------------------
          */
-        if ($this->op1 == 'Efectivo Usd') 
+        if ($this->op1 == 'Efectivo Usd')
         {
             //Evalua que el segundo metodo de pago no este vacio
             //--------------------------------------------------
@@ -185,7 +192,7 @@ class Caja extends Component
                 $this->reset(['valor_uno']);
             }
 
-            if ($this->op2 == 'Zelle') 
+            if ($this->op2 == 'Zelle')
             {
                 //Evalua que el monto a calcular no sea mayor o igual al total de la venta
                 //------------------------------------------------------------------------
@@ -200,12 +207,12 @@ class Caja extends Component
                     $this->valor_uno = number_format($this->valor_uno, 2, ",", ".");
                     $this->valor_dos = number_format($calculo_valor_dos, 2, ",", ".");
                 }
-                
+
             }
         }
 
         //Caso4
-        if ($this->op1 == $this->op2) 
+        if ($this->op1 == $this->op2)
         {
             $this->dialog()->error(
                 $title = 'Error !!!',
@@ -225,7 +232,7 @@ class Caja extends Component
             'acceptLabel' => 'Si, eliminar',
             'method'      => 'delete',
             'params'      => $value,
-        ]);  
+        ]);
     }
 
     public function delete($value)
@@ -235,19 +242,19 @@ class Caja extends Component
         } catch (\Throwable $th) {
             dd($th);
         }
-        
+
     }
 
     public function facturar_servicio()
     {
-        
+
         $item = VentaServicio::all()->last();
         Debugbar::info($item);
-        
+
         $total = DB::table('detalle_asignacions')
             ->select(DB::raw('SUM(costo) as total'))
             ->where('cod_asignacion', $item->cod_asignacion)
-            ->where('status', '2')
+            ->where('status', '1')
             ->first();
 
         $total_vista = $total->total;
@@ -271,6 +278,16 @@ class Caja extends Component
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
+
+            DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', '1')
+                ->update([
+                    'status' => '2' //cerrado todos los detalles del servicio
+                ]);
+
+            Disponible::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', 'cerrado')
+                ->delete();
 
             Notification::make()
                 ->title('La factura fue cerrada con exito')
@@ -309,7 +326,17 @@ class Caja extends Component
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
-            
+
+            DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', '1')
+                ->update([
+                    'status' => '2' //cerrado todos los detalles del servicio
+                ]);
+
+            Disponible::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', 'cerrado')
+                ->delete();
+
                 Notification::make()
                 ->title('La factura fue cerrada con exito')
                 ->success()
@@ -347,7 +374,17 @@ class Caja extends Component
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
-            
+
+            DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', '1')
+                ->update([
+                    'status' => '2' //cerrado todos los detalles del servicio
+                ]);
+
+            Disponible::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', 'cerrado')
+                ->delete();
+
                 Notification::make()
                 ->title('La factura fue cerrada con exito')
                 ->success()
@@ -386,6 +423,16 @@ class Caja extends Component
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
 
+            DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', '1')
+                ->update([
+                    'status' => '2' //cerrado todos los detalles del servicio
+                ]);
+
+            Disponible::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', 'cerrado')
+                ->delete();
+
                 Notification::make()
                 ->title('La factura fue cerrada con exito')
                 ->success()
@@ -423,7 +470,17 @@ class Caja extends Component
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
-            
+
+            DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', '1')
+                ->update([
+                    'status' => '2' //cerrado todos los detalles del servicio
+                ]);
+
+            Disponible::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', 'cerrado')
+                ->delete();
+
                 Notification::make()
                 ->title('La factura fue cerrada con exito')
                 ->success()
@@ -461,8 +518,18 @@ class Caja extends Component
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
-            
-                Notification::make()
+
+            DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', '1')
+                ->update([
+                    'status' => '2' //cerrado todos los detalles del servicio
+                ]);
+
+            Disponible::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', 'cerrado')
+                ->delete();
+
+            Notification::make()
                 ->title('La factura fue cerrada con exito')
                 ->success()
                 ->send();
@@ -489,13 +556,13 @@ class Caja extends Component
          */
         if($this->descripcion == 'Multiple')
         {
-            
+
             /**
              * CASO 1
              */
-            if ($this->op1 == 'Efectivo Usd' || $this->op1 == 'Zelle') 
+            if ($this->op1 == 'Efectivo Usd' || $this->op1 == 'Zelle')
             {
-                if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta') 
+                if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta')
                 {
                     if($this->valor_uno == '' and $this->valor_dos == '')
                     {
@@ -521,6 +588,16 @@ class Caja extends Component
                                 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                             ]);
 
+                        DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
+                            ->where('status', '1')
+                            ->update([
+                                'status' => '2' //cerrado todos los detalles del servicio
+                            ]);
+
+                        Disponible::where('cod_asignacion', $item->cod_asignacion)
+                            ->where('status', 'cerrado')
+                            ->delete();
+
                         Notification::make()
                             ->title('La factura fue cerrada con exito')
                             ->success()
@@ -542,16 +619,16 @@ class Caja extends Component
 
                         NotificacionesController::notification($mailData, $type);
                     }
-                    
+
                 }
             }
 
             /**
              * CASO 2
              */
-            if ($this->op1 == 'Efectivo Bsd' || $this->op1 == 'Pago movil' || $this->op1 == 'Transferencia' || $this->op1 == 'Punto de venta') 
+            if ($this->op1 == 'Efectivo Bsd' || $this->op1 == 'Pago movil' || $this->op1 == 'Transferencia' || $this->op1 == 'Punto de venta')
             {
-                if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta') 
+                if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta')
                 {
                     if($this->valor_uno == '' and $this->valor_dos == '')
                     {
@@ -571,6 +648,16 @@ class Caja extends Component
                                 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                             ]);
 
+                        DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
+                            ->where('status', '1')
+                            ->update([
+                                'status' => '2' //cerrado todos los detalles del servicio
+                            ]);
+
+                        Disponible::where('cod_asignacion', $item->cod_asignacion)
+                            ->where('status', 'cerrado')
+                            ->delete();
+
                         Notification::make()
                             ->title('La factura fue cerrada con exito')
                             ->success()
@@ -592,16 +679,16 @@ class Caja extends Component
 
                         NotificacionesController::notification($mailData, $type);
                     }
-                    
+
                 }
             }
 
             /**
              * CASO 3
              */
-            if ($this->op1 == 'Efectivo Usd') 
+            if ($this->op1 == 'Efectivo Usd')
             {
-                if ($this->op2 == 'Zelle') 
+                if ($this->op2 == 'Zelle')
                 {
                     if($this->valor_uno == '' and $this->valor_dos == '')
                     {
@@ -621,6 +708,16 @@ class Caja extends Component
                                 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                             ]);
 
+                        DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
+                            ->where('status', '1')
+                            ->update([
+                                'status' => '2' //cerrado todos los detalles del servicio
+                            ]);
+
+                        Disponible::where('cod_asignacion', $item->cod_asignacion)
+                            ->where('status', 'cerrado')
+                            ->delete();
+
                         Notification::make()
                             ->title('La factura fue cerrada con exito')
                             ->success()
@@ -642,7 +739,7 @@ class Caja extends Component
 
                         NotificacionesController::notification($mailData, $type);
                     }
-                    
+
                 }
             }
 
@@ -657,13 +754,13 @@ class Caja extends Component
         $data = VentaServicio::all()->last();
 
         $detalle = DetalleAsignacion::where('cod_asignacion', $data->cod_asignacion)
-        ->where('status', '2')
+        ->where('status', '1')
         ->get();
 
         $total = DB::table('detalle_asignacions')
             ->select(DB::raw('SUM(costo) as total'))
             ->where('cod_asignacion', $data->cod_asignacion)
-            ->where('status', '2')
+            ->where('status', '1')
             ->first();
 
         $total_vista = $total->total;

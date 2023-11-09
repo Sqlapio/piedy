@@ -57,11 +57,11 @@ class DetalleAsignacion extends ModalComponent
              * para poder cerrar el servicios y sus adicionales cargados 
              * por el tecnico.
              */
-            ModelsDetalleAsignacion::where('cod_asignacion', $this->disponible->cod_asignacion)
-                ->where('status', '1')
-                ->update([
-                    'status' => '2' //cerrado todos los detalles del servicio
-                ]);
+            // ModelsDetalleAsignacion::where('cod_asignacion', $this->disponible->cod_asignacion)
+            //     ->where('status', '1')
+            //     ->update([
+            //         'status' => '2' //cerrado todos los detalles del servicio
+            //     ]);
 
             /**
              * Cargo la venta en la tabla de ventas
@@ -86,9 +86,9 @@ class DetalleAsignacion extends ModalComponent
              * Elimino el dato en la tabla de disponibilidad para
              * liberar la estacion de trabajo en el sistema
              */
-            Disponible::where('cod_asignacion', $this->disponible->cod_asignacion)
-                ->where('status', 'cerrado')
-                ->delete();
+            // Disponible::where('cod_asignacion', $this->disponible->cod_asignacion)
+            //     ->where('status', 'cerrado')
+            //     ->delete();
 
             /**
              * Actualizamos en contador para el numero de visitas 

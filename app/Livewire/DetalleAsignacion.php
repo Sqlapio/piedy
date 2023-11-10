@@ -51,18 +51,6 @@ class DetalleAsignacion extends ModalComponent
                 ->where('status', '1')
                 ->first();
 
-
-            /**
-             * Actualizo el status en la tabla detalle_asignacions
-             * para poder cerrar el servicios y sus adicionales cargados 
-             * por el tecnico.
-             */
-            // ModelsDetalleAsignacion::where('cod_asignacion', $this->disponible->cod_asignacion)
-            //     ->where('status', '1')
-            //     ->update([
-            //         'status' => '2' //cerrado todos los detalles del servicio
-            //     ]);
-
             /**
              * Cargo la venta en la tabla de ventas
              */
@@ -73,25 +61,12 @@ class DetalleAsignacion extends ModalComponent
             $venta_servicio->empleado           = $this->disponible->empleado;
             $venta_servicio->empleado_id        = $this->disponible->empleado_id;
             $venta_servicio->fecha_venta        = date('d-m-Y');
-            // $venta_servicio->metodo_pago        = $this->descripcion;
-            // $venta_servicio->referencia         = $this->referencia;
             $venta_servicio->fecha_venta        = date('d-m-Y');
-            // $venta_servicio->comision_empleado  = UtilsController::cal_comision_empleado($total->total);
-            // $venta_servicio->comision_gerente   = UtilsController::cal_comision_gerente($total->total);
             $venta_servicio->total_USD          = $total->total;
-
             $venta_servicio->save();
 
             /**
-             * Elimino el dato en la tabla de disponibilidad para
-             * liberar la estacion de trabajo en el sistema
-             */
-            // Disponible::where('cod_asignacion', $this->disponible->cod_asignacion)
-            //     ->where('status', 'cerrado')
-            //     ->delete();
-
-            /**
-             * Actualizamos en contador para el numero de visitas 
+             * Actualizamos en contador para el numero de visitas
              * del cliente
              */
             $visitas = Cliente::where('id', $this->disponible->cliente_id)->first();

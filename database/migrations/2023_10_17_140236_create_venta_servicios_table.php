@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('venta_servicios', function (Blueprint $table) {
             $table->id();
-            $table->string('cod_asignacion');
+            $table->string('cod_asignacion')->unique();
             $table->string('empleado');
             $table->integer('empleado_id');
             $table->string('cliente');

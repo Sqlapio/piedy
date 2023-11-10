@@ -18,7 +18,7 @@ class ServicioAsignado extends Component
     use Actions;
 
     use WithPagination;
-    
+
     public $extra = [];
 
     public $total_vista;
@@ -51,13 +51,13 @@ class ServicioAsignado extends Component
 
         $valores = [];
 
-        for ($i=0; $i < count($this->extra) ; $i++) { 
+        for ($i=0; $i < count($this->extra) ; $i++) {
             $costo = Servicio::where('id', $this->extra[$i])->first()->costo;
             array_push($valores, $costo);
-        } 
-        
+        }
+
         $this->total_vista = $data->costo + array_sum($valores);
-        
+
     }
 
     public function store($value)
@@ -65,7 +65,7 @@ class ServicioAsignado extends Component
         $user = Auth::user();
         $data = Disponible::where('id', $value)->where('status', 'activo')->first();
 
-        for ($i=0; $i < count($this->extra) ; $i++) 
+        for ($i=0; $i < count($this->extra) ; $i++)
         {
             $data_servicios = Servicio::where('id', $this->extra[$i])->first();
             $detalle_asignacion = new DetalleAsignacion();
@@ -83,13 +83,11 @@ class ServicioAsignado extends Component
             $detalle_asignacion->save();
         }
 
-        Notification::make()
-            ->title('Operacion exitosa')
-            ->icon('heroicon-o-shield-check')
-            ->iconColor('danger')
-            ->body('Los servicio fueron asignados para su aprobacion de forma exitosa')
-            ->send();
-        
+        $this->notification()->success(
+            $title = 'Operación exitosa !!',
+            $description = 'El servicio fue cerrado correctamente.'
+        );
+
         Disponible::where('empleado_id', $user->id)
             ->update([
                 'status' => 'cerrado'

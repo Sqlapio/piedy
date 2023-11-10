@@ -274,6 +274,7 @@ class Caja extends Component
                 ->update([
                     'metodo_pago' => $this->descripcion,
                     'referencia' => $this->referencia,
+                    'total_USD' => $total_vista,
                     'pago_usd' => $total_vista,
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
@@ -322,6 +323,7 @@ class Caja extends Component
                 ->update([
                     'metodo_pago' => $this->descripcion,
                     'referencia' => $this->referencia,
+                    'total_USD' => $total_vista,
                     'pago_bsd' => $total_vista * $tasa_bcv,
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
@@ -370,6 +372,7 @@ class Caja extends Component
                 ->update([
                     'metodo_pago' => $this->descripcion,
                     'referencia' => $this->referencia,
+                    'total_USD' => $total_vista,
                     'pago_bsd' => $total_vista * $tasa_bcv,
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
@@ -418,6 +421,7 @@ class Caja extends Component
                 ->update([
                     'metodo_pago' => $this->descripcion,
                     'referencia' => $this->referencia,
+                    'total_USD' => $total_vista,
                     'pago_bsd' => $total_vista * $tasa_bcv,
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
@@ -466,6 +470,7 @@ class Caja extends Component
                 ->update([
                     'metodo_pago' => $this->descripcion,
                     'referencia' => $this->referencia,
+                    'total_USD' => $total_vista,
                     'pago_bsd' => $total_vista * $tasa_bcv,
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
@@ -514,6 +519,7 @@ class Caja extends Component
                 ->update([
                     'metodo_pago' => $this->descripcion,
                     'referencia' => $this->referencia,
+                    'total_USD' => $total_vista,
                     'pago_usd' => $total_vista,
                     'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                     'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
@@ -582,6 +588,7 @@ class Caja extends Component
                             ->update([
                                 'metodo_pago' => $this->descripcion,
                                 'referencia' => $this->referencia,
+                                'total_USD' => $total_vista,
                                 'pago_usd' => floatval($this->valor_uno),
                                 'pago_bsd' => Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
                                 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
@@ -643,6 +650,7 @@ class Caja extends Component
                             ->update([
                                 'metodo_pago' => $this->descripcion,
                                 'referencia' => $this->referencia,
+                                'total_USD' => $total_vista,
                                 'pago_bsd' => $total_vista_bsd,
                                 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                                 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
@@ -703,6 +711,7 @@ class Caja extends Component
                             ->update([
                                 'metodo_pago' => $this->descripcion,
                                 'referencia' => $this->referencia,
+                                'total_USD' => $total_vista,
                                 'pago_usd' => $total_vista,
                                 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
                                 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),

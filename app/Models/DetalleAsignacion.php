@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DetalleAsignacion extends Model
 {
@@ -32,4 +33,9 @@ class DetalleAsignacion extends Model
         'fecha',
         'status',
     ];
+
+    public function get_detalle_asiganciones(): HasMany
+    {
+        return $this->hasMany(Cliente::class, 'cliente_id', 'id');
+    }
 }

@@ -23,7 +23,7 @@ use function Psy\debug;
 class AsignaServicio extends ModalComponent
 {
     use Actions;
-    
+
     public $empleado_id;
     public Cita $cita;
 
@@ -44,9 +44,8 @@ class AsignaServicio extends ModalComponent
 
         try {
 
-            $count_disponible = Disponible::count();
+            // $count_disponible = Disponible::count();
             $existe = Disponible::where('empleado_id', $this->empleado_id)->where('status', 'activo')->first();
-
 
             $cliente = Cliente::where('id', $this->cita->cliente_id)->first();
             $servicio = Servicio::where('id', $this->cita->servicio_id)->first();
@@ -65,72 +64,117 @@ class AsignaServicio extends ModalComponent
             $disponible->servicio_categoria = $servicio->categoria;
             $disponible->costo              = $servicio->costo;
 
-            Debugbar::info($disponible);
-
-
-            if ($count_disponible == 8) 
+            if($existe == null)
             {
+                $disponible->save();
+
                 Notification::make()
-                    ->title('NOTIFICACION DE SISTEMA')
-                    ->icon('heroicon-o-exclamation-triangle')
+                    ->title('Cliente asignado con éxito')
+                    ->icon('heroicon-o-shield-check')
                     ->iconColor('danger')
-                    ->body('El servicio no puede ser asignado ya que todos los tecnicos se encuentran ocupados')
+                    ->body('El cliente será atendido por: ' . $disponible->empleado)
                     ->send();
+
                 $this->forceClose()->closeModal();
 
-            } else {
+                // Actualizamos status de la cita a 2 (asignada al tecnico)
+                Cita::where('id', $this->cita->id)
+                    ->update([
+                        'status' => 2
+                    ]);
 
-                if ($existe == null) 
-                {
+                $detalle_asignacion = new DetalleAsignacion();
+                $detalle_asignacion->cod_asignacion     = $disponible->cod_asignacion;
+                $detalle_asignacion->cod_servicio       = $disponible->cod_servicio;
+                $detalle_asignacion->empleado_id        = $disponible->empleado_id;
+                $detalle_asignacion->empleado           = $disponible->empleado;
+                $detalle_asignacion->cliente_id         = $disponible->cliente_id;
+                $detalle_asignacion->cliente            = $disponible->cliente;
+                $detalle_asignacion->servicio_id        = $disponible->servicio_id;
+                $detalle_asignacion->servicio           = $servicio->descripcion;
+                $detalle_asignacion->servicio_categoria = $servicio->categoria;
+                $detalle_asignacion->costo              = $disponible->costo;
+                $detalle_asignacion->fecha              = date('d-m-Y');
 
-                    $disponible->save();
+                Debugbar::info($detalle_asignacion);
 
-                    Notification::make()
-                        ->title('Cliente asignado con éxito')
-                        ->icon('heroicon-o-shield-check')
-                        ->iconColor('danger')
-                        ->body('El cliente será atendido por: ' . $disponible->empleado)
-                        ->send();
+                $detalle_asignacion->save();
 
-                    $this->forceClose()->closeModal();
-
-                    // Actualizamos status de la cita a 2 (asignada al tecnico)
-                    Cita::where('id', $this->cita->id)
-                        ->update([
-                            'status' => 2
-                        ]);
-
-                    $detalle_asignacion = new DetalleAsignacion();
-                    $detalle_asignacion->cod_asignacion     = $disponible->cod_asignacion;
-                    $detalle_asignacion->cod_servicio       = $disponible->cod_servicio;
-                    $detalle_asignacion->empleado_id        = $disponible->empleado_id;
-                    $detalle_asignacion->empleado           = $disponible->empleado;
-                    $detalle_asignacion->cliente_id         = $disponible->cliente_id;
-                    $detalle_asignacion->cliente            = $disponible->cliente;
-                    $detalle_asignacion->servicio_id        = $disponible->servicio_id;
-                    $detalle_asignacion->servicio           = $servicio->descripcion;
-                    $detalle_asignacion->servicio_categoria = $servicio->categoria;
-                    $detalle_asignacion->costo              = $disponible->costo;
-                    $detalle_asignacion->fecha              = date('d-m-Y');
-
-                    Debugbar::info($detalle_asignacion);
-
-                    $detalle_asignacion->save();
-
-                    $this->redirect('/citas');
-
-                } else {
-                    
-                    Notification::make()
-                        ->title('NOTIFICACION DE SISTEMA')
-                        ->icon('heroicon-o-exclamation-triangle')
-                        ->iconColor('danger')
-                        ->body('Técnico no disponible')
-                        ->send();
-                    $this->forceClose()->closeModal();
-
-                }
+                $this->redirect('/citas');
+            }else{
+                $this->notification([
+                    'title'       => 'Acción no permitida!',
+                    'description' => 'El tecnico debe cerrar el servicio anterior.',
+                    'icon'        => 'error'
+                ]);
             }
+
+
+
+
+            // if ($count_disponible == 8)
+            // {
+            //     Notification::make()
+            //         ->title('NOTIFICACION DE SISTEMA')
+            //         ->icon('heroicon-o-exclamation-triangle')
+            //         ->iconColor('danger')
+            //         ->body('El servicio no puede ser asignado ya que todos los tecnicos se encuentran ocupados')
+            //         ->send();
+            //     $this->forceClose()->closeModal();
+
+            // } else {
+
+            //     if ($existe == null)
+            //     {
+
+            //         $disponible->save();
+
+            //         Notification::make()
+            //             ->title('Cliente asignado con éxito')
+            //             ->icon('heroicon-o-shield-check')
+            //             ->iconColor('danger')
+            //             ->body('El cliente será atendido por: ' . $disponible->empleado)
+            //             ->send();
+
+            //         $this->forceClose()->closeModal();
+
+            //         // Actualizamos status de la cita a 2 (asignada al tecnico)
+            //         Cita::where('id', $this->cita->id)
+            //             ->update([
+            //                 'status' => 2
+            //             ]);
+
+            //         $detalle_asignacion = new DetalleAsignacion();
+            //         $detalle_asignacion->cod_asignacion     = $disponible->cod_asignacion;
+            //         $detalle_asignacion->cod_servicio       = $disponible->cod_servicio;
+            //         $detalle_asignacion->empleado_id        = $disponible->empleado_id;
+            //         $detalle_asignacion->empleado           = $disponible->empleado;
+            //         $detalle_asignacion->cliente_id         = $disponible->cliente_id;
+            //         $detalle_asignacion->cliente            = $disponible->cliente;
+            //         $detalle_asignacion->servicio_id        = $disponible->servicio_id;
+            //         $detalle_asignacion->servicio           = $servicio->descripcion;
+            //         $detalle_asignacion->servicio_categoria = $servicio->categoria;
+            //         $detalle_asignacion->costo              = $disponible->costo;
+            //         $detalle_asignacion->fecha              = date('d-m-Y');
+
+            //         Debugbar::info($detalle_asignacion);
+
+            //         $detalle_asignacion->save();
+
+            //         $this->redirect('/citas');
+
+            //     } else {
+
+            //         Notification::make()
+            //             ->title('NOTIFICACION DE SISTEMA')
+            //             ->icon('heroicon-o-exclamation-triangle')
+            //             ->iconColor('danger')
+            //             ->body('Técnico no disponible')
+            //             ->send();
+            //         $this->forceClose()->closeModal();
+
+            //     }
+            // }
 
         } catch (\Throwable $th) {
             //throw $th;
@@ -153,7 +197,7 @@ class AsignaServicio extends ModalComponent
 
     public function delete(){
         try {
-            
+
             $this->forceClose()->closeModal();
 
                     // Actualizamos status de la cita a 3 (cita cancelada)
@@ -168,7 +212,7 @@ class AsignaServicio extends ModalComponent
         } catch (\Throwable $th) {
             dd($th);
         }
-        
+
     }
 
     public function render()

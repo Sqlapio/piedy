@@ -101,7 +101,7 @@ class ServicioAsignado extends Component
     {
         $user = Auth::user();
         return view('livewire.servicio-asignado',[
-            'data' => Servicio::Where('categoria', 'adicional')
+            'data' => Servicio::Where('categoria', 'principal')
             ->Where('descripcion', 'like', "%{$this->buscar}%")
                ->orderBy('id', 'desc')
                ->paginate(6),

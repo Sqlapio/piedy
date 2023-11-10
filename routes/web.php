@@ -3,6 +3,7 @@
 use App\Http\Controllers\ApiClientesController;
 use App\Http\Controllers\LoginController;
 use App\Livewire\Login;
+use App\Models\Cliente;
 use App\Models\VentaServicio;
 use Illuminate\Support\Facades\Route;
 
@@ -89,5 +90,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
 Route::get('/pp', function () {
     $venta_servicio = VentaServicio::where('cod_asignacion', 'Pca-73744285')->first();
-    dd($venta_servicio->detalle_asignacions);
+
+    $cliente = Cliente::where('id', '1')->first();
+    dd($cliente->get_disponibles);
+
 });

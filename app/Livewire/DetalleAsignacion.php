@@ -28,6 +28,27 @@ class DetalleAsignacion extends ModalComponent
 
     public Disponible $disponible;
 
+    public function eliminar_servicio($value)
+    {
+        $this->dialog()->confirm([
+            'title'       => 'seguro deseas eliminar el servicio?',
+            'description' => 'Esta operación por seguridad no podra ser reversada.',
+            'acceptLabel' => 'Si, eliminar',
+            'method'      => 'delete',
+            'params'      => $value,
+        ]);
+    }
+
+    public function delete($value)
+    {
+        try {
+            $item = ModelsDetalleAsignacion::where('id', $value)->update(['status' => 3]);
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+
+    }
+
     public function cerrar_servicio()
     {
 
@@ -54,6 +75,8 @@ class DetalleAsignacion extends ModalComponent
             /**
              * Cargo la venta en la tabla de ventas
              */
+
+
             $venta_servicio = new VentaServicio();
             $venta_servicio->cod_asignacion     = $this->disponible->cod_asignacion;
             $venta_servicio->cliente            = $this->disponible->cliente;
@@ -63,7 +86,15 @@ class DetalleAsignacion extends ModalComponent
             $venta_servicio->fecha_venta        = date('d-m-Y');
             $venta_servicio->fecha_venta        = date('d-m-Y');
             $venta_servicio->total_USD          = $total->total;
+            $venta_servicio->comision_empleado  = UtilsController::cal_comision_empleado($total->total);
+            $venta_servicio->comision_gerente   = UtilsController::cal_comision_gerente($total->total);
             $venta_servicio->save();
+
+            Disponible::where('cod_asignacion', $this->disponible->cod_asignacion)
+            ->update([
+                    'costo' => $total->total,
+                    'status' => 'por facturar'
+                ]);
 
             /**
              * Actualizamos en contador para el numero de visitas
@@ -84,8 +115,13 @@ class DetalleAsignacion extends ModalComponent
 
             $this->forceClose()->closeModal();
 
-            $this->redirect('/caja');
+            // $this->redirect('/caja');
         }
+    }
+
+    public function facturar_servicio()
+    {
+        $this->redirect('/caja');
     }
 
     public function render()
@@ -94,7 +130,7 @@ class DetalleAsignacion extends ModalComponent
 
         $detalle = ModelsDetalleAsignacion::where('cod_asignacion', $this->disponible->cod_asignacion)
             ->where('status', '1')
-            ->where('servicio_categoria', 'adicional')
+            ->where('servicio_categoria', 'principal')
             ->get();
 
         $total = DB::table('detalle_asignacions')

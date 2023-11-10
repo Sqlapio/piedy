@@ -41,4 +41,14 @@ class Cliente extends Model
     {
         return $this->hasMany(Venta::class, 'cliente_id');
     }
+
+    public function get_detalle_asignaciones(): HasMany
+    {
+        return $this->hasMany(DetalleAsignacion::class, 'id', 'cliente_id');
+    }
+
+    public function get_disponibles(): HasMany
+    {
+        return $this->hasMany(Disponible::class, 'cliente_id', 'id');
+    }
 }

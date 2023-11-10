@@ -51,6 +51,7 @@ class UserResource extends Resource
                         'c2' => 'Cubiculo-Podologia 2',
                         'c3' => 'Cubiculo-Podologia 3',
                         'c4' => 'Cubiculo-Podologia 4',
+                        'Administración' => 'Administración',
                     ])->searchable(),
                 TextInput::make('password')
                 ->password()
@@ -88,14 +89,14 @@ class UserResource extends Resource
                 ]),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -103,5 +104,5 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
-    }    
+    }
 }

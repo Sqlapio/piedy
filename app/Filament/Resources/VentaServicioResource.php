@@ -53,22 +53,13 @@ class VentaServicioResource extends Resource
                 TextColumn::make('total_USD')
                 ->summarize(Sum::make()
                 ->money('USD')
-                ->numeric(
-                    decimalPlaces: 00,
-                    decimalSeparator: ',',
-                    thousandsSeparator: '.',
-                )
                 ->label('Venta Neta($)'))
                 ->searchable(),
                 // TextColumn::make('total_USD')->summarize(Sum::make()),
 
                 TextColumn::make('pago_usd')->money('USD')
                 ->summarize(Sum::make()
-                ->numeric(
-                    decimalPlaces: 00,
-                    decimalSeparator: ',',
-                    thousandsSeparator: '.',
-                )
+                ->money('USD')
                 ->label('Total($)'))
                 ->searchable(),
 
@@ -84,22 +75,14 @@ class VentaServicioResource extends Resource
 
                 TextColumn::make('comision_empleado')->money('USD')
                 ->summarize(Sum::make()
-                ->numeric(
-                    decimalPlaces: 00,
-                    decimalSeparator: ',',
-                    thousandsSeparator: '.',
-                )
-                ->label('Neto Empleado'))
+                ->money('USD')
+                ->label('Neto Empleado($)'))
                 ->searchable(),
 
                 TextColumn::make('comision_gerente')->money('USD')
                 ->summarize(Sum::make()
-                ->numeric(
-                    decimalPlaces: 00,
-                    decimalSeparator: ',',
-                    thousandsSeparator: '.',
-                )
-                ->label('Neto Gerente'))
+                ->money('USD')
+                ->label('Neto Gerente($)'))
                 ->searchable(),
 
             ])
@@ -120,7 +103,7 @@ class VentaServicioResource extends Resource
                 ->timezone('America/Caracas'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

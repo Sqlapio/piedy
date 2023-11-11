@@ -89,6 +89,7 @@ class ServicioAsignado extends Component
         );
 
         Disponible::where('empleado_id', $user->id)
+        ->where('status', 'activo')
             ->update([
                 'status' => 'cerrado'
             ]);
@@ -100,6 +101,7 @@ class ServicioAsignado extends Component
     public function render()
     {
         $user = Auth::user();
+        
         return view('livewire.servicio-asignado',[
             'data' => Servicio::Where('categoria', 'principal')
             ->Where('descripcion', 'like', "%{$this->buscar}%")

@@ -16,13 +16,13 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Rule;
 use WireUi\Traits\Actions;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Livewire\Component;
 
 class Caja extends Component
 {
 
     use Actions;
-
 
     public $op1;
     public $op2;
@@ -32,15 +32,15 @@ class Caja extends Component
     #[Rule('required')]
     public $referencia;
 
+    public $prueba;
+
     public $descripcion;
     public $op1_hidden = 'hidden';
     public $op2_hidden = 'hidden';
     public $ref_hidden = 'hidden';
 
     protected $messages = [
-
         'dolares'     => 'Campo requerido',
-
     ];
 
     protected $listeners = [
@@ -245,10 +245,17 @@ class Caja extends Component
 
     }
 
-    public function facturar_servicio()
+    public function facturar_servicio(Request $request)
     {
+        /**
+         * El codigo es tomado de la variables de sesion 
+         * del usuario
+         * 
+         * @param $codigo
+         */
+        $codigo = $request->session()->all();
 
-        $item = VentaServicio::all()->last();
+        $item = VentaServicio::where('cod_asignacion', $codigo['cod_asignacion'])->first();
         Debugbar::info($item);
 
         $total = DB::table('detalle_asignacions')
@@ -276,8 +283,8 @@ class Caja extends Component
                     'referencia' => $this->referencia,
                     'total_USD' => $total_vista,
                     'pago_usd' => $total_vista,
-                    'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                    'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                    // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
+                    // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
@@ -287,8 +294,11 @@ class Caja extends Component
                 ]);
 
             Disponible::where('cod_asignacion', $item->cod_asignacion)
-                ->where('status', 'cerrado')
-                ->delete();
+                ->where('status', 'por facturar')
+                ->update([
+                    'status' => 'facturado'
+                ]);
+                // ->delete();
 
             Notification::make()
                 ->title('La factura fue cerrada con exito')
@@ -325,8 +335,8 @@ class Caja extends Component
                     'referencia' => $this->referencia,
                     'total_USD' => $total_vista,
                     'pago_bsd' => $total_vista * $tasa_bcv,
-                    'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                    'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                    // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
+                    // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
@@ -335,9 +345,11 @@ class Caja extends Component
                     'status' => '2' //cerrado todos los detalles del servicio
                 ]);
 
-            Disponible::where('cod_asignacion', $item->cod_asignacion)
-                ->where('status', 'cerrado')
-                ->delete();
+                Disponible::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', 'por facturar')
+                ->update([
+                    'status' => 'facturado'
+                ]);
 
                 Notification::make()
                 ->title('La factura fue cerrada con exito')
@@ -374,8 +386,8 @@ class Caja extends Component
                     'referencia' => $this->referencia,
                     'total_USD' => $total_vista,
                     'pago_bsd' => $total_vista * $tasa_bcv,
-                    'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                    'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                    // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
+                    // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
@@ -384,9 +396,11 @@ class Caja extends Component
                     'status' => '2' //cerrado todos los detalles del servicio
                 ]);
 
-            Disponible::where('cod_asignacion', $item->cod_asignacion)
-                ->where('status', 'cerrado')
-                ->delete();
+                Disponible::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', 'por facturar')
+                ->update([
+                    'status' => 'facturado'
+                ]);
 
                 Notification::make()
                 ->title('La factura fue cerrada con exito')
@@ -423,8 +437,8 @@ class Caja extends Component
                     'referencia' => $this->referencia,
                     'total_USD' => $total_vista,
                     'pago_bsd' => $total_vista * $tasa_bcv,
-                    'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                    'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                    // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
+                    // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
@@ -433,9 +447,11 @@ class Caja extends Component
                     'status' => '2' //cerrado todos los detalles del servicio
                 ]);
 
-            Disponible::where('cod_asignacion', $item->cod_asignacion)
-                ->where('status', 'cerrado')
-                ->delete();
+                Disponible::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', 'por facturar')
+                ->update([
+                    'status' => 'facturado'
+                ]);
 
                 Notification::make()
                 ->title('La factura fue cerrada con exito')
@@ -472,8 +488,8 @@ class Caja extends Component
                     'referencia' => $this->referencia,
                     'total_USD' => $total_vista,
                     'pago_bsd' => $total_vista * $tasa_bcv,
-                    'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                    'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                    // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
+                    // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
@@ -482,9 +498,11 @@ class Caja extends Component
                     'status' => '2' //cerrado todos los detalles del servicio
                 ]);
 
-            Disponible::where('cod_asignacion', $item->cod_asignacion)
-                ->where('status', 'cerrado')
-                ->delete();
+                Disponible::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', 'por facturar')
+                ->update([
+                    'status' => 'facturado'
+                ]);
 
                 Notification::make()
                 ->title('La factura fue cerrada con exito')
@@ -521,8 +539,8 @@ class Caja extends Component
                     'referencia' => $this->referencia,
                     'total_USD' => $total_vista,
                     'pago_usd' => $total_vista,
-                    'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                    'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                    // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
+                    // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
@@ -531,9 +549,11 @@ class Caja extends Component
                     'status' => '2' //cerrado todos los detalles del servicio
                 ]);
 
-            Disponible::where('cod_asignacion', $item->cod_asignacion)
-                ->where('status', 'cerrado')
-                ->delete();
+                Disponible::where('cod_asignacion', $item->cod_asignacion)
+                ->where('status', 'por facturar')
+                ->update([
+                    'status' => 'facturado'
+                ]);
 
             Notification::make()
                 ->title('La factura fue cerrada con exito')
@@ -591,8 +611,8 @@ class Caja extends Component
                                 'total_USD' => $total_vista,
                                 'pago_usd' => floatval($this->valor_uno),
                                 'pago_bsd' => Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
-                                'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                                'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                                // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
+                                // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                             ]);
 
                         DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
@@ -601,9 +621,11 @@ class Caja extends Component
                                 'status' => '2' //cerrado todos los detalles del servicio
                             ]);
 
-                        Disponible::where('cod_asignacion', $item->cod_asignacion)
-                            ->where('status', 'cerrado')
-                            ->delete();
+                            Disponible::where('cod_asignacion', $item->cod_asignacion)
+                            ->where('status', 'por facturar')
+                            ->update([
+                                'status' => 'facturado'
+                            ]);
 
                         Notification::make()
                             ->title('La factura fue cerrada con exito')
@@ -652,8 +674,8 @@ class Caja extends Component
                                 'referencia' => $this->referencia,
                                 'total_USD' => $total_vista,
                                 'pago_bsd' => $total_vista_bsd,
-                                'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                                'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                                // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
+                                // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                             ]);
 
                         DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
@@ -662,9 +684,11 @@ class Caja extends Component
                                 'status' => '2' //cerrado todos los detalles del servicio
                             ]);
 
-                        Disponible::where('cod_asignacion', $item->cod_asignacion)
-                            ->where('status', 'cerrado')
-                            ->delete();
+                            Disponible::where('cod_asignacion', $item->cod_asignacion)
+                            ->where('status', 'por facturar')
+                            ->update([
+                                'status' => 'facturado'
+                            ]);
 
                         Notification::make()
                             ->title('La factura fue cerrada con exito')
@@ -713,8 +737,8 @@ class Caja extends Component
                                 'referencia' => $this->referencia,
                                 'total_USD' => $total_vista,
                                 'pago_usd' => $total_vista,
-                                'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                                'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                                // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
+                                // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
                             ]);
 
                         DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
@@ -723,9 +747,11 @@ class Caja extends Component
                                 'status' => '2' //cerrado todos los detalles del servicio
                             ]);
 
-                        Disponible::where('cod_asignacion', $item->cod_asignacion)
-                            ->where('status', 'cerrado')
-                            ->delete();
+                            Disponible::where('cod_asignacion', $item->cod_asignacion)
+                            ->where('status', 'por facturar')
+                            ->update([
+                                'status' => 'facturado'
+                            ]);
 
                         Notification::make()
                             ->title('La factura fue cerrada con exito')
@@ -756,11 +782,19 @@ class Caja extends Component
 
     }
 
-    public function render()
+    public function render(Request $request)
     {
+        /**
+         * El codigo es tomado de la variables de sesion 
+         * del usuario
+         * 
+         * @param $codigo
+         */
+        $codigo = $request->session()->all();
+
         $this->event();
 
-        $data = VentaServicio::all()->last();
+        $data = VentaServicio::where('cod_asignacion', $codigo['cod_asignacion'])->first();
 
         $detalle = DetalleAsignacion::where('cod_asignacion', $data->cod_asignacion)
         ->where('status', '1')

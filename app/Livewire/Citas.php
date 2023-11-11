@@ -165,8 +165,6 @@ class Citas extends Component
         }
     }
 
-
-
     public function render()
     {
         $date = date('Y-m-d');

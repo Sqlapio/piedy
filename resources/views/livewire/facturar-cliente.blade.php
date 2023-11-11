@@ -1,16 +1,17 @@
 <div>
     @livewire('notifications')
     <div class="grid grid-cols-2 gap-2">
-        <div class="w-full max-w-2xl max-h-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
+        <div class="w-full max-h-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
             <div class="flex justify-start mb-4">
                 <input wire:model.live="buscar" type="search" id="search" name="buscar" class="border-b border-gray-200 py-2 text-sm rounded-full shadow-lg focus:ring-check-blue focus:border-check-blue" placeholder="Buscar cliente" autocomplete="off">
             </div>
+            <p class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-1 p-1">Selección de servícios</p>
             <ul class="space-y-3">
                 @foreach ($data as $item)
                 <div class="">
                     <input type="checkbox" id="{{ $item->id }}" wire:model.live="servicios" wire:click="total()" value="{{ $item->id }}" class="hidden peer">
                     <label for="{{ $item->id }}" class="inline-flex items-center justify-between w-full p-3 text-black bg-gray-400 border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-green-600 peer-checked:bg-green-600 peer-checked:text-white shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]">
-                        
+
                             <div class="flex items-center space-x-4 w-full">
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-extrabold text-white truncate dark:text-white">
@@ -26,7 +27,7 @@
                                     </p>
                                 </div>
                             </div>
-                        
+
                     </label>
                 </div>
                 @endforeach
@@ -60,7 +61,7 @@
             <div class="mt-8 space-y-6">
                 <div class="px-2">
                     <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Forma de pago:</p>
-                    <x-select wire:change="$emit('metodo', $event.target.value)" wire:model.live="descripcion" placeholder="Método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
+                    <x-select wire:blur="$dispacht('metodo_principal', value: $event.target.value)" wire:model.live="descripcion" placeholder="Método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
                 </div>
                 <div class="px-2 {{ $ref_hidden }}">
                     <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Nro. referencia:</p>
@@ -69,11 +70,11 @@
                 <div class="grid grid-cols-2 gap-2">
                     <div class="px-2 {{ $op1_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método 1</p>
-                        <x-select wire:change="$emit('metodo1', $event.target.value)" wire:model.live="op1" placeholder="Seleccione método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
+                        <x-select wire:change="$dispatch('metodo1', $event.target.value)" wire:model.live="op1" placeholder="Seleccione método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
                     </div>
                     <div class="px-2 {{ $op2_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método 2</p>
-                        <x-select wire:change="$emit('metodo2', $event.target.value)" wire:model.live="op2" placeholder="Seleccione método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
+                        <x-select wire:change="$dispatch('metodo2', $event.target.value)" wire:model.live="op2" placeholder="Seleccione método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-2">
@@ -97,7 +98,6 @@
             </div>
         </div>
     </div>
-    <x-menu_table />
 </div>
 
 

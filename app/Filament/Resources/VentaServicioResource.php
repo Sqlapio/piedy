@@ -61,7 +61,8 @@ class VentaServicioResource extends Resource
                 ->summarize(Sum::make()
                 ->money('USD')
                 ->label('Total($)'))
-                ->searchable(),
+                ->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('pago_bsd')
                 ->summarize(Sum::make()
@@ -71,7 +72,8 @@ class VentaServicioResource extends Resource
                     thousandsSeparator: '.',
                 )
                 ->label('Total(Bs)'))
-                ->searchable(),
+                ->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('comision_empleado')->money('USD')
                 ->summarize(Sum::make()

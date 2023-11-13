@@ -35,6 +35,9 @@ class FacturarCliente extends Component
     public $valor_uno;
     public $valor_dos;
 
+    public $valor_uno_db;
+    public $valor_dos_db;
+
     #[Rule('required')]
     public $referencia;
 
@@ -212,7 +215,7 @@ class FacturarCliente extends Component
         /**
          * Pago total en DOLARES
          */
-        if($this->descripcion == 'Efectivo Usd' || $this->descripcion == 'Zelle')
+        if($this->descripcion == 'Efectivo Usd')
         {
 
             $factura = new FacturaMultiple();
@@ -220,6 +223,49 @@ class FacturarCliente extends Component
             $factura->responsable       = $user->name;
             $factura->metodo_pago       = 'Facturación multiple';
             $factura->referencia        = $factura->cod_asignacion;
+            $factura->fecha_venta       = date('d-m-Y');
+            $factura->pago_usd          = $this->total_vista;
+            $factura->total_usd         = $this->total_vista;
+            $factura->save();
+
+                for ($i=0; $i < count($this->servicios) ; $i++)
+                {
+                    Disponible::where('id', $this->servicios[$i])->update([
+                        'status' => 'facturado'
+                    ]);
+
+                    $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
+
+                    DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
+                        'status' => 2
+                    ]);
+
+                    VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
+                        'metodo_pago' => $factura->metodo_pago,
+                        'referencia' => $factura->cod_asignacion
+                    ]);
+                }
+
+            Notification::make()
+                ->title('La factura fue cerrada con exito')
+                ->success()
+                ->send();
+
+            $this->redirect('/citas');
+
+        }
+
+        /**
+         * Pago total en DOLARES
+         */
+        if($this->descripcion == 'Zelle')
+        {
+
+            $factura = new FacturaMultiple();
+            $factura->cod_asignacion    = 'FM-'.random_int(11111111, 99999999);
+            $factura->responsable       = $user->name;
+            $factura->metodo_pago       = 'Facturación multiple';
+            $factura->referencia        = $this->referencia;
             $factura->fecha_venta       = date('d-m-Y');
             $factura->pago_usd          = $this->total_vista;
             $factura->total_usd         = $this->total_vista;
@@ -363,30 +409,34 @@ class FacturarCliente extends Component
                             $description = 'Los monto deben ser mayores a cero.'
                         );
                     }else{
-                        $this->referencia = 'pago multiple';
-                        $facturar = DB::table('venta_servicios')
-                            ->where('cod_asignacion', $item->cod_asignacion)
-                            ->update([
-                                'metodo_pago' => $this->descripcion,
-                                'referencia' => $this->referencia,
-                                'total_USD' => $total_vista,
-                                'pago_usd' => floatval($this->valor_uno),
-                                'pago_bsd' => Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
-                                // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                                // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
-                            ]);
+                        $factura = new FacturaMultiple();
+                        $factura->cod_asignacion    = 'FM-'.random_int(11111111, 99999999);
+                        $factura->responsable       = $user->name;
+                        $factura->metodo_pago       = 'Facturación multiple';
+                        $factura->referencia        = $factura->cod_asignacion;
+                        $factura->fecha_venta       = date('d-m-Y');
+                        $factura->pago_bsd          = str_replace(',', '.', str_replace('.', '', $this->valor_dos));
+                        $factura->pago_usd          = str_replace(',', '.', $this->valor_uno);
+                        $factura->total_usd         = $this->total_vista;
+                        $factura->save();
 
-                        DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
-                            ->where('status', '1')
-                            ->update([
-                                'status' => '2' //cerrado todos los detalles del servicio
-                            ]);
-
-                            Disponible::where('cod_asignacion', $item->cod_asignacion)
-                            ->where('status', 'por facturar')
-                            ->update([
+                        for ($i=0; $i < count($this->servicios) ; $i++)
+                        {
+                            Disponible::where('id', $this->servicios[$i])->update([
                                 'status' => 'facturado'
                             ]);
+
+                            $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
+
+                            DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
+                                'status' => 2
+                            ]);
+
+                            VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
+                                'metodo_pago' => $factura->metodo_pago,
+                                'referencia' => $factura->cod_asignacion
+                            ]);
+                        }
 
                         Notification::make()
                             ->title('La factura fue cerrada con exito')
@@ -395,19 +445,6 @@ class FacturarCliente extends Component
 
                         $this->redirect('/citas');
 
-                        $user = User::where('id', $item->empleado_id)->first();
-                        $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
-                        $type = 'servicio';
-                        $mailData = [
-                            'codigo' => $item->cod_asignacion,
-                            'user_email' => $user->email,
-                            'user_fullname' => $item->empleado,
-                            'cliente_fullname' => $item->cliente,
-                            'fecha_venta' => $item->fecha_venta,
-                            'detalle' => $detalle,
-                        ];
-
-                        NotificacionesController::notification($mailData, $type);
                     }
 
                 }
@@ -427,29 +464,33 @@ class FacturarCliente extends Component
                             $description = 'Los monto deben ser myor a 0.'
                         );
                     }else{
-                        $this->referencia = 'pago multiple';
-                        $facturar = DB::table('venta_servicios')
-                            ->where('cod_asignacion', $item->cod_asignacion)
-                            ->update([
-                                'metodo_pago' => $this->descripcion,
-                                'referencia' => $this->referencia,
-                                'total_USD' => $total_vista,
-                                'pago_bsd' => $total_vista_bsd,
-                                // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                                // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
-                            ]);
+                        $factura = new FacturaMultiple();
+                        $factura->cod_asignacion    = 'FM-'.random_int(11111111, 99999999);
+                        $factura->responsable       = $user->name;
+                        $factura->metodo_pago       = 'Facturación multiple';
+                        $factura->referencia        = $factura->cod_asignacion;
+                        $factura->fecha_venta       = date('d-m-Y');
+                        $factura->pago_bsd          = $this->total_vista_bsd;
+                        $factura->total_usd         = $this->total_vista;
+                        $factura->save();
 
-                        DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
-                            ->where('status', '1')
-                            ->update([
-                                'status' => '2' //cerrado todos los detalles del servicio
-                            ]);
-
-                            Disponible::where('cod_asignacion', $item->cod_asignacion)
-                            ->where('status', 'por facturar')
-                            ->update([
+                        for ($i=0; $i < count($this->servicios) ; $i++)
+                        {
+                            Disponible::where('id', $this->servicios[$i])->update([
                                 'status' => 'facturado'
                             ]);
+
+                            $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
+
+                            DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
+                                'status' => 2
+                            ]);
+
+                            VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
+                                'metodo_pago' => $factura->metodo_pago,
+                                'referencia' => $factura->cod_asignacion
+                            ]);
+                        }
 
                         Notification::make()
                             ->title('La factura fue cerrada con exito')
@@ -457,20 +498,6 @@ class FacturarCliente extends Component
                             ->send();
 
                         $this->redirect('/citas');
-
-                        $user = User::where('id', $item->empleado_id)->first();
-                        $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
-                        $type = 'servicio';
-                        $mailData = [
-                            'codigo' => $item->cod_asignacion,
-                            'user_email' => $user->email,
-                            'user_fullname' => $item->empleado,
-                            'cliente_fullname' => $item->cliente,
-                            'fecha_venta' => $item->fecha_venta,
-                            'detalle' => $detalle,
-                        ];
-
-                        NotificacionesController::notification($mailData, $type);
                     }
 
                 }
@@ -490,29 +517,33 @@ class FacturarCliente extends Component
                             $description = 'Los monto deben ser myor a 0.'
                         );
                     }else{
-                        $this->referencia = 'pago multiple';
-                        $facturar = DB::table('venta_servicios')
-                            ->where('cod_asignacion', $item->cod_asignacion)
-                            ->update([
-                                'metodo_pago' => $this->descripcion,
-                                'referencia' => $this->referencia,
-                                'total_USD' => $total_vista,
-                                'pago_usd' => $total_vista,
-                                // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                                // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
-                            ]);
+                        $factura = new FacturaMultiple();
+                        $factura->cod_asignacion    = 'FM-'.random_int(11111111, 99999999);
+                        $factura->responsable       = $user->name;
+                        $factura->metodo_pago       = 'Facturación multiple';
+                        $factura->referencia        = $factura->cod_asignacion;
+                        $factura->fecha_venta       = date('d-m-Y');
+                        $factura->pago_bsd          = $this->total_vista_bsd;
+                        $factura->total_usd         = $this->total_vista;
+                        $factura->save();
 
-                        DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
-                            ->where('status', '1')
-                            ->update([
-                                'status' => '2' //cerrado todos los detalles del servicio
-                            ]);
-
-                            Disponible::where('cod_asignacion', $item->cod_asignacion)
-                            ->where('status', 'por facturar')
-                            ->update([
+                        for ($i=0; $i < count($this->servicios) ; $i++)
+                        {
+                            Disponible::where('id', $this->servicios[$i])->update([
                                 'status' => 'facturado'
                             ]);
+
+                            $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
+
+                            DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
+                                'status' => 2
+                            ]);
+
+                            VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
+                                'metodo_pago' => $factura->metodo_pago,
+                                'referencia' => $factura->cod_asignacion
+                            ]);
+                        }
 
                         Notification::make()
                             ->title('La factura fue cerrada con exito')
@@ -520,20 +551,6 @@ class FacturarCliente extends Component
                             ->send();
 
                         $this->redirect('/citas');
-
-                        $user = User::where('id', $item->empleado_id)->first();
-                        $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
-                        $type = 'servicio';
-                        $mailData = [
-                            'codigo' => $item->cod_asignacion,
-                            'user_email' => $user->email,
-                            'user_fullname' => $item->empleado,
-                            'cliente_fullname' => $item->cliente,
-                            'fecha_venta' => $item->fecha_venta,
-                            'detalle' => $detalle,
-                        ];
-
-                        NotificacionesController::notification($mailData, $type);
                     }
 
                 }

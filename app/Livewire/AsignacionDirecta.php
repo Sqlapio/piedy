@@ -13,10 +13,15 @@ use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
+use Livewire\WithPagination;
 use LivewireUI\Modal\ModalComponent;
+use WireUi\Traits\Actions;
 
 class AsignacionDirecta extends ModalComponent
 {
+    use WithPagination;
+
+    use Actions;
 
     #[Rule('required', message: 'Campo obligatorio')]
     public $empleado_id;
@@ -28,7 +33,7 @@ class AsignacionDirecta extends ModalComponent
     public $cliente_id;
 
 
-    public function asignar_tecnico() 
+    public function asignar_tecnico()
     {
         $this->validate();
 
@@ -67,7 +72,7 @@ class AsignacionDirecta extends ModalComponent
                 $this->forceClose()->closeModal();
 
                 /**
-                 * Guardamos la asignacion directa en la 
+                 * Guardamos la asignacion directa en la
                  * tabla de citas para llevar el control
                  * de la entrada de los clientes
                  */
@@ -85,7 +90,7 @@ class AsignacionDirecta extends ModalComponent
 
                 /**
                  * Cargamos el servicio principal asigando
-                 * en la tabla de detalle de asignacion 
+                 * en la tabla de detalle de asignacion
                  */
                 $detalle_asignacion = new DetalleAsignacion();
                 $detalle_asignacion->cod_asignacion     = $disponible->cod_asignacion;
@@ -101,7 +106,7 @@ class AsignacionDirecta extends ModalComponent
                 $detalle_asignacion->fecha              = date('d-m-Y');
                 $detalle_asignacion->save();
 
-                $this->redirect('/citas');
+                $this->redirect('/cabinas');
 
             }else{
 
@@ -110,12 +115,13 @@ class AsignacionDirecta extends ModalComponent
                     'description' => 'El tecnico debe cerrar el servicio anterior.',
                     'icon'        => 'error'
                 ]);
+
             }
 
         } catch (\Throwable $th) {
             dd($th);
         }
-        
+
     }
 
     public static function modalMaxWidth(): string

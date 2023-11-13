@@ -94,6 +94,10 @@
             </div>
         </div>
         @endforeach
+
+        {{-- div para separacion ene le diseno --}}
+        <div class="w-full h-28"></div>
+
         {{-- Menu para table --}}
         <div class="fixed sm:z-0 md:z-0 lg:z-50 w-full h-16 max-w-lg -translate-x-1/2 bg-white border border-gray-200 rounded-full bottom-4 left-1/2 dark:bg-gray-700 dark:border-gray-600">
             <div class="grid h-full max-w-lg grid-cols-7 mx-auto ">

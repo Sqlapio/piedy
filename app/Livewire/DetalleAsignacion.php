@@ -17,6 +17,7 @@ use App\Models\VentaServicio;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use LivewireUI\Modal\ModalComponent;
 use WireUi\Traits\Actions;
 
@@ -54,13 +55,16 @@ class DetalleAsignacion extends ModalComponent
 
         Debugbar::info($this->disponible->cod_asignacion);
 
-        if ($this->disponible->status == 'activo') {
+        if ($this->disponible->status == 'activo')
+        {
+
             $this->forceClose()->closeModal();
 
             $this->dialog()->error(
                 $title = 'Error !!!',
                 $description = 'El servicio se encuentra activo.'
             );
+
         } else {
             /**
              * Calculo del total de venta para ser guardado
@@ -76,14 +80,12 @@ class DetalleAsignacion extends ModalComponent
              * Cargo la venta en la tabla de ventas
              */
 
-
             $venta_servicio = new VentaServicio();
             $venta_servicio->cod_asignacion     = $this->disponible->cod_asignacion;
             $venta_servicio->cliente            = $this->disponible->cliente;
             $venta_servicio->cliente_id         = $this->disponible->cliente_id;
             $venta_servicio->empleado           = $this->disponible->empleado;
             $venta_servicio->empleado_id        = $this->disponible->empleado_id;
-            $venta_servicio->fecha_venta        = date('d-m-Y');
             $venta_servicio->fecha_venta        = date('d-m-Y');
             $venta_servicio->total_USD          = $total->total;
             $venta_servicio->comision_empleado  = UtilsController::cal_comision_empleado($total->total);
@@ -105,22 +107,23 @@ class DetalleAsignacion extends ModalComponent
                 ->update([
                     'visitas' => $visitas->visitas + 1
                 ]);
-
-            Notification::make()
-                ->title('Cierre exitoso')
-                ->icon('heroicon-o-shield-check')
-                ->iconColor('danger')
-                ->body('El servicio fue cerrado de forma exitosa')
-                ->send();
-
+            
             $this->forceClose()->closeModal();
 
-            // $this->redirect('/caja');
+            Notification::make()
+                ->title('Operación exitosa!!')
+                ->icon('heroicon-o-shield-check')
+                ->body('El servicio fue cerrado de forma correcta. Deberá realizar su facturacion a la brevedad posible.')
+                ->send();
+
+            $this->redirect('/cabinas');
         }
     }
 
     public function facturar_servicio()
     {
+        session(['cod_asignacion' => $this->disponible->cod_asignacion]);
+
         $this->redirect('/caja');
     }
 
@@ -138,6 +141,7 @@ class DetalleAsignacion extends ModalComponent
             ->where('cod_asignacion', $this->disponible->cod_asignacion)
             ->where('status', '1')
             ->first();
+
         $total_vista = $total->total;
 
         //debug

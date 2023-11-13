@@ -4,6 +4,7 @@
         Cliente: {{ $data->cliente }}
     </h5>
     <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Técnico: {{ $data->empleado }}</p>
+    <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Código: {{ $data->cod_asignacion }}</p>
     <p class="text-sm mt-5 font-normal text-gray-500 dark:text-gray-400">Servicio realizados</p>
     <ul class="my-4 space-y-3">
             @if(count($detalle) > 0)
@@ -45,16 +46,6 @@
                 </a>
             </li>
     </ul>
-    {{-- <div class="mt-10 text-center sm:mt-7">
-        <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Método de pago</h3>
-        <div class="p-2">
-            <x-select wire:change="$emit('selected', $event.target.value)" wire:model.defer="descripcion" placeholder="Método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
-        </div>
-    </div>
-    <div class="relative z-0 w-full mb-6 group p-2">
-        <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Referencia</p>
-        <x-input wire:model.defer="referencia" placeholder="12363456" />
-    </div> --}}
     @if($data->status == 'cerrado')
     <div class="sm:mt-2">
         <button type="button" wire:click="cerrar_servicio()" class="inline-flex w-full justify-center rounded-lg bg-red-700 px-3 py-3 mt-10 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Cerrar servicio</button>

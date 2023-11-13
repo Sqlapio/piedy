@@ -23,7 +23,7 @@ class DisponibleResource extends Resource
 
     protected static ?string $navigationGroup = 'Tienda Sambil';
 
-    protected static ?string $navigationLabel = 'Puestos activos';
+    protected static ?string $navigationLabel = 'Servicios asignados';
 
     public static function form(Form $form): Form
     {
@@ -44,19 +44,20 @@ class DisponibleResource extends Resource
                 TextColumn::make('servicio_categoria')->searchable(),
                 TextColumn::make('area_trabajo')->searchable(),
                 TextColumn::make('costo')->searchable(),
-                IconColumn::make('status')
-                ->options([
-                    'heroicon-o-users' => fn ($state, $record): bool => $record->status === 'activo',
-                ])
-                ->colors([
-                    'success' => 'activo',
-                ])
+                TextColumn::make('status')
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'activo' => 'info',
+                    'cerrado' => 'danger',
+                    'por facturar' => 'warning',
+                    'facturado' => 'success',
+                })
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

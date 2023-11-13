@@ -56,9 +56,13 @@ class Cabinas extends Component
         redirect()->to('/servicios');
     }
 
+    public function facturar_cliente(){
+        redirect()->to('/facturar/cliente');
+    }
+
     public function render()
     {
-        $data = Disponible::all();
+        $data = Disponible::where('status', 'cerrado')->orWhere('status', 'por facturar')->get();
         return view('livewire.cabinas', compact('data'));
     }
 }

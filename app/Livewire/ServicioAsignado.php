@@ -101,12 +101,12 @@ class ServicioAsignado extends Component
     public function render()
     {
         $user = Auth::user();
-        
+
         return view('livewire.servicio-asignado',[
             'data' => Servicio::Where('categoria', 'principal')
             ->Where('descripcion', 'like', "%{$this->buscar}%")
                ->orderBy('id', 'desc')
-               ->paginate(6),
+               ->paginate(4),
             'data_user' => Disponible::where('empleado_id', $user->id)->where('status', 'activo')->first()
        ]);
     }

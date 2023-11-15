@@ -3,6 +3,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
     $tasa = ModelsTasaBcv::first()->tasa;
 @endphp
 <div class="py-8 my-auto">
+    
     @if(Auth::user()->tipo_usuario == 'gerente')
         {{-- BCV linea --}}
     <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4 p-4">

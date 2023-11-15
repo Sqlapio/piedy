@@ -1,5 +1,6 @@
 <x-guest-layout>
     <div class="grid grid-cols-2 gap-2">
+        @livewire('notifications')
         <x-authentication-card>
             <x-slot name="logo">
                 <x-authentication-card-logo />

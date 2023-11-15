@@ -20,9 +20,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
-// Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::post('/actualiza/password', [LoginController::class, 'actualiza_password'])->name('actualiza_password');
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     Route::get('/dashboard', function () {

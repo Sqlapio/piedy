@@ -68,24 +68,34 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                     <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Nro. referencia:</p>
                     <x-input wire:model.defer="referencia" placeholder="12363456" />
                 </div>
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-2 gap-2 {{ $op1_hidden }}">
                     <div class="px-2 {{ $op1_hidden }}">
-                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método 1</p>
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método de pago($)</p>
                         <x-select wire:change="$emit('metodo1', $event.target.value)" wire:model.live="op1" placeholder="Seleccione método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
                     </div>
                     <div class="px-2 {{ $op2_hidden }}">
-                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método 2</p>
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método de pago(Bs)</p>
                         <x-select wire:change="$emit('metodo2', $event.target.value)" wire:model.live="op2" placeholder="Seleccione método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-2 gap-2 {{ $op1_hidden }}">
                     <div class="px-2 {{ $op1_hidden }}">
-                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Monto</p>
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Monto en Dolares($)</p>
                         <x-input wire:keydown.enter="calculo($event.target.value)" wire:model.live="valor_uno" value="{{ $valor_uno }}" placeholder="0.00"/>
                     </div>
                     <div class="px-2 {{ $op2_hidden }}">
-                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Monto restante</p>
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Monto en Bolivares(Bs)</p>
                         <x-input wire:model.live="valor_dos" value="{{ $valor_dos }}" placeholder="0.00"/>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="px-2">
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Propina($)</p>
+                        <x-input  wire:model.live="propina_usd" placeholder="0.00"/>
+                    </div>
+                    <div class="px-2">
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Propina(Bs)</p>
+                        <x-input wire:model.live="propina_bsd" placeholder="0.00"/>
                     </div>
                 </div>
                 <div class="sm:mt-2">

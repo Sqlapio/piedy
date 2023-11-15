@@ -25,6 +25,8 @@ return new class extends Migration
             $table->decimal('costo', 8, 2);
             $table->string("fecha");
             $table->integer("status")->default(1);
+            $table->decimal('propina_usd', 8, 2)->default(0.00);
+            $table->decimal('propina_bsd', 8, 2)->default(0.00);
             $table->timestamps();
         });
     }

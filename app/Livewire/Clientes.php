@@ -25,26 +25,16 @@ class Clientes extends Component
     #[Rule('required|email|unique:clientes')]
     public $email;
 
-    #[Rule('required')]
-    public $telefono;
-
-    #[Rule('required')]
-    public $direccion_corta;
-
     public $buscar;
     public $ocultar_form_cliente = 'hidden';
     public $ocultar_table_cliente = '';
 
     protected $messages = [
-
         'nombre'            => 'Campo requerido',
         'apellido'          => 'Campo requerido',
         'cedula'            => 'Campo requerido',
         'cedula.numeric'    => 'El campo solo acepta números',
         'email.email'       => 'Campo tipo email',
-        'telefono'          => 'Campo requerido',
-        'direccion_corta'   => 'Campo requerido'
-
     ];
 
     public function ocultar_table()
@@ -55,8 +45,8 @@ class Clientes extends Component
 
     public function store()
     {
-        
-        $this->validate(); 
+
+        $this->validate();
 
         try {
 
@@ -76,10 +66,10 @@ class Clientes extends Component
                 ->title('Cliente creado con éxito')
                 ->success()
                 ->send();
-            
+
             $this->reset();
-            
-            
+
+
         } catch (\Throwable $th) {
             dd($th);
         }
@@ -117,7 +107,7 @@ class Clientes extends Component
             'data' => Cliente::orderBy('id', 'desc')
                 ->orWhere('nombre', 'like', "%{$this->buscar}%")
                 ->orWhere('apellido', 'like', "%{$this->buscar}%")
-                ->orWhere('cedula', 'like', "%{$this->buscar}%")                                      
+                ->orWhere('cedula', 'like', "%{$this->buscar}%")
                 ->paginate(4)
         ]);
     }

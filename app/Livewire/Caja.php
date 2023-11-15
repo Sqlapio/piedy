@@ -29,6 +29,9 @@ class Caja extends Component
     public $valor_uno;
     public $valor_dos;
 
+    public $propina_usd;
+    public $propina_bsd;
+
     #[Rule('required')]
     public $referencia;
 
@@ -75,9 +78,11 @@ class Caja extends Component
         }
     }
 
-    public function calculo($value)
+    public function calculo(Request $request)
     {
-        $item = VentaServicio::all()->last();
+        $codigo = $request->session()->all();
+
+        $item = VentaServicio::where('cod_asignacion', $codigo['cod_asignacion'])->first();
 
         $total = DB::table('detalle_asignacions')
         ->select(DB::raw('SUM(costo) as total'))
@@ -117,6 +122,7 @@ class Caja extends Component
                 //Evalua que el monto a calcular no sea mayor o igual al total de la venta
                 //------------------------------------------------------------------------
                 if($this->valor_uno >= $total_vista){
+                    dd($this->valor_uno, $total_vista);
                     $this->dialog()->error(
                         $title = 'Error !!!',
                         $description = 'El monto debe ser menor al valor total de la venta.'
@@ -248,9 +254,9 @@ class Caja extends Component
     public function facturar_servicio(Request $request)
     {
         /**
-         * El codigo es tomado de la variables de sesion 
+         * El codigo es tomado de la variables de sesion
          * del usuario
-         * 
+         *
          * @param $codigo
          */
         $codigo = $request->session()->all();
@@ -279,18 +285,20 @@ class Caja extends Component
             $facturar = DB::table('venta_servicios')
             ->where('cod_asignacion', $item->cod_asignacion)
                 ->update([
-                    'metodo_pago' => $this->descripcion,
-                    'referencia' => $this->referencia,
-                    'total_USD' => $total_vista,
-                    'pago_usd' => $total_vista,
-                    // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                    // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                    'metodo_pago'   => $this->descripcion,
+                    'referencia'    => $this->referencia,
+                    'total_USD'     => $total_vista,
+                    'pago_usd'      => $total_vista,
+                    'propina_usd'   => $this->propina_usd,
+                    'propina_bsd'   => $this->propina_bsd,
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                 ->where('status', '1')
                 ->update([
-                    'status' => '2' //cerrado todos los detalles del servicio
+                    'status' => '2',
+                    'propina_usd' => $this->propina_usd,
+                    'propina_bsd' => $this->propina_bsd,
                 ]);
 
             Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -307,19 +315,6 @@ class Caja extends Component
 
             $this->redirect('/citas');
 
-            $user = User::where('id', $item->empleado_id)->first();
-            $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
-            $type = 'servicio';
-            $mailData = [
-                'codigo' => $item->cod_asignacion,
-                'user_email' => $user->email,
-                'user_fullname' => $item->empleado,
-                'cliente_fullname' => $item->cliente,
-                'fecha_venta' => $item->fecha_venta,
-                'detalle' => $detalle,
-            ];
-
-            NotificacionesController::notification($mailData, $type);
         }
 
         /**
@@ -335,14 +330,16 @@ class Caja extends Component
                     'referencia' => $this->referencia,
                     'total_USD' => $total_vista,
                     'pago_bsd' => $total_vista * $tasa_bcv,
-                    // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                    // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                    'propina_usd'   => $this->propina_usd,
+                    'propina_bsd'   => $this->propina_bsd,
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                 ->where('status', '1')
                 ->update([
-                    'status' => '2' //cerrado todos los detalles del servicio
+                    'status' => '2',
+                    'propina_usd' => $this->propina_usd,
+                    'propina_bsd' => $this->propina_bsd,
                 ]);
 
                 Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -358,19 +355,6 @@ class Caja extends Component
 
             $this->redirect('/citas');
 
-            $user = User::where('id', $item->empleado_id)->first();
-            $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
-            $type = 'servicio';
-            $mailData = [
-                'codigo' => $item->cod_asignacion,
-                'user_email' => $user->email,
-                'user_fullname' => $item->empleado,
-                'cliente_fullname' => $item->cliente,
-                'fecha_venta' => $item->fecha_venta,
-                'detalle' => $detalle,
-            ];
-
-            NotificacionesController::notification($mailData, $type);
         }
 
         /**
@@ -386,14 +370,16 @@ class Caja extends Component
                     'referencia' => $this->referencia,
                     'total_USD' => $total_vista,
                     'pago_bsd' => $total_vista * $tasa_bcv,
-                    // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                    // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                    'propina_usd'   => $this->propina_usd,
+                    'propina_bsd'   => $this->propina_bsd,
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                 ->where('status', '1')
                 ->update([
-                    'status' => '2' //cerrado todos los detalles del servicio
+                    'status' => '2',
+                    'propina_usd' => $this->propina_usd,
+                    'propina_bsd' => $this->propina_bsd,
                 ]);
 
                 Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -409,19 +395,6 @@ class Caja extends Component
 
             $this->redirect('/citas');
 
-            $user = User::where('id', $item->empleado_id)->first();
-            $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
-            $type = 'servicio';
-            $mailData = [
-                'codigo' => $item->cod_asignacion,
-                'user_email' => $user->email,
-                'user_fullname' => $item->empleado,
-                'cliente_fullname' => $item->cliente,
-                'fecha_venta' => $item->fecha_venta,
-                'detalle' => $detalle,
-            ];
-
-            NotificacionesController::notification($mailData, $type);
         }
 
         /**
@@ -437,14 +410,16 @@ class Caja extends Component
                     'referencia' => $this->referencia,
                     'total_USD' => $total_vista,
                     'pago_bsd' => $total_vista * $tasa_bcv,
-                    // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                    // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                    'propina_usd'   => $this->propina_usd,
+                    'propina_bsd'   => $this->propina_bsd,
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                 ->where('status', '1')
                 ->update([
-                    'status' => '2' //cerrado todos los detalles del servicio
+                    'status' => '2',
+                    'propina_usd' => $this->propina_usd,
+                    'propina_bsd' => $this->propina_bsd,
                 ]);
 
                 Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -460,19 +435,6 @@ class Caja extends Component
 
             $this->redirect('/citas');
 
-            $user = User::where('id', $item->empleado_id)->first();
-            $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
-            $type = 'servicio';
-            $mailData = [
-                'codigo' => $item->cod_asignacion,
-                'user_email' => $user->email,
-                'user_fullname' => $item->empleado,
-                'cliente_fullname' => $item->cliente,
-                'fecha_venta' => $item->fecha_venta,
-                'detalle' => $detalle,
-            ];
-
-            NotificacionesController::notification($mailData, $type);
         }
 
         /**
@@ -488,14 +450,16 @@ class Caja extends Component
                     'referencia' => $this->referencia,
                     'total_USD' => $total_vista,
                     'pago_bsd' => $total_vista * $tasa_bcv,
-                    // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                    // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                    'propina_usd'   => $this->propina_usd,
+                    'propina_bsd'   => $this->propina_bsd,
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                 ->where('status', '1')
                 ->update([
-                    'status' => '2' //cerrado todos los detalles del servicio
+                    'status' => '2',
+                    'propina_usd' => $this->propina_usd,
+                    'propina_bsd' => $this->propina_bsd,
                 ]);
 
                 Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -511,19 +475,6 @@ class Caja extends Component
 
             $this->redirect('/citas');
 
-            $user = User::where('id', $item->empleado_id)->first();
-            $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
-            $type = 'servicio';
-            $mailData = [
-                'codigo' => $item->cod_asignacion,
-                'user_email' => $user->email,
-                'user_fullname' => $item->empleado,
-                'cliente_fullname' => $item->cliente,
-                'fecha_venta' => $item->fecha_venta,
-                'detalle' => $detalle,
-            ];
-
-            NotificacionesController::notification($mailData, $type);
         }
 
         /**
@@ -539,14 +490,16 @@ class Caja extends Component
                     'referencia' => $this->referencia,
                     'total_USD' => $total_vista,
                     'pago_usd' => $total_vista,
-                    // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                    // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                    'propina_usd'   => $this->propina_usd,
+                    'propina_bsd'   => $this->propina_bsd,
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                 ->where('status', '1')
                 ->update([
-                    'status' => '2' //cerrado todos los detalles del servicio
+                    'status' => '2',
+                    'propina_usd' => $this->propina_usd,
+                    'propina_bsd' => $this->propina_bsd,
                 ]);
 
                 Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -562,19 +515,6 @@ class Caja extends Component
 
             $this->redirect('/citas');
 
-            $user = User::where('id', $item->empleado_id)->first();
-            $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
-            $type = 'servicio';
-            $mailData = [
-                'codigo' => $item->cod_asignacion,
-                'user_email' => $user->email,
-                'user_fullname' => $item->empleado,
-                'cliente_fullname' => $item->cliente,
-                'fecha_venta' => $item->fecha_venta,
-                'detalle' => $detalle,
-            ];
-
-            NotificacionesController::notification($mailData, $type);
         }
 
         /**
@@ -611,14 +551,16 @@ class Caja extends Component
                                 'total_USD' => $total_vista,
                                 'pago_usd' => floatval($this->valor_uno),
                                 'pago_bsd' => Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
-                                // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                                // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                                'propina_usd'   => $this->propina_usd,
+                                'propina_bsd'   => $this->propina_bsd,
                             ]);
 
                         DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                             ->where('status', '1')
                             ->update([
-                                'status' => '2' //cerrado todos los detalles del servicio
+                                'status' => '2',
+                                'propina_usd' => $this->propina_usd,
+                                'propina_bsd' => $this->propina_bsd,
                             ]);
 
                             Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -634,19 +576,6 @@ class Caja extends Component
 
                         $this->redirect('/citas');
 
-                        $user = User::where('id', $item->empleado_id)->first();
-                        $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
-                        $type = 'servicio';
-                        $mailData = [
-                            'codigo' => $item->cod_asignacion,
-                            'user_email' => $user->email,
-                            'user_fullname' => $item->empleado,
-                            'cliente_fullname' => $item->cliente,
-                            'fecha_venta' => $item->fecha_venta,
-                            'detalle' => $detalle,
-                        ];
-
-                        NotificacionesController::notification($mailData, $type);
                     }
 
                 }
@@ -674,14 +603,16 @@ class Caja extends Component
                                 'referencia' => $this->referencia,
                                 'total_USD' => $total_vista,
                                 'pago_bsd' => $total_vista_bsd,
-                                // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                                // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                                'propina_usd'   => $this->propina_usd,
+                                'propina_bsd'   => $this->propina_bsd,
                             ]);
 
                         DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                             ->where('status', '1')
                             ->update([
-                                'status' => '2' //cerrado todos los detalles del servicio
+                                'status' => '2',
+                                'propina_usd' => $this->propina_usd,
+                                'propina_bsd' => $this->propina_bsd,
                             ]);
 
                             Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -697,19 +628,6 @@ class Caja extends Component
 
                         $this->redirect('/citas');
 
-                        $user = User::where('id', $item->empleado_id)->first();
-                        $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
-                        $type = 'servicio';
-                        $mailData = [
-                            'codigo' => $item->cod_asignacion,
-                            'user_email' => $user->email,
-                            'user_fullname' => $item->empleado,
-                            'cliente_fullname' => $item->cliente,
-                            'fecha_venta' => $item->fecha_venta,
-                            'detalle' => $detalle,
-                        ];
-
-                        NotificacionesController::notification($mailData, $type);
                     }
 
                 }
@@ -737,14 +655,16 @@ class Caja extends Component
                                 'referencia' => $this->referencia,
                                 'total_USD' => $total_vista,
                                 'pago_usd' => $total_vista,
-                                // 'comision_empleado' => UtilsController::cal_comision_empleado($total_vista),
-                                // 'comision_gerente' => UtilsController::cal_comision_gerente($total_vista),
+                                'propina_usd'   => $this->propina_usd,
+                                'propina_bsd'   => $this->propina_bsd,
                             ]);
 
                         DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                             ->where('status', '1')
                             ->update([
-                                'status' => '2' //cerrado todos los detalles del servicio
+                                'status' => '2',
+                                'propina_usd' => $this->propina_usd,
+                                'propina_bsd' => $this->propina_bsd,
                             ]);
 
                             Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -760,19 +680,6 @@ class Caja extends Component
 
                         $this->redirect('/citas');
 
-                        $user = User::where('id', $item->empleado_id)->first();
-                        $detalle = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->get();
-                        $type = 'servicio';
-                        $mailData = [
-                            'codigo' => $item->cod_asignacion,
-                            'user_email' => $user->email,
-                            'user_fullname' => $item->empleado,
-                            'cliente_fullname' => $item->cliente,
-                            'fecha_venta' => $item->fecha_venta,
-                            'detalle' => $detalle,
-                        ];
-
-                        NotificacionesController::notification($mailData, $type);
                     }
 
                 }
@@ -785,9 +692,9 @@ class Caja extends Component
     public function render(Request $request)
     {
         /**
-         * El codigo es tomado de la variables de sesion 
+         * El codigo es tomado de la variables de sesion
          * del usuario
-         * 
+         *
          * @param $codigo
          */
         $codigo = $request->session()->all();

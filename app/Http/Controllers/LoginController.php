@@ -79,9 +79,9 @@ class LoginController extends Controller
 
             if ($validated) {
 
-                $user_email = User::where('email', $request->email)->first();
+                $user = User::where('email', $request->email)->first();
 
-                if ($user_email != null) {
+                if ($user != null) {
                     if ($request->password == $request->password_two) {
                         User::where('email', $request->email)
                             ->update([
@@ -89,6 +89,14 @@ class LoginController extends Controller
                             ]);
 
                             notify()->success('La contraseña fue actualizada de forma exitosa');
+
+                            $type = 'reseteo_password';
+                            $mailData = [
+                                'user_email' => $user->email,
+                                'user_fullname' => $user->name,
+                            ];
+
+                            NotificacionesController::notification($mailData, $type);
 
                     } else {
 
@@ -102,6 +110,7 @@ class LoginController extends Controller
 
                 return redirect()->route('welcome');
             }
+
 
         } catch (\Throwable $th) {
             dd($th);

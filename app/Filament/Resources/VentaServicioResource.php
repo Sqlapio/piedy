@@ -38,58 +38,76 @@ class VentaServicioResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('cod_asignacion')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('cliente')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('empleado')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('fecha_venta')->searchable(),
                 TextColumn::make('metodo_pago')->searchable(),
                 TextColumn::make('referencia')->searchable(),
 
                 TextColumn::make('total_USD')
-                ->summarize(Sum::make()
-                ->money('USD')
-                ->label('Venta Neta($)'))
-                ->searchable(),
+                    ->summarize(Sum::make()
+                    ->money('USD')
+                    ->label('Venta Neta($)'))
+                    ->searchable(),
                 // TextColumn::make('total_USD')->summarize(Sum::make()),
 
                 TextColumn::make('pago_usd')->money('USD')
-                ->summarize(Sum::make()
-                ->money('USD')
-                ->label('Total($)'))
-                ->searchable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->summarize(Sum::make()
+                    ->money('USD')
+                    ->label('Total($)'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('pago_bsd')
-                ->summarize(Sum::make()
-                ->numeric(
-                    decimalPlaces: 00,
-                    decimalSeparator: ',',
-                    thousandsSeparator: '.',
-                )
-                ->label('Total(Bs)'))
-                ->searchable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->summarize(Sum::make()
+                    ->numeric(
+                        decimalPlaces: 00,
+                        decimalSeparator: ',',
+                        thousandsSeparator: '.',
+                    )
+                    ->label('Total(Bs)'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('comision_empleado')->money('USD')
-                ->summarize(Sum::make()
-                ->money('USD')
-                ->label('Neto Empleado($)'))
-                ->searchable()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->summarize(Sum::make()
+                    ->money('USD')
+                    ->label('Neto Empleado($)'))
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('comision_gerente')->money('USD')
-                ->summarize(Sum::make()
-                ->money('USD')
-                ->label('Neto Gerente($)'))
-                ->searchable()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->summarize(Sum::make()
+                    ->money('USD')
+                    ->label('Neto Gerente($)'))
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('propina_usd')->money('USD')
+                    ->summarize(Sum::make()
+                    ->money('USD')
+                    ->label('Total($)'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('propina_bsd')
+                    ->summarize(Sum::make()
+                    ->numeric(
+                        decimalPlaces: 00,
+                        decimalSeparator: ',',
+                        thousandsSeparator: '.',
+                    )
+                    ->label('Total(Bs)'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
             ])
             ->groups([

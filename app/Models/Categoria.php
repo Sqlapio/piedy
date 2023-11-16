@@ -4,15 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class FacturaMultiple extends Model
+class Categoria extends Model
 {
     use HasFactory;
 
     /**
      * Define table
      */
-    protected $table = 'factura_multiples';
+    protected $table = 'categorias';
 
     /**
      * The attributes that are mass assignable.
@@ -20,13 +21,11 @@ class FacturaMultiple extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'cod_asignacion',
-        'responsable',
-        'metodo_pago',
-        'referencia',
-        'fecha_venta',
-        'pago_usd',
-        'pago_bsd',
-        'total_usd',
+        'descripcion',
     ];
+
+    public function producto():HasOne
+    {
+        return $this->hasOne(Producto::class, 'categoria_id', 'id');
+    }
 }

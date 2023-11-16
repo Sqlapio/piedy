@@ -109,6 +109,5 @@ use App\Models\TasaBcv as ModelsTasaBcv;
             </div>
         </div>
     </div>
-    <x-menu_table />
 </div>
 

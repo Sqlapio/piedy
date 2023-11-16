@@ -289,16 +289,15 @@ class Caja extends Component
                     'referencia'    => $this->referencia,
                     'total_USD'     => $total_vista,
                     'pago_usd'      => $total_vista,
-                    'propina_usd'   => $this->propina_usd,
-                    'propina_bsd'   => $this->propina_bsd,
+                    'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
+                    'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                 ->where('status', '1')
                 ->update([
                     'status' => '2',
-                    'propina_usd' => $this->propina_usd,
-                    'propina_bsd' => $this->propina_bsd,
+                    
                 ]);
 
             Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -330,16 +329,14 @@ class Caja extends Component
                     'referencia' => $this->referencia,
                     'total_USD' => $total_vista,
                     'pago_bsd' => $total_vista * $tasa_bcv,
-                    'propina_usd'   => $this->propina_usd,
-                    'propina_bsd'   => $this->propina_bsd,
+                    'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
+                    'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                 ->where('status', '1')
                 ->update([
                     'status' => '2',
-                    'propina_usd' => $this->propina_usd,
-                    'propina_bsd' => $this->propina_bsd,
                 ]);
 
                 Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -370,16 +367,15 @@ class Caja extends Component
                     'referencia' => $this->referencia,
                     'total_USD' => $total_vista,
                     'pago_bsd' => $total_vista * $tasa_bcv,
-                    'propina_usd'   => $this->propina_usd,
-                    'propina_bsd'   => $this->propina_bsd,
+                    'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
+                    'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                 ->where('status', '1')
                 ->update([
                     'status' => '2',
-                    'propina_usd' => $this->propina_usd,
-                    'propina_bsd' => $this->propina_bsd,
+
                 ]);
 
                 Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -410,16 +406,15 @@ class Caja extends Component
                     'referencia' => $this->referencia,
                     'total_USD' => $total_vista,
                     'pago_bsd' => $total_vista * $tasa_bcv,
-                    'propina_usd'   => $this->propina_usd,
-                    'propina_bsd'   => $this->propina_bsd,
+                    'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
+                    'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                 ->where('status', '1')
                 ->update([
                     'status' => '2',
-                    'propina_usd' => $this->propina_usd,
-                    'propina_bsd' => $this->propina_bsd,
+
                 ]);
 
                 Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -450,16 +445,15 @@ class Caja extends Component
                     'referencia' => $this->referencia,
                     'total_USD' => $total_vista,
                     'pago_bsd' => $total_vista * $tasa_bcv,
-                    'propina_usd'   => $this->propina_usd,
-                    'propina_bsd'   => $this->propina_bsd,
+                    'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
+                    'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                 ->where('status', '1')
                 ->update([
                     'status' => '2',
-                    'propina_usd' => $this->propina_usd,
-                    'propina_bsd' => $this->propina_bsd,
+
                 ]);
 
                 Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -490,16 +484,15 @@ class Caja extends Component
                     'referencia' => $this->referencia,
                     'total_USD' => $total_vista,
                     'pago_usd' => $total_vista,
-                    'propina_usd'   => $this->propina_usd,
-                    'propina_bsd'   => $this->propina_bsd,
+                    'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
+                    'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                 ]);
 
             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                 ->where('status', '1')
                 ->update([
                     'status' => '2',
-                    'propina_usd' => $this->propina_usd,
-                    'propina_bsd' => $this->propina_bsd,
+
                 ]);
 
                 Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -551,16 +544,15 @@ class Caja extends Component
                                 'total_USD' => $total_vista,
                                 'pago_usd' => floatval($this->valor_uno),
                                 'pago_bsd' => Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
-                                'propina_usd'   => $this->propina_usd,
-                                'propina_bsd'   => $this->propina_bsd,
+                                'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
+                                'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                             ]);
 
                         DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                             ->where('status', '1')
                             ->update([
                                 'status' => '2',
-                                'propina_usd' => $this->propina_usd,
-                                'propina_bsd' => $this->propina_bsd,
+
                             ]);
 
                             Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -603,16 +595,15 @@ class Caja extends Component
                                 'referencia' => $this->referencia,
                                 'total_USD' => $total_vista,
                                 'pago_bsd' => $total_vista_bsd,
-                                'propina_usd'   => $this->propina_usd,
-                                'propina_bsd'   => $this->propina_bsd,
+                                'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
+                                'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                             ]);
 
                         DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                             ->where('status', '1')
                             ->update([
                                 'status' => '2',
-                                'propina_usd' => $this->propina_usd,
-                                'propina_bsd' => $this->propina_bsd,
+
                             ]);
 
                             Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -655,16 +646,15 @@ class Caja extends Component
                                 'referencia' => $this->referencia,
                                 'total_USD' => $total_vista,
                                 'pago_usd' => $total_vista,
-                                'propina_usd'   => $this->propina_usd,
-                                'propina_bsd'   => $this->propina_bsd,
+                                'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
+                                'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                             ]);
 
                         DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                             ->where('status', '1')
                             ->update([
                                 'status' => '2',
-                                'propina_usd' => $this->propina_usd,
-                                'propina_bsd' => $this->propina_bsd,
+
                             ]);
 
                             Disponible::where('cod_asignacion', $item->cod_asignacion)

@@ -25,6 +25,9 @@ class Clientes extends Component
     #[Rule('required|email|unique:clientes')]
     public $email;
 
+    public $telefono;
+    public $direccion_corta;
+
     public $buscar;
     public $ocultar_form_cliente = 'hidden';
     public $ocultar_table_cliente = '';

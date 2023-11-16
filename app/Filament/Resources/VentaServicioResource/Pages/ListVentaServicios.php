@@ -16,4 +16,11 @@ class ListVentaServicios extends ListRecords
             // Actions\CreateAction::make(),
         ];
     }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            VentaServicioResource\Widgets\StatsVenta::class,
+        ];
+    }
 }

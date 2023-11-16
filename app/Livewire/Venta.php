@@ -12,41 +12,40 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
+use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 
 class Venta extends Component implements HasForms, HasTable
 {
     use InteractsWithTable;
     use InteractsWithForms;
-    
+
     public function table(Table $table): Table
     {
         return $table
             ->query(VentaServicio::query())
             ->columns([
                 TextColumn::make('cod_asignacion')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('cliente')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('empleado')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('fecha_venta')->searchable(),
                 TextColumn::make('metodo_pago')->searchable(),
                 TextColumn::make('referencia')->searchable(),
 
                 TextColumn::make('total_USD')
-                ->summarize(Sum::make()
-                // ->money('USD')
-                ->numeric(
-                    decimalPlaces: 00,
-                    decimalSeparator: ',',
-                    thousandsSeparator: '.',
-                )
-                ->label('Venta Neta($)'))
-                ->searchable(),
-                // TextColumn::make('total_USD')->summarize(Sum::make()),
+                    ->summarize(Sum::make()
+                    ->numeric(
+                        decimalPlaces: 00,
+                        decimalSeparator: ',',
+                        thousandsSeparator: '.',
+                    )
+                    ->label('Venta Neta($)'))
+                    ->searchable(),
 
                 TextColumn::make('pago_usd')->money('USD')
                 ->summarize(Sum::make()
@@ -67,7 +66,7 @@ class Venta extends Component implements HasForms, HasTable
                 )
                 ->label('Total(Bs)'))
                 ->searchable(),
-                
+
             ])
             ->groups([
                 'metodo_pago',
@@ -77,7 +76,8 @@ class Venta extends Component implements HasForms, HasTable
             ])
             // ->defaultGroup('empleado')
             ->filters([
-                // ...
+                DateRangeFilter::make('created_at')
+                ->timezone('America/Caracas'),
             ])
             ->actions([
                 // ...

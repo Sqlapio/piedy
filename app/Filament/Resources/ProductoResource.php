@@ -4,15 +4,20 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductoResource\Pages;
 use App\Filament\Resources\ProductoResource\RelationManagers;
+use App\Models\Categoria;
 use App\Models\Comision;
 use App\Models\Producto;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -28,7 +33,7 @@ class ProductoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-shopping-cart';
 
-    protected static ?string $navigationGroup = 'Administración';
+    protected static ?string $navigationGroup = 'Movimientos de inventario';
 
     public static function form(Form $form): Form
     {
@@ -36,21 +41,32 @@ class ProductoResource extends Resource
             ->schema([
                 TextInput::make('cod_producto')->default('Ppro-'.random_int(11111, 99999)),
                 TextInput::make('descripcion')->required(),
-                TextInput::make('existencia')
-                    ->numeric()
-                    ->minValue(5)
+                Select::make('categoria_id')
+                    ->relationship('categoria', 'descripcion')
+                    ->searchable()
+                    ->preload()
+                    ->createOptionForm([
+                        TextInput::make('descripcion')
+                            ->required(),
+                    ])
                     ->required(),
-                TextInput::make('precio')
+                TextInput::make('proveedor'),
+                TextInput::make('precio_unitario')
                     ->prefix('$')
                     ->numeric()
-                    ->minValue(5)
+                    ->inputMode('decimal'),
+                TextInput::make('precio_lote')
+                    ->prefix('$')
+                    ->numeric()
+                    ->inputMode('decimal'),
+                TextInput::make('existencia')
+                    ->numeric()
                     ->required(),
+                DatePicker::make('fecha_carga')->format('d-m-Y'),
                 Select::make('comision_id')
                     ->relationship('comision', 'porcentaje')
                     ->options(Comision::where('aplicacion', 'producto')->pluck('porcentaje', 'id'))
-                    // ->options(Comision::all()->pluck('porcentaje', 'id'))
                     ->searchable()
-                    
                     ->preload()
                     ->createOptionForm([
                         TextInput::make('cod_comision')->default('Pco-'.random_int(11111, 99999)),
@@ -58,7 +74,19 @@ class ProductoResource extends Resource
                             ->prefix('%')
                             ->required(),
                     ])
-                    ->required()
+                    ->required(),
+                FileUpload::make('image')
+                ->imageEditor()
+                ->imageEditorAspectRatios([
+                    '16:9',
+                    '4:3',
+                    '1:1',
+                ]),
+                Select::make('status')
+                    ->options([
+                        'activo' => 'Activo',
+                        'inactivo' => 'Inactivo',
+                    ])
             ]);
     }
 
@@ -66,11 +94,16 @@ class ProductoResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('cod_producto')->searchable(),
-                Tables\Columns\TextColumn::make('descripcion')->searchable(),
-                Tables\Columns\TextColumn::make('existencia')->searchable(),
-                Tables\Columns\TextColumn::make('precio')->money('USD')->searchable(),
-                Tables\Columns\TextColumn::make('comision.porcentaje')->searchable(),
+                TextColumn::make('cod_producto')->searchable(),
+                ImageColumn::make('image')->circular(),
+                TextColumn::make('descripcion')->searchable(),
+                TextColumn::make('categoria.descripcion')->searchable(),
+                TextColumn::make('precio_unitario')->money('USD')->searchable(),
+                TextColumn::make('precio_lote')->money('USD')->searchable(),
+                TextColumn::make('existencia')->searchable(),
+                TextColumn::make('fecha_carga')->searchable(),
+                TextColumn::make('fecha_carga')->searchable(),
+                TextColumn::make('comision.porcentaje')->searchable(),
                 IconColumn::make('status')
                 ->options([
                     'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
@@ -80,7 +113,7 @@ class ProductoResource extends Resource
                     'danger' => 'inactivo',
                     'success' => 'activo',
                 ]),
-                
+
             ])
             ->filters([
                 //
@@ -97,14 +130,14 @@ class ProductoResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -112,5 +145,5 @@ class ProductoResource extends Resource
             'create' => Pages\CreateProducto::route('/create'),
             'edit' => Pages\EditProducto::route('/{record}/edit'),
         ];
-    }    
+    }
 }

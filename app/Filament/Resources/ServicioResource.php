@@ -22,7 +22,7 @@ class ServicioResource extends Resource
 {
     protected static ?string $model = Servicio::class;
 
-    protected static ?string $navigationIcon = 'heroicon-m-squares-plus';
+    protected static ?string $navigationIcon = 'heroicon-m-puzzle-piece';
 
     protected static ?string $navigationGroup = 'Administración';
 
@@ -42,7 +42,7 @@ class ServicioResource extends Resource
                     ->numeric()
                     ->minValue(1)
                     ->maxValue(100)
-                    ->required(), 
+                    ->required(),
                 TextInput::make('duracion_max')
                     ->prefix('Minutos')
                     ->numeric()
@@ -90,14 +90,14 @@ class ServicioResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -105,5 +105,5 @@ class ServicioResource extends Resource
             'create' => Pages\CreateServicio::route('/create'),
             'edit' => Pages\EditServicio::route('/{record}/edit'),
         ];
-    }    
+    }
 }

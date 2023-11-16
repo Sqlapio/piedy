@@ -23,6 +23,11 @@ class NotificacionesController extends Controller
 				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view));
 			}
 
+            if ($type == 'reseteo_password') {
+				$view = 'emails.reseteo_password';
+				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view));
+			}
+
 		} catch (\Throwable $th) {
 			$message = $th->getMessage();
 			dd('Error UtilsController.send_mail()', $message);

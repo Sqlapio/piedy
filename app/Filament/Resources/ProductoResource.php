@@ -51,11 +51,7 @@ class ProductoResource extends Resource
                     ])
                     ->required(),
                 TextInput::make('proveedor'),
-                TextInput::make('precio_unitario')
-                    ->prefix('$')
-                    ->numeric()
-                    ->inputMode('decimal'),
-                TextInput::make('precio_lote')
+                TextInput::make('precio_venta')
                     ->prefix('$')
                     ->numeric()
                     ->inputMode('decimal'),
@@ -75,6 +71,11 @@ class ProductoResource extends Resource
                             ->required(),
                     ])
                     ->required(),
+                Select::make('status')
+                    ->options([
+                        'activo' => 'Activo',
+                        'inactivo' => 'Inactivo',
+                    ]),
                 FileUpload::make('image')
                 ->imageEditor()
                 ->imageEditorAspectRatios([
@@ -82,11 +83,6 @@ class ProductoResource extends Resource
                     '4:3',
                     '1:1',
                 ]),
-                Select::make('status')
-                    ->options([
-                        'activo' => 'Activo',
-                        'inactivo' => 'Inactivo',
-                    ])
             ]);
     }
 
@@ -98,8 +94,7 @@ class ProductoResource extends Resource
                 ImageColumn::make('image')->circular(),
                 TextColumn::make('descripcion')->searchable(),
                 TextColumn::make('categoria.descripcion')->searchable(),
-                TextColumn::make('precio_unitario')->money('USD')->searchable(),
-                TextColumn::make('precio_lote')->money('USD')->searchable(),
+                TextColumn::make('precio_venta')->money('USD')->searchable(),
                 TextColumn::make('existencia')->searchable(),
                 TextColumn::make('fecha_carga')->searchable(),
                 TextColumn::make('fecha_carga')->searchable(),

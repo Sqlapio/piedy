@@ -1,58 +1,45 @@
 <div>
     <div class="p-5">
-        <h1 class="text-xl mb-4 font-bold text-[#bd9c95]">Modulo de Servicios</h1>
-        {{-- tabla --}}
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-[#7898a5] dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">
-                            Código
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Descripción
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Precio de venta($)
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Existencia
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Status
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($data as $item)
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $item->cod_producto }}
-                        </th>
-                        <td class="px-6 py-4">
-                            {{ $item->descripcion }}
-                        </td>
-                        <td class="px-6 py-4">
-                            ${{ $item->precio }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $item->existencia }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $item->status }}
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="grid gap-2">
+        <div>
+            <input type="checkbox" id="1" wire:model.live="extra" wire:click="total()" value="1" class="hidden peer">
+            <label for="1" class="inline-flex items-center justify-between w-full p-1 text-black bg-gray-200 border-1 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-green-600 peer-checked:bg-green-600 peer-checked:text-white shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]">
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image.jpg" alt="">
+            </label>
         </div>
-        
-        {{-- Paginacion --}}
-        <div class="bg-white px-4 py-3 mt-4 items-center justify-between border-t border-gray-200 sm:px-6">
-            {{-- Paginacion --}}
-            {{ $data->links() }}
-        </div> 
-        
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-1.jpg" alt="">
+        </div>
+    </div>
+    <div class="grid gap-2">
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-3.jpg" alt="">
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-4.jpg" alt="">
+        </div>
+    </div>
+    <div class="grid gap-2">
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-6.jpg" alt="">
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-7.jpg" alt="">
+        </div>
+    </div>
+    <div class="grid gap-2">
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-9.jpg" alt="">
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-10.jpg" alt="">
+        </div>
+    </div>
+</div>
+<div class="w-full h-28"></div>
     </div>
     <x-menu_table />
 </div>

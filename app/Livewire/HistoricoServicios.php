@@ -3,43 +3,79 @@
 namespace App\Livewire;
 
 use App\Models\VentaServicio;
-use Barryvdh\Debugbar\Facades\Debugbar;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
-use Livewire\WithPagination;
+use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 
-class HistoricoServicios extends Component
+class HistoricoServicios extends Component implements HasForms, HasTable
 {
-    use WithPagination;
+    use InteractsWithTable;
+    use InteractsWithForms;
 
-    public function inicio()
+    public function table(Table $table): Table
     {
-        redirect()->to('/dashboard');
+        $user = Auth::user();
+        return $table
+            ->query(VentaServicio::where('empleado_id', $user->id))
+            ->columns([
+                TextColumn::make('cod_asignacion')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('cliente')
+                    ->searchable()
+                    ->sortable(),
+                    // ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('fecha_venta')->searchable(),
+                TextColumn::make('total_USD')
+                    ->summarize(Sum::make()
+                    ->numeric(
+                        decimalPlaces: 00,
+                        decimalSeparator: ',',
+                        thousandsSeparator: '.',
+                    )
+                    ->label('Venta Neta($)'))
+                    ->searchable(),
+                TextColumn::make('comision_empleado')->money('USD')
+                    ->summarize(Sum::make()
+                    ->money('USD')
+                    ->label('Neto Empleado($)'))
+                    ->searchable()
+                    ->sortable(),
+                    // ->toggleable(isToggledHiddenByDefault: true),
+
+            ])
+            ->groups([
+                'metodo_pago',
+                'cliente',
+                'empleado',
+                'fecha_venta'
+            ])
+            // ->defaultGroup('empleado')
+            ->filters([
+                DateRangeFilter::make('created_at')
+                ->timezone('America/Caracas'),
+            ])
+            ->actions([
+                // ...
+            ])
+            ->bulkActions([
+                // ...
+            ]);
     }
 
-    public function historico()
-    {
-        redirect()->to('/historico/servicios');
-    }
-
-    public function asignados()
-    {
-        redirect()->to('/servicio/asignado');
-    }
-
-    public function perfil()
-    {
-        redirect()->to('/perfil');
-    }
-    
     public function render()
     {
         $user = Auth::user();
 
-        return view('livewire.historico-servicios', [
-            'data' => VentaServicio::where('empleado_id', $user->id)
-            ->orderBy('id', 'asc')                                   
-                ->paginate(5)
-        ]);
+        return view('livewire.historico-servicios');
     }
 }

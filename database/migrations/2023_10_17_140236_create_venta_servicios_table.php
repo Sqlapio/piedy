@@ -26,6 +26,8 @@ return new class extends Migration
             $table->decimal('total_USD', 8, 2)->default(0.00);
             $table->decimal('pago_usd', 8, 2)->default(0.00);
             $table->decimal('pago_bsd', 8, 2)->default(0.00);
+            $table->decimal('propina_usd', 8, 2)->default(0.00);
+            $table->decimal('propina_bsd', 8, 2)->default(0.00);
 
             $table->timestamps();
         });

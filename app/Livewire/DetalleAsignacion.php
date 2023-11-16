@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Http\Controllers\NotificacionesController;
 use App\Http\Controllers\UtilsController;
 use App\Models\Cita;
 use App\Models\Cliente;
@@ -12,6 +13,7 @@ use Filament\Notifications\Notification;
 use Livewire\Component;
 use App\Livewire\Citas;
 use App\Models\DetalleAsignacion as ModelsDetalleAsignacion;
+use App\Models\User;
 use App\Models\Venta;
 use App\Models\VentaServicio;
 use Barryvdh\Debugbar\Facades\Debugbar;
@@ -20,6 +22,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use LivewireUI\Modal\ModalComponent;
 use WireUi\Traits\Actions;
+
 
 class DetalleAsignacion extends ModalComponent
 {
@@ -107,7 +110,7 @@ class DetalleAsignacion extends ModalComponent
                 ->update([
                     'visitas' => $visitas->visitas + 1
                 ]);
-            
+
             $this->forceClose()->closeModal();
 
             Notification::make()
@@ -115,6 +118,20 @@ class DetalleAsignacion extends ModalComponent
                 ->icon('heroicon-o-shield-check')
                 ->body('El servicio fue cerrado de forma correcta. Deberá realizar su facturacion a la brevedad posible.')
                 ->send();
+
+            $user = User::where('id', $venta_servicio->empleado_id)->first();
+            $detalle = ModelsDetalleAsignacion::where('cod_asignacion', $venta_servicio->cod_asignacion)->get();
+            $type = 'servicio';
+            $mailData = [
+                'codigo' => $venta_servicio->cod_asignacion ,
+                'user_email' => $user->email,
+                'user_fullname' => $venta_servicio->empleado,
+                'cliente_fullname' => $venta_servicio->cliente,
+                'fecha_venta' => $venta_servicio->fecha_venta,
+                'detalle' => $detalle,
+            ];
+
+            NotificacionesController::notification($mailData, $type);
 
             $this->redirect('/cabinas');
         }

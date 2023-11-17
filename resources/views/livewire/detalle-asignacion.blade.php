@@ -1,4 +1,4 @@
-<div class="z-index w-full max-h-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
+<div class="z-index sm:max-w-5xl md:max-w-5xl p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
     @livewire('notifications')
 
     {{-- Formato agregado --}}

@@ -13,6 +13,7 @@ use Filament\Notifications\Notification;
 use Livewire\Component;
 use App\Livewire\Citas;
 use App\Models\DetalleAsignacion as ModelsDetalleAsignacion;
+use App\Models\TasaBcv;
 use App\Models\User;
 use App\Models\Venta;
 use App\Models\VentaServicio;
@@ -20,6 +21,7 @@ use Barryvdh\Debugbar\Facades\Debugbar;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Livewire\WithPagination;
 use LivewireUI\Modal\ModalComponent;
 use WireUi\Traits\Actions;
 
@@ -27,14 +29,28 @@ use WireUi\Traits\Actions;
 class DetalleAsignacion extends ModalComponent
 {
     use Actions;
+
+    use WithPagination;
+
     public $descripcion;
     public $referencia;
+    public $buscar;
+    public $atr = 'hidden';
+    public $grid = 'grid-cols-1';
+    public $servicios = [];
+
 
     public Disponible $disponible;
 
     public static function modalMaxWidth(): string
     {
         return 'xl';
+    }
+
+    public function visible()
+    {
+        $this->atr = '';
+        $this->grid = 'grid-cols-2';
     }
 
     public function eliminar_servicio($value)
@@ -63,18 +79,7 @@ class DetalleAsignacion extends ModalComponent
 
         Debugbar::info($this->disponible->cod_asignacion);
 
-        if ($this->disponible->status == 'activo')
-        {
-
-            $this->forceClose()->closeModal();
-
-            $this->dialog()->error(
-                $title = 'Error !!!',
-                $description = 'El servicio se encuentra activo.'
-            );
-
-        } else {
-            /**
+        /**
              * Calculo del total de venta para ser guardado
              * en la tabla de ventas
              */
@@ -139,7 +144,37 @@ class DetalleAsignacion extends ModalComponent
             NotificacionesController::notification($mailData, $type);
 
             $this->redirect('/cabinas');
+    }
+
+    public function carga_servicios_adicionales()
+    {
+
+        $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
+
+        $valores = [];
+
+        for ($i=0; $i < count($this->servicios) ; $i++) 
+        {
+
+            $data_servicios = Servicio::where('id', $this->servicios[$i])->first();
+            $detalle_asignacion = new ModelsDetalleAsignacion();
+            $detalle_asignacion->cod_asignacion     = $this->disponible->cod_asignacion;
+            $detalle_asignacion->cod_servicio       = $this->disponible->cod_servicio;
+            $detalle_asignacion->empleado_id        = $this->disponible->empleado_id;
+            $detalle_asignacion->empleado           = $this->disponible->empleado;
+            $detalle_asignacion->cliente_id         = $this->disponible->cliente_id;
+            $detalle_asignacion->cliente            = $this->disponible->cliente;
+            $detalle_asignacion->servicio_id        = $data_servicios->id;
+            $detalle_asignacion->servicio           = $data_servicios->descripcion;
+            $detalle_asignacion->servicio_categoria = $data_servicios->categoria;
+            $detalle_asignacion->costo              = $data_servicios->costo;
+            $detalle_asignacion->fecha              = date('d-m-Y');
+            $detalle_asignacion->save();
+
+            $this->reset(['atr', 'grid']);
+            
         }
+
     }
 
     public function facturar_servicio()
@@ -166,11 +201,11 @@ class DetalleAsignacion extends ModalComponent
 
         $total_vista = $total->total;
 
-        //debug
-        Debugbar::info($data);
-        Debugbar::info($detalle);
-        Debugbar::info($total_vista);
+        $servicios_adicionales = Servicio::Where('categoria', 'principal')
+            ->Where('descripcion', 'like', "%{$this->buscar}%")
+            ->orderBy('id', 'desc')
+            ->simplePaginate(4);
 
-        return view('livewire.detalle-asignacion', compact('data', 'detalle', 'total_vista'));
+        return view('livewire.detalle-asignacion', compact('data', 'detalle', 'total_vista', 'servicios_adicionales'));
     }
 }

@@ -124,10 +124,10 @@ class AsignacionDirecta extends ModalComponent
 
     }
 
-    public static function modalMaxWidth(): string
-    {
-        return '7xl';
-    }
+    // public static function modalMaxWidth(): string
+    // {
+    //     return 'xl';
+    // }
 
     public function render()
     {

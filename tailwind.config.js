@@ -6,6 +6,18 @@ export default {
         require('./vendor/wireui/wireui/tailwind.config.js')
 
     ],
+    purge: {
+        content: [
+          './vendor/wire-elements/modal/resources/views/*.blade.php',
+          './vendor/wire-elements/modal/src/*.blade.php',
+        ],
+        options: {
+          safelist: [
+            'sm:max-w-5xl',
+            'md:max-w-5xl'
+          ]
+        }
+      },
     content: [
         './app/Filament/**/*.php',
         './resources/views/**/*.blade.php',

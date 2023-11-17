@@ -3,15 +3,26 @@ use App\Models\TasaBcv as ModelsTasaBcv;
     $tasa = ModelsTasaBcv::first()->tasa;
 @endphp
 <div>
-    <div class="grid grid-cols-2 gap-2">
-        {{ $prueba }}
-        <div class="w-full max-w-2xl max-h-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
+    <div class="grid grid-cols-3 gap-2">
+
+        {{-- LISTA DE SERVICIOS --}}
+        <div class="col-span-2 w-full max-h-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
             @livewire('notifications')
-            <h5 class="mb-1 text-2xl font-bold text-gray-900 dark:text-white">
+            <h5 class="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
                 Cliente: {{ $data->cliente }}
             </h5>
-            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Técnico: {{ $data->empleado }}</p>
-            <p class="text-xs font-normal text-gray-500 dark:text-gray-400">Código: {{ $data->cod_asignacion }}</p>
+            <div class="flex items-center gap-2">
+                <div class="relative w-12 h-12 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                    <svg class="absolute w-14 h-14 text-gray-700 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                </div>
+                {{-- <img class="w-10 h-10 rounded-full" src="https://banner2.cleanpng.com/20180330/dde/kisspng-user-computer-icons-blue-clip-art-avatar-5abe81d5eb94e7.566134231522434517965.jpg" alt=""> --}}
+                <div class="font-medium dark:text-white">
+                    <div class="text-md text-green-500 font-extrabold dark:text-gray-400">Técnico: {{ $data->empleado }}</div>
+                    <div class="text-md text-green-500 font-extrabold dark:text-gray-400">Código: {{ $data->cod_asignacion }}</div>
+                </div>
+            </div>
+            {{-- <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Técnico: {{ $data->empleado }}</p>
+            <p class="text-xs font-normal text-gray-500 dark:text-gray-400">Código: {{ $data->cod_asignacion }}</p> --}}
             <ul class="my-4 space-y-3 mt-8">
                 <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Servicio cargados:</p>
                 @if(count($detalle) > 0)
@@ -43,19 +54,21 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25z" />
                     </svg>
                     <span class="flex-1 ml-3 text-lg whitespace-nowrap">Total:</span>
-                    <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 mr-5 text-lg font-extrabold text-white ">${{ $total_vista }}</span>
+                    <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-lg font-extrabold text-white ">${{ $total_vista }}</span>
                 </a>
                 <a href="#" class="flex items-center p-2 px-5 text-base font-bold text-white rounded-lg bg-green-600 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25z" />
                     </svg>
                     <span class="flex-1 ml-3 text-lg whitespace-nowrap">Total en bolivares:</span>
-                    <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 mr-5 text-lg font-extrabold text-white ">Bsd. {{ number_format($total_vista_bsd, 2, ",", ".") }}</span>
+                    <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-lg font-extrabold text-white ">Bsd. {{ number_format($total_vista_bsd, 2, ",", ".") }}</span>
                 </a>
                 </li>
             </ul>
         </div>
-        <div class="w-full max-w-2xl max-h-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
+
+        {{-- CAJA --}}
+        <div class="w-full max-h-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
             <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
                 Método de pago
             </h2>
@@ -71,11 +84,11 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 <div class="grid grid-cols-2 gap-2 {{ $op1_hidden }}">
                     <div class="px-2 {{ $op1_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método de pago($)</p>
-                        <x-select wire:change="$emit('metodo1', $event.target.value)" wire:model.live="op1" placeholder="Seleccione método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
+                        <x-select wire:change="$emit('metodo1', $event.target.value)" wire:model.live="op1" placeholder="Seleccione..." :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
                     </div>
                     <div class="px-2 {{ $op2_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método de pago(Bs)</p>
-                        <x-select wire:change="$emit('metodo2', $event.target.value)" wire:model.live="op2" placeholder="Seleccione método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
+                        <x-select wire:change="$emit('metodo2', $event.target.value)" wire:model.live="op2" placeholder="Seleccione..." :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-2 {{ $op1_hidden }}">

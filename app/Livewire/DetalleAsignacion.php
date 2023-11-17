@@ -32,6 +32,11 @@ class DetalleAsignacion extends ModalComponent
 
     public Disponible $disponible;
 
+    public static function modalMaxWidth(): string
+    {
+        return 'xl';
+    }
+
     public function eliminar_servicio($value)
     {
         $this->dialog()->confirm([

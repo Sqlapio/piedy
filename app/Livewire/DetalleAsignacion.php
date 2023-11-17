@@ -42,10 +42,10 @@ class DetalleAsignacion extends ModalComponent
 
     public Disponible $disponible;
 
-    public static function modalMaxWidth(): string
-    {
-        return 'xl';
-    }
+    // public static function modalMaxWidth(): string
+    // {
+    //     return 'xl';
+    // }
 
     public function visible()
     {
@@ -175,6 +175,13 @@ class DetalleAsignacion extends ModalComponent
             
         }
 
+    }
+
+    public function agregar_servicio()
+    {
+        session(['cod_asignacion' => $this->disponible->cod_asignacion]);
+
+        $this->redirect('/agregar/servicios');
     }
 
     public function facturar_servicio()

@@ -1,11 +1,21 @@
 <div class="z-index w-full max-w-2xl max-h-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
     @livewire('notifications')
-    <h5 class="text-2xl font-bold text-gray-900 dark:text-white">
+    <h5 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
         Cliente: {{ $data->cliente }}
     </h5>
-    <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Técnico: {{ $data->empleado }}</p>
-    <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Código: {{ $data->cod_asignacion }}</p>
-    <p class="text-sm mt-5 font-normal text-gray-500 dark:text-gray-400">Servicio realizados</p>
+    <div class="flex items-center gap-2">
+        <div class="relative w-12 h-12 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+            <svg class="absolute w-14 h-14 text-gray-700 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+        </div>
+        {{-- <img class="w-10 h-10 rounded-full" src="https://banner2.cleanpng.com/20180330/dde/kisspng-user-computer-icons-blue-clip-art-avatar-5abe81d5eb94e7.566134231522434517965.jpg" alt=""> --}}
+        <div class="font-medium dark:text-white">
+            <div class="text-md text-green-500 font-extrabold dark:text-gray-400">Técnico: {{ $data->empleado }}</div>
+            <div class="text-md text-green-500 font-extrabold dark:text-gray-400">Código: {{ $data->cod_asignacion }}</div>
+        </div>
+    </div>
+    {{-- <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Técnico: {{ $data->empleado }}</p> --}}
+    {{-- <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Código: {{ $data->cod_asignacion }}</p> --}}
+    <p class="text-sm mt-8 font-normal text-gray-500 dark:text-gray-400">Servicio realizados</p>
     <ul class="my-4 space-y-3">
             @if(count($detalle) > 0)
             @foreach ($detalle as $item)

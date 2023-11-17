@@ -38,7 +38,6 @@ class FacturarCliente extends Component
     public $valor_uno_db;
     public $valor_dos_db;
 
-    #[Rule('required')]
     public $referencia;
 
     public $descripcion;
@@ -209,355 +208,380 @@ class FacturarCliente extends Component
 
     public function facturar_servicio(Request $request)
     {
-
-        $user = Auth::user();
-
-        /**
-         * Pago total en DOLARES
-         */
-        if($this->descripcion == 'Efectivo Usd')
+        if($this->descripcion == '')
         {
+            $this->dialog()->error(
+                $title = 'Error !!!',
+                $description = 'Debe seleccionar un método de pago de lo contrario no podra facturar el servicio'
+            );
 
-            $factura = new FacturaMultiple();
-            $factura->cod_asignacion    = 'FM-'.random_int(11111111, 99999999);
-            $factura->responsable       = $user->name;
-            $factura->metodo_pago       = 'Facturación multiple';
-            $factura->referencia        = $factura->cod_asignacion;
-            $factura->fecha_venta       = date('d-m-Y');
-            $factura->pago_usd          = $this->total_vista;
-            $factura->total_usd         = $this->total_vista;
-            $factura->save();
+        }else{
 
-                for ($i=0; $i < count($this->servicios) ; $i++)
-                {
-                    Disponible::where('id', $this->servicios[$i])->update([
-                        'status' => 'facturado'
-                    ]);
-
-                    $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
-
-                    DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
-                        'status' => 2
-                    ]);
-
-                    VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                        'metodo_pago' => $factura->metodo_pago,
-                        'referencia' => $factura->cod_asignacion
-                    ]);
-                }
-
-            Notification::make()
-                ->title('La factura fue cerrada con exito')
-                ->success()
-                ->send();
-
-            $this->redirect('/citas');
-
-        }
-
-        /**
-         * Pago total en DOLARES
-         */
-        if($this->descripcion == 'Zelle')
-        {
-
-            $factura = new FacturaMultiple();
-            $factura->cod_asignacion    = 'FM-'.random_int(11111111, 99999999);
-            $factura->responsable       = $user->name;
-            $factura->metodo_pago       = 'Facturación multiple';
-            $factura->referencia        = $this->referencia;
-            $factura->fecha_venta       = date('d-m-Y');
-            $factura->pago_usd          = $this->total_vista;
-            $factura->total_usd         = $this->total_vista;
-            $factura->save();
-
-                for ($i=0; $i < count($this->servicios) ; $i++)
-                {
-                    Disponible::where('id', $this->servicios[$i])->update([
-                        'status' => 'facturado'
-                    ]);
-
-                    $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
-
-                    DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
-                        'status' => 2
-                    ]);
-
-                    VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                        'metodo_pago' => $factura->metodo_pago,
-                        'referencia' => $factura->cod_asignacion
-                    ]);
-                }
-
-            Notification::make()
-                ->title('La factura fue cerrada con exito')
-                ->success()
-                ->send();
-
-            $this->redirect('/citas');
-
-        }
-
-        /**
-         * Pago total en BOLIVARES
-         */
-        if($this->descripcion == 'Efectivo Bsd')
-        {
-
-            $factura = new FacturaMultiple();
-            $factura->cod_asignacion    = 'FM-'.random_int(11111111, 99999999);
-            $factura->responsable       = $user->name;
-            $factura->metodo_pago       = 'Facturación multiple';
-            $factura->referencia        = $factura->cod_asignacion;
-            $factura->fecha_venta       = date('d-m-Y');
-            $factura->pago_bsd          = $this->total_vista_bsd;
-            $factura->total_usd         = $this->total_vista;
-            $factura->save();
-
-                for ($i=0; $i < count($this->servicios) ; $i++)
-                {
-                    Disponible::where('id', $this->servicios[$i])->update([
-                        'status' => 'facturado'
-                    ]);
-
-                    $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
-
-                    DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
-                        'status' => 2
-                    ]);
-
-                    VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                        'metodo_pago' => $factura->metodo_pago,
-                        'referencia' => $factura->cod_asignacion
-                    ]);
-                }
-
-            Notification::make()
-                ->title('La factura fue cerrada con exito')
-                ->success()
-                ->send();
-
-            $this->redirect('/citas');
-
-        }
-
-        /**
-         * Pago total en BOLIVARES con referenia
-         */
-        if($this->descripcion == 'Transferencia' || $this->descripcion == 'Pago movil' || $this->descripcion == 'Punto de venta')
-        {
-
-            $factura = new FacturaMultiple();
-            $factura->cod_asignacion    = 'FM-'.random_int(11111111, 99999999);
-            $factura->responsable       = $user->name;
-            $factura->metodo_pago       = 'Facturación multiple';
-            $factura->referencia        = $this->referencia;
-            $factura->fecha_venta       = date('d-m-Y');
-            $factura->pago_bsd          = $this->total_vista_bsd;
-            $factura->total_usd         = $this->total_vista;
-            $factura->save();
-
-                for ($i=0; $i < count($this->servicios) ; $i++)
-                {
-                    Disponible::where('id', $this->servicios[$i])->update([
-                        'status' => 'facturado'
-                    ]);
-
-                    $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
-
-                    DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
-                        'status' => 2
-                    ]);
-
-                    VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                        'metodo_pago' => $factura->metodo_pago,
-                        'referencia' => $factura->cod_asignacion
-                    ]);
-                }
-
-            Notification::make()
-                ->title('La factura fue cerrada con exito')
-                ->success()
-                ->send();
-
-            $this->redirect('/citas');
-
-        }
-
-        /**
-         * Pago total en MULTIPLE
-         */
-        if($this->descripcion == 'Multiple')
-        {
+            $user = Auth::user();
 
             /**
-             * CASO 1
+             * Pago total en DOLARES
              */
-            if ($this->op1 == 'Efectivo Usd' || $this->op1 == 'Zelle')
-            {
-                if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta')
-                {
-                    if($this->valor_uno == '' and $this->valor_dos == '')
-                    {
-                        $this->dialog()->error(
-                            $title = 'Error !!!',
-                            $description = 'El monto debe coincidir con el valor de factura.'
-                        );
-                    }elseif($this->valor_uno == 0){
-                        $this->dialog()->error(
-                            $title = 'Error !!!',
-                            $description = 'Los monto deben ser mayores a cero.'
-                        );
-                    }else{
-                        $factura = new FacturaMultiple();
-                        $factura->cod_asignacion    = 'FM-'.random_int(11111111, 99999999);
-                        $factura->responsable       = $user->name;
-                        $factura->metodo_pago       = 'Facturación multiple';
-                        $factura->referencia        = $factura->cod_asignacion;
-                        $factura->fecha_venta       = date('d-m-Y');
-                        $factura->pago_bsd          = str_replace(',', '.', str_replace('.', '', $this->valor_dos));
-                        $factura->pago_usd          = str_replace(',', '.', $this->valor_uno);
-                        $factura->total_usd         = $this->total_vista;
-                        $factura->save();
+            if ($this->descripcion == 'Efectivo Usd') {
+                if (count($this->servicios) <= 0) {
+                    $this->dialog()->error(
+                        $title = 'Error !!!',
+                        $description = 'Debe seleccionar al menos un servicio para poder realizar la facturación'
+                    );
+                } else {
 
-                        for ($i=0; $i < count($this->servicios) ; $i++)
-                        {
-                            Disponible::where('id', $this->servicios[$i])->update([
-                                'status' => 'facturado'
-                            ]);
+                    $factura = new FacturaMultiple();
+                    $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
+                    $factura->responsable       = $user->name;
+                    $factura->metodo_pago       = 'Facturación multiple';
+                    $factura->referencia        = $factura->cod_asignacion;
+                    $factura->fecha_venta       = date('d-m-Y');
+                    $factura->pago_usd          = $this->total_vista;
+                    $factura->total_usd         = $this->total_vista;
+                    $factura->save();
 
-                            $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
+                    for ($i = 0; $i < count($this->servicios); $i++) {
+                        Disponible::where('id', $this->servicios[$i])->update([
+                            'status' => 'facturado'
+                        ]);
 
-                            DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
-                                'status' => 2
-                            ]);
+                        $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
 
-                            VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                'metodo_pago' => $factura->metodo_pago,
-                                'referencia' => $factura->cod_asignacion
-                            ]);
-                        }
+                        DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
+                            'status' => 2
+                        ]);
 
-                        Notification::make()
-                            ->title('La factura fue cerrada con exito')
-                            ->success()
-                            ->send();
-
-                        $this->redirect('/citas');
-
+                        VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
+                            'metodo_pago' => $factura->metodo_pago,
+                            'referencia' => $factura->cod_asignacion
+                        ]);
                     }
 
+                    Notification::make()
+                    ->title('La factura fue cerrada con exito')
+                    ->success()
+                    ->send();
+
+                    $this->redirect('/citas');
                 }
             }
 
             /**
-             * CASO 2
+             * Pago total en DOLARES con referenia
              */
-            if ($this->op1 == 'Efectivo Bsd' || $this->op1 == 'Pago movil' || $this->op1 == 'Transferencia' || $this->op1 == 'Punto de venta')
-            {
-                if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta')
-                {
-                    if($this->valor_uno == '' and $this->valor_dos == '')
-                    {
-                        $this->dialog()->error(
-                            $title = 'Error !!!',
-                            $description = 'Los monto deben ser myor a 0.'
-                        );
-                    }else{
-                        $factura = new FacturaMultiple();
-                        $factura->cod_asignacion    = 'FM-'.random_int(11111111, 99999999);
-                        $factura->responsable       = $user->name;
-                        $factura->metodo_pago       = 'Facturación multiple';
-                        $factura->referencia        = $factura->cod_asignacion;
-                        $factura->fecha_venta       = date('d-m-Y');
-                        $factura->pago_bsd          = $this->total_vista_bsd;
-                        $factura->total_usd         = $this->total_vista;
-                        $factura->save();
+            if ($this->descripcion == 'Zelle') {
+                if ($this->referencia == '') {
+                    $this->dialog()->error(
+                        $title = 'Error !!!',
+                        $description = 'Debe cargar el número de referencia de lo contrario no podra realizar la facturación'
+                    );
+                } elseif (count($this->servicios) <= 0) {
+                    $this->dialog()->error(
+                        $title = 'Error !!!',
+                        $description = 'Debe seleccionar al menos un servicio para poder realizar la facturación'
+                    );
+                } else {
 
-                        for ($i=0; $i < count($this->servicios) ; $i++)
-                        {
-                            Disponible::where('id', $this->servicios[$i])->update([
-                                'status' => 'facturado'
-                            ]);
+                    $factura = new FacturaMultiple();
+                    $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
+                    $factura->responsable       = $user->name;
+                    $factura->metodo_pago       = 'Facturación multiple';
+                    $factura->referencia        = $this->referencia;
+                    $factura->fecha_venta       = date('d-m-Y');
+                    $factura->pago_usd          = $this->total_vista;
+                    $factura->total_usd         = $this->total_vista;
+                    $factura->save();
 
-                            $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
+                    for ($i = 0; $i < count($this->servicios); $i++) {
+                        Disponible::where('id', $this->servicios[$i])->update([
+                            'status' => 'facturado'
+                        ]);
 
-                            DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
-                                'status' => 2
-                            ]);
+                        $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
 
-                            VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                'metodo_pago' => $factura->metodo_pago,
-                                'referencia' => $factura->cod_asignacion
-                            ]);
-                        }
+                        DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
+                            'status' => 2
+                        ]);
 
-                        Notification::make()
-                            ->title('La factura fue cerrada con exito')
-                            ->success()
-                            ->send();
-
-                        $this->redirect('/citas');
+                        VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
+                            'metodo_pago' => $factura->metodo_pago,
+                            'referencia' => $factura->cod_asignacion
+                        ]);
                     }
 
+                    Notification::make()
+                    ->title('La factura fue cerrada con exito')
+                    ->success()
+                    ->send();
+
+                    $this->redirect('/citas');
                 }
             }
 
             /**
-             * CASO 3
+             * Pago total en BOLIVARES
              */
-            if ($this->op1 == 'Efectivo Usd')
-            {
-                if ($this->op2 == 'Zelle')
-                {
-                    if($this->valor_uno == '' and $this->valor_dos == '')
-                    {
-                        $this->dialog()->error(
-                            $title = 'Error !!!',
-                            $description = 'Los monto deben ser myor a 0.'
-                        );
-                    }else{
-                        $factura = new FacturaMultiple();
-                        $factura->cod_asignacion    = 'FM-'.random_int(11111111, 99999999);
-                        $factura->responsable       = $user->name;
-                        $factura->metodo_pago       = 'Facturación multiple';
-                        $factura->referencia        = $factura->cod_asignacion;
-                        $factura->fecha_venta       = date('d-m-Y');
-                        $factura->pago_bsd          = $this->total_vista_bsd;
-                        $factura->total_usd         = $this->total_vista;
-                        $factura->save();
+            if ($this->descripcion == 'Efectivo Bsd') {
+                if (count($this->servicios) <= 0) {
+                    $this->dialog()->error(
+                        $title = 'Error !!!',
+                        $description = 'Debe seleccionar al menos un servicio para poder realizar la facturación'
+                    );
+                } else {
+                    $factura = new FacturaMultiple();
+                    $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
+                    $factura->responsable       = $user->name;
+                    $factura->metodo_pago       = 'Facturación multiple';
+                    $factura->referencia        = $factura->cod_asignacion;
+                    $factura->fecha_venta       = date('d-m-Y');
+                    $factura->pago_bsd          = $this->total_vista_bsd;
+                    $factura->total_usd         = $this->total_vista;
+                    $factura->save();
 
-                        for ($i=0; $i < count($this->servicios) ; $i++)
-                        {
-                            Disponible::where('id', $this->servicios[$i])->update([
-                                'status' => 'facturado'
-                            ]);
+                    for ($i = 0; $i < count($this->servicios); $i++) {
+                        Disponible::where('id', $this->servicios[$i])->update([
+                            'status' => 'facturado'
+                        ]);
 
-                            $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
+                        $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
 
-                            DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
-                                'status' => 2
-                            ]);
+                        DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
+                            'status' => 2
+                        ]);
 
-                            VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                'metodo_pago' => $factura->metodo_pago,
-                                'referencia' => $factura->cod_asignacion
-                            ]);
-                        }
-
-                        Notification::make()
-                            ->title('La factura fue cerrada con exito')
-                            ->success()
-                            ->send();
-
-                        $this->redirect('/citas');
+                        VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
+                            'metodo_pago' => $factura->metodo_pago,
+                            'referencia' => $factura->cod_asignacion
+                        ]);
                     }
 
+                    Notification::make()
+                    ->title('La factura fue cerrada con exito')
+                    ->success()
+                    ->send();
+
+                    $this->redirect('/citas');
                 }
             }
 
-        }
+            /**
+             * Pago total en BOLIVARES con referenia
+             */
+            if ($this->descripcion == 'Transferencia' || $this->descripcion == 'Pago movil' || $this->descripcion == 'Punto de venta') {
+                if ($this->referencia == '') {
+                    $this->dialog()->error(
+                        $title = 'Error !!!',
+                        $description = 'Debe cargar el número de referencia de lo contrario no podra realizar la facturación'
+                    );
+                } elseif (count($this->servicios) <= 0) {
+                    $this->dialog()->error(
+                        $title = 'Error !!!',
+                        $description = 'Debe seleccionar al menos un servicio para poder realizar la facturación'
+                    );
+                } else {
+                    $factura = new FacturaMultiple();
+                    $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
+                    $factura->responsable       = $user->name;
+                    $factura->metodo_pago       = 'Facturación multiple';
+                    $factura->referencia        = $this->referencia;
+                    $factura->fecha_venta       = date('d-m-Y');
+                    $factura->pago_bsd          = $this->total_vista_bsd;
+                    $factura->total_usd         = $this->total_vista;
+                    $factura->save();
 
+                    for ($i = 0; $i < count($this->servicios); $i++) {
+                        Disponible::where('id', $this->servicios[$i])->update([
+                            'status' => 'facturado'
+                        ]);
+
+                        $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
+
+                        DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
+                            'status' => 2
+                        ]);
+
+                        VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
+                            'metodo_pago' => $factura->metodo_pago,
+                            'referencia' => $factura->cod_asignacion
+                        ]);
+                    }
+
+                    Notification::make()
+                    ->title('La factura fue cerrada con exito')
+                    ->success()
+                    ->send();
+
+                    $this->redirect('/citas');
+                }
+            }
+
+            /**
+             * Pago total en MULTIPLE
+             */
+            if ($this->descripcion == 'Multiple') {
+                if (count($this->servicios) <= 0) {
+                    $this->dialog()->error(
+                        $title = 'Error !!!',
+                        $description = 'Debe seleccionar al menos un servicio de lo contrario no podra facturar'
+                    );
+                } else {
+                    /**
+                     * CASO 1
+                     */
+                    if ($this->op1 == 'Efectivo Usd' || $this->op1 == 'Zelle') {
+                        if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta') {
+                            if ($this->valor_uno == '' and $this->valor_dos == '') {
+                                $this->dialog()->error(
+                                    $title = 'Error !!!',
+                                    $description = 'El monto debe coincidir con el valor de factura.'
+                                );
+                            } elseif ($this->valor_uno == 0) {
+                                $this->dialog()->error(
+                                    $title = 'Error !!!',
+                                    $description = 'Los monto en dolares deben ser mayores a cero.'
+                                );
+                            } elseif ($this->op1 == $this->op2) {
+                                $this->dialog()->error(
+                                    $title = 'Error !!!',
+                                    $description = 'Los metodos de pago no pueden ser iguales'
+                                );
+                            } else {
+                                $factura = new FacturaMultiple();
+                                $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
+                                $factura->responsable       = $user->name;
+                                $factura->metodo_pago       = 'Facturación multiple';
+                                $factura->referencia        = $factura->cod_asignacion;
+                                $factura->fecha_venta       = date('d-m-Y');
+                                $factura->pago_bsd          = str_replace(',', '.', str_replace('.', '', $this->valor_dos));
+                                $factura->pago_usd          = str_replace(',', '.', $this->valor_uno);
+                                $factura->total_usd         = $this->total_vista;
+                                $factura->save();
+
+                                for ($i = 0; $i < count($this->servicios); $i++) {
+                                    Disponible::where('id', $this->servicios[$i])->update([
+                                        'status' => 'facturado'
+                                    ]);
+
+                                    $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
+
+                                    DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
+                                        'status' => 2
+                                    ]);
+
+                                    VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
+                                        'metodo_pago' => $factura->metodo_pago,
+                                        'referencia' => $factura->cod_asignacion
+                                    ]);
+                                }
+
+                                Notification::make()
+                                    ->title('La factura fue cerrada con exito')
+                                    ->success()
+                                    ->send();
+
+                                $this->redirect('/citas');
+                            }
+                        }
+                    }
+
+                    /**
+                     * CASO 2
+                     */
+                    if ($this->op1 == 'Efectivo Bsd' || $this->op1 == 'Pago movil' || $this->op1 == 'Transferencia' || $this->op1 == 'Punto de venta') {
+                        if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta') {
+                            if ($this->valor_uno == '' and $this->valor_dos == '') {
+                                $this->dialog()->error(
+                                    $title = 'Error !!!',
+                                    $description = 'Los monto deben ser myor a 0.'
+                                );
+                            } else {
+                                $factura = new FacturaMultiple();
+                                $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
+                                $factura->responsable       = $user->name;
+                                $factura->metodo_pago       = 'Facturación multiple';
+                                $factura->referencia        = $factura->cod_asignacion;
+                                $factura->fecha_venta       = date('d-m-Y');
+                                $factura->pago_bsd          = $this->total_vista_bsd;
+                                $factura->total_usd         = $this->total_vista;
+                                $factura->save();
+
+                                for ($i = 0; $i < count($this->servicios); $i++) {
+                                    Disponible::where('id', $this->servicios[$i])->update([
+                                        'status' => 'facturado'
+                                    ]);
+
+                                    $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
+
+                                    DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
+                                        'status' => 2
+                                    ]);
+
+                                    VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
+                                        'metodo_pago' => $factura->metodo_pago,
+                                        'referencia' => $factura->cod_asignacion
+                                    ]);
+                                }
+
+                                Notification::make()
+                                    ->title('La factura fue cerrada con exito')
+                                    ->success()
+                                    ->send();
+
+                                $this->redirect('/citas');
+                            }
+                        }
+                    }
+
+                    /**
+                     * CASO 3
+                     */
+                    if ($this->op1 == 'Efectivo Usd') {
+                        if ($this->op2 == 'Zelle') {
+                            if ($this->valor_uno == '' and $this->valor_dos == '') {
+                                $this->dialog()->error(
+                                    $title = 'Error !!!',
+                                    $description = 'Los monto deben ser myor a 0.'
+                                );
+                            } else {
+                                $factura = new FacturaMultiple();
+                                $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
+                                $factura->responsable       = $user->name;
+                                $factura->metodo_pago       = 'Facturación multiple';
+                                $factura->referencia        = $factura->cod_asignacion;
+                                $factura->fecha_venta       = date('d-m-Y');
+                                $factura->pago_bsd          = $this->total_vista_bsd;
+                                $factura->total_usd         = $this->total_vista;
+                                $factura->save();
+
+                                for ($i = 0; $i < count($this->servicios); $i++) {
+                                    Disponible::where('id', $this->servicios[$i])->update([
+                                        'status' => 'facturado'
+                                    ]);
+
+                                    $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
+
+                                    DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
+                                        'status' => 2
+                                    ]);
+
+                                    VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
+                                        'metodo_pago' => $factura->metodo_pago,
+                                        'referencia' => $factura->cod_asignacion
+                                    ]);
+                                }
+
+                                Notification::make()
+                                    ->title('La factura fue cerrada con exito')
+                                    ->success()
+                                    ->send();
+
+                                $this->redirect('/citas');
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public function render()

@@ -13,10 +13,9 @@ class Clientes extends Component
 {
     use WithPagination;
 
-    #[Rule('required', message: 'Campo requerido')]
+    #[Rule('required', message: 'Nombre requerido')]
     public $nombre;
 
-    #[Rule('required', message: 'Campo requerido')]
     public $apellido;
 
     public $email;
@@ -42,8 +41,8 @@ class Clientes extends Component
             $user = Auth::user();
 
             $cliente = new Cliente();
-            $cliente->nombre = $this->nombre;
-            $cliente->apellido = $this->apellido;
+            $cliente->nombre = strtoupper($this->nombre);
+            $cliente->apellido = strtoupper($this->apellido);
             $cliente->email = $this->email;
             $cliente->telefono = $this->telefono;
             $cliente->user_id = $user->id;

@@ -108,6 +108,7 @@ class ApiClientesController extends Controller
     {
         return MetodoPago::query()
             ->select('id', 'descripcion')
+            ->where('moneda', 'usd')
             ->orderBy('descripcion')
             ->when(
                 $request->search,
@@ -129,6 +130,7 @@ class ApiClientesController extends Controller
     {
         return MetodoPago::query()
             ->select('id', 'descripcion')
+            ->where('moneda', 'bsd')
             ->orderBy('descripcion')
             ->when(
                 $request->search,

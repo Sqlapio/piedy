@@ -11,10 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('metodo_pagos', function (Blueprint $table) {
+        Schema::create('gastos', function (Blueprint $table) {
             $table->id();
             $table->string('descripcion');
-            $table->string('moneda');
+            $table->decimal('monto_usd',8 ,2)->nullable()->default(0.00);
+            $table->decimal('monto_bsd',8 ,2)->nullable()->default(0.00);
+            $table->string('forma_pago');
+            $table->string('referencia')->nullable();
+            $table->string('fecha');
+            $table->string('responsable');
             $table->timestamps();
         });
     }
@@ -24,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('metodo_pagos');
+        Schema::dropIfExists('gastos');
     }
 };

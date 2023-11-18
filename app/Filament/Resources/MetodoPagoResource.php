@@ -6,6 +6,7 @@ use App\Filament\Resources\MetodoPagoResource\Pages;
 use App\Filament\Resources\MetodoPagoResource\RelationManagers;
 use App\Models\MetodoPago;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -30,6 +31,11 @@ class MetodoPagoResource extends Resource
         return $form
             ->schema([
                 TextInput::make('descripcion')->required(),
+                Select::make('moneda')
+                    ->options([
+                        'usd' => 'Usd',
+                        'bsd' => 'Bsd',
+                    ]),
             ]);
     }
 
@@ -39,6 +45,14 @@ class MetodoPagoResource extends Resource
             ->columns([
                 TextColumn::make('id')->searchable(),
                 TextColumn::make('descripcion')->searchable(),
+                TextColumn::make('moneda')
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'usd' => 'success',
+                    'bsd' => 'info',
+                    'multiple' => 'warning',
+                })
+                ->searchable(),
             ])
             ->filters([
                 //
@@ -52,14 +66,14 @@ class MetodoPagoResource extends Resource
                 ]),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -67,5 +81,5 @@ class MetodoPagoResource extends Resource
             'create' => Pages\CreateMetodoPago::route('/create'),
             'edit' => Pages\EditMetodoPago::route('/{record}/edit'),
         ];
-    }    
+    }
 }

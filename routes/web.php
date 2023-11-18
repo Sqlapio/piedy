@@ -49,6 +49,14 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('productos');
     })->name('productos');
 
+    Route::get('/gastos', function () {
+        return view('gastos');
+    })->name('gastos');
+
+    Route::get('/cierre/diario', function () {
+        return view('cierre-diario');
+    })->name('cierre_diario');
+
     Route::get('/citas', function () {
         return view('citas');
     })->name('citas');
@@ -90,6 +98,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/lista/empleados', [ApiClientesController::class, 'lista_empleados'])->name('api.empleados');
     Route::get('/lista/servicios', [ApiClientesController::class, 'lista_servicios'])->name('api.servicios');
     Route::get('/lista/metodo/pago', [ApiClientesController::class, 'metodo_pago'])->name('api.metodo_pago');
+    Route::get('/lista/metodo/pago/uno', [ApiClientesController::class, 'metodo_pago_uno'])->name('api.metodo_pago_uno');
+    Route::get('/lista/metodo/pago/dos', [ApiClientesController::class, 'metodo_pago_dos'])->name('api.metodo_pago_dos');
 
     Route::get('/{record}/edit', function () {
         return view('clientes');

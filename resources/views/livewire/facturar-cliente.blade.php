@@ -70,11 +70,11 @@
                 <div class="grid grid-cols-2 gap-2 {{ $op1_hidden }}">
                     <div class="px-2 {{ $op1_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método de pago($)</p>
-                        <x-select wire:change="$dispatch('metodo1', $event.target.value)" wire:model.live="op1" placeholder="Seleccione..." :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
+                        <x-select wire:change="$dispatch('metodo1', $event.target.value)" wire:model.live="op1" placeholder="Seleccione..." :async-data="route('api.metodo_pago_uno')" option-label="descripcion" option-value="descripcion" />
                     </div>
                     <div class="px-2 {{ $op2_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método de pago(Bs)</p>
-                        <x-select wire:change="$dispatch('metodo2', $event.target.value)" wire:model.live="op2" placeholder="Seleccione..." :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
+                        <x-select wire:change="$dispatch('metodo2', $event.target.value)" wire:model.live="op2" placeholder="Seleccione..." :async-data="route('api.metodo_pago_dos')" option-label="descripcion" option-value="descripcion" />
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-2 {{ $op1_hidden }}">

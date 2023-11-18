@@ -1,33 +1,36 @@
 <div>
     <div class="p-5">
         @livewire('notifications')
-        <h1 class="text-xl mb-6 font-bold text-[#bd9c95]">Modulo de Clientes</h1>
+        <h1 class="text-xl mb-6 font-bold text-[#bd9c95]">Modulo de Gastos</h1>
         {{-- tabla y boton del formulario de clientes --}}
         <div class="bg-white rounded-xl {{ $ocultar_form_cliente }}">
             <div class="grid md:grid-cols-2 md:gap-6">
-                <div class="relative z-0 w-full mb-6 group">
-                    <x-input wire:model="nombre" right-icon="user" label="Nombre" placeholder="Nombre del cliente" />
+                <div class="px-2">
+                    <x-input wire:model="descripcion" right-icon="user" label="Descripción" placeholder="Artículo de compra" />
                 </div>
-                <div class="relative z-0 w-full mb-6 group">
-                    <x-input wire:model="apellido" right-icon="user" label="Apellido" placeholder="Apellido del cliente" />
-                </div>
-            </div>
-            <div class="grid md:grid-cols-2 md:gap-6 mt-5">
-                <div class="relative z-0 w-full mb-6 group">
-                    <x-input wire:model="email" right-icon="user" label="Email" placeholder="Email del cliente" />
-                    {{-- <label for="floating_phone" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email</label> --}}
-                </div>
-                <div class="relative z-0 w-full mb-6 group">
-                    <x-input wire:model="telefono" right-icon="user" label="Teléfono" placeholder="Telef. del cliente" />
-                    {{-- <label for="floating_company" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono</label> --}}
+                <div class="px-2">
+                    <x-select
+                        label="Tipo de pago"
+                        placeholder="Tipo moneda de pago"
+                        :options="['USD', 'BS']"
+                        wire:model.defer="forma_pago"
+                    />
                 </div>
             </div>
-            <div class="flex justify-end p-2 mt-auto">
+            <div class="grid md:grid-cols-2 md:gap-6 mt-14">
+                <div class="px-2">
+                    <x-input wire:model="referencia" right-icon="user" label="Nro. de referencia" placeholder="aplica pa pago movil y transferencia ($ ó Bs.)" />
+                </div>
+                <div class="px-2">
+                    <x-input wire:model="monto" label="Monto en ($ ó Bs.)" placeholder="monto de la compra" hint="Ejemplo: 1.258,62" />
+                </div>
+            </div>
+            <div class="flex justify-end p-2 mt-10">
                 <button type="submit" wire:click.prevent="store()" class="justify-end rounded-md border border-transparent bg-[#7898a5] py-2 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">
                     <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="store" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
                     </svg>
-                    <span>Guardar cliente</span>
+                    <span>Registrar gasto</span>
                 </button>
             </div>
         </div>
@@ -38,16 +41,25 @@
                 <thead class="text-xs text-gray-700 uppercase bg-[#7898a5] dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-6 py-3">
-                            Cliente
+                            Descripcion
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Email
+                            Forma de pago
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Teléfono
+                            Referencia
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Asginar
+                            Monto($)
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Monto(Bs.)
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Fecha
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Responsable
                         </th>
                     </tr>
                 </thead>
@@ -55,19 +67,25 @@
                     @foreach ($data as $item)
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $item->nombre.' '.$item->apellido }}
+                            {{ $item->descripcion }}
                         </th>
                         <td class="px-6 py-4">
-                            {{ $item->email }}
+                            {{ $item->forma_pago }}
                         </td>
                         <td class="px-6 py-4">
-                            {{ $item->telefono }}
+                            {{ $item->referencia }}
                         </td>
-                        <td class="px-6 py-4 text-center items-center">
-                            <svg onclick="Livewire.dispatch('openModal', { component: 'modal-clientes', arguments: { cliente: {{ $item->id }} }})" class="w-6 h-6 text-green-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19 17">
-                                <path d="M2.057 6.9a8.718 8.718 0 0 1 6.41-3.62v-1.2A2.064 2.064 0 0 1 9.626.2a1.979 1.979 0 0 1 2.1.23l5.481 4.308a2.107 2.107 0 0 1 0 3.3l-5.479 4.308a1.977 1.977 0 0 1-2.1.228 2.063 2.063 0 0 1-1.158-1.876v-.942c-5.32 1.284-6.2 5.25-6.238 5.44a1 1 0 0 1-.921.807h-.06a1 1 0 0 1-.953-.7A10.24 10.24 0 0 1 2.057 6.9Z"/>
-                              </svg>
-                              {{-- onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" --}}
+                        <td class="px-6 py-4">
+                            {{ $item->monto_usd }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ $item->monto_bsd }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ $item->fecha }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ $item->responsable }}
                         </td>
                     </tr>
                     @endforeach
@@ -119,11 +137,11 @@
                     <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
                     </svg>
-                    <span class="sr-only">Crear cliente</span>
+                    <span class="sr-only">Nuevo gasto</span>
                 </button>
             </div>
             <div id="tooltip-new" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                Crear cliente
+                Nuevo gasto
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
 
@@ -160,3 +178,4 @@
         </div>
     </div>
 </div>
+

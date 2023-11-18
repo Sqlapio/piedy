@@ -9,7 +9,6 @@
             <h3 class="text-base text-center font-semibold leading-6 text-gray-900" id="modal-title">Agenda</h3>
             <h1 class="text-base text-center font-semibold leading-6 text-gray-900" id="modal-title">{{ $hora }}</h1>
             <div class="mt-10 text-left sm:mt-5">
-                
                 <div class="p-2">
                     <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Fecha de cita</label>
                     <x-input type="date" wire:model.defer="fecha" id="focus" class="focus:ring-check-blue focus:border-check-blue" />
@@ -24,9 +23,7 @@
                 </div>
             </div>
         </div>
-        
     <div class="sm:mt-6">
-            <button type="button" wire:click="store()" class="mt-44 inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">Agendar cita</button>
+        <button type="button" wire:click="store()" class="mt-44 inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">Agendar cita</button>
     </div>
-
 </div>

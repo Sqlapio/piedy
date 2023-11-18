@@ -13,32 +13,19 @@ class Clientes extends Component
 {
     use WithPagination;
 
-    #[Rule('required')]
+    #[Rule('required', message: 'Campo requerido')]
     public $nombre;
 
-    #[Rule('required')]
+    #[Rule('required', message: 'Campo requerido')]
     public $apellido;
 
-    #[Rule('required|numeric')]
-    public $cedula;
-
-    #[Rule('required|email|unique:clientes')]
     public $email;
-
     public $telefono;
-    public $direccion_corta;
 
     public $buscar;
     public $ocultar_form_cliente = 'hidden';
     public $ocultar_table_cliente = '';
 
-    protected $messages = [
-        'nombre'            => 'Campo requerido',
-        'apellido'          => 'Campo requerido',
-        'cedula'            => 'Campo requerido',
-        'cedula.numeric'    => 'El campo solo acepta números',
-        'email.email'       => 'Campo tipo email',
-    ];
 
     public function ocultar_table()
     {
@@ -48,7 +35,6 @@ class Clientes extends Component
 
     public function store()
     {
-
         $this->validate();
 
         try {
@@ -58,10 +44,8 @@ class Clientes extends Component
             $cliente = new Cliente();
             $cliente->nombre = $this->nombre;
             $cliente->apellido = $this->apellido;
-            $cliente->cedula = $this->cedula;
             $cliente->email = $this->email;
             $cliente->telefono = $this->telefono;
-            $cliente->direccion_corta = $this->direccion_corta;
             $cliente->user_id = $user->id;
             $cliente->save();
 
@@ -110,8 +94,7 @@ class Clientes extends Component
             'data' => Cliente::orderBy('id', 'desc')
                 ->orWhere('nombre', 'like', "%{$this->buscar}%")
                 ->orWhere('apellido', 'like', "%{$this->buscar}%")
-                ->orWhere('cedula', 'like', "%{$this->buscar}%")
-                ->paginate(4)
+                ->paginate(5)
         ]);
     }
 }

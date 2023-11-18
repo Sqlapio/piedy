@@ -159,7 +159,7 @@ class AgregraServicios extends Component
         $servicios_adicionales = Servicio::Where('categoria', 'principal')
             ->Where('descripcion', 'like', "%{$this->buscar}%")
             ->orderBy('id', 'desc')
-            ->simplePaginate(4);
+            ->simplePaginate(5);
 
         return view('livewire.agregra-servicios', compact('data', 'detalle', 'total_vista', 'servicios_adicionales'));
     }

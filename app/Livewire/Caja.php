@@ -122,7 +122,6 @@ class Caja extends Component
                 //Evalua que el monto a calcular no sea mayor o igual al total de la venta
                 //------------------------------------------------------------------------
                 if($this->valor_uno >= $total_vista){
-                    dd($this->valor_uno, $total_vista);
                     $this->dialog()->error(
                         $title = 'Error !!!',
                         $description = 'El monto debe ser menor al valor total de la venta.'
@@ -304,7 +303,7 @@ class Caja extends Component
                     ->where('status', '1')
                     ->update([
                         'status' => '2',
-                        
+
                     ]);
 
                 Disponible::where('cod_asignacion', $item->cod_asignacion)
@@ -718,7 +717,7 @@ class Caja extends Component
             }
 
         }
-        
+
     }
 
     public function render(Request $request)

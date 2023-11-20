@@ -2,7 +2,9 @@
 
 namespace App\Livewire;
 
-use App\Models\VentaServicio;
+use App\Models\FacturaMultiple;
+use Barryvdh\Debugbar\Facades\Debugbar;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\Summarizers\Sum;
@@ -11,18 +13,20 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Contracts\View\View;
-use Livewire\Component;
 use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
+use WireUi\Traits\Actions;
+use Livewire\Component;
 
-class Venta extends Component implements HasForms, HasTable
+class TablaFacturasMultiples extends Component implements HasForms, HasTable
 {
+    use Actions;
     use InteractsWithTable;
     use InteractsWithForms;
 
     public function table(Table $table): Table
     {
         return $table
-            ->query(VentaServicio::query())
+            ->query(FacturaMultiple::query())
             ->columns([
                 TextColumn::make('cod_asignacion')
                     ->sortable()
@@ -37,12 +41,12 @@ class Venta extends Component implements HasForms, HasTable
                 TextColumn::make('metodo_pago')->searchable(),
                 TextColumn::make('referencia')->searchable(),
 
-                TextColumn::make('total_USD')
+                TextColumn::make('total_usd')
                     ->summarize(Sum::make()
                     ->numeric(
                         decimalPlaces: 00,
-                        decimalSeparator: ',',
-                        thousandsSeparator: '.',
+                        decimalSeparator: '.',
+                        thousandsSeparator: ',',
                     )
                     ->label('Venta Neta($)'))
                     ->searchable(),
@@ -51,8 +55,8 @@ class Venta extends Component implements HasForms, HasTable
                 ->summarize(Sum::make()
                 ->numeric(
                     decimalPlaces: 00,
-                    decimalSeparator: ',',
-                    thousandsSeparator: '.',
+                    decimalSeparator: '.',
+                    thousandsSeparator: ',',
                 )
                 ->label('Total($)'))
                 ->searchable(),
@@ -61,8 +65,8 @@ class Venta extends Component implements HasForms, HasTable
                 ->summarize(Sum::make()
                 ->numeric(
                     decimalPlaces: 00,
-                    decimalSeparator: ',',
-                    thousandsSeparator: '.',
+                    decimalSeparator: '.',
+                    thousandsSeparator: ',',
                 )
                 ->label('Total(Bs)'))
                 ->searchable(),
@@ -87,37 +91,8 @@ class Venta extends Component implements HasForms, HasTable
             ]);
     }
 
-    public function inicio(){
-        redirect()->to('/dashboard');
-    }
-
-    public function citas(){
-        redirect()->to('/citas');
-    }
-
-    public function clientes(){
-        redirect()->to('/clientes');
-    }
-
-    public function cabinas(){
-        redirect()->to('/cabinas');
-    }
-
-    public function productos(){
-        redirect()->to('/productos');
-    }
-
-    public function servicios(){
-        redirect()->to('/servicios');
-    }
-
-    public function atras(){
-        redirect()->to('/dashboard');
-    }
-
-
     public function render()
     {
-        return view('livewire.venta');
+        return view('livewire.tabla-facturas-multiples');
     }
 }

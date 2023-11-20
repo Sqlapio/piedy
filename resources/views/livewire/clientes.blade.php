@@ -47,6 +47,9 @@
                             Teléfono
                         </th>
                         <th scope="col" class="px-6 py-3">
+                            Registrado por:
+                        </th>
+                        <th scope="col" class="px-6 py-3">
                             Asginar
                         </th>
                     </tr>
@@ -62,6 +65,9 @@
                         </td>
                         <td class="px-6 py-4">
                             {{ $item->telefono }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ $item->responsable }}
                         </td>
                         <td class="px-6 py-4 text-center items-center">
                             <svg onclick="Livewire.dispatch('openModal', { component: 'modal-clientes', arguments: { cliente: {{ $item->id }} }})" class="w-6 h-6 text-green-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19 17">

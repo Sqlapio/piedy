@@ -35,10 +35,9 @@ class ClienteResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('nombre')->searchable(),
                 Tables\Columns\TextColumn::make('apellido')->searchable(),
-                Tables\Columns\TextColumn::make('cedula')->searchable(),
                 Tables\Columns\TextColumn::make('email')->searchable(),
                 Tables\Columns\TextColumn::make('telefono')->searchable(),
-                Tables\Columns\TextColumn::make('direccion_corta')->searchable(),
+                Tables\Columns\TextColumn::make('responsable')->searchable(),
             ])
             ->filters([
                 //
@@ -55,14 +54,14 @@ class ClienteResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -70,5 +69,5 @@ class ClienteResource extends Resource
             // 'create' => Pages\CreateCliente::route('/create'),
             // 'edit' => Pages\EditCliente::route('/{record}/edit'),
         ];
-    }    
+    }
 }

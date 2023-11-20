@@ -13,12 +13,19 @@ return new class extends Migration
     {
         Schema::create('cierre_diarios', function (Blueprint $table) {
             $table->id();
+
             $table->decimal('total_pago_usd',8 ,2)->nullable()->default(0.00);
             $table->decimal('total_pago_bsd',8 ,2)->nullable()->default(0.00);
-            $table->decimal('total_gastos',8 ,2)->nullable()->default(0.00);
-            $table->decimal('total_venta',8 ,2)->nullable()->default(0.00);
+
+            $table->decimal('total_gastos_pago_usd',8 ,2)->nullable()->default(0.00);
+            $table->decimal('total_gastos_pago_bsd',8 ,2)->nullable()->default(0.00);
+
+            $table->decimal('venta_neta_usd',8 ,2)->nullable()->default(0.00);
+            $table->decimal('venta_neta_bsd',8 ,2)->nullable()->default(0.00);
+
             $table->string('fecha');
             $table->string('responsable');
+            $table->string('observaciones')->nullable();
             $table->timestamps();
         });
     }

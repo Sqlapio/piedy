@@ -8,10 +8,13 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Filament\Notifications\Notification;
 use Livewire\Attributes\Rule;
+use WireUi\Traits\Actions;
 
 class Clientes extends Component
 {
     use WithPagination;
+
+    use Actions;
 
     #[Rule('required', message: 'Nombre requerido')]
     public $nombre;
@@ -28,6 +31,7 @@ class Clientes extends Component
 
     public function ocultar_table()
     {
+        $this->info();
         $this->ocultar_table_cliente = 'hidden';
         $this->ocultar_form_cliente = '';
     }
@@ -85,6 +89,15 @@ class Clientes extends Component
 
     public function servicios(){
         redirect()->to('/servicios');
+    }
+
+    public function info()
+    {
+        $this->dialog([
+            'title'       => 'INFORMACION IMPORTANTE!!!',
+            'description' => 'Debes cargar el correo electronico valido de cada cliente que registres, para poder enviar las notificaciones de promociones y ofertas en productos y servicios.',
+            'icon'        => 'success'
+        ]);
     }
 
 

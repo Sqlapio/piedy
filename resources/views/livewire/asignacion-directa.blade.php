@@ -17,12 +17,12 @@
                             <x-select wire:model.defer="cliente_id" placeholder="Seleccion" :async-data="route('api.clientes')" option-label="nombre" option-value="id" />
                         </div>
                         <div class="p-2">
-                            <label class="opacity-60 mb-1 block text-md font-extrabold text-green-700 text-italblue text-left">TÉCNICO</label>
-                            <x-select wire:model.defer="empleado_id" placeholder="Seleccion" :async-data="route('api.empleados')" option-label="name" option-value="id" />
-                        </div>
-                        <div class="p-2">
                             <label class="opacity-60 mb-1 block text-md font-extrabold text-blue-700 text-italblue text-left">SERVICIO</label>
                             <x-select wire:model.defer="servicio_id" placeholder="Seleccion" :async-data="route('api.servicios')" option-label="descripcion" option-value="id" />
+                        </div>
+                        <div class="p-2">
+                            <label class="opacity-60 mb-1 block text-md font-extrabold text-green-700 text-italblue text-left">TÉCNICO</label>
+                            <x-select wire:model.defer="empleado_id" placeholder="Seleccion" :async-data="route('api.empleados')" option-label="name" option-value="id" />
                         </div>
                     </div>
                 </div>

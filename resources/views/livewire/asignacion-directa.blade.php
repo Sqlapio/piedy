@@ -13,12 +13,12 @@
                     <h3 class="text-lg font-semibold leading-6 text-gray-900" id="modal-title">Asignación de servicio directa</h3>
                     <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-1 mb-4 mt-5">
                         <div class="p-2">
-                            <label class="opacity-60 mb-1 block text-md font-extrabold text-green-700 text-italblue text-left">TÉCNICO</label>
-                            <x-select wire:model.defer="empleado_id" placeholder="Seleccion" :async-data="route('api.empleados')" option-label="name" option-value="id" />
-                        </div>
-                        <div class="p-2">
                             <label class="opacity-60 mb-1 block text-md font-extrabold text-amber-700 text-italblue text-left">CLIENTE</label>
                             <x-select wire:model.defer="cliente_id" placeholder="Seleccion" :async-data="route('api.clientes')" option-label="nombre" option-value="id" />
+                        </div>
+                        <div class="p-2">
+                            <label class="opacity-60 mb-1 block text-md font-extrabold text-green-700 text-italblue text-left">TÉCNICO</label>
+                            <x-select wire:model.defer="empleado_id" placeholder="Seleccion" :async-data="route('api.empleados')" option-label="name" option-value="id" />
                         </div>
                         <div class="p-2">
                             <label class="opacity-60 mb-1 block text-md font-extrabold text-blue-700 text-italblue text-left">SERVICIO</label>

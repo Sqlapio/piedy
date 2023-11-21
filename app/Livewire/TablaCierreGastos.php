@@ -65,14 +65,7 @@ class TablaCierreGastos extends Component implements HasForms, HasTable
                 // ...
             ])
             ->actions([
-                ActionGroup::make([
-                    ViewAction::make(),
-                    EditAction::make()
-                    ->action(fn (CierreDiario $record) => $record->edit()),
-                    DeleteAction::make()
-                    ->requiresConfirmation()
-                    ->action(fn (CierreDiario $record) => $record->delete())
-                ]),
+                
             ])
             ->bulkActions([
                 // ...

@@ -17,7 +17,7 @@ class ApiClientesController extends Controller
     {
         return Cliente::query()
             ->select('id', 'nombre', 'apellido', 'email')
-            ->orderBy('nombre')
+            ->orderBy('id', 'desc')
             ->when(
                 $request->search,
                 fn (Builder $query) => $query
@@ -28,7 +28,7 @@ class ApiClientesController extends Controller
             ->when(
                 $request->exists('selected'),
                 fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
-                fn (Builder $query) => $query->limit(10)
+                fn (Builder $query) => $query->limit(4)
             )
             ->get()
             ->map(function (Cliente $cliente) {
@@ -52,7 +52,7 @@ class ApiClientesController extends Controller
             ->when(
                 $request->exists('selected'),
                 fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
-                fn (Builder $query) => $query->limit(10)
+                fn (Builder $query) => $query->limit(8)
             )
             ->get()
             ->map(function (User $user) {
@@ -75,7 +75,7 @@ class ApiClientesController extends Controller
             ->when(
                 $request->exists('selected'),
                 fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
-                fn (Builder $query) => $query->limit(10)
+                fn (Builder $query) => $query->limit(4)
             )
             ->get()
             ->map(function (Servicio $servicio) {

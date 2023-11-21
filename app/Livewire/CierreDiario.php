@@ -51,7 +51,7 @@ class CierreDiario extends Component implements HasForms, HasTable
 
     public function cancelar()
     {
-        dd('cancelado');
+        $this->redirect('/cierre/diario');
     }
 
     public function cierre_caja()

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('categoria');
             $table->decimal('costo', 8, 2);
             $table->string('duracion_max');
+            $table->string('asignacion')->default('general');
             $table->string('status')->default('activo');
 
             $table->timestamps();

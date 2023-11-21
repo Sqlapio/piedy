@@ -28,6 +28,7 @@ class Servicio extends Model
         'costo',
         'duracion_max', //este valor debe ser expresado en minutos
         'categoria',
+        'asignacion',
         'status',
     ];
 

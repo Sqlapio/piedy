@@ -47,6 +47,11 @@ class ServicioResource extends Resource
                     ->prefix('Minutos')
                     ->numeric()
                     ->required(),
+                Select::make('asignacion')
+                    ->options([
+                        'general' => 'General',
+                        'promocion' => 'Promoción',
+                    ]),
             ]);
     }
 
@@ -74,6 +79,12 @@ class ServicioResource extends Resource
                     'danger' => 'inactivo',
                     'success' => 'activo',
                 ]),
+                TextColumn::make('asignacion')
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'general' => 'warning',
+                    'promocion' => 'success',
+                })
             ])
             ->filters([
                 //

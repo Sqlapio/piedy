@@ -111,7 +111,6 @@ class AgregraServicios extends Component
 
         for ($i=0; $i < count($this->servicios) ; $i++)
         {
-
             $data_servicios = Servicio::where('id', $this->servicios[$i])->first();
             $detalle_asignacion = new DetalleAsignacion();
             $detalle_asignacion->cod_asignacion     = $codigo['cod_asignacion'];
@@ -126,7 +125,6 @@ class AgregraServicios extends Component
             $detalle_asignacion->costo              = $data_servicios->costo;
             $detalle_asignacion->fecha              = date('d-m-Y');
             $detalle_asignacion->save();
-
         }
 
     }

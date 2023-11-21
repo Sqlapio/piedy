@@ -115,10 +115,23 @@ class Dashboard extends Component
 
         if($valor == 8)
         {
-            $this->dialog()->success(
-                    $title = 'NOTIFICACION !!!',
-                    $description = 'El equipo de desarrollo se encuentra trabajando en la creación de esta funcionalidad.'
+
+            if($tasa->fecha != date('d-m-Y'))
+            {
+                $this->dialog()->error(
+                    $title = 'Error !!!',
+                    $description = 'Debe actualizar la tasa del BCV para poder utilizar el sistema. Por favor haga click en el simbolo del BCV.'
                 );
+            }else{
+                $this->redirect('/cierre/diario');
+            }
+
+
+
+            // $this->dialog()->success(
+            //         $title = 'NOTIFICACION !!!',
+            //         $description = 'El equipo de desarrollo se encuentra trabajando en la creación de esta funcionalidad.'
+            //     );
 
             // $this->dialog()->confirm([
 

@@ -8,6 +8,7 @@ export default {
     ],
     content: [
         './app/Filament/**/*.php',
+        './resources/views/filament/**/*.blade.php',
         './resources/views/**/*.blade.php',
         './resources/**/*.js',
         './vendor/filament/**/*.blade.php',

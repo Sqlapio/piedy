@@ -54,7 +54,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     })->name('gastos');
 
     Route::get('/cierre/diario', function () {
-        return view('cierre-diario');
+        return view('cierre_diario');
     })->name('cierre_diario');
 
     Route::get('/citas', function () {

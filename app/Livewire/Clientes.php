@@ -46,6 +46,7 @@ class Clientes extends Component
             $cliente->email = $this->email;
             $cliente->telefono = $this->telefono;
             $cliente->user_id = $user->id;
+            $cliente->responsable= $user->name;
             $cliente->save();
 
             Notification::make()

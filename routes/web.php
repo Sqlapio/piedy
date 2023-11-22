@@ -77,6 +77,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('caja');
     })->name('caja');
 
+    Route::get('/promociones', function () {
+        return view('promociones');
+    })->name('promociones');
+
     Route::get('/agregar/servicios', function () {
         return view('agregar_servicios');
     })->name('agregar_servicios');

@@ -11,6 +11,10 @@ class Servicios extends Component
 
     use WithPagination;
 
+    public function promociones(){
+        redirect()->to('/promociones');
+    }
+
     public function inicio(){
         redirect()->to('/dashboard');
     }

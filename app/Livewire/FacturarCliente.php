@@ -18,6 +18,7 @@ use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Livewire\WithPagination;
 use WireUi\Traits\Actions;
+use Illuminate\Support\Arr;
 
 class FacturarCliente extends Component
 {
@@ -582,6 +583,28 @@ class FacturarCliente extends Component
                 }
             }
         }
+    }
+
+    public function aplicar_promocion()
+    {
+
+        $servicios = Servicio::select(DB::raw("descripcion as servicios"))
+            ->where('asignacion', 'promocion')
+            ->orderBy('servicios', 'asc')
+            ->get();
+        $array_servicios = $servicios->pluck('servicios');
+
+        for ($j = 0; $j < count($this->servicios); $j++) {
+            $servicio_asignado_promocion = Disponible::where('id', $this->servicios[$j])->first()->servicio;
+            $exists = Arr::exists($array_servicios, $servicio_asignado_promocion);
+            if($exists){
+                dd('estrue');
+            }else{
+                dd($j);
+            }
+        }
+
+
     }
 
     public function render()

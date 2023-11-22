@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('cod_promocion')->nullable();
             $table->string('descripcion')->nullable();
-            $table->decimal('costo', 8, 2)->nullable();
+            $table->decimal('porcentaje', 8, 2)->nullable();
             $table->string('image', 2048)->nullable();
             $table->string('tipo')->nullable();
             $table->string('status')->nullable();

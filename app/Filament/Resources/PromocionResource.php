@@ -35,14 +35,15 @@ class PromocionResource extends Resource
             ->schema([
                 TextInput::make('cod_promocion')->default('Ppromo-'.random_int(11111, 99999)),
                 TextInput::make('descripcion')->required(),
-                TextInput::make('costo')
+                TextInput::make('porcentaje')
                     ->prefix('$')
                     ->numeric()
                     ->inputMode('decimal'),
                 Select::make('tipo')
                     ->options([
-                        'precio_especial' => 'Precio especial',
-                        'cupones' => 'Cupones',
+                        '2x1' => '2x1',
+                        'porcentaje' => 'Porcentaje',
+                        'gratis' => 'gratis',
                     ]),
                 Select::make('status')
                     ->options([
@@ -70,7 +71,7 @@ class PromocionResource extends Resource
                 ->width(100)
                 ->height(100),
                 TextColumn::make('descripcion')->searchable(),
-                TextColumn::make('costo')->searchable(),
+                TextColumn::make('porcentaje')->searchable(),
                 TextColumn::make('tipo')->searchable(),
                 IconColumn::make('status')
                 ->options([

@@ -80,6 +80,7 @@ class ServicioResource extends Resource
                     'success' => 'activo',
                 ]),
                 TextColumn::make('asignacion')
+                ->searchable()
                 ->badge()
                 ->color(fn (string $state): string => match ($state) {
                     'general' => 'warning',

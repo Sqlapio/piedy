@@ -147,4 +147,26 @@ class ApiClientesController extends Controller
                 return $metodo_pago;
             });
     }
+
+    public function promociones_servicios(Request $request): Collection
+    {
+        return Servicio::query()
+            ->select('id', 'descripcion')
+            ->where('asignacion', 'promocion')
+            ->orderBy('descripcion')
+            ->when(
+                $request->search,
+                fn (Builder $query) => $query
+                    ->where('descripcion', 'like', "%{$request->search}%")
+            )
+            ->when(
+                $request->exists('selected'),
+                fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
+                fn (Builder $query) => $query->limit(4)
+            )
+            ->get()
+            ->map(function (Servicio $servicio) {
+                return $servicio;
+            });
+    }
 }

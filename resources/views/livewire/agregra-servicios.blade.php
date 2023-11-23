@@ -24,8 +24,8 @@
                     <a href="#" class="flex items-center p-2 px-2 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
                         <span class="flex-1 ml-3 text-sm whitespace-nowrap">{{ $item->servicio }}</span>
                         <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-md font-extrabold text-white ">${{ $item->costo }}</span>
-                        @if($data->status == 'cerrado')
-                        <svg wire:click="eliminar_servicio({{ $item->id }})" class="w-4 h-4 ml-2 text-red-600 cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        @if($data->status == 'activo')
+                        <svg wire:click="delete({{ $item->id }})" class="w-4 h-4 mr-2 text-red-600 cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
                         </svg>
                         @endif
@@ -96,8 +96,8 @@
                             </button>
                         </div>
                         <div class="sm:mt-2">
-                            <button type="button" wire:click="cerrar_servicio()" class="inline-flex w-full justify-center rounded-lg bg-red-700 px-3 py-3 mb-auto text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="cerrar_servicio" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
+                            <button type="button" wire:click="cerrar()" class="inline-flex w-full justify-center rounded-lg bg-red-700 px-3 py-3 mb-auto text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="cerrar" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
                                 </svg>
                                 <span>Cerrar servicios</span>
@@ -109,4 +109,3 @@
         </div>
     </div>
 </div>
-

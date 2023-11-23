@@ -32,7 +32,8 @@ class VentaServicio extends Model
         'comision_empleado',
         'comision_gerente',
         'total_USD',
-        'total_BSD'
+        'total_BSD',
+        'responsable'
     ];
 
     public function detalle_asignacions():HasMany

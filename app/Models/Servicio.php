@@ -42,4 +42,9 @@ class Servicio extends Model
         return $this->hasOne(Cita::class);
     }
 
+    public function get_promocion(): HasOne
+    {
+        return $this->hasOne(Promocion::class, 'servicio_id', 'id');
+    }
+
 }

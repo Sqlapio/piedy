@@ -127,6 +127,33 @@ class AgregraServicios extends Component
             $detalle_asignacion->save();
         }
 
+        $this->servicios = [];
+
+    }
+
+    public function cerrar()
+    {
+        $this->dialog()->confirm([
+
+            'title'       => 'NOTIFICACIÓN !!!',
+            'description' => 'Después de cerrado el servicio esta operación no podra ser reversada. Estás seguro?',
+            'icon'        => 'question',
+            'accept'      => [
+                'label'  => 'Sí, cerrar servicio',
+                'method' => 'cerrar_servicio',
+                'params' => 'Saved',
+            ]
+        ]);
+    }
+
+    public function delete($value)
+    {
+        try {
+            $item = DetalleAsignacion::where('id', $value)->update(['status' => 3]);
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+
     }
 
     public function render(Request $request)

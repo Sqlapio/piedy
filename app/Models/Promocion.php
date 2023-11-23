@@ -21,10 +21,16 @@ class Promocion extends Model
      */
     protected $fillable = [
         'cod_promocion',
+        'servicio_id',
         'descripcion',
         'image',
-        'costo',
+        'porcentaje',
         'tipo',
         'status',
     ];
+
+    public function servicio()
+    {
+        return $this->belongsTo(Servicio::class, 'servicio_id', 'id');
+    }
 }

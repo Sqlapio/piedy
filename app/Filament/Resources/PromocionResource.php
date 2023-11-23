@@ -34,6 +34,11 @@ class PromocionResource extends Resource
         return $form
             ->schema([
                 TextInput::make('cod_promocion')->default('Ppromo-'.random_int(11111, 99999)),
+                Select::make('servicio_id')
+                    ->relationship('servicio', 'descripcion')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
                 TextInput::make('descripcion')->required(),
                 TextInput::make('porcentaje')
                     ->prefix('$')
@@ -71,6 +76,7 @@ class PromocionResource extends Resource
                 ->width(100)
                 ->height(100),
                 TextColumn::make('descripcion')->searchable(),
+                TextColumn::make('servicio.descripcion')->searchable(),
                 TextColumn::make('porcentaje')->searchable(),
                 TextColumn::make('tipo')->searchable(),
                 IconColumn::make('status')

@@ -77,11 +77,14 @@ class FacturarCliente extends Component
         $count = count($this->servicios);
         if($count = 2)
         {
-            $tipo_promocion = Disponible::where('id', $this->servicios[0])->first()->tipo_promocion;
-
-            if($tipo_promocion == '2x1'){
-                $this->atr_btn_promo = '';
-                $this->atr_grip_promo = 'grid-cols-2';
+            if(isset($this->servicios[0]))
+            {
+                $tipo_promocion = Disponible::where('id', $this->servicios[0])->first()->tipo_promocion;
+                    if($tipo_promocion == '2x1')
+                    {
+                        $this->atr_btn_promo = '';
+                        $this->atr_grip_promo = 'grid-cols-2';
+                    }
             }
 
         }
@@ -248,7 +251,6 @@ class FacturarCliente extends Component
 
         }
 
-
     }
 
     public function facturar_servicio(Request $request)
@@ -307,7 +309,7 @@ class FacturarCliente extends Component
                     ->success()
                     ->send();
 
-                    $this->redirect('/citas');
+                    $this->redirect('/cabinas');
                 }
             }
 
@@ -359,7 +361,7 @@ class FacturarCliente extends Component
                     ->success()
                     ->send();
 
-                    $this->redirect('/citas');
+                    $this->redirect('/cabinas');
                 }
             }
 
@@ -405,7 +407,7 @@ class FacturarCliente extends Component
                     ->success()
                     ->send();
 
-                    $this->redirect('/citas');
+                    $this->redirect('/cabinas');
                 }
             }
 
@@ -456,7 +458,7 @@ class FacturarCliente extends Component
                     ->success()
                     ->send();
 
-                    $this->redirect('/citas');
+                    $this->redirect('/cabinas');
                 }
             }
 
@@ -524,7 +526,7 @@ class FacturarCliente extends Component
                                     ->success()
                                     ->send();
 
-                                $this->redirect('/citas');
+                                $this->redirect('/cabinas');
                             }
                         }
                     }

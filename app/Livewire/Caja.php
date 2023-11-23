@@ -17,6 +17,7 @@ use Livewire\Attributes\Rule;
 use WireUi\Traits\Actions;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class Caja extends Component
@@ -297,6 +298,7 @@ class Caja extends Component
                         'pago_usd'      => $total_vista,
                         'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                         'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                        'responsable'   => Auth::user()->name,
                     ]);
 
                 DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
@@ -318,7 +320,7 @@ class Caja extends Component
                     ->success()
                     ->send();
 
-                $this->redirect('/citas');
+                $this->redirect('/cabinas');
 
             }
 
@@ -337,6 +339,7 @@ class Caja extends Component
                         'pago_bsd' => $total_vista * $tasa_bcv,
                         'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                         'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                        'responsable'   => Auth::user()->name,
                     ]);
 
                 DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
@@ -356,14 +359,14 @@ class Caja extends Component
                     ->success()
                     ->send();
 
-                $this->redirect('/citas');
+                $this->redirect('/cabinas');
 
             }
 
             /**
              * Pago total en PAGO MOVIL
              */
-            if($this->descripcion == 'Pago movil')
+            if($this->descripcion == 'Pago movil' || $this->descripcion == 'Punto de venta' || $this->descripcion == 'Transferencia')
             {
                 if($this->referencia != '')
                 {
@@ -376,6 +379,7 @@ class Caja extends Component
                             'pago_bsd' => $total_vista * $tasa_bcv,
                             'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                             'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                            'responsable'   => Auth::user()->name,
                         ]);
 
                     DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
@@ -396,105 +400,13 @@ class Caja extends Component
                         ->success()
                         ->send();
 
-                    $this->redirect('/citas');
+                    $this->redirect('/cabinas');
                 }else{
                     $this->dialog()->error(
                         $title = 'Error !!!',
                         $description = 'Debe cargar el número de referencia, de lo contrario no podra realizar la facturación'
                     );
                 }
-            }
-
-            /**
-             * Pago total en PUNTO DE VENTA
-             */
-            if($this->descripcion == 'Punto de venta')
-            {
-                if($this->referencia == ''){
-                    $this->dialog()->error(
-                        $title = 'Error !!!',
-                        $description = 'Debe cargar el número de referencia, de lo contrario no podra realizar la facturación'
-                    );
-                }else{
-
-                    $facturar = DB::table('venta_servicios')
-                        ->where('cod_asignacion', $item->cod_asignacion)
-                        ->update([
-                            'metodo_pago' => $this->descripcion,
-                            'referencia' => $this->referencia,
-                            'total_USD' => $total_vista,
-                            'pago_bsd' => $total_vista * $tasa_bcv,
-                            'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                            'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                        ]);
-
-                    DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
-                        ->where('status', '1')
-                        ->update([
-                            'status' => '2',
-
-                        ]);
-
-                    Disponible::where('cod_asignacion', $item->cod_asignacion)
-                        ->where('status', 'por facturar')
-                        ->update([
-                            'status' => 'facturado'
-                        ]);
-
-                    Notification::make()
-                        ->title('La factura fue cerrada con exito')
-                        ->success()
-                        ->send();
-
-                    $this->redirect('/citas');
-
-                }
-            }
-
-            /**
-             * Pago total en TRANSFERENCIA
-             */
-            if($this->descripcion == 'Transferencia')
-            {
-                if($this->referencia == ''){
-                    $this->dialog()->error(
-                        $title = 'Error !!!',
-                        $description = 'Debe cargar el número de referencia, de lo contrario no podra realizar la facturación'
-                    );
-                }else{
-
-                    $facturar = DB::table('venta_servicios')
-                        ->where('cod_asignacion', $item->cod_asignacion)
-                        ->update([
-                            'metodo_pago' => $this->descripcion,
-                            'referencia' => $this->referencia,
-                            'total_USD' => $total_vista,
-                            'pago_bsd' => $total_vista * $tasa_bcv,
-                            'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                            'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                        ]);
-
-                    DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
-                        ->where('status', '1')
-                        ->update([
-                            'status' => '2',
-
-                        ]);
-
-                    Disponible::where('cod_asignacion', $item->cod_asignacion)
-                        ->where('status', 'por facturar')
-                        ->update([
-                            'status' => 'facturado',
-                        ]);
-
-                    Notification::make()
-                        ->title('La factura fue cerrada con exito')
-                        ->success()
-                        ->send();
-
-                    $this->redirect('/citas');
-                }
-
             }
 
             /**
@@ -518,6 +430,7 @@ class Caja extends Component
                             'pago_usd' => $total_vista,
                             'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                             'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                            'responsable'   => Auth::user()->name,
                         ]);
 
                     DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
@@ -538,7 +451,7 @@ class Caja extends Component
                         ->success()
                         ->send();
 
-                    $this->redirect('/citas');
+                    $this->redirect('/cabinas');
 
                 }
             }
@@ -585,6 +498,7 @@ class Caja extends Component
                                         'pago_bsd' => Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
                                         'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                                         'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                                        'responsable'   => Auth::user()->name,
                                     ]);
 
                                 DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
@@ -605,7 +519,7 @@ class Caja extends Component
                                     ->success()
                                     ->send();
 
-                                $this->redirect('/citas');
+                                $this->redirect('/cabinas');
 
                         }
 
@@ -636,6 +550,7 @@ class Caja extends Component
                                     'pago_bsd' => $total_vista_bsd,
                                     'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                                     'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                                    'responsable'   => Auth::user()->name,
                                 ]);
 
                             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
@@ -656,7 +571,7 @@ class Caja extends Component
                                 ->success()
                                 ->send();
 
-                            $this->redirect('/citas');
+                            $this->redirect('/cabinas');
 
                         }
 
@@ -687,6 +602,7 @@ class Caja extends Component
                                     'pago_usd' => $total_vista,
                                     'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                                     'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                                    'responsable'   => Auth::user()->name,
                                 ]);
 
                             DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
@@ -707,7 +623,7 @@ class Caja extends Component
                                 ->success()
                                 ->send();
 
-                            $this->redirect('/citas');
+                            $this->redirect('/cabinas');
 
                         }
 

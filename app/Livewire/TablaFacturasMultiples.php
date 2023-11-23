@@ -28,16 +28,21 @@ class TablaFacturasMultiples extends Component implements HasForms, HasTable
         return $table
             ->query(FacturaMultiple::query())
             ->columns([
+                TextColumn::make('responsable')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('cod_asignacion')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
                 TextColumn::make('cliente')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('empleado')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('fecha_venta')->searchable(),
+                TextColumn::make('created_at')
+                    ->label(__('Fecha de registro'))
+                    ->searchable(),
                 TextColumn::make('metodo_pago')->searchable(),
                 TextColumn::make('referencia')->searchable(),
 
@@ -76,7 +81,8 @@ class TablaFacturasMultiples extends Component implements HasForms, HasTable
                 'metodo_pago',
                 'cliente',
                 'empleado',
-                'fecha_venta'
+                'fecha_venta',
+                'responsable'
             ])
             // ->defaultGroup('empleado')
             ->filters([

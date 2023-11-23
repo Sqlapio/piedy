@@ -27,13 +27,16 @@ class Venta extends Component implements HasForms, HasTable
                 TextColumn::make('cod_asignacion')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('responsable')->searchable(),
+                TextColumn::make('created_at')
+                ->label(__('Fecha de registro'))
+                ->searchable(),
                 TextColumn::make('cliente')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('empleado')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('fecha_venta')->searchable(),
                 TextColumn::make('metodo_pago')->searchable(),
                 TextColumn::make('referencia')->searchable(),
 

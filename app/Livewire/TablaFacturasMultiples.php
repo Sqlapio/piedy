@@ -29,8 +29,7 @@ class TablaFacturasMultiples extends Component implements HasForms, HasTable
             ->query(FacturaMultiple::query())
             ->columns([
                 TextColumn::make('cod_asignacion')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ->searchable(),
                 TextColumn::make('cliente')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

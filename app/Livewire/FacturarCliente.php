@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\DetalleAsignacion;
 use App\Models\Disponible;
 use App\Models\FacturaMultiple;
+use App\Models\Promocion;
 use App\Models\Servicio;
 use App\Models\TasaBcv;
 use App\Models\User;
@@ -46,6 +47,11 @@ class FacturarCliente extends Component
     public $op2_hidden = 'hidden';
     public $ref_hidden = 'hidden';
 
+    public $atr_btn_promo = 'hidden';
+    public $atr_grip_promo = 'grid-cols-1';
+
+    public $promocion;
+
     protected $messages = [
         'dolares'     => 'Campo requerido',
     ];
@@ -67,6 +73,18 @@ class FacturarCliente extends Component
 
         $this->total_vista = array_sum($valores);
         $this->total_vista_bsd = $this->total_vista * $tasa_bcv;
+
+        $count = count($this->servicios);
+        if($count = 2)
+        {
+            $tipo_promocion = Disponible::where('id', $this->servicios[0])->first()->tipo_promocion;
+
+            if($tipo_promocion == '2x1'){
+                $this->atr_btn_promo = '';
+                $this->atr_grip_promo = 'grid-cols-2';
+            }
+
+        }
 
     }
 
@@ -207,6 +225,32 @@ class FacturarCliente extends Component
 
     }
 
+    public function aplicar_promocion()
+    {
+        /** 1. pregunto cuantos servicos estan para facturar */
+
+        $count = count($this->servicios);
+        if($count = 2)
+        {
+            $es_dos_x_uno = Disponible::where('id', $this->servicios[0])->first()->tipo_promocion;
+
+            if($es_dos_x_uno == '2x1')
+            {
+                $this->total_vista = $this->total_vista / 2;
+                $this->total_vista_bsd = $this->total_vista_bsd / 2;
+                $this->dialog()->success(
+                    $title = 'Promocion aplicada !!!',
+                    $description = 'El descuento fue aplicado de forma exitosa'
+                );
+                $this->atr_btn_promo = 'hidden';
+                $this->atr_grip_promo = 'grid-cols-1';
+            }
+
+        }
+
+
+    }
+
     public function facturar_servicio(Request $request)
     {
         if($this->descripcion == '')
@@ -234,7 +278,7 @@ class FacturarCliente extends Component
                     $factura = new FacturaMultiple();
                     $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
                     $factura->responsable       = $user->name;
-                    $factura->metodo_pago       = 'Facturación multiple';
+                    $factura->metodo_pago       = $this->descripcion;
                     $factura->referencia        = $factura->cod_asignacion;
                     $factura->fecha_venta       = date('d-m-Y');
                     $factura->pago_usd          = $this->total_vista;
@@ -286,7 +330,7 @@ class FacturarCliente extends Component
                     $factura = new FacturaMultiple();
                     $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
                     $factura->responsable       = $user->name;
-                    $factura->metodo_pago       = 'Facturación multiple';
+                    $factura->metodo_pago       = $this->descripcion;
                     $factura->referencia        = $this->referencia;
                     $factura->fecha_venta       = date('d-m-Y');
                     $factura->pago_usd          = $this->total_vista;
@@ -332,7 +376,7 @@ class FacturarCliente extends Component
                     $factura = new FacturaMultiple();
                     $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
                     $factura->responsable       = $user->name;
-                    $factura->metodo_pago       = 'Facturación multiple';
+                    $factura->metodo_pago       = $this->descripcion;
                     $factura->referencia        = $factura->cod_asignacion;
                     $factura->fecha_venta       = date('d-m-Y');
                     $factura->pago_bsd          = $this->total_vista_bsd;
@@ -383,7 +427,7 @@ class FacturarCliente extends Component
                     $factura = new FacturaMultiple();
                     $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
                     $factura->responsable       = $user->name;
-                    $factura->metodo_pago       = 'Facturación multiple';
+                    $factura->metodo_pago       = $this->descripcion;
                     $factura->referencia        = $this->referencia;
                     $factura->fecha_venta       = date('d-m-Y');
                     $factura->pago_bsd          = $this->total_vista_bsd;
@@ -450,7 +494,7 @@ class FacturarCliente extends Component
                                 $factura = new FacturaMultiple();
                                 $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
                                 $factura->responsable       = $user->name;
-                                $factura->metodo_pago       = 'Facturación multiple';
+                                $factura->metodo_pago       = 'Multiple';
                                 $factura->referencia        = $factura->cod_asignacion;
                                 $factura->fecha_venta       = date('d-m-Y');
                                 $factura->pago_bsd          = str_replace(',', '.', str_replace('.', '', $this->valor_dos));
@@ -585,28 +629,6 @@ class FacturarCliente extends Component
         }
     }
 
-    public function aplicar_promocion()
-    {
-
-        $servicios = Servicio::select(DB::raw("descripcion as servicios"))
-            ->where('asignacion', 'promocion')
-            ->orderBy('servicios', 'asc')
-            ->get();
-        $array_servicios = $servicios->pluck('servicios');
-
-        for ($j = 0; $j < count($this->servicios); $j++) {
-            $servicio_asignado_promocion = Disponible::where('id', $this->servicios[$j])->first()->servicio;
-            $exists = Arr::exists($array_servicios, $servicio_asignado_promocion);
-            if($exists){
-                dd('estrue');
-            }else{
-                dd($j);
-            }
-        }
-
-
-    }
-
     public function render()
     {
         if($this->descripcion == 'Pago movil' || $this->descripcion == 'Transferencia' || $this->descripcion == 'Zelle' || $this->descripcion == 'Punto de venta')
@@ -639,10 +661,12 @@ class FacturarCliente extends Component
 
         return view('livewire.facturar-cliente',[
             'data' => Disponible::Where('status', 'por facturar')
-            ->Where('cliente', 'like', "%{$this->buscar}%")
-            ->orderBy('id', 'desc')
-               ->paginate(4)
+                ->Where('cliente', 'like', "%{$this->buscar}%")
+                ->orderBy('id', 'desc')
+                ->paginate(4),
+            'promociones' => Promocion::paginate(4)
        ]);
 
     }
 }
+

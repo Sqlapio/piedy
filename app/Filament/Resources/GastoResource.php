@@ -38,8 +38,13 @@ class GastoResource extends Resource
                 TextColumn::make('forma_pago')->sortable(),
                 TextColumn::make('monto_usd')->sortable(),
                 TextColumn::make('monto_bsd')->sortable(),
-                TextColumn::make('fecha')->sortable(),
+                TextColumn::make('fecha')
+                ->label(__('Fecha de gasto'))
+                ->sortable(),
                 TextColumn::make('responsable')->sortable(),
+                TextColumn::make('created_at')
+                ->label(__('Fecha de registro'))
+                ->sortable(),
 
                 //
             ])
@@ -55,14 +60,14 @@ class GastoResource extends Resource
                 ]),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -70,5 +75,5 @@ class GastoResource extends Resource
             'create' => Pages\CreateGasto::route('/create'),
             'edit' => Pages\EditGasto::route('/{record}/edit'),
         ];
-    }    
+    }
 }

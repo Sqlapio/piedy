@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -33,11 +34,14 @@ class ClienteResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nombre')->searchable(),
-                Tables\Columns\TextColumn::make('apellido')->searchable(),
-                Tables\Columns\TextColumn::make('email')->searchable(),
-                Tables\Columns\TextColumn::make('telefono')->searchable(),
-                Tables\Columns\TextColumn::make('responsable')->searchable(),
+                TextColumn::make('nombre')->searchable(),
+                TextColumn::make('apellido')->searchable(),
+                TextColumn::make('email')->searchable(),
+                TextColumn::make('telefono')->searchable(),
+                TextColumn::make('responsable')->searchable(),
+                TextColumn::make('created_at')
+                ->label(__('Fecha de registro'))
+                ->sortable(),
             ])
             ->filters([
                 //

@@ -13,6 +13,11 @@
                     <label for="{{ $item->id }}" class="inline-flex items-center justify-between w-full p-3 text-black bg-gray-400 border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-green-600 peer-checked:bg-green-600 peer-checked:text-white shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]">
 
                             <div class="flex items-center space-x-4 w-full">
+                                @if($item->cod_promocion != null)
+                                <div>
+                                    <img class="w-12 h-auto" src="{{ asset('images/icon_promo_piedy.png') }}" alt="">
+                                </div>
+                                @endif
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-extrabold text-white truncate dark:text-white">
                                         Cliente: {{ $item->cliente }}
@@ -88,8 +93,8 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2">
-                    <div class="px-2">
+                <div class="grid {{ $atr_grip_promo }} gap-2">
+                    <div class="px-2 {{ $atr_btn_promo }}">
                         <button type="button" wire:click="aplicar_promocion()" class="w-full justify-center rounded-lg bg-green-700 px-3 py-3 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
                             <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="aplicar_promocion" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
@@ -106,6 +111,7 @@
                         </button>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

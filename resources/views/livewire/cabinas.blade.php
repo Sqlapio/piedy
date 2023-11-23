@@ -8,11 +8,16 @@
                 @if($item->status == 'activo')
                 <div class="flex justify-start rounded-full bg-green-700 px-6 py-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
                     <div class="flex items-center space-x-4 w-full">
-                        @if (Str::contains($item->area_trabajo, 'c'))
-                        <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/silla.png') }}" alt="">
+                        @if($item->cod_promocion == null)
+                            @if (Str::contains($item->area_trabajo, 'c'))
+                            <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/silla.png') }}" alt="">
+                            @endif
+                            @if (Str::contains($item->area_trabajo, 'm'))
+                            <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/mesas.png') }}" alt="">
+                            @endif
                         @endif
-                        @if (Str::contains($item->area_trabajo, 'm'))
-                        <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/mesas.png') }}" alt="">
+                        @if($item->cod_promocion != null)
+                            <img class="w-20 h-20 shadow-[0_2.8px_2.2px_rgba(0,_0,_0,_0.034),_0_6.7px_5.3px_rgba(0,_0,_0,_0.048),_0_12.5px_10px_rgba(0,_0,_0,_0.06),_0_22.3px_17.9px_rgba(0,_0,_0,_0.072),_0_41.8px_33.4px_rgba(0,_0,_0,_0.086),_0_100px_80px_rgba(0,_0,_0,_0.12)] ml-4" src="{{ asset('storage/'.app('App\Http\Controllers\UtilsController')->get_image_promocion($item->cod_promocion)) }}" alt="">
                         @endif
                         <div class="flex-1 min-w-0">
                             <p class="text-2xl font-extrabold text-white truncate dark:text-white">
@@ -38,11 +43,16 @@
                 @elseif($item->status == 'por facturar')
                 <div class="flex justify-start rounded-full bg-yellow-400 px-6 py-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
                     <div class="flex items-center space-x-4 w-full">
-                        @if (Str::contains($item->area_trabajo, 'c'))
-                        <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/silla.png') }}" alt="">
+                        @if($item->cod_promocion == null)
+                            @if (Str::contains($item->area_trabajo, 'c'))
+                            <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/silla.png') }}" alt="">
+                            @endif
+                            @if (Str::contains($item->area_trabajo, 'm'))
+                            <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/mesas.png') }}" alt="">
+                            @endif
                         @endif
-                        @if (Str::contains($item->area_trabajo, 'm'))
-                        <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/mesas.png') }}" alt="">
+                        @if($item->cod_promocion != null)
+                            <img class="w-20 h-20 shadow-[0_2.8px_2.2px_rgba(0,_0,_0,_0.034),_0_6.7px_5.3px_rgba(0,_0,_0,_0.048),_0_12.5px_10px_rgba(0,_0,_0,_0.06),_0_22.3px_17.9px_rgba(0,_0,_0,_0.072),_0_41.8px_33.4px_rgba(0,_0,_0,_0.086),_0_100px_80px_rgba(0,_0,_0,_0.12)] ml-4" src="{{ asset('storage/'.app('App\Http\Controllers\UtilsController')->get_image_promocion($item->cod_promocion)) }}" alt="">
                         @endif
                         <div class="flex-1 min-w-0">
                             <p class="text-2xl font-extrabold text-white truncate dark:text-white">

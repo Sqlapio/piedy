@@ -76,6 +76,9 @@ class UserResource extends Resource
                 })
                 ->searchable(),
                 TextColumn::make('area_trabajo')->searchable(),
+                TextColumn::make('created_at')
+                ->label(__('Fecha de registro'))
+                ->sortable(),
             ])
             ->filters([
                 //

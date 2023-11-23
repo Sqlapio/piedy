@@ -34,15 +34,17 @@ class Disponible extends Model
         'servicio',
         'costo',
         'status',
+        'cod_promocion',
+        'tipo_promocion'
     ];
 
-    
+
 
     public function cliente(): HasOne
     {
         return $this->hasOne(Cliente::class, 'cliente_id', 'id');
     }
-    
+
     public function empleado(): BelongsTo
     {
         return $this->belongsTo(Empleado::class);

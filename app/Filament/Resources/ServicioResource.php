@@ -54,7 +54,7 @@ class ServicioResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('cod_servicio')->searchable(),
+                TextColumn::make('cod_servicio')->searchable()->label('Código'),
                 TextColumn::make('descripcion')->searchable(),
                 TextColumn::make('categoria')
                 ->badge()
@@ -63,8 +63,7 @@ class ServicioResource extends Resource
                     'adicional' => 'warning',
                 })
                 ->searchable(),
-                TextColumn::make('costo')->money('USD')->searchable(),
-                TextColumn::make('duracion_max')->searchable(),
+                TextColumn::make('costo')->money('USD')->searchable()->label('Costo($)'),
                 IconColumn::make('status')
                 ->options([
                     'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === 'activo',

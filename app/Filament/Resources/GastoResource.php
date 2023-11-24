@@ -36,9 +36,9 @@ class GastoResource extends Resource
             ->columns([
                 TextColumn::make('descripcion')->sortable(),
                 TextColumn::make('forma_pago')->sortable(),
-                TextColumn::make('monto_usd')->sortable(),
-                TextColumn::make('monto_bsd')->sortable(),
-                TextColumn::make('fecha')->sortable(),
+                TextColumn::make('monto_usd')->sortable()->label('Monto($)'),
+                TextColumn::make('monto_bsd')->sortable()->label('Monto(Bs.)'),
+                TextColumn::make('created_at')->sortable()->label('Fecha de registro'),
                 TextColumn::make('responsable')->sortable(),
 
                 //
@@ -55,14 +55,14 @@ class GastoResource extends Resource
                 ]),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -70,5 +70,5 @@ class GastoResource extends Resource
             'create' => Pages\CreateGasto::route('/create'),
             'edit' => Pages\EditGasto::route('/{record}/edit'),
         ];
-    }    
+    }
 }

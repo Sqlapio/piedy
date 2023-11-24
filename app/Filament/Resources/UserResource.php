@@ -65,8 +65,8 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable(),
-                TextColumn::make('email')->searchable(),
+                TextColumn::make('name')->searchable()->label('Nombre y Apellido'),
+                TextColumn::make('email')->searchable()->label('Correo electrónico'),
                 TextColumn::make('tipo_usuario')
                 ->badge()
                 ->color(fn (string $state): string => match ($state) {
@@ -75,7 +75,6 @@ class UserResource extends Resource
                     'empleado' => 'warning',
                 })
                 ->searchable(),
-                TextColumn::make('area_trabajo')->searchable(),
             ])
             ->filters([
                 //

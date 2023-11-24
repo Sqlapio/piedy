@@ -46,6 +46,7 @@ class MetodoPagoResource extends Resource
                 TextColumn::make('id')->searchable(),
                 TextColumn::make('descripcion')->searchable(),
                 TextColumn::make('moneda')
+                ->label('Tipo de moneda')
                 ->badge()
                 ->color(fn (string $state): string => match ($state) {
                     'usd' => 'success',

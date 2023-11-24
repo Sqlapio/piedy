@@ -28,6 +28,7 @@ class Servicio extends Model
         'costo',
         'duracion_max', //este valor debe ser expresado en minutos
         'categoria',
+        'tipo_servicio_id',
         'status',
     ];
 
@@ -39,6 +40,16 @@ class Servicio extends Model
     public function cita(): HasOne
     {
         return $this->hasOne(Cita::class);
+    }
+
+    /**
+     * Get the tipo_servicio associated with the Servicio
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function tipo_servicio(): BelongsTo
+    {
+        return $this->belongsTo(TipoServicio::class, 'tipo_servicio_id', 'id');
     }
 
 }

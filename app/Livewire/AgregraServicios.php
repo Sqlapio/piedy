@@ -11,6 +11,7 @@ use App\Models\Servicio;
 use App\Models\TasaBcv;
 use App\Models\User;
 use App\Models\VentaServicio;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -205,6 +206,9 @@ class AgregraServicios extends Component
             ->orderBy('id', 'desc')
             ->simplePaginate(5);
 
+        /** Logica para traer los servicios segun el tecnico */
+        $tecnico = User::where('id', $data->empleado_id)->first();
+        Debugbar::info($tecnico);
         return view('livewire.agregra-servicios', compact('data', 'detalle', 'total_vista', 'servicios_adicionales'));
     }
 }

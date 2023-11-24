@@ -31,6 +31,6 @@ class TipoServicio extends Model
      */
     public function servicios(): HasMany
     {
-        return $this->hasMany(Servicio::class, 'id', 'tipo_servicio_id');
+        return $this->hasMany(Servicio::class, 'tipo_servicio_id', 'id');
     }
 }

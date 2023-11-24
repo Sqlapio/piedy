@@ -14,6 +14,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 
 class DisponibleResource extends Resource
 {
@@ -21,9 +22,9 @@ class DisponibleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-swatch';
 
-    protected static ?string $navigationGroup = 'Tienda Sambil';
+    protected static ?string $navigationGroup = 'Facturación';
 
-    protected static ?string $navigationLabel = 'Servicios asignados';
+    protected static ?string $navigationLabel = 'Facturación Servícios';
 
     public static function form(Form $form): Form
     {
@@ -37,24 +38,32 @@ class DisponibleResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('cod_asignacion')->searchable(),
+                TextColumn::make('cod_asignacion')->searchable()->label('Código'),
                 TextColumn::make('cliente')->searchable(),
                 TextColumn::make('empleado')->searchable(),
                 TextColumn::make('servicio')->searchable(),
-                TextColumn::make('servicio_categoria')->searchable(),
-                TextColumn::make('area_trabajo')->searchable(),
-                TextColumn::make('costo')->searchable(),
-                TextColumn::make('status')
+                TextColumn::make('costo')->searchable()->label(__('Costo($)')),
+             TextColumn::make('status')
                 ->badge()
                 ->color(fn (string $state): string => match ($state) {
                     'activo' => 'info',
                     'cerrado' => 'danger',
                     'por facturar' => 'warning',
                     'facturado' => 'success',
-                })
-            ])
+                }),
+                TextColumn::make('created_at')
+                    ->label(__('Fecha asignación'))
+                    ->searchable(),
+                TextColumn::make('updated_at')
+                    ->label(__('Fecha Facturación'))
+                    ->searchable(),
+            ])->groups([
+                   'cliente',
+                   'empleado',
+               ])
             ->filters([
-                //
+                DateRangeFilter::make('created_at')
+                ->timezone('America/Caracas'),
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),
@@ -65,14 +74,14 @@ class DisponibleResource extends Resource
                 ]),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -80,5 +89,5 @@ class DisponibleResource extends Resource
             'create' => Pages\CreateDisponible::route('/create'),
             'edit' => Pages\EditDisponible::route('/{record}/edit'),
         ];
-    }    
+    }
 }

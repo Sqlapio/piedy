@@ -62,8 +62,8 @@ class ComisionResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('cod_comision')->searchable(),
-                TextColumn::make('porcentaje')->searchable(),
+                TextColumn::make('cod_comision')->searchable()->label('Código'),
+                TextColumn::make('porcentaje')->searchable()->label('Porcentaje(%)'),
                 TextColumn::make('aplicacion')->searchable(),
                 TextColumn::make('beneficiario')->searchable(),
                 IconColumn::make('status')
@@ -91,14 +91,14 @@ class ComisionResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -106,5 +106,5 @@ class ComisionResource extends Resource
             'create' => Pages\CreateComision::route('/create'),
             'edit' => Pages\EditComision::route('/{record}/edit'),
         ];
-    }    
+    }
 }

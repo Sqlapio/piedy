@@ -102,32 +102,51 @@ class AgregraServicios extends Component
 
     public function carga_servicios_adicionales(Request $request)
     {
-
-        $codigo = $request->session()->all();
-
-        $data = Disponible::where('cod_asignacion', $codigo['cod_asignacion'])->first();
-
-        $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
-
-        for ($i=0; $i < count($this->servicios) ; $i++)
+        if(count($this->servicios) == 0)
         {
-            $data_servicios = Servicio::where('id', $this->servicios[$i])->first();
-            $detalle_asignacion = new DetalleAsignacion();
-            $detalle_asignacion->cod_asignacion     = $codigo['cod_asignacion'];
-            $detalle_asignacion->cod_servicio       = $data->cod_servicio;
-            $detalle_asignacion->empleado_id        = $data->empleado_id;
-            $detalle_asignacion->empleado           = $data->empleado;
-            $detalle_asignacion->cliente_id         = $data->cliente_id;
-            $detalle_asignacion->cliente            = $data->cliente;
-            $detalle_asignacion->servicio_id        = $data_servicios->id;
-            $detalle_asignacion->servicio           = $data_servicios->descripcion;
-            $detalle_asignacion->servicio_categoria = $data_servicios->categoria;
-            $detalle_asignacion->costo              = $data_servicios->costo;
-            $detalle_asignacion->fecha              = date('d-m-Y');
-            $detalle_asignacion->save();
-        }
+            $this->dialog()->warning(
+                $title = 'NOTIFICACION !!!',
+                $description = 'Debes seleccionar al menos un(1) servício. Por favor vuelva a intentar'
+            );
+        }else{
+            $codigo = $request->session()->all();
 
-        $this->servicios = [];
+            $data = Disponible::where('cod_asignacion', $codigo['cod_asignacion'])->first();
+
+            $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
+
+            for ($i=0; $i < count($this->servicios) ; $i++)
+            {
+                $data_servicios = Servicio::where('id', $this->servicios[$i])->first();
+                $detalle_asignacion = new DetalleAsignacion();
+                $detalle_asignacion->cod_asignacion     = $codigo['cod_asignacion'];
+                $detalle_asignacion->cod_servicio       = $data->cod_servicio;
+                $detalle_asignacion->empleado_id        = $data->empleado_id;
+                $detalle_asignacion->empleado           = $data->empleado;
+                $detalle_asignacion->cliente_id         = $data->cliente_id;
+                $detalle_asignacion->cliente            = $data->cliente;
+                $detalle_asignacion->servicio_id        = $data_servicios->id;
+                $detalle_asignacion->servicio           = $data_servicios->descripcion;
+                $detalle_asignacion->servicio_categoria = $data_servicios->categoria;
+                $detalle_asignacion->costo              = $data_servicios->costo;
+                $detalle_asignacion->fecha              = date('d-m-Y');
+                $srv = DetalleAsignacion::where('cod_asignacion', $codigo['cod_asignacion'])->where('servicio_id', $data_servicios->id)->where('status', 1)->first();
+                if(isset($srv->servicio_id))
+                {
+                    if($srv->servicio_id == $data_servicios->id){
+                        $this->dialog()->error(
+                            $title = 'Error !!!',
+                            $description = 'Servicio duplicado. Estas intentando agregar un servicio que ya se encuentra asignado.'
+                        );
+                    }
+
+                }else{
+                    $detalle_asignacion->save();
+                }
+
+            }
+            $this->servicios = [];
+        }
 
     }
 

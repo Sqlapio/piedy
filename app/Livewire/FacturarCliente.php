@@ -233,11 +233,12 @@ class FacturarCliente extends Component
                     $factura = new FacturaMultiple();
                     $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
                     $factura->responsable       = $user->name;
-                    $factura->metodo_pago       = 'Facturación multiple';
+                    $factura->metodo_pago       = $this->descripcion;
                     $factura->referencia        = $factura->cod_asignacion;
                     $factura->fecha_venta       = date('d-m-Y');
                     $factura->pago_usd          = $this->total_vista;
                     $factura->total_usd         = $this->total_vista;
+                    $factura->responsable       = $user->name;
                     $factura->save();
 
                     for ($i = 0; $i < count($this->servicios); $i++) {
@@ -252,8 +253,9 @@ class FacturarCliente extends Component
                         ]);
 
                         VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                            'metodo_pago' => $factura->metodo_pago,
-                            'referencia' => $factura->cod_asignacion
+                            'metodo_pago' => 'Facturación multiple',
+                            'referencia' => $factura->cod_asignacion,
+                            'responsable' => $user->name
                         ]);
                     }
 
@@ -262,7 +264,7 @@ class FacturarCliente extends Component
                     ->success()
                     ->send();
 
-                    $this->redirect('/citas');
+                    $this->redirect('/cabinas');
                 }
             }
 
@@ -285,11 +287,12 @@ class FacturarCliente extends Component
                     $factura = new FacturaMultiple();
                     $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
                     $factura->responsable       = $user->name;
-                    $factura->metodo_pago       = 'Facturación multiple';
+                    $factura->metodo_pago       = $this->descripcion;
                     $factura->referencia        = $this->referencia;
                     $factura->fecha_venta       = date('d-m-Y');
                     $factura->pago_usd          = $this->total_vista;
                     $factura->total_usd         = $this->total_vista;
+                    $factura->responsable       = $user->name;
                     $factura->save();
 
                     for ($i = 0; $i < count($this->servicios); $i++) {
@@ -304,8 +307,9 @@ class FacturarCliente extends Component
                         ]);
 
                         VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                            'metodo_pago' => $factura->metodo_pago,
-                            'referencia' => $factura->cod_asignacion
+                            'metodo_pago' => 'Facturación multiple',
+                            'referencia' => $factura->cod_asignacion,
+                            'responsable' => $user->name
                         ]);
                     }
 
@@ -314,7 +318,7 @@ class FacturarCliente extends Component
                     ->success()
                     ->send();
 
-                    $this->redirect('/citas');
+                    $this->redirect('/cabinas');
                 }
             }
 
@@ -331,11 +335,12 @@ class FacturarCliente extends Component
                     $factura = new FacturaMultiple();
                     $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
                     $factura->responsable       = $user->name;
-                    $factura->metodo_pago       = 'Facturación multiple';
+                    $factura->metodo_pago       = $this->descripcion;
                     $factura->referencia        = $factura->cod_asignacion;
                     $factura->fecha_venta       = date('d-m-Y');
                     $factura->pago_bsd          = $this->total_vista_bsd;
                     $factura->total_usd         = $this->total_vista;
+                    $factura->responsable       = $user->name;
                     $factura->save();
 
                     for ($i = 0; $i < count($this->servicios); $i++) {
@@ -350,8 +355,9 @@ class FacturarCliente extends Component
                         ]);
 
                         VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                            'metodo_pago' => $factura->metodo_pago,
-                            'referencia' => $factura->cod_asignacion
+                            'metodo_pago' => 'Facturación multiple',
+                            'referencia' => $factura->cod_asignacion,
+                            'responsable' => $user->name
                         ]);
                     }
 
@@ -360,7 +366,7 @@ class FacturarCliente extends Component
                     ->success()
                     ->send();
 
-                    $this->redirect('/citas');
+                    $this->redirect('/cabinas');
                 }
             }
 
@@ -382,11 +388,12 @@ class FacturarCliente extends Component
                     $factura = new FacturaMultiple();
                     $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
                     $factura->responsable       = $user->name;
-                    $factura->metodo_pago       = 'Facturación multiple';
+                    $factura->metodo_pago       = $this->descripcion;
                     $factura->referencia        = $this->referencia;
                     $factura->fecha_venta       = date('d-m-Y');
                     $factura->pago_bsd          = $this->total_vista_bsd;
                     $factura->total_usd         = $this->total_vista;
+                    $factura->responsable       = $user->name;
                     $factura->save();
 
                     for ($i = 0; $i < count($this->servicios); $i++) {
@@ -401,8 +408,9 @@ class FacturarCliente extends Component
                         ]);
 
                         VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                            'metodo_pago' => $factura->metodo_pago,
-                            'referencia' => $factura->cod_asignacion
+                            'metodo_pago' => 'Facturación multiple',
+                            'referencia' => $factura->cod_asignacion,
+                            'responsable' => $user->name
                         ]);
                     }
 
@@ -411,7 +419,7 @@ class FacturarCliente extends Component
                     ->success()
                     ->send();
 
-                    $this->redirect('/citas');
+                    $this->redirect('/cabinas');
                 }
             }
 
@@ -449,12 +457,13 @@ class FacturarCliente extends Component
                                 $factura = new FacturaMultiple();
                                 $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
                                 $factura->responsable       = $user->name;
-                                $factura->metodo_pago       = 'Facturación multiple';
+                                $factura->metodo_pago       = $this->descripcion;
                                 $factura->referencia        = $factura->cod_asignacion;
                                 $factura->fecha_venta       = date('d-m-Y');
                                 $factura->pago_bsd          = str_replace(',', '.', str_replace('.', '', $this->valor_dos));
                                 $factura->pago_usd          = str_replace(',', '.', $this->valor_uno);
                                 $factura->total_usd         = $this->total_vista;
+                                $factura->responsable       = $user->name;
                                 $factura->save();
 
                                 for ($i = 0; $i < count($this->servicios); $i++) {
@@ -469,8 +478,9 @@ class FacturarCliente extends Component
                                     ]);
 
                                     VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                        'metodo_pago' => $factura->metodo_pago,
-                                        'referencia' => $factura->cod_asignacion
+                                        'metodo_pago' => 'Facturación multiple',
+                                        'referencia' => $factura->cod_asignacion,
+                                        'responsable' => $user->name
                                     ]);
                                 }
 
@@ -479,7 +489,7 @@ class FacturarCliente extends Component
                                     ->success()
                                     ->send();
 
-                                $this->redirect('/citas');
+                                $this->redirect('/cabinas');
                             }
                         }
                     }
@@ -498,11 +508,12 @@ class FacturarCliente extends Component
                                 $factura = new FacturaMultiple();
                                 $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
                                 $factura->responsable       = $user->name;
-                                $factura->metodo_pago       = 'Facturación multiple';
+                                $factura->metodo_pago       = $this->descripcion;
                                 $factura->referencia        = $factura->cod_asignacion;
                                 $factura->fecha_venta       = date('d-m-Y');
                                 $factura->pago_bsd          = $this->total_vista_bsd;
                                 $factura->total_usd         = $this->total_vista;
+                                $factura->responsable       = $user->name;
                                 $factura->save();
 
                                 for ($i = 0; $i < count($this->servicios); $i++) {
@@ -517,8 +528,9 @@ class FacturarCliente extends Component
                                     ]);
 
                                     VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                        'metodo_pago' => $factura->metodo_pago,
-                                        'referencia' => $factura->cod_asignacion
+                                        'metodo_pago' => 'Facturación multiple',
+                                        'referencia' => $factura->cod_asignacion,
+                                        'responsable' => $user->name
                                     ]);
                                 }
 
@@ -527,7 +539,7 @@ class FacturarCliente extends Component
                                     ->success()
                                     ->send();
 
-                                $this->redirect('/citas');
+                                $this->redirect('/cabinas');
                             }
                         }
                     }
@@ -546,11 +558,12 @@ class FacturarCliente extends Component
                                 $factura = new FacturaMultiple();
                                 $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
                                 $factura->responsable       = $user->name;
-                                $factura->metodo_pago       = 'Facturación multiple';
+                                $factura->metodo_pago       = $this->descripcion;
                                 $factura->referencia        = $factura->cod_asignacion;
                                 $factura->fecha_venta       = date('d-m-Y');
                                 $factura->pago_bsd          = $this->total_vista_bsd;
                                 $factura->total_usd         = $this->total_vista;
+                                $factura->responsable       = $user->name;
                                 $factura->save();
 
                                 for ($i = 0; $i < count($this->servicios); $i++) {
@@ -565,8 +578,9 @@ class FacturarCliente extends Component
                                     ]);
 
                                     VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                        'metodo_pago' => $factura->metodo_pago,
-                                        'referencia' => $factura->cod_asignacion
+                                        'metodo_pago' => 'Facturación multiple',
+                                        'referencia' => $factura->cod_asignacion,
+                                        'responsable' => $user->name
                                     ]);
                                 }
 
@@ -575,7 +589,7 @@ class FacturarCliente extends Component
                                     ->success()
                                     ->send();
 
-                                $this->redirect('/citas');
+                                $this->redirect('/cabinas');
                             }
                         }
                     }

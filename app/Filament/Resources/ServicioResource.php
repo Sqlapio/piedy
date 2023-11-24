@@ -37,6 +37,15 @@ class ServicioResource extends Resource
                         'principal' => 'Principal',
                         'adicional' => 'Adicional',
                     ]),
+                Select::make('tipo_servicio_id')
+                    ->relationship('tipo_servicio', 'descripcion')
+                    ->searchable()
+                    ->preload()
+                    ->createOptionForm([
+                        TextInput::make('descripcion')
+                            ->required(),
+                    ])
+                    ->required(),
                 TextInput::make('costo')
                     ->prefix('$')
                     ->numeric()
@@ -63,6 +72,7 @@ class ServicioResource extends Resource
                     'adicional' => 'warning',
                 })
                 ->searchable(),
+                TextColumn::make('tipo_servicio.descripcion')->label('Tipo de servício')->searchable(),
                 TextColumn::make('costo')->money('USD')->searchable()->label('Costo($)'),
                 IconColumn::make('status')
                 ->options([

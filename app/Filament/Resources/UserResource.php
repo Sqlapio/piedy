@@ -53,6 +53,15 @@ class UserResource extends Resource
                         'c4' => 'Cubiculo-Podologia 4',
                         'Administración' => 'Administración',
                     ])->searchable(),
+                Select::make('tipo_servicio_id')
+                    ->relationship('tipo_servicio', 'descripcion')
+                    ->searchable()
+                    ->preload()
+                    ->createOptionForm([
+                        TextInput::make('descripcion')
+                            ->required(),
+                    ])
+                    ->required(),
                 TextInput::make('password')
                 ->password()
                 ->dehydrateStateUsing(fn ($state) => Hash::make($state))
@@ -75,6 +84,7 @@ class UserResource extends Resource
                     'empleado' => 'warning',
                 })
                 ->searchable(),
+                TextColumn::make('tipo_servicio.descripcion')->label('Tipo de servício')->searchable(),
             ])
             ->filters([
                 //

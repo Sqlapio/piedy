@@ -36,13 +36,16 @@ class Disponible extends Model
         'status',
     ];
 
-    
+    public function get_servicio(): HasOne
+    {
+        return $this->hasOne(Servicio::class, 'id', 'servicio_id');
+    }
 
     public function cliente(): HasOne
     {
         return $this->hasOne(Cliente::class, 'cliente_id', 'id');
     }
-    
+
     public function empleado(): BelongsTo
     {
         return $this->belongsTo(Empleado::class);

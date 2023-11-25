@@ -52,9 +52,10 @@ class ServicioResource extends Resource
                     ->minValue(1)
                     ->maxValue(100)
                     ->required(),
-                TextInput::make('duracion_max')
-                    ->prefix('Minutos')
-                    ->numeric()
+                Select::make('promocion_id')
+                    ->relationship('promocion', 'tipo')
+                    ->searchable()
+                    ->preload()
                     ->required(),
             ]);
     }
@@ -63,26 +64,30 @@ class ServicioResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('cod_servicio')->searchable()->label('Código'),
+                TextColumn::make('cod_servicio')->searchable()->label('Código')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('descripcion')->searchable(),
                 TextColumn::make('categoria')
-                ->badge()
-                ->color(fn (string $state): string => match ($state) {
-                    'principal' => 'success',
-                    'adicional' => 'warning',
-                })
-                ->searchable(),
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'principal' => 'success',
+                        'adicional' => 'warning',
+                    })
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('tipo_servicio.descripcion')->label('Tipo de servício')->searchable(),
                 TextColumn::make('costo')->money('USD')->searchable()->label('Costo($)'),
-                IconColumn::make('status')
-                ->options([
-                    'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
-                    'heroicon-m-minus-circle' => fn ($state, $record): bool => $record->status === 'inactivo',
-                ])
-                ->colors([
-                    'danger' => 'inactivo',
-                    'success' => 'activo',
-                ]),
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'activo' => 'success',
+                        'inactivo' => 'error',
+                    })
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('promocion.descripcion')->label('Promoción')->searchable()->default('Sin promoción'),
+                TextColumn::make('promocion.tipo')->label('Tipo promoción')->searchable()->default('Sin promoción'),
+                TextColumn::make('promocion.porcentaje')->label('Descuento(%)')->searchable()->default('0.00'),
             ])
             ->filters([
                 //

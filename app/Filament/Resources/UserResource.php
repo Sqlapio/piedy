@@ -33,8 +33,8 @@ class UserResource extends Resource
             ->schema([
                 TextInput::make('name')->required(),
                 TextInput::make('email')
-                ->email()
-                ->required(),
+                    ->email()
+                    ->required(),
                 Select::make('tipo_usuario')
                     ->options([
                         'administrador' => 'Administrador',

@@ -65,8 +65,13 @@
                 @foreach ($servicios_adicionales as $item)
                 <div class="">
                     <input type="checkbox" id="{{ $item->id }}" wire:model.live="servicios" value="{{ $item->id }}" class="hidden peer">
-                    <label for="{{ $item->id }}" class="inline-flex items-center justify-between w-full p-3 text-black bg-gray-400 border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-green-600 peer-checked:bg-green-600 peer-checked:text-white shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]">
+                    <label for="{{ $item->id }}" class="inline-flex items-center justify-between w-full p-3 text-black bg-gray-400 {{ $item->promocion_id != null ? 'border-2 border-yellow-200' : 'border-2 border-gray-200' }} rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-green-600 peer-checked:bg-green-600 peer-checked:text-white shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]">
                         <div class="flex items-center space-x-4 w-full">
+                            @if($item->promocion_id != null)
+                                <div>
+                                    <img class="w-10 h-auto" src="{{ asset('images/promo_icon_2.png') }}" alt="">
+                                </div>
+                            @endif
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-extrabold text-white truncate dark:text-white">
                                     {{ $item->descripcion }}

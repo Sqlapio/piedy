@@ -4,6 +4,8 @@ use App\Http\Controllers\ApiClientesController;
 use App\Http\Controllers\LoginController;
 use App\Livewire\Login;
 use App\Models\Cliente;
+use App\Models\Disponible;
+use App\Models\Servicio;
 use App\Models\VentaServicio;
 use Illuminate\Support\Facades\Route;
 
@@ -107,9 +109,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 });
 
 Route::get('/pp', function () {
-    $venta_servicio = VentaServicio::where('cod_asignacion', 'Pca-73744285')->first();
-
-    $cliente = Cliente::where('id', '1')->first();
-    dd($cliente->get_disponibles);
+    $promo_srv = Servicio::where('id', 2)->first();
+    dd($promo_srv->promocion->tipo);
 
 });

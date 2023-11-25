@@ -29,13 +29,9 @@ class Servicio extends Model
         'duracion_max', //este valor debe ser expresado en minutos
         'categoria',
         'tipo_servicio_id',
+        'promocion_id',
         'status',
     ];
-
-    public function disponible(): BelongsTo
-    {
-        return $this->belongsTo(Disponible::class);
-    }
 
     public function cita(): HasOne
     {
@@ -50,6 +46,26 @@ class Servicio extends Model
     public function tipo_servicio(): BelongsTo
     {
         return $this->belongsTo(TipoServicio::class, 'tipo_servicio_id', 'id');
+    }
+
+    /**
+     * Get the promocion that owns the Servicio
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function promocion(): BelongsTo
+    {
+        return $this->belongsTo(Promocion::class, 'promocion_id', 'id');
+    }
+
+    /**
+     * Get the promocion that owns the Servicio
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function disponible(): BelongsTo
+    {
+        return $this->belongsTo(Disponible::class, 'servicio_id', 'id');
     }
 
 }

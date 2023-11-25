@@ -104,6 +104,8 @@ class AsignacionDirecta extends ModalComponent
                 $detalle_asignacion->servicio_categoria = $servicio->categoria;
                 $detalle_asignacion->costo              = $disponible->costo;
                 $detalle_asignacion->fecha              = date('d-m-Y');
+                /** Logica para agregar promocion asociada al servicio */
+                
                 $detalle_asignacion->save();
 
                 $this->redirect('/cabinas');

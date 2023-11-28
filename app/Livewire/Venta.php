@@ -26,20 +26,22 @@ class Venta extends Component implements HasForms, HasTable
             ->columns([
                 TextColumn::make('cod_asignacion')
                     ->sortable()
+                    ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('responsable')->searchable(),
                 TextColumn::make('created_at')
-                ->label(__('Fecha de registro'))
-                ->searchable(),
+                    ->label(__('Fecha de registro'))
+                    ->searchable(),
                 TextColumn::make('cliente')
+                    ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('empleado')
+                    ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('metodo_pago')->searchable(),
                 TextColumn::make('referencia')->searchable(),
-
                 TextColumn::make('total_USD')
                     ->summarize(Sum::make()
                     ->numeric(
@@ -51,24 +53,58 @@ class Venta extends Component implements HasForms, HasTable
                     ->searchable(),
 
                 TextColumn::make('pago_usd')->money('USD')
-                ->summarize(Sum::make()
-                ->numeric(
-                    decimalPlaces: 00,
-                    decimalSeparator: ',',
-                    thousandsSeparator: '.',
-                )
-                ->label('Total($)'))
-                ->searchable(),
+                    ->summarize(Sum::make()
+                    ->numeric(
+                        decimalPlaces: 00,
+                        decimalSeparator: ',',
+                        thousandsSeparator: '.',
+                    )
+                    ->label('Total($)'))
+                    ->searchable(),
 
                 TextColumn::make('pago_bsd')
-                ->summarize(Sum::make()
-                ->numeric(
-                    decimalPlaces: 00,
-                    decimalSeparator: ',',
-                    thousandsSeparator: '.',
-                )
-                ->label('Total(Bs)'))
-                ->searchable(),
+                    ->summarize(Sum::make()
+                    ->numeric(
+                        decimalPlaces: 00,
+                        decimalSeparator: ',',
+                        thousandsSeparator: '.',
+                    )
+                    ->label('Total(Bs)'))
+                    ->searchable(),
+
+                    TextColumn::make('comision_empleado')->money('USD')
+                    ->summarize(Sum::make()
+                    ->money('USD')
+                    ->label('Neto Empleado($)'))
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('comision_gerente')->money('USD')
+                    ->summarize(Sum::make()
+                    ->money('USD')
+                    ->label('Neto Gerente($)'))
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('propina_usd')->money('USD')
+                    ->summarize(Sum::make()
+                    ->money('USD')
+                    ->label('Total($)'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('propina_bsd')
+                    ->summarize(Sum::make()
+                    ->numeric(
+                        decimalPlaces: 00,
+                        decimalSeparator: ',',
+                        thousandsSeparator: '.',
+                    )
+                    ->label('Total(Bs)'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
             ])
             ->groups([

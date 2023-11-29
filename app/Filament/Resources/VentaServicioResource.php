@@ -48,7 +48,19 @@ class VentaServicioResource extends Resource
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('created_at')->searchable()->label('Fecha de venta'),
-                TextColumn::make('metodo_pago')->searchable(),
+                TextColumn::make('metodo_pago')
+                    ->searchable()
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Multiple' => 'warning',
+                        'Efectivo Usd' => 'success',
+                        'Zelle' => 'success',
+                        'Efectivo Bsd' => 'info',
+                        'Pago movil' => 'info',
+                        'transferencia' => 'info',
+                        'Punto de venta' => 'info',
+                        'Anulado' => 'danger',
+                    }),
                 TextColumn::make('referencia')->searchable(),
 
                 TextColumn::make('total_USD')
@@ -56,7 +68,6 @@ class VentaServicioResource extends Resource
                     ->money('USD')
                     ->label('Venta Neta($)'))
                     ->searchable(),
-                // TextColumn::make('total_USD')->summarize(Sum::make()),
 
                 TextColumn::make('pago_usd')->money('USD')
                     ->summarize(Sum::make()

@@ -39,18 +39,24 @@ class DisponibleResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('cod_asignacion')->searchable()->label('Código'),
-                TextColumn::make('cliente')->searchable(),
-                TextColumn::make('empleado')->searchable(),
+                TextColumn::make('cliente')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('empleado')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('servicio')->searchable(),
                 TextColumn::make('costo')->searchable()->label(__('Costo($)')),
-             TextColumn::make('status')
-                ->badge()
-                ->color(fn (string $state): string => match ($state) {
-                    'activo' => 'info',
-                    'cerrado' => 'danger',
-                    'por facturar' => 'warning',
-                    'facturado' => 'success',
-                }),
+                TextColumn::make('status')
+                    ->searchable()
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'activo' => 'info',
+                        'cerrado' => 'danger',
+                        'por facturar' => 'warning',
+                        'facturado' => 'success',
+                        'anulado' => 'danger',
+                    }),
                 TextColumn::make('created_at')
                     ->label(__('Fecha asignación'))
                     ->searchable(),

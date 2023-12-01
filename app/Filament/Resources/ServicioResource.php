@@ -52,10 +52,6 @@ class ServicioResource extends Resource
                     ->minValue(1)
                     ->maxValue(100)
                     ->required(),
-                TextInput::make('duracion_max')
-                    ->prefix('Minutos')
-                    ->numeric()
-                    ->required(),
             ]);
     }
 

@@ -52,14 +52,14 @@ class VentaServicioResource extends Resource
                     ->searchable()
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'Multiple' => 'warning',
-                        'Efectivo Usd' => 'success',
-                        'Zelle' => 'success',
-                        'Efectivo Bsd' => 'info',
-                        'Pago movil' => 'info',
-                        'transferencia' => 'info',
-                        'Punto de venta' => 'info',
-                        'Anulado' => 'danger',
+                        'Facturación multiple'  => 'warning',
+                        'Efectivo Usd'          => 'success',
+                        'Zelle'                 => 'success',
+                        'Efectivo Bsd'          => 'info',
+                        'Pago movil'            => 'info',
+                        'transferencia'         => 'info',
+                        'Punto de venta'        => 'info',
+                        'Anulado'               => 'danger',
                     }),
                 TextColumn::make('referencia')->searchable(),
 

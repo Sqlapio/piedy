@@ -41,13 +41,26 @@ class VentaServicioResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('cliente')
+                    ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('empleado')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('fecha_venta')->searchable(),
-                TextColumn::make('metodo_pago')->searchable(),
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('created_at')->searchable()->label('Fecha de venta'),
+                TextColumn::make('metodo_pago')
+                    ->searchable()
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Facturación multiple'  => 'warning',
+                        'Efectivo Usd'          => 'success',
+                        'Zelle'                 => 'success',
+                        'Efectivo Bsd'          => 'info',
+                        'Pago movil'            => 'info',
+                        'transferencia'         => 'info',
+                        'Punto de venta'        => 'info',
+                        'Anulado'               => 'danger',
+                    }),
                 TextColumn::make('referencia')->searchable(),
 
                 TextColumn::make('total_USD')
@@ -55,7 +68,6 @@ class VentaServicioResource extends Resource
                     ->money('USD')
                     ->label('Venta Neta($)'))
                     ->searchable(),
-                // TextColumn::make('total_USD')->summarize(Sum::make()),
 
                 TextColumn::make('pago_usd')->money('USD')
                     ->summarize(Sum::make()
@@ -117,96 +129,6 @@ class VentaServicioResource extends Resource
                 'fecha_venta',
                 'referencia'
             ])
-            // ->groupRecordsTriggerAction(
-            //     fn (Action $action) => $action
-            //         ->button()
-            //         ->label('Group records'),
-            // )
-            //->defaultGroup('empleado')
-            ->filters([
-                DateRangeFilter::make('created_at')
-                ->timezone('America/Caracas'),
-            ])
-            ->actions([
-                // Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
-
-    public static function table2(Table $table): Table
-    {
-        return $table
-            ->columns([
-                TextColumn::make('cod_asignacion')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('cliente')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('empleado')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('fecha_venta')->searchable(),
-                TextColumn::make('metodo_pago')->searchable(),
-                TextColumn::make('referencia')->searchable(),
-
-                TextColumn::make('total_USD')
-                ->summarize(Sum::make()
-                ->money('USD')
-                ->label('Venta Neta($)'))
-                ->searchable(),
-                // TextColumn::make('total_USD')->summarize(Sum::make()),
-
-                TextColumn::make('pago_usd')->money('USD')
-                ->summarize(Sum::make()
-                ->money('USD')
-                ->label('Total($)'))
-                ->searchable(),
-
-                TextColumn::make('pago_bsd')
-                ->summarize(Sum::make()
-                ->numeric(
-                    decimalPlaces: 00,
-                    decimalSeparator: ',',
-                    thousandsSeparator: '.',
-                )
-                ->label('Total(Bs)'))
-                ->searchable(),
-
-                TextColumn::make('comision_empleado')->money('USD')
-                ->summarize(Sum::make()
-                ->money('USD')
-                ->label('Neto Empleado($)'))
-                ->searchable()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('comision_gerente')->money('USD')
-                ->summarize(Sum::make()
-                ->money('USD')
-                ->label('Neto Gerente($)'))
-                ->searchable()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-
-            ])
-            // ->groups([
-            //     'metodo_pago',
-            //     'empleado',
-            //     'cod_asignacion',
-            //     'fecha_venta',
-            //     'referencia'
-            // ])
-            // ->groupRecordsTriggerAction(
-            //     fn (Action $action) => $action
-            //         ->button()
-            //         ->label('Group records'),
-            // )
-            ->defaultGroup('cod_asignacion')
             ->filters([
                 DateRangeFilter::make('created_at')
                 ->timezone('America/Caracas'),

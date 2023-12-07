@@ -4,6 +4,7 @@
         <h1 class="text-xl mb-6 font-bold text-[#bd9c95]">Modulo de Clientes</h1>
         {{-- tabla y boton del formulario de clientes --}}
         <div class="bg-white rounded-xl {{ $ocultar_form_cliente }}">
+
             <div class="grid md:grid-cols-2 md:gap-6">
                 <div class="relative z-0 w-full mb-6 group">
                     <x-input wire:model="nombre" right-icon="user" label="Nombre" placeholder="Nombre del cliente" />
@@ -34,6 +35,9 @@
 
 
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg  {{ $ocultar_table_cliente }}">
+            <div class="flex justify-start mb-4">
+                <input wire:model.live="buscar" type="search" id="search" name="buscar" class="border-b border-gray-200 py-2 text-sm rounded-full shadow-lg focus:ring-check-blue focus:border-check-blue" placeholder="Buscar cliente" autocomplete="off">
+            </div>
             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-[#7898a5] dark:bg-gray-700 dark:text-gray-400">
                     <tr>

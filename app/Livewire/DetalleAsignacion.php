@@ -302,6 +302,67 @@ class DetalleAsignacion extends ModalComponent
         $this->redirect('/caja');
     }
 
+    public function anular_servicio()
+    {
+        $this->dialog()->confirm([
+
+            'title'       => 'Notificación de sistema',
+            'description' => 'Usted se dispone a realizar una anulación de servicio. Esta acción anulará el movimiento y no podra ser reversado.',
+            'icon'        => 'warning',
+            'accept'      => [
+                'label'  => 'Si, anular servicio',
+                'method' => 'anular',
+                'params' => 'Saved',
+            ],
+            'reject' => [
+                'label'  => 'No, cancelar',
+                'method' => 'cancelar',
+
+            ],
+
+        ]);
+    }
+
+    public function anular()
+    {
+        /** Actualizo el estatus en la tabla disponible */
+        Disponible::where('cod_asignacion', $this->disponible->cod_asignacion)->update([
+            'status' => 'anulado'
+        ]);
+
+        /**
+         * Actualizo el estatus en la tabla de detalle de asignacion para
+         * anular los servicios cargados
+         */
+        $anulacion = ModelsDetalleAsignacion::where('cod_asignacion', $this->disponible->cod_asignacion)->get();
+        foreach($anulacion as $item){
+            ModelsDetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
+                ->update([
+                    'status' => '3'
+                ]);
+        }
+
+        /** Actualizo la informacion en la tabla de ventas y coloco los calculos en cero(0) */
+        VentaServicio::where('cod_asignacion', $this->disponible->cod_asignacion)
+            ->update([
+                'metodo_pago' => 'Anulado',
+                'referencia' => 'Anulado',
+                'total_USD' => 0.00,
+                'comision_empleado' => 0.00,
+                'comision_gerente' => 0.00,
+                'responsable' => Auth::user()->name,
+            ]);
+
+        Notification::make()
+                ->title('Operación exitosa!!')
+                ->icon('heroicon-o-shield-check')
+                ->body('El servicio fue anulado de forma correcta.')
+                ->send();
+
+        $this->redirect('/cabinas');
+
+    }
+
     public function render()
     {
         $data = Disponible::where('cod_asignacion', $this->disponible->cod_asignacion)->first();

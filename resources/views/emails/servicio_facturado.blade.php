@@ -4,7 +4,7 @@
     <title>SqlapioTechnology LLC.</title>
 </head>
 <body>
-    <img style="display: block; margin-left: auto; margin-right: auto; width: 600px; height: auto;" src="{{ asset('images/banner_notificacion.png') }}">
+    <img style="display: block; margin-left: auto; margin-right: auto; width: 600px; height: auto;" src="{{ asset('images/banner_correo.jpg') }}">
     <div style="margin: auto; width: 600px; padding: 10px;">
         <p style="text-align: justify; margin-left: 20px;">
             <h2 style="text-align: justify; margin-left: 20px;">Estimada Sr(a). {{ $mailData['user_fullname'] }}</h2>
@@ -34,7 +34,7 @@
         @endforeach
         </p>
         <p style="text-align: justify; margin-left: 20px;">
-            Esta notificación confirma que el proceso de facturación asociado a su trabajo ha sido completado correctamente. <br> 
+            Esta notificación confirma que el proceso de facturación asociado a su trabajo ha sido completado correctamente. <br>
             Agradecemos su esfuerzo continuo y la dedicación con la que lleva a cabo cada servicio, lo cual es fundamental para nuestro compromiso con la excelencia. <br>
             Si tiene alguna pregunta o necesita asistencia adicional, no dude en ponerse en contacto con nosotros.
         </p>

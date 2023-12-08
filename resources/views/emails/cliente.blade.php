@@ -4,7 +4,7 @@
     <title>SqlapioTechnology LLC.</title>
 </head>
 <body>
-    <img style="display: block; margin-left: auto; margin-right: auto; width: 600px; height: auto;" src="{{ asset('images/banner_notificacion.png') }}">
+    <img style="display: block; margin-left: auto; margin-right: auto; width: 600px; height: auto;" src="{{ asset('images/banner_correo.jpg') }}">
     <div style="margin: auto; width: 600px; padding: 10px;">
         <p style="text-align: justify; margin-left: 20px;">
             <h2 style="text-align: justify; margin-left: 20px;">Sr(a). {{ $mailData['cliente_fullname'] }}</h2>

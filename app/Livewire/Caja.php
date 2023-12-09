@@ -288,109 +288,26 @@ class Caja extends Component
              */
             if($this->descripcion == 'Efectivo Usd')
             {
+                try {
 
-                $facturar = DB::table('venta_servicios')
-                ->where('cod_asignacion', $item->cod_asignacion)
-                    ->update([
-                        'metodo_pago'   => $this->descripcion,
-                        'referencia'    => $this->referencia,
-                        'total_USD'     => $total_vista,
-                        'pago_usd'      => $total_vista,
-                        'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                        'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                        'responsable'   => Auth::user()->name,
-                    ]);
-
-                DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
-                    ->where('status', '1')
-                    ->update([
-                        'status' => '2',
-
-                    ]);
-
-                Disponible::where('cod_asignacion', $item->cod_asignacion)
-                    ->where('status', 'por facturar')
-                    ->update([
-                        'status' => 'facturado'
-                    ]);
-                    // ->delete();
-
-                Notification::make()
-                    ->title('La factura fue cerrada con exito')
-                    ->success()
-                    ->send();
-
-                $this->redirect('/cabinas');
-
-            }
-
-            /**
-             * Pago total en BOLIVARES
-             */
-            if($this->descripcion == 'Efectivo Bsd')
-            {
-
-                $facturar = DB::table('venta_servicios')
-                    ->where('cod_asignacion', $item->cod_asignacion)
-                    ->update([
-                        'metodo_pago' => $this->descripcion,
-                        'referencia' => $this->referencia,
-                        'total_USD' => $total_vista,
-                        'pago_bsd' => $total_vista * $tasa_bcv,
-                        'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                        'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                        'responsable'   => Auth::user()->name,
-                    ]);
-
-                DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
-                    ->where('status', '1')
-                    ->update([
-                        'status' => '2',
-                    ]);
-
-                    Disponible::where('cod_asignacion', $item->cod_asignacion)
-                    ->where('status', 'por facturar')
-                    ->update([
-                        'status' => 'facturado'
-                    ]);
-
-                    Notification::make()
-                    ->title('La factura fue cerrada con exito')
-                    ->success()
-                    ->send();
-
-                $this->redirect('/cabinas');
-
-            }
-
-            /**
-             * Pago total en PAGO MOVIL
-             */
-            if($this->descripcion == 'Pago movil' || $this->descripcion == 'Punto de venta' || $this->descripcion == 'Transferencia')
-            {
-                if($this->referencia != '')
-                {
-                    $facturar = DB::table('venta_servicios')
-                    ->where('cod_asignacion', $item->cod_asignacion)
+                    $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
                         ->update([
-                            'metodo_pago' => $this->descripcion,
-                            'referencia' => $this->referencia,
-                            'total_USD' => $total_vista,
-                            'pago_bsd' => $total_vista * $tasa_bcv,
+                            'metodo_pago'   => $this->descripcion,
+                            'referencia'    => $this->referencia,
+                            'total_USD'     => $total_vista,
+                            'pago_usd'      => $total_vista,
                             'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                             'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                             'responsable'   => Auth::user()->name,
                         ]);
 
-                    DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
-                        ->where('status', '1')
+                    DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
                         ->update([
                             'status' => '2',
 
                         ]);
 
-                    Disponible::where('cod_asignacion', $item->cod_asignacion)
-                        ->where('status', 'por facturar')
+                    Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
                         ->update([
                             'status' => 'facturado'
                         ]);
@@ -401,6 +318,96 @@ class Caja extends Component
                         ->send();
 
                     $this->redirect('/cabinas');
+
+                } catch (\Throwable $th) {
+                    //throw $th;
+                }
+
+            }
+
+            /**
+             * Pago total en BOLIVARES
+             */
+            if($this->descripcion == 'Efectivo Bsd')
+            {
+
+                try {
+
+                    $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
+                        ->update([
+                            'metodo_pago' => $this->descripcion,
+                            'referencia' => $this->referencia,
+                            'total_USD' => $total_vista,
+                            'pago_bsd' => $total_vista * $tasa_bcv,
+                            'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
+                            'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                            'responsable'   => Auth::user()->name,
+                        ]);
+
+                    DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
+                        ->update([
+                            'status' => '2',
+                        ]);
+
+                    Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
+                        ->update([
+                            'status' => 'facturado'
+                        ]);
+
+                    Notification::make()
+                        ->title('La factura fue cerrada con exito')
+                        ->success()
+                        ->send();
+
+                    $this->redirect('/cabinas');
+
+                } catch (\Throwable $th) {
+                    //throw $th;
+                }
+
+            }
+
+            /**
+             * Pago total en PAGO MOVIL
+             */
+            if($this->descripcion == 'Pago movil' || $this->descripcion == 'Punto de venta' || $this->descripcion == 'Transferencia')
+            {
+                if($this->referencia != '')
+                {
+                    try {
+
+                        $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
+                            ->update([
+                                'metodo_pago' => $this->descripcion,
+                                'referencia' => $this->referencia,
+                                'total_USD' => $total_vista,
+                                'pago_bsd' => $total_vista * $tasa_bcv,
+                                'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
+                                'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                                'responsable'   => Auth::user()->name,
+                            ]);
+
+                        DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
+                            ->update([
+                                'status' => '2',
+                            ]);
+
+                        Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
+                            ->update([
+                                'status' => 'facturado'
+                            ]);
+
+                        Notification::make()
+                            ->title('La factura fue cerrada con exito')
+                            ->success()
+                            ->send();
+
+                        $this->redirect('/cabinas');
+
+                    } catch (\Throwable $th) {
+                        //throw $th;
+                    }
+
                 }else{
                     $this->dialog()->error(
                         $title = 'Error !!!',
@@ -419,39 +426,42 @@ class Caja extends Component
                         $title = 'Error !!!',
                         $description = 'Debe cargar el número de referencia, de lo contrario no podra realizar la facturación'
                     );
+                    
                 }else{
 
-                    $facturar = DB::table('venta_servicios')
-                        ->where('cod_asignacion', $item->cod_asignacion)
-                        ->update([
-                            'metodo_pago' => $this->descripcion,
-                            'referencia' => $this->referencia,
-                            'total_USD' => $total_vista,
-                            'pago_usd' => $total_vista,
-                            'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                            'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                            'responsable'   => Auth::user()->name,
-                        ]);
+                    try {
 
-                    DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
-                        ->where('status', '1')
-                        ->update([
-                            'status' => '2',
+                        $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
+                            ->update([
+                                'metodo_pago' => $this->descripcion,
+                                'referencia' => $this->referencia,
+                                'total_USD' => $total_vista,
+                                'pago_usd' => $total_vista,
+                                'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
+                                'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                                'responsable'   => Auth::user()->name,
+                            ]);
 
-                        ]);
+                        DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
+                            ->update([
+                                'status' => '2',
+                            ]);
 
-                    Disponible::where('cod_asignacion', $item->cod_asignacion)
-                        ->where('status', 'por facturar')
-                        ->update([
-                            'status' => 'facturado'
-                        ]);
+                        Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
+                            ->update([
+                                'status' => 'facturado'
+                            ]);
 
-                    Notification::make()
-                        ->title('La factura fue cerrada con exito')
-                        ->success()
-                        ->send();
+                        Notification::make()
+                            ->title('La factura fue cerrada con exito')
+                            ->success()
+                            ->send();
 
-                    $this->redirect('/cabinas');
+                        $this->redirect('/cabinas');
+                        //code...
+                    } catch (\Throwable $th) {
+                        //throw $th;
+                    }
 
                 }
             }
@@ -488,38 +498,40 @@ class Caja extends Component
 
                             $this->referencia = 'pago multiple';
 
-                                $facturar = DB::table('venta_servicios')
-                                    ->where('cod_asignacion', $item->cod_asignacion)
-                                    ->update([
-                                        'metodo_pago' => $this->descripcion,
-                                        'referencia' => $this->referencia,
-                                        'total_USD' => $total_vista,
-                                        'pago_usd' => floatval($this->valor_uno),
-                                        'pago_bsd' => Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
-                                        'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                                        'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                                        'responsable'   => Auth::user()->name,
-                                    ]);
+                                try {
 
-                                DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
-                                    ->where('status', '1')
-                                    ->update([
-                                        'status' => '2',
+                                    $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
+                                        ->update([
+                                            'metodo_pago' => $this->descripcion,
+                                            'referencia' => $this->referencia,
+                                            'total_USD' => $total_vista,
+                                            'pago_usd' => floatval($this->valor_uno),
+                                            'pago_bsd' => Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
+                                            'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
+                                            'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                                            'responsable'   => Auth::user()->name,
+                                        ]);
 
-                                    ]);
+                                    DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
+                                        ->update([
+                                            'status' => '2',
+                                        ]);
 
-                                Disponible::where('cod_asignacion', $item->cod_asignacion)
-                                    ->where('status', 'por facturar')
-                                    ->update([
-                                        'status' => 'facturado'
-                                    ]);
+                                    Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
+                                        ->update([
+                                            'status' => 'facturado'
+                                        ]);
 
-                                Notification::make()
-                                    ->title('La factura fue cerrada con exito')
-                                    ->success()
-                                    ->send();
+                                    Notification::make()
+                                        ->title('La factura fue cerrada con exito')
+                                        ->success()
+                                        ->send();
 
-                                $this->redirect('/cabinas');
+                                    $this->redirect('/cabinas');
+
+                                } catch (\Throwable $th) {
+                                    //throw $th;
+                                }
 
                         }
 
@@ -540,38 +552,42 @@ class Caja extends Component
                                 $description = 'Los monto deben ser myor a 0.'
                             );
                         }else{
+
                             $this->referencia = 'pago multiple';
-                            $facturar = DB::table('venta_servicios')
-                                ->where('cod_asignacion', $item->cod_asignacion)
-                                ->update([
-                                    'metodo_pago' => $this->descripcion,
-                                    'referencia' => $this->referencia,
-                                    'total_USD' => $total_vista,
-                                    'pago_bsd' => $total_vista_bsd,
-                                    'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                                    'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                                    'responsable'   => Auth::user()->name,
-                                ]);
 
-                            DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
-                                ->where('status', '1')
-                                ->update([
-                                    'status' => '2',
+                            try {
 
-                                ]);
+                                $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
+                                    ->update([
+                                        'metodo_pago' => $this->descripcion,
+                                        'referencia' => $this->referencia,
+                                        'total_USD' => $total_vista,
+                                        'pago_bsd' => $total_vista_bsd,
+                                        'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
+                                        'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                                        'responsable'   => Auth::user()->name,
+                                    ]);
 
-                                Disponible::where('cod_asignacion', $item->cod_asignacion)
-                                ->where('status', 'por facturar')
-                                ->update([
-                                    'status' => 'facturado'
-                                ]);
+                                DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
+                                    ->update([
+                                        'status' => '2',
+                                    ]);
 
-                            Notification::make()
-                                ->title('La factura fue cerrada con exito')
-                                ->success()
-                                ->send();
+                                Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
+                                    ->update([
+                                        'status' => 'facturado'
+                                    ]);
 
-                            $this->redirect('/cabinas');
+                                Notification::make()
+                                    ->title('La factura fue cerrada con exito')
+                                    ->success()
+                                    ->send();
+
+                                $this->redirect('/cabinas');
+
+                            } catch (\Throwable $th) {
+                                //throw $th;
+                            }
 
                         }
 
@@ -592,38 +608,42 @@ class Caja extends Component
                                 $description = 'Los monto deben ser myor a 0.'
                             );
                         }else{
+
                             $this->referencia = 'pago multiple';
-                            $facturar = DB::table('venta_servicios')
-                                ->where('cod_asignacion', $item->cod_asignacion)
-                                ->update([
-                                    'metodo_pago' => $this->descripcion,
-                                    'referencia' => $this->referencia,
-                                    'total_USD' => $total_vista,
-                                    'pago_usd' => $total_vista,
-                                    'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                                    'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                                    'responsable'   => Auth::user()->name,
-                                ]);
 
-                            DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
-                                ->where('status', '1')
-                                ->update([
-                                    'status' => '2',
+                            try {
 
-                                ]);
+                                $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
+                                    ->update([
+                                        'metodo_pago' => $this->descripcion,
+                                        'referencia' => $this->referencia,
+                                        'total_USD' => $total_vista,
+                                        'pago_usd' => $total_vista,
+                                        'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
+                                        'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                                        'responsable'   => Auth::user()->name,
+                                    ]);
 
-                                Disponible::where('cod_asignacion', $item->cod_asignacion)
-                                ->where('status', 'por facturar')
-                                ->update([
-                                    'status' => 'facturado'
-                                ]);
+                                DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
+                                    ->update([
+                                        'status' => '2',
+                                    ]);
 
-                            Notification::make()
-                                ->title('La factura fue cerrada con exito')
-                                ->success()
-                                ->send();
+                                Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
+                                    ->update([
+                                        'status' => 'facturado'
+                                    ]);
 
-                            $this->redirect('/cabinas');
+                                Notification::make()
+                                    ->title('La factura fue cerrada con exito')
+                                    ->success()
+                                    ->send();
+
+                                $this->redirect('/cabinas');
+
+                            } catch (\Throwable $th) {
+                                //throw $th;
+                            }
 
                         }
 

@@ -32,73 +32,81 @@ class AgregraServicios extends Component
     public function cerrar_servicio(Request $request)
     {
 
-        $codigo = $request->session()->all();
-        $data = Disponible::where('cod_asignacion', $codigo['cod_asignacion'])->first();
+        try {
 
-        /**
-         * Calculo del total de venta para ser guardado
-         * en la tabla de ventas
-         */
-        $total = DB::table('detalle_asignacions')
-        ->select(DB::raw('SUM(costo) as total'))
-        ->where('cod_asignacion', $codigo['cod_asignacion'])
-            ->where('status', '1')
-            ->first();
+            $codigo = $request->session()->all();
 
-        /**
-         * Cargo la venta en la tabla de ventas
-         */
+            $data = Disponible::where('cod_asignacion', $codigo['cod_asignacion'])->first();
 
-        $venta_servicio = new VentaServicio();
-        $venta_servicio->cod_asignacion     = $codigo['cod_asignacion'];
-        $venta_servicio->cliente            = $data->cliente;
-        $venta_servicio->cliente_id         = $data->cliente_id;
-        $venta_servicio->empleado           = $data->empleado;
-        $venta_servicio->empleado_id        = $data->empleado_id;
-        $venta_servicio->fecha_venta        = date('d-m-Y');
-        $venta_servicio->total_USD          = $total->total;
-        $venta_servicio->comision_empleado  = UtilsController::cal_comision_empleado($total->total);
-        $venta_servicio->comision_gerente   = UtilsController::cal_comision_gerente($total->total);
-        $venta_servicio->save();
+            /**
+             * Calculo del total de venta para ser guardado
+             * en la tabla de ventas
+             */
+            $total = DB::table('detalle_asignacions')->select(DB::raw('SUM(costo) as total'))
+                ->where('cod_asignacion', $codigo['cod_asignacion'])
+                ->where('status', '1')
+                ->first();
 
-        Disponible::where('cod_asignacion', $codigo['cod_asignacion'])
-            ->update([
-                'costo' => $total->total,
-                'status' => 'por facturar'
-            ]);
+            /**
+             * Cargo la venta en la tabla de ventas
+             */
 
-        /**
-         * Actualizamos en contador para el numero de visitas
-         * del cliente
-         */
-        $visitas = Cliente::where('id', $data->cliente_id)->first();
-        Cliente::where('id', $data->cliente_id)
-            ->update([
-                'visitas' => $visitas->visitas + 1
-            ]);
+            $venta_servicio = new VentaServicio();
+            $venta_servicio->cod_asignacion     = $codigo['cod_asignacion'];
+            $venta_servicio->cliente            = $data->cliente;
+            $venta_servicio->cliente_id         = $data->cliente_id;
+            $venta_servicio->empleado           = $data->empleado;
+            $venta_servicio->empleado_id        = $data->empleado_id;
+            $venta_servicio->fecha_venta        = date('d-m-Y');
+            $venta_servicio->total_USD          = $total->total;
+            $venta_servicio->comision_empleado  = UtilsController::cal_comision_empleado($total->total);
+            $venta_servicio->comision_gerente   = UtilsController::cal_comision_gerente($total->total);
+            $venta_servicio->save();
+
+            Disponible::where('cod_asignacion', $codigo['cod_asignacion'])
+                ->update([
+                    'costo' => $total->total,
+                    'status' => 'por facturar'
+                ]);
+
+            /**
+             * Actualizamos en contador para el numero de visitas
+             * del cliente
+             */
+            $visitas = Cliente::where('id', $data->cliente_id)->first();
+
+            Cliente::where('id', $data->cliente_id)
+                ->update([
+                    'visitas' => $visitas->visitas + 1
+                ]);
 
 
-        Notification::make()
-            ->title('Operación exitosa!!')
-            ->icon('heroicon-o-shield-check')
-            ->body('El servicio fue cerrado de forma correcta. Deberá realizar su facturacion a la brevedad posible.')
-            ->send();
+            Notification::make()
+                ->title('Operación exitosa!!')
+                ->icon('heroicon-o-shield-check')
+                ->body('El servicio fue cerrado de forma correcta. Deberá realizar su facturacion a la brevedad posible.')
+                ->send();
 
-        $user = User::where('id', $data->empleado_id)->first();
-        $detalle = DetalleAsignacion::where('cod_asignacion', $codigo['cod_asignacion'])->get();
-        $type = 'servicio';
-        $mailData = [
-            'codigo' => $codigo['cod_asignacion'],
-            'user_email' => $user->email,
-            'user_fullname' => $venta_servicio->empleado,
-            'cliente_fullname' => $venta_servicio->cliente,
-            'fecha_venta' => $venta_servicio->fecha_venta,
-            'detalle' => $detalle,
-        ];
+            $user = User::where('id', $data->empleado_id)->first();
+            $detalle = DetalleAsignacion::where('cod_asignacion', $codigo['cod_asignacion'])->get();
+            $type = 'servicio';
+            $mailData = [
+                'codigo' => $codigo['cod_asignacion'],
+                'user_email' => $user->email,
+                'user_fullname' => $venta_servicio->empleado,
+                'cliente_fullname' => $venta_servicio->cliente,
+                'fecha_venta' => $venta_servicio->fecha_venta,
+                'detalle' => $detalle,
+            ];
 
-        NotificacionesController::notification($mailData, $type);
+            NotificacionesController::notification($mailData, $type);
 
-        $this->redirect('/cabinas');
+            $this->redirect('/cabinas');
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
     }
 
     public function carga_servicios_adicionales(Request $request)
@@ -110,43 +118,53 @@ class AgregraServicios extends Component
                 $description = 'Debes seleccionar al menos un(1) servício. Por favor vuelva a intentar'
             );
         }else{
-            $codigo = $request->session()->all();
 
-            $data = Disponible::where('cod_asignacion', $codigo['cod_asignacion'])->first();
+            try {
 
-            $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
+                $codigo = $request->session()->all();
 
-            for ($i=0; $i < count($this->servicios) ; $i++)
-            {
-                $data_servicios = Servicio::where('id', $this->servicios[$i])->first();
-                $detalle_asignacion = new DetalleAsignacion();
-                $detalle_asignacion->cod_asignacion     = $codigo['cod_asignacion'];
-                $detalle_asignacion->cod_servicio       = $data->cod_servicio;
-                $detalle_asignacion->empleado_id        = $data->empleado_id;
-                $detalle_asignacion->empleado           = $data->empleado;
-                $detalle_asignacion->cliente_id         = $data->cliente_id;
-                $detalle_asignacion->cliente            = $data->cliente;
-                $detalle_asignacion->servicio_id        = $data_servicios->id;
-                $detalle_asignacion->servicio           = $data_servicios->descripcion;
-                $detalle_asignacion->servicio_categoria = $data_servicios->categoria;
-                $detalle_asignacion->costo              = $data_servicios->costo;
-                $detalle_asignacion->fecha              = date('d-m-Y');
-                $srv = DetalleAsignacion::where('cod_asignacion', $codigo['cod_asignacion'])->where('servicio_id', $data_servicios->id)->where('status', 1)->first();
-                if(isset($srv->servicio_id))
-                {
-                    if($srv->servicio_id == $data_servicios->id){
-                        $this->dialog()->error(
-                            $title = 'Error !!!',
-                            $description = 'Servicio duplicado. Estas intentando agregar un servicio que ya se encuentra asignado.'
-                        );
+                $data = Disponible::where('cod_asignacion', $codigo['cod_asignacion'])->first();
+
+                $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
+
+                for ($i = 0; $i < count($this->servicios); $i++) {
+                    $data_servicios = Servicio::where('id', $this->servicios[$i])->first();
+                    $detalle_asignacion = new DetalleAsignacion();
+                    $detalle_asignacion->cod_asignacion     = $codigo['cod_asignacion'];
+                    $detalle_asignacion->cod_servicio       = $data->cod_servicio;
+                    $detalle_asignacion->empleado_id        = $data->empleado_id;
+                    $detalle_asignacion->empleado           = $data->empleado;
+                    $detalle_asignacion->cliente_id         = $data->cliente_id;
+                    $detalle_asignacion->cliente            = $data->cliente;
+                    $detalle_asignacion->servicio_id        = $data_servicios->id;
+                    $detalle_asignacion->servicio           = $data_servicios->descripcion;
+                    $detalle_asignacion->servicio_categoria = $data_servicios->categoria;
+                    $detalle_asignacion->costo              = $data_servicios->costo;
+                    $detalle_asignacion->fecha              = date('d-m-Y');
+
+                    $srv = DetalleAsignacion::where('cod_asignacion', $codigo['cod_asignacion'])
+                        ->where('servicio_id', $data_servicios->id)
+                        ->where('status', 1)
+                        ->first();
+
+                    if (isset($srv->servicio_id)) {
+                        if ($srv->servicio_id == $data_servicios->id) {
+                            $this->dialog()->error(
+                                $title = 'Error !!!',
+                                $description = 'Servicio duplicado. Estas intentando agregar un servicio que ya se encuentra asignado.'
+                            );
+                        }
+                    } else {
+                        $detalle_asignacion->save();
                     }
-
-                }else{
-                    $detalle_asignacion->save();
                 }
+                
+                $this->servicios = [];
 
+            } catch (\Throwable $th) {
+                //throw $th;
             }
-            $this->servicios = [];
+
         }
 
     }

@@ -68,12 +68,12 @@ class CierreDiario extends Component implements HasForms, HasTable
             $total_pagos_bsd   = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
 
             /** totales en facturas multiples */
-            $fm_pagos_usd      = FacturaMultiple::where('fecha_venta', date('d-m-Y'))->sum('pago_usd');
-            $fm_pagos_bsd      = FacturaMultiple::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
+            $fm_pagos_usd = FacturaMultiple::where('fecha_venta', date('d-m-Y'))->sum('pago_usd');
+            $fm_pagos_bsd = FacturaMultiple::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
 
             /** totales en gastos */
-            $gastos_pagos_usd      = Gasto::where('fecha', date('d-m-Y'))->sum('monto_usd');
-            $gastos_pagos_bsd      = Gasto::where('fecha', date('d-m-Y'))->sum('monto_bsd');
+            $gastos_pagos_usd = Gasto::where('fecha', date('d-m-Y'))->sum('monto_usd');
+            $gastos_pagos_bsd = Gasto::where('fecha', date('d-m-Y'))->sum('monto_bsd');
 
             /** Ventas */
             $venta_usd = $total_pagos_usd + $fm_pagos_usd;
@@ -106,8 +106,12 @@ class CierreDiario extends Component implements HasForms, HasTable
             $cierre->observaciones = $this->observaciones;
             $cierre->save();
 
-            $this->redirect('/cierre/diario');
+            sleep(1);
 
+            $this->dialog()->success(
+                $title = 'NOTIFICACION !!!',
+                $description = 'El cierre de caja se ha realizado de forma exitósa.'
+            );
 
         } catch (\Throwable $th) {
             //throw $th;

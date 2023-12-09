@@ -117,50 +117,7 @@ class Dashboard extends Component
                 $this->redirect('/cierre/diario');
             }
 
-
-
-            // $this->dialog()->success(
-            //         $title = 'NOTIFICACION !!!',
-            //         $description = 'El equipo de desarrollo se encuentra trabajando en la creación de esta funcionalidad.'
-            //     );
-
-            // $this->dialog()->confirm([
-
-            //     'title'       => 'Notificación de sistema',
-            //     'description' => 'Usted se dispone a realizar un cierre de caja. Esta acción totaliza los movimientos generados hasta la fecha y hora en curso.',
-            //     'icon'        => 'warning',
-            //     'accept'      => [
-            //         'label'  => 'Si, realizar cierre',
-            //         'method' => 'cierre_caja',
-            //         'params' => 'Saved',
-            //     ],
-            //     'reject' => [
-            //         'label'  => 'No, cancelar',
-            //         'method' => 'cancel',
-
-            //     ],
-
-            // ]);
-
         }
-    }
-
-    public function cierre_caja()
-    {
-        /** totales en la tabla de ventas */
-        $total_venta_neta  = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('total_USD');
-        $total_pagos_usd   = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_usd');
-        $total_pagos_bsd   = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
-
-        /** totales en facturas multiples */
-        $fm_pagos_usd      = FacturaMultiple::where('fecha_venta', date('d-m-Y'))->sum('pago_usd');
-        $fm_pagos_bsd      = FacturaMultiple::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
-
-        /** totales en gastos */
-
-        $cierre = new CierreDiario();
-
-
     }
 
     public function cancel()

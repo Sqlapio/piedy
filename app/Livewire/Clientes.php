@@ -45,12 +45,12 @@ class Clientes extends Component
             $user = Auth::user();
 
             $cliente = new Cliente();
-            $cliente->nombre = strtoupper($this->nombre);
-            $cliente->apellido = strtoupper($this->apellido);
-            $cliente->email = $this->email;
-            $cliente->telefono = $this->telefono;
-            $cliente->user_id = $user->id;
-            $cliente->responsable= $user->name;
+            $cliente->nombre      = strtoupper($this->nombre);
+            $cliente->apellido    = strtoupper($this->apellido);
+            $cliente->email       = $this->email;
+            $cliente->telefono    = $this->telefono;
+            $cliente->user_id     = $user->id;
+            $cliente->responsable = $user->name;
             $cliente->save();
 
             Notification::make()
@@ -59,7 +59,6 @@ class Clientes extends Component
                 ->send();
 
             $this->reset();
-
 
         } catch (\Throwable $th) {
             dd($th);

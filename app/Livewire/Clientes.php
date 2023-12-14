@@ -2,11 +2,13 @@
 
 namespace App\Livewire;
 
+use App\Http\Controllers\UtilsController;
 use App\Models\Cliente;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Rule;
 use WireUi\Traits\Actions;
 
@@ -41,6 +43,14 @@ class Clientes extends Component
         $this->validate();
 
         try {
+
+            $pdo_db_online = DB::connection('mysql_online')->getPDO();
+
+                if($pdo_db_online){
+                    /** Sincronizamos la data guardada en la local */
+                    $tabla = 'clientes';
+                    UtilsController::sincronizacion($tabla);
+                }
 
             $user = Auth::user();
 

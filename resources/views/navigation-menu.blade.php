@@ -83,13 +83,13 @@
                                 <span class="inline-flex rounded-md">
                                     <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
                                         {{ Auth::user()->name }}
-
                                         <x-dropdown>
                                             <form method="POST" action="{{ route('logout') }}" x-data>
                                                 @csrf
                                                 <x-dropdown.item label="Cerrar sesión" type="submit" href="{{ route('logout') }}" @click.prevent="$root.submit();"/>
                                             </form>
                                         </x-dropdown>
+
                                     </button>
                                 </span>
                             @endif

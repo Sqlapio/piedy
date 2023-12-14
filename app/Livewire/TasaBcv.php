@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Http\Controllers\UtilsController;
 use App\Models\TasaBcv as ModelsTasaBcv;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -12,7 +13,7 @@ use WireUi\Traits\Actions;
 class TasaBcv extends ModalComponent
 {
     use Actions;
-    
+
     #[Rule('required')]
     public $tasa;
 
@@ -20,14 +21,16 @@ class TasaBcv extends ModalComponent
         'nombre' => 'Campo requerido',
     ];
 
-    public function actualiza_tasa() 
+    public function actualiza_tasa()
     {
 
-        $hoy = date('d-m-Y'); 
+        $hoy = date('d-m-Y');
 
+        /** Consulta DB local */
         $tasa_actualizada = ModelsTasaBcv::first();
 
-        if($tasa_actualizada->fecha == $hoy)
+
+        if(false)
         {
             $this->forceClose()->closeModal();
 
@@ -38,24 +41,50 @@ class TasaBcv extends ModalComponent
 
         }else{
 
-            DB::table('tasa_bcvs')
-              ->where('id', 1)
-              ->update([
-                'tasa'  => $this->tasa,
-                'fecha' => $hoy
-            ]);
+            try {
 
-            $this->forceClose()->closeModal();
+                $pdo_db_online = DB::connection('mysql_online')->getPDO();
 
-            // $this->dialog()->success(
-            //     $title = 'Exito !!!',
-            //     $description = 'La tasa fue actualizada de forma exitosa.'
-            // );
+                if($pdo_db_online){
+                    /** Sincronizamos la data guardada en la local */
+                    $tabla = 'tasa_bcvs';
+                    UtilsController::sincronizacion($tabla);
+                }
 
-            redirect()->to('/dashboard');
+                DB::table('tasa_bcvs')
+                    ->where('id', 1)
+                    ->update([
+                        'tasa'  => $this->tasa,
+                        'fecha' => $hoy
+                    ]);
+
+                /** Guardo en la DB:ONLINE */
+                DB::connection('mysql_online')->table('tasa_bcvs')
+                ->where('id', 1)
+                    ->update([
+                        'tasa'  => $this->tasa,
+                        'fecha' => $hoy
+                    ]);
+
+                $this->forceClose()->closeModal();
+
+
+            } catch (\Throwable $th) {
+
+                /** offline solo escribimos en la BD local */
+                DB::table('tasa_bcvs')
+                    ->where('id', 1)
+                    ->update([
+                        'tasa'  => $this->tasa,
+                        'fecha' => $hoy
+                    ]);
+                $this->forceClose()->closeModal();
+
+
+            }
 
         }
-        
+
 
     }
     public function render()

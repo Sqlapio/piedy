@@ -15,6 +15,9 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                     <div class="text-sm text-gray-500 dark:text-gray-400">Tasa del dia: {{ $tasa->tasa }}</div>
                 </div>
             </div>
+            <div class="flex justify-end">
+                <x-badge outline label="OFFLINE" wire:offline red/>
+            </div>
         </div>
         {{-- Primera linea --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-3">

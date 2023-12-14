@@ -20,12 +20,12 @@ class StatsVenta extends BaseWidget
                 ->color('success')
                 ->chart([7, 2, 10, 3, 15, 4, 17]),
             Stat::make('Total pagos($)', '$'.VentaServicio::sum('pago_usd'))
-                ->description('Clientes registrados')
+                ->description('Total de pagos en Dolares')
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('warning')
                 ->chart([7, 2, 10, 3, 15, 4, 17]),
             Stat::make('Total pagos(Bs)', 'Bs'.VentaServicio::sum('pago_bsd'))
-                ->description('Productos registrados')
+                ->description('Total de pagos en Bolívares')
                 ->descriptionIcon('heroicon-s-users')
                 ->color('primary')
                 ->chart([7, 2, 1, 1, 15, 4, 2]),

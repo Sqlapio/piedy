@@ -53,6 +53,7 @@ class VentaServicioResource extends Resource
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'Facturación multiple'  => 'warning',
+                        'Multiple'              => 'warning',
                         'Efectivo Usd'          => 'success',
                         'Zelle'                 => 'success',
                         'Efectivo Bsd'          => 'info',

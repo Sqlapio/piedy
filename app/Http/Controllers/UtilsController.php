@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
+use App\Models\ClienteOnline;
 use App\Models\Comision;
+use App\Models\Disponible;
+use App\Models\DisponibleOnline;
 use App\Models\TasaBcv;
+use App\Models\VentaServicio;
+use App\Models\VentaServicioOnline;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -37,8 +43,10 @@ class UtilsController extends Controller
     {
         if($tabla = 'tasa_bcvs')
         {
+            /** BD LOCAL */
             $tasa_bcvs = TasaBcv::first();
-            /** Actualizo DB online */
+
+            /** DB AWS */
             DB::connection('mysql_online')->table('tasa_bcvs')
             ->where('id', 1)
                 ->update([
@@ -49,15 +57,93 @@ class UtilsController extends Controller
 
         if($tabla = 'clientes')
         {
-            dd('clientes');
-            $tasa_bcvs = TasaBcv::first();
-            /** Actualizo DB online */
-            DB::connection('mysql_online')->table('tasa_bcvs')
-            ->where('id', 1)
-                ->update([
-                    'tasa'  => $tasa_bcvs->tasa,
-                    'fecha' => $tasa_bcvs->fecha
+            /** BD LOCAL */
+            $clientes = Cliente::where('sincronizado', 'false')->get();
+
+            /** DB AWS */
+            foreach($clientes as $item)
+            {
+                $cliente_online = new ClienteOnline();
+                $cliente_online->nombre      = strtoupper($item->nombre);
+                $cliente_online->apellido    = strtoupper($item->apellido);
+                $cliente_online->email       = $item->email;
+                $cliente_online->telefono    = $item->telefono;
+                $cliente_online->user_id     = $item->responsable;
+                $cliente_online->responsable = $item->responsable;
+                $cliente_online->created_at = $item->created_at;
+                $cliente_online->updated_at = $item->updated_at;
+                $cliente_online->save();
+
+                /** Actualizo el valor sincronizado a true en DB LOCAL */
+                Cliente::where('id', $item->id)->update([
+                    'sincronizado' => 'true'
                 ]);
+
+            }
+        }
+
+        if($tabla = 'disponibles')
+        {
+            /** BD LOCAL */
+            $disponible = Disponible::where('sincronizado', 'false')->get();
+
+            /** DB AWS */
+            foreach($disponible as $item)
+            {
+                $disponible_online = new DisponibleOnline();
+                $disponible_online->cod_asignacion     = $item->cod_asignacion;
+                $disponible_online->cliente_id         = $item->cliente_id;
+                $disponible_online->cliente            = $item->cliente;
+                $disponible_online->empleado_id        = $item->empleado_id;
+                $disponible_online->empleado           = $item->empleado;
+                $disponible_online->area_trabajo       = $item->area_trabajo;
+                $disponible_online->cod_servicio       = $item->cod_servicio;
+                $disponible_online->servicio_id        = $item->servicio_id;
+                $disponible_online->servicio           = $item->servicio;
+                $disponible_online->servicio_categoria = $item->servicio_categoria;
+                $disponible_online->costo              = $item->costo;
+                $disponible_online->status             = $item->status;
+                $disponible_online->created_at         = $item->created_at;
+                $disponible_online->updated_at         = $item->updated_at;
+                $disponible_online->save();
+
+
+                /** Actualizo el valor sincronizado a true en DB LOCAL */
+                Disponible::where('id', $item->id)->update([
+                    'sincronizado' => 'true'
+                ]);
+
+            }
+        }
+
+        if($tabla = 'venta_servicios')
+        {
+            /** BD LOCAL */
+            $venta_servicios = VentaServicio::where('sincronizado', 'false')->get();
+
+            /** DB AWS */
+            foreach($venta_servicios as $item)
+            {
+                $venta_servicio_online = new VentaServicioOnline();
+                $venta_servicio_online->cod_asignacion     = $item->cod_asignacion;
+                $venta_servicio_online->cliente            = $item->cliente;
+                $venta_servicio_online->cliente_id         = $item->cliente_id;
+                $venta_servicio_online->empleado           = $item->empleado;
+                $venta_servicio_online->empleado_id        = $item->empleado_id;
+                $venta_servicio_online->fecha_venta        = $item->fecha_venta;
+                $venta_servicio_online->total_USD          = $item->total_USD;
+                $venta_servicio_online->comision_empleado  = $item->comision_empleado;
+                $venta_servicio_online->comision_gerente   = $item->comision_gerente;
+                $venta_servicio_online->created_at         = $item->created_at;
+                $venta_servicio_online->updated_at         = $item->updated_at;
+
+
+                /** Actualizo el valor sincronizado a true en DB LOCAL */
+                VentaServicio::where('id', $item->id)->update([
+                    'sincronizado' => 'true'
+                ]);
+
+            }
         }
     }
 

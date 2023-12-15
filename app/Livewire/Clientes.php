@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Http\Controllers\UtilsController;
 use App\Models\Cliente;
+use App\Models\ClienteOnline;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -44,16 +45,52 @@ class Clientes extends Component
 
         try {
 
-            $pdo_db_online = DB::connection('mysql_online')->getPDO();
-
-                if($pdo_db_online){
-                    /** Sincronizamos la data guardada en la local */
-                    $tabla = 'clientes';
-                    UtilsController::sincronizacion($tabla);
-                }
-
             $user = Auth::user();
 
+            /** Variable que almacena la conexion con la nase de datos */
+            $pdo_db_online = DB::connection('mysql_online')->getPDO();
+
+            if ($pdo_db_online) {
+
+                /** Guardo en la base de datos local */
+                $cliente = new Cliente();
+                $cliente->nombre      = strtoupper($this->nombre);
+                $cliente->apellido    = strtoupper($this->apellido);
+                $cliente->email       = $this->email;
+                $cliente->telefono    = $this->telefono;
+                $cliente->user_id     = $user->id;
+                $cliente->responsable = $user->name;
+                $cliente->sincronizado = 'true';
+                $cliente->save();
+
+                /** Sincronizamos la data guardada en la local */
+                $tabla = 'clientes';
+                UtilsController::sincronizacion($tabla);
+
+                /** Guardo en la base de datos online */
+
+                $cliente_online = new ClienteOnline();
+                $cliente_online->nombre      = strtoupper($this->nombre);
+                $cliente_online->apellido    = strtoupper($this->apellido);
+                $cliente_online->email       = $this->email;
+                $cliente_online->telefono    = $this->telefono;
+                $cliente_online->user_id     = $user->id;
+                $cliente_online->responsable = $user->name;
+                $cliente_online->save();
+
+                $this->reset();
+
+                $this->dialog()->success(
+                    $title = 'Registro Satisfactorio !!!',
+                    $description = 'El cliente fue registrado de forma exitosa.'
+                );
+
+            }
+
+
+        } catch (\Throwable $th) {
+
+            /** Guardo en la base de datos local */
             $cliente = new Cliente();
             $cliente->nombre      = strtoupper($this->nombre);
             $cliente->apellido    = strtoupper($this->apellido);
@@ -63,15 +100,13 @@ class Clientes extends Component
             $cliente->responsable = $user->name;
             $cliente->save();
 
-            Notification::make()
-                ->title('Cliente creado con éxito')
-                ->success()
-                ->send();
-
             $this->reset();
 
-        } catch (\Throwable $th) {
-            dd($th);
+            $this->dialog()->success(
+                $title = 'Registro Satisfactorio !!!',
+                $description = 'El cliente fue registrado de forma exitosa.'
+            );
+
         }
 
     }

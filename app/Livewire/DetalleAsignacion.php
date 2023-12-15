@@ -17,6 +17,7 @@ use App\Models\TasaBcv;
 use App\Models\User;
 use App\Models\Venta;
 use App\Models\VentaServicio;
+use App\Models\VentaServicioOnline;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -187,23 +188,111 @@ class DetalleAsignacion extends ModalComponent
 
     public function cerrar_servicio()
     {
-
-        Debugbar::info($this->disponible->cod_asignacion);
-
         /**
-             * Calculo del total de venta para ser guardado
-             * en la tabla de ventas
-             */
-            $total = DB::table('detalle_asignacions')
-                ->select(DB::raw('SUM(costo) as total'))
-                ->where('cod_asignacion', $this->disponible->cod_asignacion)
-                ->where('status', '1')
-                ->first();
+         * Calculo del total de venta para ser guardado
+         * en la tabla de ventas
+         */
+        $total = DB::table('detalle_asignacions')
+        ->select(DB::raw('SUM(costo) as total'))
+        ->where('cod_asignacion', $this->disponible->cod_asignacion)
+            ->where('status', '1')
+            ->first();
+
+        try {
+
+            /** Variable que almacena la conexion con la nase de datos */
+            $pdo_db_online = DB::connection('mysql_online')->getPDO();
+
+            if ($pdo_db_online) {
+                /**
+                 * Cargo la venta en la tabla de ventas
+                 */
+                $venta_servicio = new VentaServicio();
+                $venta_servicio->cod_asignacion     = $this->disponible->cod_asignacion;
+                $venta_servicio->cliente            = $this->disponible->cliente;
+                $venta_servicio->cliente_id         = $this->disponible->cliente_id;
+                $venta_servicio->empleado           = $this->disponible->empleado;
+                $venta_servicio->empleado_id        = $this->disponible->empleado_id;
+                $venta_servicio->fecha_venta        = date('d-m-Y');
+                $venta_servicio->total_USD          = $total->total;
+                $venta_servicio->comision_empleado  = UtilsController::cal_comision_empleado($total->total);
+                $venta_servicio->comision_gerente   = UtilsController::cal_comision_gerente($total->total);
+                $venta_servicio->sincronizado       = 'true';
+                $venta_servicio->save();
+
+                /** Actualizo el estatus en la tabla de asignaciones de la DB:LOCAL */
+                Disponible::where('cod_asignacion', $this->disponible->cod_asignacion)
+                ->update([
+                    'costo' => $total->total,
+                    'status' => 'por facturar'
+                ]);
+
+                /** Sincronizamos la data guardada en la local */
+                $tabla = 'venta_servicios';
+                UtilsController::sincronizacion($tabla);
+
+                /** Guardo en la base de datos online */
+
+                $venta_servicio = new VentaServicioOnline();
+                $venta_servicio->cod_asignacion     = $this->disponible->cod_asignacion;
+                $venta_servicio->cliente            = $this->disponible->cliente;
+                $venta_servicio->cliente_id         = $this->disponible->cliente_id;
+                $venta_servicio->empleado           = $this->disponible->empleado;
+                $venta_servicio->empleado_id        = $this->disponible->empleado_id;
+                $venta_servicio->fecha_venta        = date('d-m-Y');
+                $venta_servicio->total_USD          = $total->total;
+                $venta_servicio->comision_empleado  = UtilsController::cal_comision_empleado($total->total);
+                $venta_servicio->comision_gerente   = UtilsController::cal_comision_gerente($total->total);
+                $venta_servicio->save();
+
+                 /** Actualizo el estatus en la tabla de asignaciones de la DB:LOCAL */
+                Disponible::where('cod_asignacion', $this->disponible->cod_asignacion)
+                ->update([
+                    'costo' => $total->total,
+                    'status' => 'por facturar'
+                ]);
+
+                /**
+                 * Actualizamos en contador para el numero de visitas
+                 * del cliente
+                 */
+                $visitas = Cliente::where('id', $this->disponible->cliente_id)->first();
+                Cliente::where('id', $this->disponible->cliente_id)
+                ->update([
+                    'visitas' => $visitas->visitas + 1
+                ]);
+
+                $this->forceClose()->closeModal();
+
+                Notification::make()
+                ->title('Operación exitosa!!')
+                ->icon('heroicon-o-shield-check')
+                ->body('El servicio fue cerrado de forma correcta. Deberá realizar su facturacion a la brevedad posible.')
+                ->send();
+
+                /** Notificacion por correo al empleado */
+                $user = User::where('id', $venta_servicio->empleado_id)->first();
+                $detalle = ModelsDetalleAsignacion::where('cod_asignacion', $venta_servicio->cod_asignacion)->get();
+                $type = 'servicio';
+                $mailData = [
+                    'codigo' => $venta_servicio->cod_asignacion,
+                    'user_email' => $user->email,
+                    'user_fullname' => $venta_servicio->empleado,
+                    'cliente_fullname' => $venta_servicio->cliente,
+                    'fecha_venta' => $venta_servicio->fecha_venta,
+                    'detalle' => $detalle,
+                ];
+
+                NotificacionesController::notification($mailData, $type);
+
+                $this->redirect('/cabinas');
+        }
+
+        } catch (\Throwable $th) {
 
             /**
              * Cargo la venta en la tabla de ventas
              */
-
             $venta_servicio = new VentaServicio();
             $venta_servicio->cod_asignacion     = $this->disponible->cod_asignacion;
             $venta_servicio->cliente            = $this->disponible->cliente;
@@ -214,10 +303,11 @@ class DetalleAsignacion extends ModalComponent
             $venta_servicio->total_USD          = $total->total;
             $venta_servicio->comision_empleado  = UtilsController::cal_comision_empleado($total->total);
             $venta_servicio->comision_gerente   = UtilsController::cal_comision_gerente($total->total);
+            $venta_servicio->sincronizado       = 'false';
             $venta_servicio->save();
 
             Disponible::where('cod_asignacion', $this->disponible->cod_asignacion)
-            ->update([
+                ->update([
                     'costo' => $total->total,
                     'status' => 'por facturar'
                 ]);
@@ -240,11 +330,12 @@ class DetalleAsignacion extends ModalComponent
                 ->body('El servicio fue cerrado de forma correcta. Deberá realizar su facturacion a la brevedad posible.')
                 ->send();
 
+            /** Notificacion por correo al empleado */
             $user = User::where('id', $venta_servicio->empleado_id)->first();
             $detalle = ModelsDetalleAsignacion::where('cod_asignacion', $venta_servicio->cod_asignacion)->get();
             $type = 'servicio';
             $mailData = [
-                'codigo' => $venta_servicio->cod_asignacion ,
+                'codigo' => $venta_servicio->cod_asignacion,
                 'user_email' => $user->email,
                 'user_fullname' => $venta_servicio->empleado,
                 'cliente_fullname' => $venta_servicio->cliente,
@@ -255,6 +346,8 @@ class DetalleAsignacion extends ModalComponent
             NotificacionesController::notification($mailData, $type);
 
             $this->redirect('/cabinas');
+        }
+
     }
 
     public function carga_servicios_adicionales()

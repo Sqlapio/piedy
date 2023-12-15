@@ -7,19 +7,14 @@ use App\Http\Controllers\UtilsController;
 use App\Models\Cita;
 use App\Models\Cliente;
 use App\Models\Disponible;
-use App\Models\Empleado;
+use App\Models\DisponibleOnline;
 use App\Models\Servicio;
 use Filament\Notifications\Notification;
-use Livewire\Component;
-use App\Livewire\Citas;
 use App\Models\DetalleAsignacion as ModelsDetalleAsignacion;
 use App\Models\TasaBcv;
 use App\Models\User;
-use App\Models\Venta;
 use App\Models\VentaServicio;
 use App\Models\VentaServicioOnline;
-use Barryvdh\Debugbar\Facades\Debugbar;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -246,7 +241,7 @@ class DetalleAsignacion extends ModalComponent
                 $venta_servicio->save();
 
                  /** Actualizo el estatus en la tabla de asignaciones de la DB:LOCAL */
-                Disponible::where('cod_asignacion', $this->disponible->cod_asignacion)
+                DisponibleOnline::where('cod_asignacion', $this->disponible->cod_asignacion)
                 ->update([
                     'costo' => $total->total,
                     'status' => 'por facturar'

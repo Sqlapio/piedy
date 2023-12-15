@@ -14,7 +14,7 @@
             <div class="text-md text-green-500 font-extrabold dark:text-gray-400">Código: {{ $data->cod_asignacion }}</div>
         </div>
     </div>
-
+    {{ var_export($detalle) }}
     {{-- lista de servicios asignados --}}
     <p class="text-sm mt-8 font-normal text-gray-500 dark:text-gray-400 {{ $atr4 }}">Servicio realizados</p>
     <ul class="my-4 space-y-3 {{ $atr8 }}">

@@ -7,9 +7,12 @@ use App\Models\VentaServicio;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ListRecords\Tab;
+use Filament\Pages\Concerns\ExposesTableToWidgets;
 
 class ListVentaServicios extends ListRecords
 {
+    use ExposesTableToWidgets;
+
     protected static string $resource = VentaServicioResource::class;
 
     protected function getHeaderActions(): array
@@ -22,7 +25,7 @@ class ListVentaServicios extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            VentaServicioResource\Widgets\StatsVenta::class,
+            VentaServicioResource\Widgets\VentaServicioStats::class,
         ];
     }
 
@@ -30,7 +33,7 @@ class ListVentaServicios extends ListRecords
     {
         return [
 
-            'Todo' => Tab::make(),
+            'Todo' => ListRecords\Tab::make('Todo'),
             'Hoy' => Tab::make()
                 ->query(fn ($query) => $query->whereDate('created_at', now()->toDateString())),
                 // ->badge(VentaServicio::query()->where('created_at', now()->toDateString())->count()),

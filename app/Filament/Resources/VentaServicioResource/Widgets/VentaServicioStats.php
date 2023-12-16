@@ -12,9 +12,11 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 
-class StatsVenta extends BaseWidget
+class VentaServicioStats extends BaseWidget
 {
     use InteractsWithPageTable;
+
+    protected static ?string $pollingInterval = null;
 
     protected function getTablePage(): string
     {
@@ -32,16 +34,16 @@ class StatsVenta extends BaseWidget
             ->count();
 
         return [
-            Stat::make('Total Ventas', '$'.$this->getPageTableQuery()->count())
+            // Stat::make('Total Ventas', '$'.$this->getPageTableQuery()->count())
 
-                ->description('Total neto de ventas')
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->chart(
-                    $data
-                        ->map(fn (TrendValue $value) => $value->aggregate)
-                        ->toArray()
-                ),
+            //     ->description('Total neto de ventas')
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->chart(
+            //         $data
+            //             ->map(fn (TrendValue $value) => $value->aggregate)
+            //             ->toArray()
+            //     ),
             // Stat::make('Total pagos($)', '$'.VentaServicio::sum('pago_usd'))
             //     ->description('Total de pagos en Dolares')
             //     ->descriptionIcon('heroicon-m-arrow-trending-down')

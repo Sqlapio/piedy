@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::middleware(['validate_db'])->group(function () {
+
      Route::get('/', function () {
         return view('welcome');
     })->name('welcome');
@@ -105,6 +107,7 @@ use Illuminate\Support\Facades\Route;
             return view('clientes');
         })->name('cliente.edit');
     });
+});
 
 Route::get('/pp', function () {
     $venta_servicio = VentaServicio::where('cod_asignacion', 'Pca-73744285')->first();

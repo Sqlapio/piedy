@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DisponibleOnline extends Model
+class DetalleAsignacionOnline extends Model
 {
     use HasFactory;
 
@@ -14,7 +14,7 @@ class DisponibleOnline extends Model
     /**
      * Define table
      */
-    protected $table = 'disponibles';
+    protected $table = 'detalle_asignacions';
 
     /**
      * The attributes that are mass assignable.
@@ -23,15 +23,15 @@ class DisponibleOnline extends Model
      */
     protected $fillable = [
         'cod_asignacion',
-        'cliente_id',
-        'cliente',
+        'cod_servicio',
         'empleado_id',
         'empleado',
-        'area_trabajo',
-        'cod_servicio',
         'servicio_id',
         'servicio',
+        'cliente_id',
+        'cliente',
         'costo',
+        'fecha',
         'status',
     ];
 }

@@ -299,6 +299,7 @@ class Caja extends Component
                             'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                             'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                             'responsable'   => Auth::user()->name,
+                            'facturado'   => 'true',
                         ]);
 
                     DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
@@ -320,7 +321,7 @@ class Caja extends Component
                     $this->redirect('/cabinas');
 
                 } catch (\Throwable $th) {
-                    //throw $th;
+
                 }
 
             }
@@ -342,6 +343,7 @@ class Caja extends Component
                             'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                             'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                             'responsable'   => Auth::user()->name,
+                            'facturado'   => 'true',
                         ]);
 
                     DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
@@ -385,6 +387,7 @@ class Caja extends Component
                                 'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                                 'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                                 'responsable'   => Auth::user()->name,
+                                'facturado'   => 'true',
                             ]);
 
                         DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
@@ -426,7 +429,7 @@ class Caja extends Component
                         $title = 'Error !!!',
                         $description = 'Debe cargar el número de referencia, de lo contrario no podra realizar la facturación'
                     );
-                    
+
                 }else{
 
                     try {
@@ -440,6 +443,7 @@ class Caja extends Component
                                 'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                                 'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                                 'responsable'   => Auth::user()->name,
+                                'facturado'   => 'true',
                             ]);
 
                         DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
@@ -510,6 +514,7 @@ class Caja extends Component
                                             'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                                             'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                                             'responsable'   => Auth::user()->name,
+                                            'facturado'   => 'true',
                                         ]);
 
                                     DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
@@ -566,6 +571,7 @@ class Caja extends Component
                                         'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                                         'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                                         'responsable'   => Auth::user()->name,
+                                        'facturado'   => 'true',
                                     ]);
 
                                 DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
@@ -622,6 +628,7 @@ class Caja extends Component
                                         'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                                         'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                                         'responsable'   => Auth::user()->name,
+                                        'facturado'   => 'true',
                                     ]);
 
                                 DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')

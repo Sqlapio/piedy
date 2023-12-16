@@ -63,10 +63,6 @@ class Clientes extends Component
                 $cliente->sincronizado = 'true';
                 $cliente->save();
 
-                /** Sincronizamos la data guardada en la local */
-                $tabla = 'clientes';
-                UtilsController::sincronizacion($tabla);
-
                 /** Guardo en la base de datos online */
 
                 $cliente_online = new ClienteOnline();

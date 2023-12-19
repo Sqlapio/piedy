@@ -27,7 +27,7 @@ class Comision extends Model
         'beneficiario',
         'porcentaje',
         'status',
-        'rango_id',
+        'sincronizado',
     ];
 
     public function producto():HasOne
@@ -46,4 +46,3 @@ class Comision extends Model
     }
 
 }
- 

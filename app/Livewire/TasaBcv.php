@@ -2,7 +2,6 @@
 
 namespace App\Livewire;
 
-use App\Http\Controllers\UtilsController;
 use App\Models\TasaBcv as ModelsTasaBcv;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -26,11 +25,9 @@ class TasaBcv extends ModalComponent
 
         $hoy = date('d-m-Y');
 
-        /** Consulta DB local */
         $tasa_actualizada = ModelsTasaBcv::first();
 
-
-        if(false)
+        if($tasa_actualizada->fecha == $hoy)
         {
             $this->forceClose()->closeModal();
 
@@ -41,47 +38,22 @@ class TasaBcv extends ModalComponent
 
         }else{
 
-            try {
+            DB::table('tasa_bcvs')
+              ->where('id', 1)
+              ->update([
+                'tasa'  => $this->tasa,
+                'fecha' => $hoy,
+                'sincronizado' => 'false'
+            ]);
 
-                DB::connection('mysql_online')->getPDO();
+            $this->forceClose()->closeModal();
 
-                /** Guardo la data en la BD LOCAL */
-                DB::table('tasa_bcvs')->where('id', 1)
-                    ->update([
-                        'tasa'  => $this->tasa,
-                        'fecha' => $hoy
-                    ]);
-
-                /** Guardo en la DB:ONLINE la nueva informacion
-                 * que es la agregada en la consulta anterior
-                 */
-                DB::connection('mysql_online')->table('tasa_bcvs')
-                    ->where('id', 1)
-                    ->update([
-                        'tasa'  => $this->tasa,
-                        'fecha' => $hoy
-                    ]);
-
-                $this->forceClose()->closeModal();
-
-            } catch (\Throwable $th) {
-
-                /** offline solo escribimos en la BD local */
-                DB::table('tasa_bcvs')
-                    ->where('id', 1)
-                    ->update([
-                        'tasa'  => $this->tasa,
-                        'fecha' => $hoy
-                    ]);
-
-                $this->forceClose()->closeModal();
-
-            }
+            redirect()->to('/dashboard');
 
         }
 
+
     }
-    
     public function render()
     {
         return view('livewire.tasa-bcv');

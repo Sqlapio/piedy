@@ -39,22 +39,31 @@ class ComisionResource extends Resource
                     ->maxValue(100)
                     ->required(),
                 Select::make('aplicacion')
+                    ->required()
                     ->options([
                         'producto' => 'Producto',
                         'servicio' => 'Servicio',
                         'cupones' => 'Cupones',
                     ]),
                 Select::make('beneficiario')
+                    ->required()
                     ->options([
                         'gerente' => 'Gerente',
                         'empleado' => 'Empleado',
                         'cupones' => 'Cupones',
                     ]),
                 Select::make('status')
+                    ->required()
                     ->options([
                         '1' => 'Activo',
                         '2' => 'Inactivo',
+                    ]),
+                Select::make('sincronizado')
+                    ->required()
+                    ->options([
+                        'false' => 'False',
                     ])
+                    ->default('false'),
             ]);
     }
 

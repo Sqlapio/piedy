@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\VentaServicioResource\Widgets;
 
+use App\Filament\Resources\VentaServicioResource;
+use App\Filament\Resources\VentaServicioResource\Pages\ListVentaServicios;
 use App\Models\Cliente;
 use App\Models\Disponible;
 use App\Models\Producto;
@@ -11,6 +13,7 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
+use Illuminate\Support\Facades\DB;
 
 class VentaServicioStats extends BaseWidget
 {
@@ -20,40 +23,50 @@ class VentaServicioStats extends BaseWidget
 
     protected function getTablePage(): string
     {
-        return VentaServicio::class;
+        return ListVentaServicios::class;
     }
 
     protected function getStats(): array
     {
+        dd($this->getPageTableQuery()->select('cliente', DB::raw('count(*) as cliente'))->groupBy('cliente')->count());
         $data = Trend::model(VentaServicio::class)
             ->between(
                 start: now()->subYear(),
                 end: now(),
             )
             ->perMonth()
-            ->count();
+            ->count('cliente');
 
         return [
-            // Stat::make('Total Ventas', '$'.$this->getPageTableQuery()->count())
 
-            //     ->description('Total neto de ventas')
-            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
-            //     ->color('success')
-            //     ->chart(
-            //         $data
-            //             ->map(fn (TrendValue $value) => $value->aggregate)
-            //             ->toArray()
-            //     ),
-            // Stat::make('Total pagos($)', '$'.VentaServicio::sum('pago_usd'))
-            //     ->description('Total de pagos en Dolares')
-            //     ->descriptionIcon('heroicon-m-arrow-trending-down')
-            //     ->color('warning')
-            //     ->chart([7, 2, 10, 3, 15, 4, 17]),
-            // Stat::make('Total pagos(Bs)', 'Bs'.VentaServicio::sum('pago_bsd'))
-            //     ->description('Total de pagos en Bolívares')
-            //     ->descriptionIcon('heroicon-s-users')
-            //     ->color('primary')
-            //     ->chart([7, 2, 1, 1, 15, 4, 2]),
+            Stat::make('CLIENTES', $this->getPageTableQuery()->count('cliente'))
+                ->description('Total de clientes atendidos')
+                ->descriptionIcon('heroicon-m-user-group')
+                ->color('info')
+                ->chart(
+                    $data
+                        ->map(fn (TrendValue $value) => $value->aggregate)
+                        ->toArray()
+                ),
+
+            Stat::make('TOTAL USD($)', '$' . $this->getPageTableQuery()->sum('pago_usd'))
+                ->description('Total neto de ventas en USD($)')
+                ->descriptionIcon('heroicon-m-currency-dollar')
+                ->color('success')
+                ->chart(
+                    $data
+                        ->map(fn (TrendValue $value) => $value->aggregate)
+                        ->toArray()
+                ),
+            Stat::make('TOTAL BS.', 'BS.' . $this->getPageTableQuery()->sum('pago_bsd'))
+                ->description('Total neto de ventas en Bs')
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->color('warning')
+                ->chart(
+                    $data
+                        ->map(fn (TrendValue $value) => $value->aggregate)
+                        ->toArray()
+                ),
         ];
     }
 }

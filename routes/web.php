@@ -109,10 +109,8 @@ Route::middleware(['validate_db'])->group(function () {
     });
 });
 
-Route::get('/pp', function () {
-    $venta_servicio = VentaServicio::where('cod_asignacion', 'Pca-73744285')->first();
-
-    $cliente = Cliente::where('id', '1')->first();
-    dd($cliente->get_disponibles);
+Route::get('/p', function () {
+    $date = date('m-Y');
+    dd($date);
 
 });

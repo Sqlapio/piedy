@@ -13,6 +13,8 @@ class ListVentaServicios extends ListRecords
 {
     use ExposesTableToWidgets;
 
+    protected ?string $heading = 'Dashboard Ventas';
+
     protected static string $resource = VentaServicioResource::class;
 
     protected function getHeaderActions(): array
@@ -31,17 +33,33 @@ class ListVentaServicios extends ListRecords
 
     public function getTabs(): array
     {
+
+        $desde = date('Y-m').'-01 00:00:00';
+        $hasta = date('Y-m').'-15 23:00:00';
+
+        $desde_II = date('Y-m').'-16 00:00:00';
+        $hasta_II = date('Y-m').'-31 23:00:00';
+
+        $desde_mes = date('Y-m').'-01 00:00:00';
+        $hasta_mes = date('Y-m').'-31 23:00:00';
+
         return [
 
             'Todo' => ListRecords\Tab::make('Todo'),
             'Hoy' => Tab::make()
-                ->query(fn ($query) => $query->whereDate('created_at', now()->toDateString())),
-                // ->badge(VentaServicio::query()->where('created_at', now()->toDateString())->count()),
-            'Semanal' => Tab::make()
-                ->query(fn ($query) => $query->whereDate('created_at', now()->subWeek())),
+                ->query(fn ($query) => $query->whereDate('created_at', now()->toDateString()))
+                ->badge(VentaServicio::query()->where('created_at', now()->toDateString())->count()),
+            'Quincena 01/15' => Tab::make()
+                ->query(fn ($query) => $query->whereBetween('created_at', [$desde, $hasta]))
+                ->badge(VentaServicio::query()->whereBetween('created_at',[$desde, $hasta])->count()),
+
+            'Quincena 16/30' => Tab::make()
+                ->query(fn ($query) => $query->whereBetween('created_at', [$desde_II, $hasta_II]))
+                ->badge(VentaServicio::query()->whereBetween('created_at',[$desde_II, $hasta_II])->count()),
                 // ->badge(VentaServicio::query()->where('created_at','<=', now()->subWeek())->count()),
             'Mensual' => Tab::make()
-                ->query(fn ($query) => $query->whereDate('created_at', now()->subMonth())),
+                ->query(fn ($query) => $query->whereBetween('created_at', [$desde_mes, $hasta_mes]))
+                ->badge(VentaServicio::query()->whereBetween('created_at',[$desde_mes, $hasta_mes])->count()),
                 // ->badge(VentaServicio::query()->where('created_at','<=', now()->subMonth())->count()),
         ];
     }

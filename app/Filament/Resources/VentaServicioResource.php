@@ -30,6 +30,8 @@ class VentaServicioResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-chart-bar-square';
 
+    protected static ?string $navigationLabel = 'Dashboard Ventas';
+
     protected static ?string $navigationGroup = 'Ventas';
 
     public static function form(Form $form): Form
@@ -140,27 +142,27 @@ class VentaServicioResource extends Resource
             ->filters([
                 Filter::make('created_at')
                 ->form([
-                    DatePicker::make('created_from'),
-                    DatePicker::make('created_until'),
+                    DatePicker::make('desde'),
+                    DatePicker::make('hasta'),
                 ])
                 ->query(function (Builder $query, array $data): Builder {
                     return $query
                         ->when(
-                            $data['created_from'] ?? null,
+                            $data['desde'] ?? null,
                             fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
                         )
                         ->when(
-                            $data['created_until'] ?? null,
+                            $data['hasta'] ?? null,
                             fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                         );
                 })
                 ->indicateUsing(function (array $data): array {
                     $indicators = [];
-                    if ($data['created_from'] ?? null) {
-                        $indicators['created_from'] = 'Venta desde ' . Carbon::parse($data['created_from'])->toFormattedDateString();
+                    if ($data['desde'] ?? null) {
+                        $indicators['desde'] = 'Venta desde ' . Carbon::parse($data['desde'])->toFormattedDateString();
                     }
-                    if ($data['created_until'] ?? null) {
-                        $indicators['created_until'] = 'Venta hasta ' . Carbon::parse($data['created_until'])->toFormattedDateString();
+                    if ($data['hasta'] ?? null) {
+                        $indicators['hasta'] = 'Venta hasta ' . Carbon::parse($data['hasta'])->toFormattedDateString();
                     }
 
                     return $indicators;

@@ -30,4 +30,5 @@ class EditComision extends EditRecord
         ->title('Comisión editada')
         ->body('La comisión fue editada con exito.');
     }
+
 }

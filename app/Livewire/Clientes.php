@@ -47,45 +47,6 @@ class Clientes extends Component
 
             $user = Auth::user();
 
-            /** Variable que almacena la conexion con la nase de datos */
-            $pdo_db_online = DB::connection('mysql_online')->getPDO();
-
-            if ($pdo_db_online) {
-
-                /** Guardo en la base de datos local */
-                $cliente = new Cliente();
-                $cliente->nombre      = strtoupper($this->nombre);
-                $cliente->apellido    = strtoupper($this->apellido);
-                $cliente->email       = $this->email;
-                $cliente->telefono    = $this->telefono;
-                $cliente->user_id     = $user->id;
-                $cliente->responsable = $user->name;
-                $cliente->sincronizado = 'true';
-                $cliente->save();
-
-                /** Guardo en la base de datos online */
-
-                $cliente_online = new ClienteOnline();
-                $cliente_online->nombre      = strtoupper($this->nombre);
-                $cliente_online->apellido    = strtoupper($this->apellido);
-                $cliente_online->email       = $this->email;
-                $cliente_online->telefono    = $this->telefono;
-                $cliente_online->user_id     = $user->id;
-                $cliente_online->responsable = $user->name;
-                $cliente_online->save();
-
-                $this->reset();
-
-                $this->dialog()->success(
-                    $title = 'Registro Satisfactorio !!!',
-                    $description = 'El cliente fue registrado de forma exitosa.'
-                );
-
-            }
-
-
-        } catch (\Throwable $th) {
-
             /** Guardo en la base de datos local */
             $cliente = new Cliente();
             $cliente->nombre      = strtoupper($this->nombre);
@@ -94,6 +55,7 @@ class Clientes extends Component
             $cliente->telefono    = $this->telefono;
             $cliente->user_id     = $user->id;
             $cliente->responsable = $user->name;
+            $cliente->sincronizado = 'false';
             $cliente->save();
 
             $this->reset();
@@ -102,6 +64,9 @@ class Clientes extends Component
                 $title = 'Registro Satisfactorio !!!',
                 $description = 'El cliente fue registrado de forma exitosa.'
             );
+
+
+        } catch (\Throwable $th) {
 
         }
 

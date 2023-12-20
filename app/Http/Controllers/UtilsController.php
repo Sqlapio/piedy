@@ -10,6 +10,8 @@ use App\Models\DetalleAsignacionOnline;
 use App\Models\Disponible;
 use App\Models\DisponibleOnline;
 use App\Models\TasaBcv;
+use App\Models\User;
+use App\Models\UserOnLine;
 use App\Models\VentaServicio;
 use App\Models\VentaServicioOnline;
 use Illuminate\Http\Request;
@@ -44,19 +46,19 @@ class UtilsController extends Controller
 
     static function sincronizacion($tabla)
     {
-        if($tabla = 'tasa_bcvs')
-        {
-            /** BD LOCAL */
-            $tasa_bcvs = TasaBcv::first();
+        // if($tabla = 'tasa_bcvs')
+        // {
+        //     /** BD LOCAL */
+        //     $tasa_bcvs = TasaBcv::first();
 
-            /** DB AWS */
-            DB::connection('mysql_online')->table('tasa_bcvs')
-            ->where('id', 1)
-                ->update([
-                    'tasa'  => $tasa_bcvs->tasa,
-                    'fecha' => $tasa_bcvs->fecha
-                ]);
-        }
+        //     /** DB AWS */
+        //     DB::connection('mysql_online')->table('tasa_bcvs')
+        //     ->where('id', 1)
+        //         ->update([
+        //             'tasa'  => $tasa_bcvs->tasa,
+        //             'fecha' => $tasa_bcvs->fecha
+        //         ]);
+        // }
 
         if($tabla = 'clientes')
         {
@@ -66,15 +68,24 @@ class UtilsController extends Controller
             /** DB AWS */
             foreach($clientes as $item)
             {
+                /** Obtengo el ultimo registro para evitar fallas al
+                 * registrar la informacion y mantener el correlativo
+                 * de registros intacto
+                 */
+                $id = DB::connection('mysql_online')
+                    ->table('clientes')
+                    ->orderBy('id', 'desc')->first();
+
                 $cliente_online = new ClienteOnline();
+                $cliente_online->id          = $id->id + 1;
                 $cliente_online->nombre      = strtoupper($item->nombre);
                 $cliente_online->apellido    = strtoupper($item->apellido);
                 $cliente_online->email       = $item->email;
                 $cliente_online->telefono    = $item->telefono;
-                $cliente_online->user_id     = $item->responsable;
+                $cliente_online->user_id     = $item->user_id;
                 $cliente_online->responsable = $item->responsable;
-                $cliente_online->created_at = $item->created_at;
-                $cliente_online->updated_at = $item->updated_at;
+                $cliente_online->created_at  = $item->created_at;
+                $cliente_online->updated_at  = $item->updated_at;
                 $cliente_online->save();
 
                 /** Actualizo el valor sincronizado a true en DB LOCAL */
@@ -123,6 +134,64 @@ class UtilsController extends Controller
 
                 /** Actualizo el valor sincronizado a true en DB LOCAL */
                 VentaServicio::where('id', $item->id)->update([
+                    'sincronizado' => 'true'
+                ]);
+
+            }
+        }
+
+        if($tabla = 'users')
+        {
+            $users_online = DB::connection('mysql_online')->table('users')->where('sincronizado', 'false')->get();
+
+            /** DB AWS */
+            foreach($users_online as $item)
+            {
+                $user = new User();
+                $user->name             = $item->name;
+                $user->tipo_servicio_id = $item->tipo_servicio_id;
+                $user->email            = $item->email;
+                $user->telefono         = $item->telefono;
+                $user->password         = $item->password;
+                $user->tipo_usuario     = $item->tipo_usuario;
+                $user->area_trabajo     = $item->area_trabajo;
+                $user->sincronizado     = 'true';
+                $user->created_at       = $item->created_at;
+                $user->updated_at       = $item->updated_at;
+                $user->save();
+
+                /** Actualizo el valor sincronizado a true en DB LOCAL */
+                DB::connection('mysql_online')->table('users')->where('id', $item->id)
+                ->update([
+                    'sincronizado' => 'true'
+                ]);
+
+            }
+        }
+
+        if($tabla = 'comisions')
+        {
+            $users_online = DB::connection('mysql_online')->table('users')->where('sincronizado', 'false')->get();
+
+            /** DB AWS */
+            foreach($users_online as $item)
+            {
+                $user = new User();
+                $user->name             = $item->name;
+                $user->tipo_servicio_id = $item->tipo_servicio_id;
+                $user->email            = $item->email;
+                $user->telefono         = $item->telefono;
+                $user->password         = $item->password;
+                $user->tipo_usuario     = $item->tipo_usuario;
+                $user->area_trabajo     = $item->area_trabajo;
+                $user->sincronizado     = 'true';
+                $user->created_at       = $item->created_at;
+                $user->updated_at       = $item->updated_at;
+                $user->save();
+
+                /** Actualizo el valor sincronizado a true en DB LOCAL */
+                DB::connection('mysql_online')->table('users')->where('id', $item->id)
+                ->update([
                     'sincronizado' => 'true'
                 ]);
 

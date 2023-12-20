@@ -30,7 +30,9 @@ class User extends Authenticatable
         'email',
         'password',
         'tipo_usuario',
-        'area_trabajo'
+        'area_trabajo',
+        'tipo_servicio_id',
+        'sincronizado',
     ];
 
     /**

@@ -22,15 +22,12 @@ class Empleado extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'nombre',
-        'apellido',
-        'cedula',
+        'name',
         'email',
-        'telefono',
-        'direccion_corta',
-        'tipo_empleado',
-        'fecha_ingreso',
-        'status'
+        'area_trabajo',
+        'tipo_servicio_id',
+        'tipo_usuario',
+        'password',
     ];
 
     // Un empleado puede tener múltiples comisiones

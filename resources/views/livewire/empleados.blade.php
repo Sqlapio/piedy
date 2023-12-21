@@ -25,12 +25,14 @@
                 </div>
                 <div class="relative z-0 w-full mb-6 group">
                     <x-native-select label="Area de trabajo" :options="[
+                            ['name' => '',   'id' => ''],
                             ['name' => 'Manicure',   'id' => 'manicure'],
                             ['name' => 'Quiropedia', 'id' => 'quiropedia'],
                         ]" option-label="name" option-value="id" wire:model="area_trabajo" />
                 </div>
                 <div class="relative z-0 w-full mb-6 group">
                     <x-native-select label="Tipo de servicio" :options="[
+                            ['name' => '',   'id' => ''],
                             ['name' => 'Manicure y pedicure',  'id' => 1],
                             ['name' => 'Quiropedia', 'id' => 2],
                         ]" option-label="name" option-value="id" wire:model="tipo_servicio_id" />

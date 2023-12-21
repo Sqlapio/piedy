@@ -21,14 +21,18 @@ class Empleados extends Component
 
     #[Rule('required', message: 'Nombre requerido')]
     public $name;
+
     #[Rule('required', message: 'Email requerido')]
     public $email;
+
     #[Rule('required', message: 'Campo requerido')]
     public $area_trabajo;
+
     #[Rule('required', message: 'Campo requerido')]
     public $tipo_servicio_id;
-    #[Rule('required', message: 'Campo requerido')]
+
     public $tipo_usuario;
+
     #[Rule('required', message: 'Campo requerido')]
     public $password;
 

@@ -43,14 +43,7 @@ class UserResource extends Resource
                     ]),
                 Select::make('area_trabajo')
                     ->options([
-                        'm1' => 'Mesa-Manicure 1',
-                        'm2' => 'Mesa-Manicure 2',
-                        'm3' => 'Mesa-Manicure 3',
-                        'm4' => 'Mesa-Manicure 4',
-                        'c1' => 'Cubiculo-Podologia 1',
-                        'c2' => 'Cubiculo-Podologia 2',
-                        'c3' => 'Cubiculo-Podologia 3',
-                        'c4' => 'Cubiculo-Podologia 4',
+                        'Tienda' => 'Tienda',
                         'Administración' => 'Administración',
                     ])->searchable(),
                 Select::make('tipo_servicio_id')

@@ -4,8 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\VentaServicioResource\Pages;
 use App\Filament\Resources\VentaServicioResource\RelationManagers;
+use App\Filament\Resources\VentaServicioResource\Widgets\StatsVenta;
+use App\Filament\Resources\VentaServicioResource\Widgets\VentaServicioStats;
 use App\Models\VentaServicio;
+use Carbon\Carbon;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -15,13 +19,18 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Filters\Indicator;
+use Filament\Tables\Filters\Filter;
 use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
+
 
 class VentaServicioResource extends Resource
 {
     protected static ?string $model = VentaServicio::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-chart-bar-square';
+
+    protected static ?string $navigationLabel = 'Dashboard Ventas';
 
     protected static ?string $navigationGroup = 'Ventas';
 
@@ -131,9 +140,39 @@ class VentaServicioResource extends Resource
                 'referencia'
             ])
             ->filters([
-                DateRangeFilter::make('created_at')
-                ->timezone('America/Caracas'),
+                Filter::make('created_at')
+                ->form([
+                    DatePicker::make('desde'),
+                    DatePicker::make('hasta'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['desde'] ?? null,
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['hasta'] ?? null,
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+                })
+                ->indicateUsing(function (array $data): array {
+                    $indicators = [];
+                    if ($data['desde'] ?? null) {
+                        $indicators['desde'] = 'Venta desde ' . Carbon::parse($data['desde'])->toFormattedDateString();
+                    }
+                    if ($data['hasta'] ?? null) {
+                        $indicators['hasta'] = 'Venta hasta ' . Carbon::parse($data['hasta'])->toFormattedDateString();
+                    }
+
+                    return $indicators;
+                }),
             ])
+            ->filtersTriggerAction(
+                fn (Action $action) => $action
+                    ->button()
+                    ->label('Filtros'),
+            )
             ->actions([
                 // Tables\Actions\EditAction::make(),
             ])
@@ -151,6 +190,13 @@ class VentaServicioResource extends Resource
         ];
     }
 
+    public static function getWidgets(): array
+    {
+        return [
+            VentaServicioStats::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
@@ -158,5 +204,10 @@ class VentaServicioResource extends Resource
             'create' => Pages\CreateVentaServicio::route('/create'),
             'edit' => Pages\EditVentaServicio::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withoutGlobalScope(SoftDeletingScope::class);
     }
 }

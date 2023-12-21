@@ -52,6 +52,11 @@ class ServicioResource extends Resource
                     ->minValue(1)
                     ->maxValue(100)
                     ->required(),
+                Select::make('status')
+                    ->options([
+                        'activo' => 'Activo',
+                        'inactivo' => 'Inactivo',
+                    ]),
             ]);
     }
 

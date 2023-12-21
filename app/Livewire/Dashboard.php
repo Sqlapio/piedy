@@ -26,7 +26,7 @@ class Dashboard extends Component
                     $description = 'Debe actualizar la tasa del BCV para poder utilizar el sistema. Por favor haga click en el simbolo del BCV.'
                 );
             }else{
-                $this->redirect('/clientes');
+                $this->redirect('/empleados');
             }
 
         }
@@ -40,11 +40,25 @@ class Dashboard extends Component
                     $description = 'Debe actualizar la tasa del BCV para poder utilizar el sistema. Por favor haga click en el simbolo del BCV.'
                 );
             }else{
+                $this->redirect('/clientes');
+            }
+
+        }
+
+        if($valor == 3)
+        {
+            if($tasa->fecha != date('d-m-Y'))
+            {
+                $this->dialog()->error(
+                    $title = 'Error !!!',
+                    $description = 'Debe actualizar la tasa del BCV para poder utilizar el sistema. Por favor haga click en el simbolo del BCV.'
+                );
+            }else{
                 $this->redirect('/cabinas');
             }
         }
 
-        if($valor == 3)
+        if($valor == 4)
         {
             if($tasa->fecha != date('d-m-Y'))
             {
@@ -57,7 +71,7 @@ class Dashboard extends Component
             }
         }
 
-        if($valor == 4)
+        if($valor == 5)
         {
             $this->dialog()->success(
                 $title = 'NOTIFICACION !!!',
@@ -65,7 +79,7 @@ class Dashboard extends Component
             );
         }
 
-        if($valor == 5)
+        if($valor == 6)
         {
             if($tasa->fecha != date('d-m-Y'))
             {
@@ -78,7 +92,7 @@ class Dashboard extends Component
             }
         }
 
-        if($valor == 6)
+        if($valor == 7)
         {
             if($tasa->fecha != date('d-m-Y'))
             {
@@ -91,7 +105,7 @@ class Dashboard extends Component
             }
         }
 
-        if($valor == 7)
+        if($valor == 8)
         {
             if($tasa->fecha != date('d-m-Y'))
             {
@@ -104,7 +118,7 @@ class Dashboard extends Component
             }
         }
 
-        if($valor == 8)
+        if($valor == 9)
         {
 
             if($tasa->fecha != date('d-m-Y'))

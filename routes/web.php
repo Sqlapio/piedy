@@ -33,6 +33,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('dashboard_empleado');
     })->name('dashboard_empleado');
 
+    Route::get('/empleados', function () {
+        return view('empleados');
+    })->name('empleados');
+
     Route::get('/clientes', function () {
         return view('clientes');
     })->name('clientes');

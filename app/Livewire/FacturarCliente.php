@@ -259,7 +259,8 @@ class FacturarCliente extends Component
                             VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
                                 'metodo_pago' => 'Facturación multiple',
                                 'referencia' => $factura->cod_asignacion,
-                                'responsable' => $user->name
+                                'responsable' => $user->name,
+                                'facturado'   => 'true',
                             ]);
                         }
 
@@ -325,7 +326,8 @@ class FacturarCliente extends Component
                             VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
                                 'metodo_pago' => 'Facturación multiple',
                                 'referencia' => $factura->cod_asignacion,
-                                'responsable' => $user->name
+                                'responsable' => $user->name,
+                                'facturado'   => 'true',
                             ]);
                         }
 
@@ -383,7 +385,8 @@ class FacturarCliente extends Component
                             VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
                                 'metodo_pago' => 'Facturación multiple',
                                 'referencia' => $factura->cod_asignacion,
-                                'responsable' => $user->name
+                                'responsable' => $user->name,
+                                'facturado'   => 'true',
                             ]);
                         }
 
@@ -448,7 +451,8 @@ class FacturarCliente extends Component
                             VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
                                 'metodo_pago' => 'Facturación multiple',
                                 'referencia' => $factura->cod_asignacion,
-                                'responsable' => $user->name
+                                'responsable' => $user->name,
+                                'facturado'   => 'true',
                             ]);
                         }
 
@@ -535,7 +539,8 @@ class FacturarCliente extends Component
                                         VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
                                             'metodo_pago' => 'Facturación multiple',
                                             'referencia' => $factura->cod_asignacion,
-                                            'responsable' => $user->name
+                                            'responsable' => $user->name,
+                                            'facturado'   => 'true',
                                         ]);
                                     }
 
@@ -595,7 +600,8 @@ class FacturarCliente extends Component
                                         VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
                                             'metodo_pago' => 'Facturación multiple',
                                             'referencia' => $factura->cod_asignacion,
-                                            'responsable' => $user->name
+                                            'responsable' => $user->name,
+                                            'facturado'   => 'true',
                                         ]);
                                     }
 
@@ -655,7 +661,8 @@ class FacturarCliente extends Component
                                         VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
                                             'metodo_pago' => 'Facturación multiple',
                                             'referencia' => $factura->cod_asignacion,
-                                            'responsable' => $user->name
+                                            'responsable' => $user->name,
+                                            'facturado'   => 'true',
                                         ]);
                                     }
 

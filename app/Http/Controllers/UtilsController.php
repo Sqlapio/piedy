@@ -9,6 +9,10 @@ use App\Models\DetalleAsignacion;
 use App\Models\DetalleAsignacionOnline;
 use App\Models\Disponible;
 use App\Models\DisponibleOnline;
+use App\Models\FacturaMultiple;
+use App\Models\FacturaMultipleOnline;
+use App\Models\Gasto;
+use App\Models\GastoOnline;
 use App\Models\TasaBcv;
 use App\Models\User;
 use App\Models\UserOnLine;
@@ -46,19 +50,6 @@ class UtilsController extends Controller
 
     static function sincronizacion($tabla)
     {
-        // if($tabla = 'tasa_bcvs')
-        // {
-        //     /** BD LOCAL */
-        //     $tasa_bcvs = TasaBcv::first();
-
-        //     /** DB AWS */
-        //     DB::connection('mysql_online')->table('tasa_bcvs')
-        //     ->where('id', 1)
-        //         ->update([
-        //             'tasa'  => $tasa_bcvs->tasa,
-        //             'fecha' => $tasa_bcvs->fecha
-        //         ]);
-        // }
 
         if($tabla = 'clientes')
         {
@@ -119,6 +110,8 @@ class UtilsController extends Controller
                 $venta_servicio_online->cliente_id         = $item->cliente_id;
                 $venta_servicio_online->empleado           = $item->empleado;
                 $venta_servicio_online->empleado_id        = $item->empleado_id;
+                $venta_servicio_online->metodo_pago        = $item->metodo_pago;
+                $venta_servicio_online->referencia         = $item->referencia;
                 $venta_servicio_online->fecha_venta        = $item->fecha_venta;
                 $venta_servicio_online->total_USD          = $item->total_USD;
                 $venta_servicio_online->pago_usd           = $item->pago_usd;
@@ -134,6 +127,81 @@ class UtilsController extends Controller
 
                 /** Actualizo el valor sincronizado a true en DB LOCAL */
                 VentaServicio::where('id', $item->id)->update([
+                    'sincronizado' => 'true'
+                ]);
+
+            }
+        }
+
+        if($tabla = 'factura_multiples')
+        {
+            /** BD LOCAL */
+            $factura_multiples = FacturaMultiple::where('sincronizado', 'false')->get();
+
+            /** DB AWS */
+            foreach($factura_multiples as $item)
+            {
+                /** Obtengo el ultimo registro para evitar fallas al
+                 * registrar la informacion y mantener el correlativo
+                 * de registros intacto
+                 */
+                $id = DB::connection('mysql_online')
+                    ->table('factura_multiples')
+                    ->orderBy('id', 'desc')->first();
+
+                $factura_multiples_online = new FacturaMultipleOnline();
+                $factura_multiples_online->id                 = $id == null ? 1 : $id->id + 1;
+                $factura_multiples_online->cod_asignacion     = $item->cod_asignacion;
+                $factura_multiples_online->responsable        = $item->responsable;
+                $factura_multiples_online->metodo_pago        = $item->metodo_pago;
+                $factura_multiples_online->referencia         = $item->referencia;
+                $factura_multiples_online->fecha_venta        = $item->fecha_venta;
+                $factura_multiples_online->total_usd          = $item->total_USD;
+                $factura_multiples_online->pago_usd           = $item->pago_usd;
+                $factura_multiples_online->pago_bsd           = $item->pago_bsd;
+                $factura_multiples_online->created_at         = $item->created_at;
+                $factura_multiples_online->updated_at         = $item->updated_at;
+                $factura_multiples_online->save();
+
+                /** Actualizo el valor sincronizado a true en DB LOCAL */
+                FacturaMultiple::where('id', $item->id)->update([
+                    'sincronizado' => 'true'
+                ]);
+
+            }
+        }
+
+        if($tabla = 'gastos')
+        {
+            /** BD LOCAL */
+            $gastos = Gasto::where('sincronizado', 'false')->get();
+
+            /** DB AWS */
+            foreach($gastos as $item)
+            {
+                /** Obtengo el ultimo registro para evitar fallas al
+                 * registrar la informacion y mantener el correlativo
+                 * de registros intacto
+                 */
+                $id = DB::connection('mysql_online')
+                    ->table('gastos')
+                    ->orderBy('id', 'desc')->first();
+
+                $gastos_online = new GastoOnline();
+                $gastos_online->id           = $id->id + 1;
+                $gastos_online->descripcion  = $item->descripcion;
+                $gastos_online->monto_usd    = $item->monto_usd;
+                $gastos_online->monto_bsd    = $item->monto_bsd;
+                $gastos_online->forma_pago   = $item->forma_pago;
+                $gastos_online->referencia   = $item->referencia;
+                $gastos_online->fecha        = $item->fecha;
+                $gastos_online->responsable  = $item->responsable;
+                $gastos_online->created_at   = $item->created_at;
+                $gastos_online->updated_at   = $item->updated_at;
+                $gastos_online->save();
+
+                /** Actualizo el valor sincronizado a true en DB LOCAL */
+                Gasto::where('id', $item->id)->update([
                     'sincronizado' => 'true'
                 ]);
 

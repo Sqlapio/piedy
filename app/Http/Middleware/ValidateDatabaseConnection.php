@@ -23,7 +23,7 @@ class ValidateDatabaseConnection
 
             DB::connection()->getPdo();
 
-            $array_tables = ['users', 'comisions', 'clientes', 'venta_servicios'];
+            $array_tables = ['users', 'comisions', 'clientes', 'venta_servicios', 'factura_multiples', 'gastos'];
 
             foreach ($array_tables as $value)
             {
@@ -42,7 +42,6 @@ class ValidateDatabaseConnection
             return $next($request);
 
         } catch (\Throwable $th) {
-
             return $next($request);
 
         }

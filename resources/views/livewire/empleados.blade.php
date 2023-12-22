@@ -68,7 +68,7 @@
                             Area de trabajo
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Tipo de servicio
+                            Acción
                         </th>
                     </tr>
                 </thead>
@@ -76,14 +76,24 @@
                     @foreach ($data as $item)
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            <x-avatar sm label="{{ preg_replace('/(?<=\w)./', '', $item->name) }}" />
                             {{ $item->name }}
                         </th>
                         <td class="px-6 py-4">
                             {{ $item->email }}
                         </td>
                         <td class="px-6 py-4">
-                            {{ $item->area_trabajo }}
+                            @if($item->area_trabajo == 'quiropedia')
+                            <x-badge outline info md label="Quiropedia" />
+                            @endif
+                            @if($item->area_trabajo == 'manicure')
+                            <x-badge outline pink md label="Manicure" />
+                            @endif
                         </td>
+                        <td class="px-6 py-4">
+                            <x-badge rounded negative md label="Eliminar" wire:click='eliminar_empleado({{ $item->id }})' class="cursor-pointer"/>
+                        </td>
+
                     </tr>
                     @endforeach
                 </tbody>
@@ -134,11 +144,11 @@
                     <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
                     </svg>
-                    <span class="sr-only">Crear cliente</span>
+                    <span class="sr-only">Crear Empleado</span>
                 </button>
             </div>
             <div id="tooltip-new" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                Crear cliente
+                Crear Empleado
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
 

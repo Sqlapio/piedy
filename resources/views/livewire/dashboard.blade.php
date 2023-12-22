@@ -18,7 +18,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
         </div>
 
         {{-- Primera linea --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-3">
+        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-2 mb-2 px-3">
             {{-- Empleados --}}
             <div wire:click="valida_tasa({{ 1 }})" class="p-6 rounded-lg" style="background-image: url('https://img.favpng.com/0/11/4/polygon-geometry-plane-desktop-wallpaper-png-favpng-e7CGay7DssGUF8FwFkeWviuCM.jpg'); background-size: cover;">
                 <div class="flex items-center">
@@ -70,7 +70,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
         </div>
 
         {{-- Segunda linea --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4 p-3">
+        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-2 mb-2 px-3">
             {{-- Agenda --}}
             <div wire:click="valida_tasa({{ 4 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/abstract-light-blue-background-hd-wallpaper_1000823-2469.jpg?size=626&ext=jpg&ga=GA1.1.1016474677.1696809600&semt=ais');background-size: cover;">
                 <div class="flex items-center">
@@ -122,7 +122,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
         </div>
 
         {{-- tercera linea --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4 p-3">
+        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-2 px-3">
 
             {{-- Ventas --}}
             <div wire:click="valida_tasa({{ 7 }})" class="p-6 rounded-lg" style="background-image: url('https://static.vecteezy.com/system/resources/previews/000/406/488/original/background-wallpaper-with-polygons-in-gradient-colors-vector.jpg');background-size: cover;">

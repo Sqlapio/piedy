@@ -57,7 +57,7 @@ class Empleados extends Component
             $user = Auth::user();
 
             $empleado = new User();
-            $empleado->name             = $this->name;
+            $empleado->name             = ucfirst($this->name);
             $empleado->email            = $this->email;
             $empleado->password         = Hash::make($this->password);
             $empleado->tipo_usuario     = 'empleado';
@@ -76,6 +76,39 @@ class Empleados extends Component
             dd($th);
         }
 
+    }
+
+    public function eliminar_empleado($id)
+    {
+        $this->dialog()->confirm([
+            'title'       => 'Estás seguro?',
+            'description' => 'Esta accion no podra ser reversada',
+            'icon'        => 'question',
+            'accept'      => [
+                'label'  => 'Si, eliminar empleado',
+                'method' => 'eliminar',
+                'params' => $id,
+            ],
+            'reject' => [
+                'label'  => 'No, cancelar',
+                'method' => 'cancelar',
+            ],
+        ]);
+    }
+
+    public function eliminar($id)
+    {
+        User::where('id', $id)->delete();
+        $this->dialog([
+            'title'       => 'Exito!',
+            'description' => 'El empleado fue eliminado de forma satisfactoria.',
+            'icon'        => 'success'
+        ]);
+    }
+
+    public function cancelar()
+    {
+        $this->reset();
     }
 
     public function inicio(){
@@ -106,7 +139,7 @@ class Empleados extends Component
     {
         $this->dialog([
             'title'       => 'INFORMACION IMPORTANTE!!!',
-            'description' => 'Debes cargar el correo electronico valido de cada cliente que registres, para poder enviar las notificaciones de promociones y ofertas en productos y servicios.',
+            'description' => 'Debes cargar el correo electronico valido de cada emplado que registres, para poder enviar las notificaciones al cerrar los servicios.',
             'icon'        => 'success'
         ]);
     }
@@ -115,6 +148,7 @@ class Empleados extends Component
     {
         return view('livewire.empleados', [
             'data' => User::where('tipo_usuario', 'empleado')
+                ->Where('name', 'like', "%{$this->buscar}%")
                 ->orderBy('id', 'asc')
                 ->paginate(8)
         ]);

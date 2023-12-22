@@ -42,8 +42,9 @@ class ValidateDatabaseConnection
             return $next($request);
 
         } catch (\Throwable $th) {
+
             return $next($request);
-            // return response()->json(['error' => 'Error al conectar con la base de datos'], 500);
+
         }
 
     }

@@ -8,10 +8,10 @@
                 @if($item->status == 'activo')
                 <div class="flex justify-start rounded-full bg-green-700 px-6 py-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
                     <div class="flex items-center space-x-4 w-full">
-                        @if (Str::contains($item->area_trabajo, 'c'))
+                        @if (Str::contains($item->area_trabajo, 'quiropedia'))
                         <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/silla.png') }}" alt="">
                         @endif
-                        @if (Str::contains($item->area_trabajo, 'm'))
+                        @if (Str::contains($item->area_trabajo, 'manicure'))
                         <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/mesas.png') }}" alt="">
                         @endif
                         <div class="flex-1 min-w-0">
@@ -38,10 +38,10 @@
                 @elseif($item->status == 'por facturar')
                 <div class="flex justify-start rounded-full bg-yellow-400 px-6 py-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
                     <div class="flex items-center space-x-4 w-full">
-                        @if (Str::contains($item->area_trabajo, 'c'))
+                        @if (Str::contains($item->area_trabajo, 'quiropedia'))
                         <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/silla.png') }}" alt="">
                         @endif
-                        @if (Str::contains($item->area_trabajo, 'm'))
+                        @if (Str::contains($item->area_trabajo, 'manicure'))
                         <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/mesas.png') }}" alt="">
                         @endif
                         <div class="flex-1 min-w-0">
@@ -70,10 +70,10 @@
                 @elseif($item->status == 'cerrado')
                 <div class="flex justify-start rounded-full bg-red-700 px-6 py-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
                     <div class="flex items-center space-x-4 w-full">
-                        @if (Str::contains($item->area_trabajo, 'c'))
+                        @if (Str::contains($item->area_trabajo, 'quiropedia'))
                         <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/silla.png') }}" alt="">
                         @endif
-                        @if (Str::contains($item->area_trabajo, 'm'))
+                        @if (Str::contains($item->area_trabajo, 'manicure'))
                         <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/mesas.png') }}" alt="">
                         @endif
                         <div class="flex-1 min-w-0">

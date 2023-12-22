@@ -8,7 +8,6 @@ use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ListRecords\Tab;
 use Filament\Pages\Concerns\ExposesTableToWidgets;
-
 class ListVentaServicios extends ListRecords
 {
     use ExposesTableToWidgets;
@@ -33,7 +32,6 @@ class ListVentaServicios extends ListRecords
 
     public function getTabs(): array
     {
-
         $desde = date('Y-m').'-01 00:00:00';
         $hasta = date('Y-m').'-15 23:00:00';
 

@@ -28,7 +28,6 @@ class VentaServicioStats extends BaseWidget
 
     protected function getStats(): array
     {
-        dd($this->getPageTableQuery()->select('cliente', DB::raw('count(*) as cliente'))->groupBy('cliente')->count());
         $data = Trend::model(VentaServicio::class)
             ->between(
                 start: now()->subYear(),

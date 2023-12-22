@@ -19,6 +19,7 @@ use App\Models\Venta;
 use App\Models\VentaServicio;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -236,6 +237,7 @@ class DetalleAsignacion extends ModalComponent
                 ->icon('heroicon-o-shield-check')
                 ->body('El servicio fue cerrado de forma correcta. Deberá realizar su facturacion a la brevedad posible.')
                 ->send();
+
 
             $user = User::where('id', $venta_servicio->empleado_id)->first();
             $detalle = ModelsDetalleAsignacion::where('cod_asignacion', $venta_servicio->cod_asignacion)->get();

@@ -31,9 +31,13 @@ Route::middleware(['validate_db'])->group(function () {
             return view('dashboard');
         })->name('dashboard');
 
-        Route::get('/dashboard_empleado', function () {
-            return view('dashboard_empleado');
-        })->name('dashboard_empleado');
+    Route::get('/empleados', function () {
+        return view('empleados');
+    })->name('empleados');
+
+    Route::get('/clientes', function () {
+        return view('clientes');
+    })->name('clientes');
 
         Route::get('/clientes', function () {
             return view('clientes');

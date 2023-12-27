@@ -21,6 +21,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 
 
@@ -51,8 +53,7 @@ class VentaServicioResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('cliente')
                     ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('empleado')
                     ->searchable()
                     ->sortable(),
@@ -71,7 +72,9 @@ class VentaServicioResource extends Resource
                         'Punto de venta'        => 'info',
                         'Anulado'               => 'danger',
                     }),
-                TextColumn::make('referencia')->searchable(),
+                TextColumn::make('referencia')
+                ->toggleable(isToggledHiddenByDefault: true)
+                ->searchable(),
 
                 TextColumn::make('total_USD')
                     ->summarize(Sum::make()
@@ -137,7 +140,8 @@ class VentaServicioResource extends Resource
                 'empleado',
                 'cod_asignacion',
                 'fecha_venta',
-                'referencia'
+                'referencia',
+                'cliente'
             ])
             ->filters([
                 Filter::make('created_at')
@@ -206,8 +210,4 @@ class VentaServicioResource extends Resource
         ];
     }
 
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->withoutGlobalScope(SoftDeletingScope::class);
-    }
 }

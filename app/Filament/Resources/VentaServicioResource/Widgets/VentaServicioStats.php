@@ -38,7 +38,17 @@ class VentaServicioStats extends BaseWidget
 
         return [
 
-            Stat::make('CLIENTES', $this->getPageTableQuery()->count('cliente'))
+            Stat::make('TOTAL SERVICIOS', $this->getPageTableQuery()->count('cliente'))
+                ->description('Total de servicios realizados')
+                ->descriptionIcon('heroicon-m-user-group')
+                ->color('primary')
+                ->chart(
+                    $data
+                        ->map(fn (TrendValue $value) => $value->aggregate)
+                        ->toArray()
+                ),
+
+            Stat::make('CLIENTES ATENDIDOS', $this->getPageTableQuery()->distinct()->count('cliente'))
                 ->description('Total de clientes atendidos')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('info')

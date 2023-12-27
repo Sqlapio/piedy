@@ -46,19 +46,16 @@ class ListVentaServicios extends ListRecords
             'Todo' => ListRecords\Tab::make('Todo'),
             'Hoy' => Tab::make()
                 ->query(fn ($query) => $query->whereDate('created_at', now()->toDateString()))
-                ->badge(VentaServicio::query()->where('created_at', now()->toDateString())->count()),
+                ->badge(VentaServicio::query()->whereDate('created_at', now()->toDateString())->count()),
             'Quincena 01/15' => Tab::make()
                 ->query(fn ($query) => $query->whereBetween('created_at', [$desde, $hasta]))
                 ->badge(VentaServicio::query()->whereBetween('created_at',[$desde, $hasta])->count()),
-
             'Quincena 16/30' => Tab::make()
                 ->query(fn ($query) => $query->whereBetween('created_at', [$desde_II, $hasta_II]))
                 ->badge(VentaServicio::query()->whereBetween('created_at',[$desde_II, $hasta_II])->count()),
-                // ->badge(VentaServicio::query()->where('created_at','<=', now()->subWeek())->count()),
             'Mensual' => Tab::make()
                 ->query(fn ($query) => $query->whereBetween('created_at', [$desde_mes, $hasta_mes]))
                 ->badge(VentaServicio::query()->whereBetween('created_at',[$desde_mes, $hasta_mes])->count()),
-                // ->badge(VentaServicio::query()->where('created_at','<=', now()->subMonth())->count()),
         ];
     }
 }

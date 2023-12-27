@@ -59,7 +59,7 @@ class VentaServicioStats extends BaseWidget
                 ),
 
             Stat::make('TOTAL USD($)', '$' . $this->getPageTableQuery()->sum('pago_usd'))
-                ->description('Total neto de ventas en USD($)')
+                ->description('Pago total en USD($)')
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('success')
                 ->chart(
@@ -68,7 +68,7 @@ class VentaServicioStats extends BaseWidget
                         ->toArray()
                 ),
             Stat::make('TOTAL BS.', 'BS.' . $this->getPageTableQuery()->sum('pago_bsd'))
-                ->description('Total neto de ventas en Bs')
+                ->description('Pago total en Bs')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('warning')
                 ->chart(

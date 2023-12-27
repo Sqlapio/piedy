@@ -212,8 +212,8 @@ class DetalleAsignacion extends ModalComponent
             $venta_servicio->empleado_id        = $this->disponible->empleado_id;
             $venta_servicio->fecha_venta        = date('d-m-Y');
             $venta_servicio->total_USD          = $total->total;
-            $venta_servicio->comision_empleado  = UtilsController::cal_comision_empleado($total->total);
-            $venta_servicio->comision_gerente   = UtilsController::cal_comision_gerente($total->total);
+            // $venta_servicio->comision_empleado  = UtilsController::cal_comision_empleado($total->total);
+            // $venta_servicio->comision_gerente   = UtilsController::cal_comision_gerente($total->total);
             $venta_servicio->save();
 
             Disponible::where('cod_asignacion', $this->disponible->cod_asignacion)

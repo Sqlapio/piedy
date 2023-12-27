@@ -223,6 +223,7 @@ class FacturarCliente extends Component
              * Pago total en DOLARES
              */
             if ($this->descripcion == 'Efectivo Usd') {
+                dd($this->servicios);
                 if (count($this->servicios) <= 0) {
 
                     $this->dialog()->error(

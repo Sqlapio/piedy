@@ -368,7 +368,7 @@ class Caja extends Component
                     $this->redirect('/cabinas');
 
                 } catch (\Throwable $th) {
-                    //throw $th;
+                    throw $th;
                 }
 
             }

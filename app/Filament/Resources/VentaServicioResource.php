@@ -46,7 +46,8 @@ class VentaServicioResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('cliente')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('empleado')
                     ->searchable()
                     ->sortable(),
@@ -70,7 +71,7 @@ class VentaServicioResource extends Resource
                 ->toggleable(isToggledHiddenByDefault: true)
                 ->searchable(),
 
-                TextColumn::make('total_USD')
+                TextColumn::make('total_USD')->money('USD')
                     ->label(_('Costo($)'))
                     ->summarize(Sum::make()
                     ->money('USD'))
@@ -80,35 +81,27 @@ class VentaServicioResource extends Resource
                     ->label(_('Pagos($)'))
                     ->summarize(Sum::make()
                     ->money('USD'))
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
 
-                TextColumn::make('pago_bsd')
+                TextColumn::make('pago_bsd')->money('VES')
                     ->label(_('Pagos(Bs.)'))
                     ->summarize(Sum::make()
-                    ->numeric(
-                        decimalPlaces: 00,
-                        decimalSeparator: ',',
-                        thousandsSeparator: '.',
-                    ))
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->money('VES'))
+                    ->searchable(),
 
                 TextColumn::make('comision_dolares')->money('USD')
+                    ->label(_('Comision($)'))
                     ->summarize(Sum::make()
-                    ->money('USD')
-                    ->label('Neto Empleado($)'))
+                    ->money('USD'))
                     ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
 
-                TextColumn::make('comision_bolivares')->money('USD')
+                TextColumn::make('comision_bolivares')->money('VES')
+                    ->label(_('Comision(Bs.)'))
                     ->summarize(Sum::make()
-                    ->money('USD')
-                    ->label('Neto Gerente($)'))
+                    ->money('VES'))
                     ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
 
                 TextColumn::make('propina_usd')->money('USD')
                     ->summarize(Sum::make()

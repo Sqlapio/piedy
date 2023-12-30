@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Cliente extends Model
 {
@@ -50,5 +51,15 @@ class Cliente extends Model
     public function get_disponibles(): HasMany
     {
         return $this->hasMany(Disponible::class, 'cliente_id', 'id');
+    }
+
+    /**
+     * Get the user associated with the Frecuencia
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function frecuencia(): HasOne
+    {
+        return $this->hasOne(Frecuencia::class, 'id', 'cliente_id');
     }
 }

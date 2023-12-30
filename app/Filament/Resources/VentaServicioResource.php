@@ -71,32 +71,33 @@ class VentaServicioResource extends Resource
                         'transferencia'         => 'info',
                         'Punto de venta'        => 'info',
                         'Anulado'               => 'danger',
+                        'cliente especial'  => 'success',
                     }),
                 TextColumn::make('referencia')
                 ->toggleable(isToggledHiddenByDefault: true)
                 ->searchable(),
 
                 TextColumn::make('total_USD')
+                    ->label(_('Costo($)'))
                     ->summarize(Sum::make()
-                    ->money('USD')
-                    ->label('Venta Neta($)'))
+                    ->money('USD'))
                     ->searchable(),
 
                 TextColumn::make('pago_usd')->money('USD')
+                    ->label(_('Pagos($)'))
                     ->summarize(Sum::make()
-                    ->money('USD')
-                    ->label('Total($)'))
+                    ->money('USD'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('pago_bsd')
+                    ->label(_('Pagos(Bs.)'))
                     ->summarize(Sum::make()
                     ->numeric(
                         decimalPlaces: 00,
                         decimalSeparator: ',',
                         thousandsSeparator: '.',
-                    )
-                    ->label('Total(Bs)'))
+                    ))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 

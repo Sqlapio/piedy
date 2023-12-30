@@ -3,6 +3,13 @@ use App\Models\TasaBcv as ModelsTasaBcv;
     $tasa = ModelsTasaBcv::first()->tasa;
 @endphp
 <div>
+    <div class="py-4">
+        <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" wire:click="cliente_especial" wire:model="option" class="sr-only peer">
+            <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-green-300 dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">CLIENTE ESPECIAL</span>
+        </label>
+    </div>
     <div class="grid grid-cols-3 gap-2">
 
         {{-- LISTA DE SERVICIOS --}}

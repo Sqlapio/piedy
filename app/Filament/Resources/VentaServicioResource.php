@@ -21,6 +21,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 
 
@@ -51,8 +53,7 @@ class VentaServicioResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('cliente')
                     ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('empleado')
                     ->searchable()
                     ->sortable(),
@@ -70,30 +71,33 @@ class VentaServicioResource extends Resource
                         'transferencia'         => 'info',
                         'Punto de venta'        => 'info',
                         'Anulado'               => 'danger',
+                        'cliente especial'  => 'success',
                     }),
-                TextColumn::make('referencia')->searchable(),
+                TextColumn::make('referencia')
+                ->toggleable(isToggledHiddenByDefault: true)
+                ->searchable(),
 
                 TextColumn::make('total_USD')
+                    ->label(_('Costo($)'))
                     ->summarize(Sum::make()
-                    ->money('USD')
-                    ->label('Venta Neta($)'))
+                    ->money('USD'))
                     ->searchable(),
 
                 TextColumn::make('pago_usd')->money('USD')
+                    ->label(_('Pagos($)'))
                     ->summarize(Sum::make()
-                    ->money('USD')
-                    ->label('Total($)'))
+                    ->money('USD'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('pago_bsd')
+                    ->label(_('Pagos(Bs.)'))
                     ->summarize(Sum::make()
                     ->numeric(
                         decimalPlaces: 00,
                         decimalSeparator: ',',
                         thousandsSeparator: '.',
-                    )
-                    ->label('Total(Bs)'))
+                    ))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
@@ -137,7 +141,8 @@ class VentaServicioResource extends Resource
                 'empleado',
                 'cod_asignacion',
                 'fecha_venta',
-                'referencia'
+                'referencia',
+                'cliente'
             ])
             ->filters([
                 Filter::make('created_at')
@@ -206,8 +211,4 @@ class VentaServicioResource extends Resource
         ];
     }
 
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->withoutGlobalScope(SoftDeletingScope::class);
-    }
 }

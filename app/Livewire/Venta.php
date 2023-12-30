@@ -76,27 +76,30 @@ class Venta extends Component implements HasForms, HasTable
                 TextColumn::make('pago_usd')->money('USD')
                     ->label(_('Pagos($)'))
                     ->summarize(Sum::make()
-                    ->numeric(
-                        decimalPlaces: 00,
-                        decimalSeparator: ',',
-                        thousandsSeparator: '.',
-                    ))
+                        ->label(_('Pago Neto ($)'))
+                        ->money('USD'))
                     ->searchable(),
 
-                TextColumn::make('pago_bsd')
+                TextColumn::make('pago_bsd')->money('VES')
                     ->label(_('Pagos(Bs.)'))
                     ->summarize(Sum::make()
-                    ->numeric(
-                        decimalPlaces: 00,
-                        decimalSeparator: ',',
-                        thousandsSeparator: '.',
-                    ))
+                        ->label(_('Pago Neto (Bs.)'))
+                        ->money('VES'))
                     ->searchable(),
 
-                    TextColumn::make('comision_empleado')->money('USD')
+                TextColumn::make('comision_dolares')->money('USD')
+                    ->label(_('Comisión ($)'))
                     ->summarize(Sum::make()
-                    ->money('USD')
-                    ->label('Neto Empleado($)'))
+                        ->label(_('Comisión Neta ($)'))
+                        ->money('USD'))
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('comision_bolivares')->money('VES')
+                    ->label(_('Comisión (Bs.)'))
+                    ->summarize(Sum::make()
+                        ->label(_('Comisión Neta (Bs.)'))
+                        ->money('VES'))
                     ->searchable()
                     ->sortable(),
 

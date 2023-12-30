@@ -80,26 +80,30 @@ class VentaServicioResource extends Resource
                 TextColumn::make('pago_usd')->money('USD')
                     ->label(_('Pagos($)'))
                     ->summarize(Sum::make()
-                    ->money('USD'))
+                        ->label(_('Pago Neto ($)'))
+                        ->money('USD'))
                     ->searchable(),
 
                 TextColumn::make('pago_bsd')->money('VES')
                     ->label(_('Pagos(Bs.)'))
                     ->summarize(Sum::make()
-                    ->money('VES'))
+                        ->label(_('Pago Neto (Bs.)'))
+                        ->money('VES'))
                     ->searchable(),
 
                 TextColumn::make('comision_dolares')->money('USD')
                     ->label(_('Comision($)'))
                     ->summarize(Sum::make()
-                    ->money('USD'))
+                        ->label(_('Comisión Neta ($)'))
+                        ->money('USD'))
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('comision_bolivares')->money('VES')
                     ->label(_('Comision(Bs.)'))
                     ->summarize(Sum::make()
-                    ->money('VES'))
+                        ->label(_('Comisión Neta (Bs.)'))
+                        ->money('VES'))
                     ->searchable()
                     ->sortable(),
 

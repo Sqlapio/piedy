@@ -63,9 +63,16 @@ class CierreDiario extends Component implements HasForms, HasTable
             $user = Auth::user();
 
             /** totales en la tabla de ventas */
-            $total_venta  = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('total_USD');
-            $total_pagos_usd   = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_usd');
-            $total_pagos_bsd   = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
+            $total_venta = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('total_USD');
+            $total_pagos_usd = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_usd');
+            $total_pagos_bsd = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
+
+            $total_pagos_ef_usd   = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Efectivo Usd')->sum('pago_usd');
+            $total_pagos__ef_bsd  = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Efectivo Bsd')->sum('pago_bsd');
+            $total_pagos_ze       = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Zelle')->sum('pago_usd');
+            $total_pagos_pm       = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Pago movil')->sum('pago_bsd');
+            $total_pagos_tr       = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Tranferencia')->sum('pago_bsd');
+            $total_pagos_pv       = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Punto de venta')->sum('pago_bsd');
 
             /** totales en facturas multiples */
             $fm_pagos_usd = FacturaMultiple::where('fecha_venta', date('d-m-Y'))->sum('pago_usd');
@@ -95,6 +102,12 @@ class CierreDiario extends Component implements HasForms, HasTable
             Debugbar::info('total bolivares', $venta_neta_bsd);
 
             $cierre = new ModelsCierreDiario();
+            $cierre->total_pagos_ef_usd = $total_pagos_ef_usd;
+            $cierre->total_pagos_ef_bsd = $total_pagos__ef_bsd;
+            $cierre->total_pagos_ze = $total_pagos_ze;
+            $cierre->total_pagos_pm = $total_pagos_pm;
+            $cierre->total_pagos_tr = $total_pagos_tr;
+            $cierre->total_pagos_pv = $total_pagos_pv;
             $cierre->total_pago_usd = $venta_usd;
             $cierre->total_pago_bsd = $venta_bsd;
             $cierre->total_gastos_pago_usd = $gastos_pagos_usd;
@@ -124,13 +137,40 @@ class CierreDiario extends Component implements HasForms, HasTable
         return $table
             ->query(ModelsCierreDiario::query())
             ->columns([
+                TextColumn::make('total_pagos_ef_usd')
+                ->label(_('Efectivo($)'))
+                ->sortable()
+                ->searchable(),
+                TextColumn::make('total_pagos_ef_bsd')
+                ->label(_('Efectivo(Bs)'))
+                ->sortable()
+                ->searchable(),
+                TextColumn::make('total_pagos_ze')
+                ->label(_('Zelle'))
+                ->sortable()
+                ->searchable(),
+                TextColumn::make('total_pagos_pm')
+                ->label(_('PagoMovil'))
+                ->sortable()
+                ->searchable(),
+                TextColumn::make('total_pagos_tr')
+                ->label(_('Transferencia'))
+                ->sortable()
+                ->searchable(),
+                TextColumn::make('total_pagos_pv')
+                ->label(_('Punto de Venta'))
+                ->sortable()
+                ->searchable(),
                 TextColumn::make('total_pago_usd')
                 ->sortable()
-                ->searchable(),
+                ->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('total_pago_bsd')
                 ->sortable()
-                ->searchable(),
+                ->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
+                ->label(_('Fecha de cierre'))
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('responsable')

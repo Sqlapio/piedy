@@ -21,6 +21,12 @@ class CierreDiario extends Model
      */
     protected $fillable = [
 
+        'total_pagos_ef_usd',
+        'total_pagos_ef_bsd',
+        'total_pagos_ze',
+        'total_pagos_pm',
+        'total_pagos_tr',
+        'total_pagos_pv',
         'total_pago_usd',
         'total_pago_bsd',
         'total_gastos_pago_usd',

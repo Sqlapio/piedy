@@ -36,36 +36,39 @@ class TablaCierreGastos extends Component implements HasForms, HasTable
     {
 
         return $table
-            ->query(CierreDiario::query())
+            ->query(Gasto::query())
             ->columns([
-                TextColumn::make('total_gastos_pago_usd')
+                TextColumn::make('monto_usd')
+                ->label(_('Gasto($)'))
                 ->money('USD')
                 ->sortable()
                 ->searchable(),
-                TextColumn::make('total_gastos_pago_bsd')
+                TextColumn::make('monto_bsd')
+                ->label(_('Gasto(Bs.)'))
+                ->money('VES')
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('created_at')
+                ->label(_('Fecha de gasto'))
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('responsable')
                 ->sortable()
-                ->searchable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                ->searchable(),
                 TextColumn::make('observaciones')
                 ->sortable()
                 ->searchable()
                 ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->groups([
-                'responsable',
+                'observaciones',
             ])
             ->filters([
                 DateRangeFilter::make('created_at')->timezone('America/Caracas'),
                 // ...
             ])
             ->actions([
-                
+
             ])
             ->bulkActions([
                 // ...

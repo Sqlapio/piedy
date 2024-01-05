@@ -64,56 +64,48 @@ class CierreDiario extends Component implements HasForms, HasTable
 
             /** totales en la tabla de ventas */
             $total_venta = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('total_USD');
-            $total_pagos_usd = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_usd');
+
+            /** Total pagos en dolares efectivo */
+            $total_pagos_usd = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Efectivo Usd')->sum('pago_usd');
+
+            /** Total pagos en dolares zelle */
+            $total_pagos_usd_zelle = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Zelle')->sum('pago_usd');
+
+            /** Total pagos en bolivares */
             $total_pagos_bsd = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
-
-            $total_pagos_ef_usd   = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Efectivo Usd')->sum('pago_usd');
-            $total_pagos__ef_bsd  = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Efectivo Bsd')->sum('pago_bsd');
-            $total_pagos_ze       = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Zelle')->sum('pago_usd');
-            $total_pagos_pm       = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Pago movil')->sum('pago_bsd');
-            $total_pagos_tr       = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Tranferencia')->sum('pago_bsd');
-            $total_pagos_pv       = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Punto de venta')->sum('pago_bsd');
-
-            /** totales en facturas multiples */
-            $fm_pagos_usd = FacturaMultiple::where('fecha_venta', date('d-m-Y'))->sum('pago_usd');
-            $fm_pagos_bsd = FacturaMultiple::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
 
             /** totales en gastos */
             $gastos_pagos_usd = Gasto::where('fecha', date('d-m-Y'))->sum('monto_usd');
-            $gastos_pagos_bsd = Gasto::where('fecha', date('d-m-Y'))->sum('monto_bsd');
 
-            /** Ventas */
-            $venta_usd = $total_pagos_usd + $fm_pagos_usd;
-            $venta_bsd = $total_pagos_bsd + $fm_pagos_bsd;
+            /** Total en Bolivares */
+            $total_bs = $total_pagos_bsd;
 
-            /** Ventas netas */
-            $venta_neta_usd = $venta_usd - $gastos_pagos_usd;
-            $venta_neta_bsd = $venta_bsd - $gastos_pagos_bsd;
+            /** Total en Dolares Efectivo */
+            $total_usd = $total_pagos_usd;
 
-            /** totales en gastos */
+            /** Total en Dolares Zelle */
+            $total_usd_zelle = $total_pagos_usd_zelle;
 
-            Debugbar::info('venta neta', $total_venta);
-            Debugbar::info('pagos en dolares', $total_pagos_usd);
-            Debugbar::info('pagos en bolivares', $total_pagos_bsd);
-            Debugbar::info('pagos en dolares FM', $fm_pagos_usd);
-            Debugbar::info('pagos en bolivares FM', $fm_pagos_bsd);
+            /** Total de gastos */
+            $total_gastos = $gastos_pagos_usd;
 
-            Debugbar::info('total dolares', $venta_neta_usd);
-            Debugbar::info('total bolivares', $venta_neta_bsd);
+            /** Venta Total en dolares */
+            $venta_total_usd = $total_usd + $total_usd_zelle;
+
+            /** Venta Neta en dolares */
+            $venta_neta_usd = $total_usd - $total_gastos;
+
+            /** Venta Neta en bolivares */
+            $venta_neta_bsd = $total_pagos_bsd;
+
 
             $cierre = new ModelsCierreDiario();
-            $cierre->total_pagos_ef_usd = $total_pagos_ef_usd;
-            $cierre->total_pagos_ef_bsd = $total_pagos__ef_bsd;
-            $cierre->total_pagos_ze = $total_pagos_ze;
-            $cierre->total_pagos_pm = $total_pagos_pm;
-            $cierre->total_pagos_tr = $total_pagos_tr;
-            $cierre->total_pagos_pv = $total_pagos_pv;
-            $cierre->total_pago_usd = $venta_usd;
-            $cierre->total_pago_bsd = $venta_bsd;
-            $cierre->total_gastos_pago_usd = $gastos_pagos_usd;
-            $cierre->total_gastos_pago_bsd = $gastos_pagos_bsd;
-            $cierre->venta_neta_usd = $venta_neta_usd;
-            $cierre->venta_neta_bsd = $venta_neta_bsd;
+            $cierre->total_dolares_efectivo  = $total_usd;
+            $cierre->total_dolares_zelle     = $total_usd_zelle;
+            $cierre->total_bolivares         = $total_bs;
+            $cierre->total_gastos            = $total_gastos;
+            $cierre->venta_neta_dolares      = $venta_neta_usd;
+            $cierre->venta_neta_bolivares    = $venta_neta_bsd;
             $cierre->fecha = date('d-m-Y');
             $cierre->responsable = $user->name;
             $cierre->observaciones = $this->observaciones;
@@ -135,48 +127,39 @@ class CierreDiario extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(ModelsCierreDiario::query())
+            ->query(ModelsCierreDiario::query()->orderby('id', 'desc'))
             ->columns([
-                TextColumn::make('total_pagos_ef_usd')
+                TextColumn::make('total_dolares_efectivo')
+                ->money('USD')
                 ->label(_('Efectivo($)'))
                 ->sortable()
                 ->searchable(),
-                TextColumn::make('total_pagos_ef_bsd')
-                ->label(_('Efectivo(Bs)'))
+                TextColumn::make('total_dolares_zelle')
+                ->money('USD')
+                ->label(_('Zelle($)'))
                 ->sortable()
                 ->searchable(),
-                TextColumn::make('total_pagos_ze')
-                ->label(_('Zelle'))
+                TextColumn::make('total_bolivares')
+                ->money('VES')
+                ->label(_('Bolivares(Bs)'))
                 ->sortable()
                 ->searchable(),
-                TextColumn::make('total_pagos_pm')
-                ->label(_('PagoMovil'))
+                TextColumn::make('total_gastos')
+                ->label(_('Gastos'))
                 ->sortable()
                 ->searchable(),
-                TextColumn::make('total_pagos_tr')
-                ->label(_('Transferencia'))
+                TextColumn::make('venta_neta_dolares')
+                ->money('USD')
+                ->label(_('Efectivo($) en caja'))
                 ->sortable()
                 ->searchable(),
-                TextColumn::make('total_pagos_pv')
-                ->label(_('Punto de Venta'))
-                ->sortable()
-                ->searchable(),
-                TextColumn::make('total_pago_usd')
-                ->sortable()
-                ->searchable()
-                ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('total_pago_bsd')
-                ->sortable()
-                ->searchable()
-                ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                 ->label(_('Fecha de cierre'))
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('responsable')
                 ->sortable()
-                ->searchable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                ->searchable(),
                 TextColumn::make('observaciones')
                 ->sortable()
                 ->searchable()

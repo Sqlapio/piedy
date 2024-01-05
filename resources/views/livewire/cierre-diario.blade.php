@@ -13,11 +13,11 @@
     </div>
 
     <div class="border rounded-lg mb-5">
-        <p class="p-4 text-3xl font-bold text-[#bc9c95]">Tabla ventas</p>
+        <p class="p-4 text-3xl font-bold text-black">Cierre de caja</p>
         {{ $this->table }}
     </div>
     <div class="border rounded-lg mb-5">
-        <p class="p-4 text-3xl font-bold text-[#bc9c95]">Tabla gastos</p>
+        <p class="p-4 text-3xl font-bold text-black">Gastos</p>
         @livewire('tabla-cierre-gastos')
     </div>
 

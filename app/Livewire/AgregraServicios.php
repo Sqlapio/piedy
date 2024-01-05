@@ -59,8 +59,8 @@ class AgregraServicios extends Component
             $venta_servicio->empleado_id        = $data->empleado_id;
             $venta_servicio->fecha_venta        = date('d-m-Y');
             $venta_servicio->total_USD          = $total->total;
-            $venta_servicio->comision_empleado  = UtilsController::cal_comision_empleado($total->total);
-            $venta_servicio->comision_gerente   = UtilsController::cal_comision_gerente($total->total);
+            // $venta_servicio->comision_dolares  = UtilsController::cal_comision_empleado($total->total);
+            // $venta_servicio->comision_bolivares   = UtilsController::cal_comision_gerente($total->total);
             $venta_servicio->save();
 
             Disponible::where('cod_asignacion', $codigo['cod_asignacion'])
@@ -158,7 +158,7 @@ class AgregraServicios extends Component
                         $detalle_asignacion->save();
                     }
                 }
-                
+
                 $this->servicios = [];
 
             } catch (\Throwable $th) {

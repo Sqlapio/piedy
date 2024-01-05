@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Cliente;
+use App\Models\Frecuencia;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -52,6 +53,14 @@ class Clientes extends Component
             $cliente->user_id     = $user->id;
             $cliente->responsable = $user->name;
             $cliente->save();
+
+            /** El nuevo cliente es cargado en la tabla de frecuencias
+             * para fines estadisticos
+             */
+            $cliente_nuevo = new Frecuencia();
+            $cliente_nuevo->cliente_id  = $cliente->id;
+            $cliente_nuevo->nombre      = strtoupper($cliente->nombre.' '.$cliente->apellido);
+            $cliente_nuevo->save();
 
             Notification::make()
                 ->title('Cliente creado con éxito')

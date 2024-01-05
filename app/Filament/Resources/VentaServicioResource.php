@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\VentaServicioResource\Pages;
 use App\Filament\Resources\VentaServicioResource\RelationManagers;
 use App\Filament\Resources\VentaServicioResource\Widgets\StatsVenta;
+use App\Filament\Resources\VentaServicioResource\Widgets\VentaServicioComisionStats;
 use App\Filament\Resources\VentaServicioResource\Widgets\VentaServicioStats;
 use App\Models\VentaServicio;
 use Carbon\Carbon;
@@ -36,14 +37,6 @@ class VentaServicioResource extends Resource
 
     protected static ?string $navigationGroup = 'Ventas';
 
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                //
-            ]);
-    }
-
     public static function table(Table $table): Table
     {
         return $table
@@ -71,47 +64,49 @@ class VentaServicioResource extends Resource
                         'transferencia'         => 'info',
                         'Punto de venta'        => 'info',
                         'Anulado'               => 'danger',
+                        'cliente especial'  => 'success',
                     }),
                 TextColumn::make('referencia')
                 ->toggleable(isToggledHiddenByDefault: true)
                 ->searchable(),
 
                 TextColumn::make('total_USD')
-                    ->summarize(Sum::make()
-                    ->money('USD')
-                    ->label('Venta Neta($)'))
+                    ->label(_('Costo servicio($)'))
+                        ->summarize(Sum::make()
+                        ->label(_('Total'))
+                        ->money('USD'))
                     ->searchable(),
 
                 TextColumn::make('pago_usd')->money('USD')
+                    ->label(_('Pagos($)'))
                     ->summarize(Sum::make()
-                    ->money('USD')
-                    ->label('Total($)'))
+                        ->label(_('Total'))
+                        ->money('USD'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('pago_bsd')
+                TextColumn::make('pago_bsd')->money('VES')
+                    ->label(_('Pagos(Bs.)'))
                     ->summarize(Sum::make()
-                    ->numeric(
-                        decimalPlaces: 00,
-                        decimalSeparator: ',',
-                        thousandsSeparator: '.',
-                    )
-                    ->label('Total(Bs)'))
+                        ->label(_('Total'))
+                        ->money('VES'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('comision_empleado')->money('USD')
-                    ->summarize(Sum::make()
-                    ->money('USD')
-                    ->label('Neto Empleado($)'))
+                TextColumn::make('comision_dolares')->money('USD')
+                    ->label(_('Comision($)'))
+                        ->summarize(Sum::make()
+                            ->money('USD')
+                            ->label('Neto Empleado($)'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('comision_gerente')->money('USD')
-                    ->summarize(Sum::make()
-                    ->money('USD')
-                    ->label('Neto Gerente($)'))
+                TextColumn::make('comision_bolivares')->money('VES')
+                    ->label(_('Comision(Bs.)'))
+                        ->summarize(Sum::make()
+                            ->money('VES')
+                            ->label('Neto Empleado(Bs.)'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -198,6 +193,7 @@ class VentaServicioResource extends Resource
     {
         return [
             VentaServicioStats::class,
+            VentaServicioComisionStats::class
         ];
     }
 

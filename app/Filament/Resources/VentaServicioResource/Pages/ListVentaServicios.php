@@ -16,6 +16,11 @@ class ListVentaServicios extends ListRecords
 
     protected static string $resource = VentaServicioResource::class;
 
+    protected int | string | array $columnSpan = [
+        'md' => 2,
+        'xl' => 3,
+    ];
+
     protected function getHeaderActions(): array
     {
         return [
@@ -27,6 +32,7 @@ class ListVentaServicios extends ListRecords
     {
         return [
             VentaServicioResource\Widgets\VentaServicioStats::class,
+            VentaServicioResource\Widgets\VentaServicioComisionStats::class,
         ];
     }
 

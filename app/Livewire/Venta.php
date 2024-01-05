@@ -3,12 +3,17 @@
 namespace App\Livewire;
 
 use App\Models\VentaServicio;
+use Carbon\Carbon;
+use Filament\Tables\Actions\Action;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
@@ -40,36 +45,52 @@ class Venta extends Component implements HasForms, HasTable
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('metodo_pago')->searchable(),
-                TextColumn::make('referencia')->searchable(),
+                    TextColumn::make('metodo_pago')
+                    ->searchable()
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Facturación multiple'  => 'warning',
+                        'Multiple'              => 'warning',
+                        'Efectivo Usd'          => 'success',
+                        'Zelle'                 => 'success',
+                        'Efectivo Bsd'          => 'info',
+                        'Pago movil'            => 'info',
+                        'transferencia'         => 'info',
+                        'Punto de venta'        => 'info',
+                        'Anulado'               => 'danger',
+                        'cliente especial'  => 'success',
+                    }),
+                TextColumn::make('referencia')
+                ->toggleable(isToggledHiddenByDefault: true)
+                ->searchable(),
                 TextColumn::make('total_USD')
+                    ->label(_('Costo($)'))
                     ->summarize(Sum::make()
                     ->numeric(
                         decimalPlaces: 00,
                         decimalSeparator: ',',
                         thousandsSeparator: '.',
-                    )
-                    ->label('Venta Neta($)'))
+                    ))
                     ->searchable(),
 
                 TextColumn::make('pago_usd')->money('USD')
+                    ->label(_('Pagos($)'))
                     ->summarize(Sum::make()
                     ->numeric(
                         decimalPlaces: 00,
                         decimalSeparator: ',',
                         thousandsSeparator: '.',
-                    )
-                    ->label('Total($)'))
+                    ))
                     ->searchable(),
 
                 TextColumn::make('pago_bsd')
+                    ->label(_('Pagos(Bs.)'))
                     ->summarize(Sum::make()
                     ->numeric(
                         decimalPlaces: 00,
                         decimalSeparator: ',',
                         thousandsSeparator: '.',
-                    )
-                    ->label('Total(Bs)'))
+                    ))
                     ->searchable(),
 
                     TextColumn::make('comision_empleado')->money('USD')
@@ -77,16 +98,7 @@ class Venta extends Component implements HasForms, HasTable
                     ->money('USD')
                     ->label('Neto Empleado($)'))
                     ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('comision_gerente')->money('USD')
-                    ->summarize(Sum::make()
-                    ->money('USD')
-                    ->label('Neto Gerente($)'))
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
 
                 TextColumn::make('propina_usd')->money('USD')
                     ->summarize(Sum::make()
@@ -115,9 +127,39 @@ class Venta extends Component implements HasForms, HasTable
             ])
             // ->defaultGroup('empleado')
             ->filters([
-                DateRangeFilter::make('created_at')
-                ->timezone('America/Caracas'),
+                Filter::make('created_at')
+                ->form([
+                    DatePicker::make('desde'),
+                    DatePicker::make('hasta'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['desde'] ?? null,
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['hasta'] ?? null,
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+                })
+                ->indicateUsing(function (array $data): array {
+                    $indicators = [];
+                    if ($data['desde'] ?? null) {
+                        $indicators['desde'] = 'Venta desde ' . Carbon::parse($data['desde'])->toFormattedDateString();
+                    }
+                    if ($data['hasta'] ?? null) {
+                        $indicators['hasta'] = 'Venta hasta ' . Carbon::parse($data['hasta'])->toFormattedDateString();
+                    }
+
+                    return $indicators;
+                }),
             ])
+            ->filtersTriggerAction(
+                fn (Action $action) => $action
+                    ->button()
+                    ->label('Filtros'),
+            )
             ->actions([
                 // ...
             ])

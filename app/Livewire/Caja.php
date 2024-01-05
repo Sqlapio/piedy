@@ -300,6 +300,7 @@ class Caja extends Component
                             'pago_usd'      => $total_vista,
                             'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                             'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                            'comision_dolares' => UtilsController::cal_comision_empleado($total_vista),
                             'responsable'   => Auth::user()->name,
                         ]);
 
@@ -343,6 +344,7 @@ class Caja extends Component
                             'pago_bsd' => $total_vista * $tasa_bcv,
                             'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                             'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                            'comision_bolivares' => UtilsController::cal_comision_empleado($total_vista * $tasa_bcv),
                             'responsable'   => Auth::user()->name,
                         ]);
 
@@ -386,6 +388,7 @@ class Caja extends Component
                                 'pago_bsd' => $total_vista * $tasa_bcv,
                                 'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                                 'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                                'comision_bolivares' => UtilsController::cal_comision_empleado($total_vista * $tasa_bcv),
                                 'responsable'   => Auth::user()->name,
                             ]);
 
@@ -441,6 +444,7 @@ class Caja extends Component
                                 'pago_usd' => $total_vista,
                                 'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                                 'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                                'comision_dolares' => UtilsController::cal_comision_empleado($total_vista),
                                 'responsable'   => Auth::user()->name,
                             ]);
 
@@ -475,7 +479,7 @@ class Caja extends Component
             {
 
                 /**
-                 * CASO 1
+                 * CASO 1 DOLARES -> BOLIVARES
                  */
                 if ($this->op1 == 'Efectivo Usd' || $this->op1 == 'Zelle')
                 {
@@ -511,6 +515,8 @@ class Caja extends Component
                                             'pago_bsd' => Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
                                             'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                                             'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                                            'comision_dolares'   => UtilsController::cal_comision_empleado(floatval($this->valor_uno)),
+                                            'comision_bolivares' => UtilsController::cal_comision_empleado(Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos)))),
                                             'responsable'   => Auth::user()->name,
                                         ]);
 
@@ -541,63 +547,7 @@ class Caja extends Component
                 }
 
                 /**
-                 * CASO 2
-                 */
-                if ($this->op1 == 'Efectivo Bsd' || $this->op1 == 'Pago movil' || $this->op1 == 'Transferencia' || $this->op1 == 'Punto de venta')
-                {
-                    if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta')
-                    {
-                        if($this->valor_uno == '' and $this->valor_dos == '')
-                        {
-                            $this->dialog()->error(
-                                $title = 'Error !!!',
-                                $description = 'Los monto deben ser myor a 0.'
-                            );
-                        }else{
-
-                            $this->referencia = 'pago multiple';
-
-                            try {
-
-                                $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
-                                    ->update([
-                                        'metodo_pago' => $this->descripcion,
-                                        'referencia' => $this->referencia,
-                                        'total_USD' => $total_vista,
-                                        'pago_bsd' => $total_vista_bsd,
-                                        'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                                        'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                                        'responsable'   => Auth::user()->name,
-                                    ]);
-
-                                DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
-                                    ->update([
-                                        'status' => '2',
-                                    ]);
-
-                                Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
-                                    ->update([
-                                        'status' => 'facturado'
-                                    ]);
-
-                                Notification::make()
-                                    ->title('La factura fue cerrada con exito')
-                                    ->success()
-                                    ->send();
-
-                                $this->redirect('/cabinas');
-
-                            } catch (\Throwable $th) {
-                                //throw $th;
-                            }
-
-                        }
-
-                    }
-                }
-
-                /**
-                 * CASO 3
+                 * CASO 2 DOLARES -> DOLARES
                  */
                 if ($this->op1 == 'Efectivo Usd')
                 {
@@ -623,6 +573,7 @@ class Caja extends Component
                                         'pago_usd' => $total_vista,
                                         'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                                         'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                                        'comision_dolares' => UtilsController::cal_comision_empleado($total_vista),
                                         'responsable'   => Auth::user()->name,
                                     ]);
 

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\VentaServicioResource\Pages;
 use App\Filament\Resources\VentaServicioResource\RelationManagers;
 use App\Filament\Resources\VentaServicioResource\Widgets\StatsVenta;
+use App\Filament\Resources\VentaServicioResource\Widgets\VentaServicioComisionStats;
 use App\Filament\Resources\VentaServicioResource\Widgets\VentaServicioStats;
 use App\Models\VentaServicio;
 use Carbon\Carbon;
@@ -35,14 +36,6 @@ class VentaServicioResource extends Resource
     protected static ?string $navigationLabel = 'Dashboard Ventas';
 
     protected static ?string $navigationGroup = 'Ventas';
-
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                //
-            ]);
-    }
 
     public static function table(Table $table): Table
     {
@@ -101,7 +94,7 @@ class VentaServicioResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('comision_empleado')->money('USD')
+                TextColumn::make('comision_dolares')->money('USD')
                     ->summarize(Sum::make()
                     ->money('USD')
                     ->label('Neto Empleado($)'))
@@ -109,10 +102,10 @@ class VentaServicioResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('comision_gerente')->money('USD')
+                TextColumn::make('comision_bolivares')->money('USD')
                     ->summarize(Sum::make()
                     ->money('USD')
-                    ->label('Neto Gerente($)'))
+                    ->label('Neto Empleado(Bs.)'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -199,6 +192,7 @@ class VentaServicioResource extends Resource
     {
         return [
             VentaServicioStats::class,
+            VentaServicioComisionStats::class
         ];
     }
 

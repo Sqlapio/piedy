@@ -223,6 +223,7 @@ class FacturarCliente extends Component
              * Pago total en DOLARES
              */
             if ($this->descripcion == 'Efectivo Usd') {
+
                 if (count($this->servicios) <= 0) {
 
                     $this->dialog()->error(
@@ -245,6 +246,12 @@ class FacturarCliente extends Component
                         $factura->responsable       = $user->name;
                         $factura->save();
 
+                        /** Calculo del 40% del total de la vista
+                         * Este valor sera el asignado a los empleados
+                         * segun el porcentace de representacion.
+                         */
+                        $_40porciento = ($this->total_vista * 40) / 100;
+
                         for ($i = 0; $i < count($this->servicios); $i++) {
                             Disponible::where('id', $this->servicios[$i])->update([
                                 'status' => 'facturado'
@@ -256,10 +263,19 @@ class FacturarCliente extends Component
                                 'status' => 2
                             ]);
 
+                            /**
+                             * Calculo de la comision por empleado
+                             * y el resultado se actualiza en la tabla de ventas
+                             */
+                            $costo_servicio = Disponible::where('id', $this->servicios[$i])->first()->costo;
+                            $porcen_venta = ($costo_servicio * 100) / $this->total_vista;
+                            $comision_empleado = ($porcen_venta * $_40porciento) / 100;
+
                             VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                'metodo_pago' => 'Facturación multiple',
-                                'referencia' => $factura->cod_asignacion,
-                                'responsable' => $user->name
+                                'metodo_pago'       => 'Facturación multiple',
+                                'referencia'        => $factura->cod_asignacion,
+                                'comision_dolares'  => $comision_empleado,
+                                'responsable'       => $user->name
                             ]);
                         }
 
@@ -311,6 +327,12 @@ class FacturarCliente extends Component
                         $factura->responsable    = $user->name;
                         $factura->save();
 
+                        /** Calculo del 40% del total de la vista
+                         * Este valor sera el asignado a los empleados
+                         * segun el porcentace de representacion.
+                         */
+                        $_40porciento = ($this->total_vista * 40) / 100;
+
                         for ($i = 0; $i < count($this->servicios); $i++) {
                             Disponible::where('id', $this->servicios[$i])->update([
                                 'status' => 'facturado'
@@ -322,10 +344,19 @@ class FacturarCliente extends Component
                                 'status' => 2
                             ]);
 
+                            /**
+                             * Calculo de la comision por empleado
+                             * y el resultado se actualiza en la tabla de ventas
+                             */
+                            $costo_servicio = Disponible::where('id', $this->servicios[$i])->first()->costo;
+                            $porcen_venta = ($costo_servicio * 100) / $this->total_vista;
+                            $comision_empleado = ($porcen_venta * $_40porciento) / 100;
+
                             VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                'metodo_pago' => 'Facturación multiple',
-                                'referencia' => $factura->cod_asignacion,
-                                'responsable' => $user->name
+                                'metodo_pago'       => 'Facturación multiple',
+                                'referencia'        => $factura->cod_asignacion,
+                                'comision_dolares'  => $comision_empleado,
+                                'responsable'       => $user->name
                             ]);
                         }
 
@@ -369,6 +400,12 @@ class FacturarCliente extends Component
                         $factura->responsable       = $user->name;
                         $factura->save();
 
+                        /** Calculo del 40% del total de la vista
+                         * Este valor sera el asignado a los empleados
+                         * segun el porcentace de representacion.
+                         */
+                        $_40porciento = ($this->total_vista_bsd * 40) / 100;
+
                         for ($i = 0; $i < count($this->servicios); $i++) {
                             Disponible::where('id', $this->servicios[$i])->update([
                                 'status' => 'facturado'
@@ -380,10 +417,19 @@ class FacturarCliente extends Component
                                 'status' => 2
                             ]);
 
+                            /**
+                             * Calculo de la comision por empleado
+                             * y el resultado se actualiza en la tabla de ventas
+                             */
+                            $costo_servicio = Disponible::where('id', $this->servicios[$i])->first()->costo;
+                            $porcen_venta = ($costo_servicio * 100) / $this->total_vista;
+                            $comision_empleado = ($porcen_venta * $_40porciento) / 100;
+                            // Debugbar::info($_40porciento, $this->total_vista_bsd, $this->total_vista_bsd);
                             VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                'metodo_pago' => 'Facturación multiple',
-                                'referencia' => $factura->cod_asignacion,
-                                'responsable' => $user->name
+                                'metodo_pago'       => 'Facturación multiple',
+                                'referencia'        => $factura->cod_asignacion,
+                                'comision_bolivares'  => $comision_empleado,
+                                'responsable'       => $user->name
                             ]);
                         }
 
@@ -434,6 +480,12 @@ class FacturarCliente extends Component
                         $factura->responsable       = $user->name;
                         $factura->save();
 
+                        /** Calculo del 40% del total de la vista
+                         * Este valor sera el asignado a los empleados
+                         * segun el porcentace de representacion.
+                         */
+                        $_40porciento = ($this->total_vista_bsd * 40) / 100;
+
                         for ($i = 0; $i < count($this->servicios); $i++) {
                             Disponible::where('id', $this->servicios[$i])->update([
                                 'status' => 'facturado'
@@ -445,10 +497,19 @@ class FacturarCliente extends Component
                                 'status' => 2
                             ]);
 
+                            /**
+                             * Calculo de la comision por empleado
+                             * y el resultado se actualiza en la tabla de ventas
+                             */
+                            $costo_servicio = Disponible::where('id', $this->servicios[$i])->first()->costo;
+                            $porcen_venta = ($costo_servicio * 100) / $this->total_vista;
+                            $comision_empleado = ($porcen_venta * $_40porciento) / 100;
+
                             VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                'metodo_pago' => 'Facturación multiple',
-                                'referencia' => $factura->cod_asignacion,
-                                'responsable' => $user->name
+                                'metodo_pago'           => 'Facturación multiple',
+                                'referencia'            => $factura->cod_asignacion,
+                                'comision_bolivares'    => $comision_empleado,
+                                'responsable'           => $user->name
                             ]);
                         }
 
@@ -521,6 +582,12 @@ class FacturarCliente extends Component
                                     $factura->responsable       = $user->name;
                                     $factura->save();
 
+                                    /** Calculo del 40% del total de la vista
+                                     * Este valor sera el asignado a los empleados
+                                     * segun el porcentace de representacion.
+                                     */
+                                    $_40porciento = ($this->total_vista * 40) / 100;
+
                                     for ($i = 0; $i < count($this->servicios); $i++) {
                                         Disponible::where('id', $this->servicios[$i])->update([
                                             'status' => 'facturado'
@@ -532,10 +599,27 @@ class FacturarCliente extends Component
                                             'status' => 2
                                         ]);
 
+                                        /**
+                                         * Calculo de la comision por empleado
+                                         * y el resultado se actualiza en la tabla de ventas
+                                         */
+                                        $costo_servicio = Disponible::where('id', $this->servicios[$i])->first()->costo;
+                                        $porcen_venta = ($costo_servicio * 100) / $this->total_vista;
+
+                                        /** Comison en dolares */
+                                        $comision_empleado_usd = ($porcen_venta * $factura->pago_usd) / 100;
+                                        $total_comision_empleado_usd = ($comision_empleado_usd * 40) / 100;
+
+                                        /** Comison en bolivares */
+                                        $comision_empleado_bsd = ($porcen_venta * $factura->pago_bsd) / 100;
+                                        $total_comision_empleado_bsd = ($comision_empleado_bsd * 40) / 100;
+
                                         VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                            'metodo_pago' => 'Facturación multiple',
-                                            'referencia' => $factura->cod_asignacion,
-                                            'responsable' => $user->name
+                                            'metodo_pago'       => 'Facturación multiple',
+                                            'referencia'        => $factura->cod_asignacion,
+                                            'comision_dolares'    => $total_comision_empleado_usd,
+                                            'comision_bolivares'  => $total_comision_empleado_bsd,
+                                            'responsable'       => $user->name
                                         ]);
                                     }
 

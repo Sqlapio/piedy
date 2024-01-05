@@ -31,6 +31,8 @@ class VentaServicio extends Model
         'referencia',
         'comision_empleado',
         'comision_gerente',
+        'comision_dolares',
+        'comision_bolivares',
         'total_USD',
         'total_BSD',
         'responsable'

@@ -71,41 +71,42 @@ class VentaServicioResource extends Resource
                 ->searchable(),
 
                 TextColumn::make('total_USD')
-                    ->label(_('Costo($)'))
-                    ->summarize(Sum::make()
-                    ->money('USD'))
+                    ->label(_('Costo servicio($)'))
+                        ->summarize(Sum::make()
+                        ->label(_('Total'))
+                        ->money('USD'))
                     ->searchable(),
 
                 TextColumn::make('pago_usd')->money('USD')
                     ->label(_('Pagos($)'))
                     ->summarize(Sum::make()
-                    ->money('USD'))
+                        ->label(_('Total'))
+                        ->money('USD'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('pago_bsd')
+                TextColumn::make('pago_bsd')->money('VES')
                     ->label(_('Pagos(Bs.)'))
                     ->summarize(Sum::make()
-                    ->numeric(
-                        decimalPlaces: 00,
-                        decimalSeparator: ',',
-                        thousandsSeparator: '.',
-                    ))
+                        ->label(_('Total'))
+                        ->money('VES'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('comision_dolares')->money('USD')
-                    ->summarize(Sum::make()
-                    ->money('USD')
-                    ->label('Neto Empleado($)'))
+                    ->label(_('Comision($)'))
+                        ->summarize(Sum::make()
+                            ->money('USD')
+                            ->label('Neto Empleado($)'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('comision_bolivares')->money('USD')
-                    ->summarize(Sum::make()
-                    ->money('USD')
-                    ->label('Neto Empleado(Bs.)'))
+                TextColumn::make('comision_bolivares')->money('VES')
+                    ->label(_('Comision(Bs.)'))
+                        ->summarize(Sum::make()
+                            ->money('VES')
+                            ->label('Neto Empleado(Bs.)'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -46,33 +46,21 @@ class TablaFacturasMultiples extends Component implements HasForms, HasTable
                 TextColumn::make('metodo_pago')->searchable(),
                 TextColumn::make('referencia')->searchable(),
 
-                TextColumn::make('total_usd')
+                TextColumn::make('total_usd')->money('USD')
+                    ->label(_('Costo servicio($)'))
                     ->summarize(Sum::make()
-                    ->numeric(
-                        decimalPlaces: 00,
-                        decimalSeparator: '.',
-                        thousandsSeparator: ',',
-                    )
                     ->label('Venta Neta($)'))
                     ->searchable(),
 
                 TextColumn::make('pago_usd')->money('USD')
+                ->label(_('Pago($)'))
                 ->summarize(Sum::make()
-                ->numeric(
-                    decimalPlaces: 00,
-                    decimalSeparator: '.',
-                    thousandsSeparator: ',',
-                )
                 ->label('Total($)'))
                 ->searchable(),
 
-                TextColumn::make('pago_bsd')
+                TextColumn::make('pago_bsd')->money('VES')
+                ->label(_('Pago(Bs)'))
                 ->summarize(Sum::make()
-                ->numeric(
-                    decimalPlaces: 00,
-                    decimalSeparator: '.',
-                    thousandsSeparator: ',',
-                )
                 ->label('Total(Bs)'))
                 ->searchable(),
 

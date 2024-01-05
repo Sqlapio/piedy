@@ -31,21 +31,15 @@ class Venta extends Component implements HasForms, HasTable
             ->columns([
                 TextColumn::make('cod_asignacion')
                     ->sortable()
-                    ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('responsable')->searchable(),
-                TextColumn::make('created_at')
-                    ->label(__('Fecha de registro'))
-                    ->searchable(),
                 TextColumn::make('cliente')
                     ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('empleado')
                     ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('metodo_pago')
+                    ->sortable(),
+                TextColumn::make('created_at')->searchable()->label('Fecha de venta'),
+                TextColumn::make('metodo_pago')
                     ->searchable()
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -63,42 +57,47 @@ class Venta extends Component implements HasForms, HasTable
                 TextColumn::make('referencia')
                 ->toggleable(isToggledHiddenByDefault: true)
                 ->searchable(),
+
                 TextColumn::make('total_USD')
-                    ->label(_('Costo($)'))
-                    ->summarize(Sum::make()
-                    ->numeric(
-                        decimalPlaces: 00,
-                        decimalSeparator: ',',
-                        thousandsSeparator: '.',
-                    ))
+                    ->label(_('Costo servicio($)'))
+                        ->summarize(Sum::make()
+                        ->label(_('Total'))
+                        ->money('USD'))
                     ->searchable(),
 
                 TextColumn::make('pago_usd')->money('USD')
                     ->label(_('Pagos($)'))
                     ->summarize(Sum::make()
-                    ->numeric(
-                        decimalPlaces: 00,
-                        decimalSeparator: ',',
-                        thousandsSeparator: '.',
-                    ))
-                    ->searchable(),
+                        ->label(_('Total'))
+                        ->money('USD'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('pago_bsd')
+                TextColumn::make('pago_bsd')->money('VES')
                     ->label(_('Pagos(Bs.)'))
                     ->summarize(Sum::make()
-                    ->numeric(
-                        decimalPlaces: 00,
-                        decimalSeparator: ',',
-                        thousandsSeparator: '.',
-                    ))
-                    ->searchable(),
-
-                    TextColumn::make('comision_empleado')->money('USD')
-                    ->summarize(Sum::make()
-                    ->money('USD')
-                    ->label('Neto Empleado($)'))
+                        ->label(_('Total'))
+                        ->money('VES'))
                     ->searchable()
-                    ->sortable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('comision_dolares')->money('USD')
+                    ->label(_('Comision($)'))
+                        ->summarize(Sum::make()
+                            ->money('USD')
+                            ->label('Neto Empleado($)'))
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('comision_bolivares')->money('VES')
+                    ->label(_('Comision(Bs.)'))
+                        ->summarize(Sum::make()
+                            ->money('VES')
+                            ->label('Neto Empleado(Bs.)'))
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('propina_usd')->money('USD')
                     ->summarize(Sum::make()

@@ -105,7 +105,7 @@ class VentaServicioResource extends Resource
                 TextColumn::make('comision_bolivares')->money('USD')
                     ->summarize(Sum::make()
                     ->money('USD')
-                    ->label('Neto Gerente($)'))
+                    ->label('Neto Empleado(Bs.)'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

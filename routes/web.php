@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApiClientesController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\UtilsController;
 use App\Livewire\Login;
 use App\Models\Cliente;
 use App\Models\VentaServicio;
@@ -22,9 +23,19 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+
+
 Route::post('/actualiza/password', [LoginController::class, 'actualiza_password'])->name('actualiza_password');
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
+
+    /**
+     * Ruta para Logout del usuario
+     */
+    Route::get('/logout_force', [UtilsController::class, 'destroy'])
+        ->name('logout_force');
+
+        
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');

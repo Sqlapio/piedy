@@ -67,6 +67,7 @@ class CierreDiario extends Component implements HasForms, HasTable
 
             /** Total pagos en dolares efectivo */
             $total_pagos_usd = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Efectivo Usd')->sum('pago_usd');
+            $total_pagos_usd_multiple = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Multiple')->sum('pago_usd');
 
             /** Total pagos en dolares zelle */
             $total_pagos_usd_zelle = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Zelle')->sum('pago_usd');
@@ -81,7 +82,7 @@ class CierreDiario extends Component implements HasForms, HasTable
             $total_bs = $total_pagos_bsd;
 
             /** Total en Dolares Efectivo */
-            $total_usd = $total_pagos_usd;
+            $total_usd = $total_pagos_usd + $total_pagos_usd_multiple;
 
             /** Total en Dolares Zelle */
             $total_usd_zelle = $total_pagos_usd_zelle;

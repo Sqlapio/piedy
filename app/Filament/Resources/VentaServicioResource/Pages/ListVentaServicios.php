@@ -49,7 +49,7 @@ class ListVentaServicios extends ListRecords
 
         return [
 
-            'Mensual' => Tab::make()
+            'Mes' => Tab::make()
                 ->query(fn ($query) => $query->whereBetween('created_at', [$desde_mes, $hasta_mes]))
                 ->badge(VentaServicio::query()->whereBetween('created_at',[$desde_mes, $hasta_mes])->count()),
             'Hoy' => Tab::make()

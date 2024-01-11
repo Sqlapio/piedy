@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Widgets\Concerns\InteractsWithPageTable;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Auth;
 
 class ProductoResource extends Resource
 {
@@ -37,13 +38,13 @@ class ProductoResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $user = Auth::user()->name;
         return $form
             ->schema([
                 TextInput::make('cod_producto')->default('Ppro-'.random_int(11111, 99999)),
                 TextInput::make('descripcion')->required(),
                 Select::make('categoria_id')
                     ->relationship('categoria', 'descripcion')
-                    ->searchable()
                     ->preload()
                     ->createOptionForm([
                         TextInput::make('descripcion')
@@ -51,26 +52,32 @@ class ProductoResource extends Resource
                     ])
                     ->required(),
                 TextInput::make('proveedor'),
+
                 TextInput::make('precio_venta')
                     ->prefix('$')
                     ->numeric()
                     ->inputMode('decimal'),
+
                 TextInput::make('existencia')
                     ->numeric()
                     ->required(),
-                DatePicker::make('fecha_carga')->format('d-m-Y'),
+
+                DatePicker::make('fecha_carga')
+                    ->format('d-m-Y')
+                    ->required(),
+
                 Select::make('comision_id')
                     ->relationship('comision', 'porcentaje')
                     ->options(Comision::where('aplicacion', 'producto')->pluck('porcentaje', 'id'))
-                    ->searchable()
                     ->preload()
                     ->createOptionForm([
                         TextInput::make('cod_comision')->default('Pco-'.random_int(11111, 99999)),
                         TextInput::make('porcentaje')
-                            ->prefix('%')
-                            ->required(),
-                    ])
-                    ->required(),
+                            ->prefix('%'),
+                    ]),
+                TextInput::make('limite_uso'),
+                TextInput::make('grupo'),
+                TextInput::make('responsable')->default($user),
                 Select::make('status')
                     ->options([
                         'activo' => 'Activo',
@@ -90,15 +97,32 @@ class ProductoResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('cod_producto')->searchable(),
-                ImageColumn::make('image')->circular(),
-                TextColumn::make('descripcion')->searchable(),
-                TextColumn::make('categoria.descripcion')->searchable(),
-                TextColumn::make('precio_venta')->money('USD')->searchable(),
-                TextColumn::make('existencia')->searchable(),
-                TextColumn::make('fecha_carga')->searchable(),
-                TextColumn::make('fecha_carga')->searchable(),
-                TextColumn::make('comision.porcentaje')->searchable(),
+                TextColumn::make('cod_producto')
+                ->searchable(),
+
+                ImageColumn::make('image')
+                ->circular(),
+
+                TextColumn::make('descripcion')
+                ->searchable(),
+
+                TextColumn::make('categoria.descripcion')
+                ->searchable(),
+
+                TextColumn::make('precio_venta')
+                ->toggleable(isToggledHiddenByDefault: true)
+                ->money('USD')->searchable(),
+
+                TextColumn::make('existencia')
+                ->searchable(),
+
+                TextColumn::make('fecha_carga')
+                ->searchable(),
+
+                TextColumn::make('comision.porcentaje')
+                ->toggleable(isToggledHiddenByDefault: true)
+                ->searchable(),
+
                 IconColumn::make('status')
                 ->options([
                     'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === 'activo',

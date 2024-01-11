@@ -16,11 +16,11 @@ return new class extends Migration
             $table->string('cod_producto')->unique();
             $table->string('categoria_id');
             $table->string('descripcion');
-            $table->string('proveedor');
-            $table->decimal('precio_venta', 8, 2);
-            $table->integer('existencia');
+            $table->string('proveedor')->nullable();
+            $table->decimal('precio_venta', 8, 2)->nullable();
+            $table->integer('existencia')->nullable();
             $table->string('fecha_carga');
-            $table->integer('comision_id');
+            $table->integer('comision_id')->nullable();
             $table->string('image');
             $table->string('status')->default('activo');
 

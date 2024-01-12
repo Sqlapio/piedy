@@ -58,7 +58,7 @@ class VentaServicioStats extends BaseWidget
                         ->toArray()
                 ),
 
-            Stat::make('TOTAL USD($)', '$' . $this->getPageTableQuery()->sum('pago_usd'))
+            Stat::make('TOTAL USD($)', '$' . $this->getPageTableQuery()->sum('comision_dolares'))
                 ->description('Pago total en USD($)')
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('success')
@@ -67,7 +67,7 @@ class VentaServicioStats extends BaseWidget
                         ->map(fn (TrendValue $value) => $value->aggregate)
                         ->toArray()
                 ),
-            Stat::make('TOTAL BS.', 'BS.' . $this->getPageTableQuery()->sum('pago_bsd'))
+            Stat::make('TOTAL BS.', 'BS.' . $this->getPageTableQuery()->sum('comision_bolivares'))
                 ->description('Pago total en Bs')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('warning')

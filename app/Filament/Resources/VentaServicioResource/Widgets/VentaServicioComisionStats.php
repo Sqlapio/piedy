@@ -50,7 +50,7 @@ class VentaServicioComisionStats extends BaseWidget
                         ->toArray()
                 ),
 
-            Stat::make('COMISION EN BOLIVARES (BS.)', $this->getPageTableQuery()->distinct()->sum('comision_bolivares'))
+            Stat::make('COMISION EN BOLIVARES (BS.)', $this->getPageTableQuery()->sum('comision_bolivares'))
                 ->description('Comisión total por pago en bolivares (40%)')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('info')

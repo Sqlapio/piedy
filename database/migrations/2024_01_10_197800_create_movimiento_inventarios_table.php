@@ -20,8 +20,6 @@ return new class extends Migration
             $table->integer('salida')->nullable();
             $table->string('responsable');
             $table->timestamps();
-
-            $table->timestamps();
         });
     }
 

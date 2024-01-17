@@ -20,19 +20,12 @@ class CierreDiario extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-
-        'total_pagos_ef_usd',
-        'total_pagos_ef_bsd',
-        'total_pagos_ze',
-        'total_pagos_pm',
-        'total_pagos_tr',
-        'total_pagos_pv',
-        'total_pago_usd',
-        'total_pago_bsd',
-        'total_gastos_pago_usd',
-        'total_gastos_pago_bsd',
-        'venta_neta_usd',
-        'venta_neta_bsd',
+        'total_dolares_efectivo',
+        'total_dolares_zelle',
+        'total_bolivares',
+        'total_gastos',
+        'venta_neta_dolares',
+        'venta_neta_bolivares',
         'fecha',
         'responsable',
         'observaciones',

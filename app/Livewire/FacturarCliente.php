@@ -271,9 +271,15 @@ class FacturarCliente extends Component
                             $porcen_venta = ($costo_servicio * 100) / $this->total_vista;
                             $comision_empleado = ($porcen_venta * $_40porciento) / 100;
 
+                            /**
+                             * Calculo del costo del servicio
+                             */
+                            $porcentaje_servicio = ($porcen_venta * $factura->pago_usd) / 100;
+
                             VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
                                 'metodo_pago'       => 'Facturación multiple',
                                 'referencia'        => $factura->cod_asignacion,
+                                'pago_usd'          => $porcentaje_servicio,
                                 'comision_dolares'  => $comision_empleado,
                                 'responsable'       => $user->name
                             ]);
@@ -352,9 +358,15 @@ class FacturarCliente extends Component
                             $porcen_venta = ($costo_servicio * 100) / $this->total_vista;
                             $comision_empleado = ($porcen_venta * $_40porciento) / 100;
 
+                            /**
+                             * Calculo del costo del servicio
+                             */
+                            $porcentaje_servicio = ($porcen_venta * $factura->pago_usd) / 100;
+
                             VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
                                 'metodo_pago'       => 'Facturación multiple',
                                 'referencia'        => $factura->cod_asignacion,
+                                'pago_usd'          => $porcentaje_servicio,
                                 'comision_dolares'  => $comision_empleado,
                                 'responsable'       => $user->name
                             ]);
@@ -424,10 +436,16 @@ class FacturarCliente extends Component
                             $costo_servicio = Disponible::where('id', $this->servicios[$i])->first()->costo;
                             $porcen_venta = ($costo_servicio * 100) / $this->total_vista;
                             $comision_empleado = ($porcen_venta * $_40porciento) / 100;
-                            // Debugbar::info($_40porciento, $this->total_vista_bsd, $this->total_vista_bsd);
+
+                            /**
+                             * Calculo del costo del servicio
+                             */
+                            $porcentaje_servicio = ($porcen_venta * $factura->pago_bsd) / 100;
+
                             VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
                                 'metodo_pago'       => 'Facturación multiple',
                                 'referencia'        => $factura->cod_asignacion,
+                                'pago_bsd'          => $porcentaje_servicio,
                                 'comision_bolivares'  => $comision_empleado,
                                 'responsable'       => $user->name
                             ]);
@@ -505,9 +523,15 @@ class FacturarCliente extends Component
                             $porcen_venta = ($costo_servicio * 100) / $this->total_vista;
                             $comision_empleado = ($porcen_venta * $_40porciento) / 100;
 
+                            /**
+                             * Calculo del costo del servicio
+                             */
+                            $porcentaje_servicio = ($porcen_venta * $factura->pago_bsd) / 100;
+
                             VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
                                 'metodo_pago'           => 'Facturación multiple',
                                 'referencia'            => $factura->cod_asignacion,
+                                'pago_bsd'              => $porcentaje_servicio,
                                 'comision_bolivares'    => $comision_empleado,
                                 'responsable'           => $user->name
                             ]);
@@ -614,12 +638,25 @@ class FacturarCliente extends Component
                                         $comision_empleado_bsd = ($porcen_venta * $factura->pago_bsd) / 100;
                                         $total_comision_empleado_bsd = ($comision_empleado_bsd * 40) / 100;
 
+
+                                        /**
+                                         * Calculo del costo del servicio en bolivares
+                                         */
+                                        $porcentaje_servicio_bsd = ($porcen_venta * $factura->pago_bsd) / 100;
+
+                                        /**
+                                         * Calculo del costo del servicio en dolares
+                                         */
+                                        $porcentaje_servicio_usd = ($porcen_venta * $factura->pago_usd) / 100;
+
                                         VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                            'metodo_pago'       => 'Facturación multiple',
-                                            'referencia'        => $factura->cod_asignacion,
-                                            'comision_dolares'    => $total_comision_empleado_usd,
-                                            'comision_bolivares'  => $total_comision_empleado_bsd,
-                                            'responsable'       => $user->name
+                                            'metodo_pago'        => 'Facturación multiple',
+                                            'referencia'         => $factura->cod_asignacion,
+                                            'pago_usd'           => $porcentaje_servicio_usd,
+                                            'pago_bsd'           => $porcentaje_servicio_bsd,
+                                            'comision_dolares'   => $total_comision_empleado_usd,
+                                            'comision_bolivares' => $total_comision_empleado_bsd,
+                                            'responsable'        => $user->name
                                         ]);
                                     }
 
@@ -627,126 +664,6 @@ class FacturarCliente extends Component
                                         ->title('La factura fue cerrada con exito')
                                         ->success()
                                         ->send();
-
-                                    $this->redirect('/cabinas');
-
-                                } catch (\Throwable $th) {
-                                    //throw $th;
-                                }
-
-                            }
-                        }
-                    }
-
-                    /**
-                     * CASO 2
-                     */
-                    if ($this->op1 == 'Efectivo Bsd' || $this->op1 == 'Pago movil' || $this->op1 == 'Transferencia' || $this->op1 == 'Punto de venta') {
-                        if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta') {
-                            if ($this->valor_uno == '' and $this->valor_dos == '') {
-                                /** Notificacion al usuario */
-                                $this->dialog()->error(
-                                    $title = 'Error !!!',
-                                    $description = 'Los monto deben ser myor a 0.'
-                                );
-
-                            } else {
-
-                                try {
-
-                                    $factura = new FacturaMultiple();
-                                    $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
-                                    $factura->responsable       = $user->name;
-                                    $factura->metodo_pago       = $this->descripcion;
-                                    $factura->referencia        = $factura->cod_asignacion;
-                                    $factura->fecha_venta       = date('d-m-Y');
-                                    $factura->pago_bsd          = $this->total_vista_bsd;
-                                    $factura->total_usd         = $this->total_vista;
-                                    $factura->responsable       = $user->name;
-                                    $factura->save();
-
-                                    for ($i = 0; $i < count($this->servicios); $i++) {
-                                        Disponible::where('id', $this->servicios[$i])->update([
-                                            'status' => 'facturado'
-                                        ]);
-
-                                        $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
-
-                                        DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
-                                            'status' => 2
-                                        ]);
-
-                                        VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                            'metodo_pago' => 'Facturación multiple',
-                                            'referencia' => $factura->cod_asignacion,
-                                            'responsable' => $user->name
-                                        ]);
-                                    }
-
-                                    Notification::make()
-                                        ->title('La factura fue cerrada con exito')
-                                        ->success()
-                                        ->send();
-
-                                    $this->redirect('/cabinas');
-
-                                } catch (\Throwable $th) {
-                                    //throw $th;
-                                }
-
-                            }
-                        }
-                    }
-
-                    /**
-                     * CASO 3
-                     */
-                    if ($this->op1 == 'Efectivo Usd') {
-                        if ($this->op2 == 'Zelle') {
-                            if ($this->valor_uno == '' and $this->valor_dos == '') {
-                                /** Notificacion al usuario */
-                                $this->dialog()->error(
-                                    $title = 'Error !!!',
-                                    $description = 'Los monto deben ser myor a cero (0).'
-                                );
-
-                            } else {
-
-                                try {
-
-                                    $factura = new FacturaMultiple();
-                                    $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
-                                    $factura->responsable       = $user->name;
-                                    $factura->metodo_pago       = $this->descripcion;
-                                    $factura->referencia        = $factura->cod_asignacion;
-                                    $factura->fecha_venta       = date('d-m-Y');
-                                    $factura->pago_bsd          = $this->total_vista_bsd;
-                                    $factura->total_usd         = $this->total_vista;
-                                    $factura->responsable       = $user->name;
-                                    $factura->save();
-
-                                    for ($i = 0; $i < count($this->servicios); $i++) {
-                                        Disponible::where('id', $this->servicios[$i])->update([
-                                            'status' => 'facturado'
-                                        ]);
-
-                                        $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
-
-                                        DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
-                                            'status' => 2
-                                        ]);
-
-                                        VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                            'metodo_pago' => 'Facturación multiple',
-                                            'referencia' => $factura->cod_asignacion,
-                                            'responsable' => $user->name
-                                        ]);
-                                    }
-
-                                    Notification::make()
-                                    ->title('La factura fue cerrada con exito')
-                                    ->success()
-                                    ->send();
 
                                     $this->redirect('/cabinas');
 

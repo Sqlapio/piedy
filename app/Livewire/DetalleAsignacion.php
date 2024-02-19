@@ -325,25 +325,27 @@ class DetalleAsignacion extends ModalComponent
 
     public function anular()
     {
-        /** Actualizo el estatus en la tabla disponible */
-        Disponible::where('cod_asignacion', $this->disponible->cod_asignacion)->update([
-            'status' => 'anulado'
-        ]);
+        try {
 
-        /**
-         * Actualizo el estatus en la tabla de detalle de asignacion para
-         * anular los servicios cargados
-         */
-        $anulacion = ModelsDetalleAsignacion::where('cod_asignacion', $this->disponible->cod_asignacion)->get();
-        foreach($anulacion as $item){
-            ModelsDetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
+            /** Actualizo el estatus en la tabla disponible */
+            Disponible::where('cod_asignacion', $this->disponible->cod_asignacion)->update([
+                'status' => 'anulado'
+            ]);
+
+            /**
+             * Actualizo el estatus en la tabla de detalle de asignacion para
+             * anular los servicios cargados
+             */
+            $anulacion = ModelsDetalleAsignacion::where('cod_asignacion', $this->disponible->cod_asignacion)->get();
+            foreach ($anulacion as $item) {
+                ModelsDetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
                 ->update([
                     'status' => '3'
                 ]);
-        }
+            }
 
-        /** Actualizo la informacion en la tabla de ventas y coloco los calculos en cero(0) */
-        VentaServicio::where('cod_asignacion', $this->disponible->cod_asignacion)
+            /** Actualizo la informacion en la tabla de ventas y coloco los calculos en cero(0) */
+            VentaServicio::where('cod_asignacion', $this->disponible->cod_asignacion)
             ->update([
                 'metodo_pago' => 'Anulado',
                 'referencia' => 'Anulado',
@@ -353,13 +355,31 @@ class DetalleAsignacion extends ModalComponent
                 'responsable' => Auth::user()->name,
             ]);
 
-        Notification::make()
-                ->title('Operación exitosa!!')
-                ->icon('heroicon-o-shield-check')
-                ->body('El servicio fue anulado de forma correcta.')
-                ->send();
+            /** Notificacion para el usuario cuando su servicio fue anulado */
+            $data = VentaServicio::where('cod_asignacion', $this->disponible->cod_asignacion)->first();
+            $user = User::where('id', $data->empleado_id)->first();
+            $type = 'servicio_anulado';
+            $mailData = [
+                    'codigo' => $data->cod_asignacion,
+                    'user_email' => $user->email,
+                    'user_fullname' => $user->name,
+                    'cliente_fullname' => $data->cliente,
+                    'fecha_venta' => $data->fecha_venta,
+                ];
 
-        $this->redirect('/cabinas');
+            NotificacionesController::notification($mailData, $type);
+
+            Notification::make()
+            ->title('Operación exitosa!!')
+            ->icon('heroicon-o-shield-check')
+            ->body('El servicio fue anulado de forma correcta.')
+            ->send();
+
+            $this->redirect('/cabinas');
+
+        } catch (\Throwable $th) {
+            dd($th);
+        }
 
     }
 

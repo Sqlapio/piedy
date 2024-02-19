@@ -28,6 +28,16 @@ class NotificacionesController extends Controller
 				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view));
 			}
 
+            if ($type == 'servicio_anulado') {
+				$view = 'emails.servicio_anulado';
+				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view));
+			}
+
+            if ($type == 'cierre_diario') {
+				$view = 'emails.cierre_diario';
+				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view));
+			}
+
 		} catch (\Throwable $th) {
 			$message = $th->getMessage();
 			dd('Error UtilsController.send_mail()', $message);

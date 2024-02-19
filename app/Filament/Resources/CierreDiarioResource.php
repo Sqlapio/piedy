@@ -35,14 +35,43 @@ class CierreDiarioResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                TextColumn::make('total_pago_usd')->searchable()->label('Total pago($)'),
-                TextColumn::make('total_pago_bsd')->searchable()->label('Total pago(Bs)'),
-                TextColumn::make('venta_neta_usd')->searchable()->label('Venta Neta($)'),
-                TextColumn::make('venta_neta_bsd')->searchable()->label('Venta Neta(Bs)'),
-                TextColumn::make('created_at')->searchable()->label('Fecha de cierre'),
-                TextColumn::make('responsable')->searchable()->label('Responsable'),
-            ])
+        ->columns([
+            TextColumn::make('total_dolares_efectivo')
+            ->money('USD')
+            ->label('Efectivo($)')
+            ->sortable()
+            ->searchable(),
+            TextColumn::make('total_dolares_zelle')
+            ->money('USD')
+            ->label(_('Zelle($)'))
+            ->sortable()
+            ->searchable(),
+            TextColumn::make('total_bolivares')
+            ->money('VES')
+            ->label(_('Bolivares(Bs)'))
+            ->sortable()
+            ->searchable(),
+            TextColumn::make('total_gastos')
+            ->label(_('Gastos'))
+            ->sortable()
+            ->searchable(),
+            TextColumn::make('venta_neta_dolares')
+            ->money('USD')
+            ->label(_('Efectivo($) en caja'))
+            ->sortable()
+            ->searchable(),
+            TextColumn::make('created_at')
+            ->label(_('Fecha de cierre'))
+            ->sortable()
+            ->searchable(),
+            TextColumn::make('responsable')
+            ->sortable()
+            ->searchable(),
+            TextColumn::make('observaciones')
+            ->sortable()
+            ->searchable()
+            ->toggleable(isToggledHiddenByDefault: true),
+        ])
             ->filters([
                 //
             ])

@@ -3,13 +3,13 @@ use App\Models\TasaBcv as ModelsTasaBcv;
     $tasa = ModelsTasaBcv::first()->tasa;
 @endphp
 <div>
-    <div class="py-4">
+     {{-- <div class="py-4">
         <label class="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" wire:click="cliente_especial" wire:model="option" class="sr-only peer">
             <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-green-300 dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
             <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">CLIENTE ESPECIAL</span>
         </label>
-    </div>
+    </div> --}}
     <div class="grid grid-cols-3 gap-2">
 
         {{-- LISTA DE SERVICIOS --}}
@@ -105,7 +105,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                     </div>
                     <div class="px-2 {{ $op2_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Monto en Bolivares(Bs)</p>
-                        <x-input wire:model.live="valor_dos" value="{{ $valor_dos }}" placeholder="0.00"/>
+                        <x-input wire:model.live="valor_dos" value="{{ $valor_dos }}" placeholder="0.00" disabled/>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-2">
@@ -117,7 +117,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Propina(Bs)</p>
                         <x-input wire:model.live="propina_bsd" placeholder="0.00"/>
                     </div>
-                </div>
+                                </div>
                 <div class="sm:mt-2">
                     <button type="button" wire:click="facturar_servicio()" class="inline-flex w-full justify-center rounded-lg bg-red-600 px-3 py-3 mt-10 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
                         <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="facturar_servicio" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">

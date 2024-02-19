@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Http\Controllers\NotificacionesController;
 use App\Models\CierreDiario as ModelsCierreDiario;
 use App\Models\FacturaMultiple;
 use App\Models\Gasto;
@@ -112,6 +113,21 @@ class CierreDiario extends Component implements HasForms, HasTable
             $cierre->observaciones = $this->observaciones;
             $cierre->save();
 
+            /** Notificacion para el usuario cuando su servicio fue anulado */
+            $type = 'cierre_diario';
+            $correo = env('CEO');
+            $mailData = [
+                    'fecha' => $cierre->created_at,
+                    'user_email' => $correo,
+                    'zelle' => $cierre->total_dolares_zelle,
+                    'bolivares' => $cierre->total_bolivares,
+                    'gastos' => $cierre->total_gastos,
+                    'efectivo_caja_usd' => $cierre->venta_neta_dolares,
+                    'responsable' => $cierre->responsable,
+                ];
+
+            NotificacionesController::notification($mailData, $type);
+
             sleep(1);
 
             $this->dialog()->success(
@@ -132,7 +148,7 @@ class CierreDiario extends Component implements HasForms, HasTable
             ->columns([
                 TextColumn::make('total_dolares_efectivo')
                 ->money('USD')
-                ->label(_('Efectivo($)'))
+                ->label('Efectivo($)')
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('total_dolares_zelle')

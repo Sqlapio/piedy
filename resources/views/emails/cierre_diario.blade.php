@@ -7,31 +7,27 @@
     <img style="display: block; margin-left: auto; margin-right: auto; width: 600px; height: auto;" src="{{ asset('images/banner_correo.jpg') }}">
     <div style="margin: auto; width: 600px; padding: 10px;">
         <p style="text-align: justify; margin-left: 20px;">
-            <h2 style="text-align: justify; margin-left: 20px;">Estimada Sr(a). {{ $mailData['user_fullname'] }}</h2>
+            <h2 style="text-align: justify; margin-left: 20px;">Administrador</h2>
         </p>
         <p style="text-align: justify; margin-left: 20px;">
-            Nos complace informarle que su servicio a sido facturado con éxito. <br>
-            A continuación, encontrará los detalles pertinentes de la transacción para su registro y referencia:
+            Se informa que el cierre de caja fue ejecutado con éxito. <br>
+            A continuación, encontrará el detalle del cierre para su referencia:
             <br>
         </p>
         <p style="text-align: justify; margin-left: 20px;">
             <h3 style="text-align: justify; margin-left: 20px;">
-                Cliente: {{ $mailData['cliente_fullname'] }}
+                Responsable: {{ $mailData['responsable'] }}
                 <br>
-                Fecha: {{ $mailData['fecha_venta'] }}
+                Fecha: {{ $mailData['fecha'] }}
                 <br>
-                Codigo de servicio: {{ $mailData['codigo'] }}
+                Efectivo($) en caja: {{ $mailData['efectivo_caja_usd'] }}
+                <br>
+                Zelle: {{ $mailData['zelle'] }}
+                <br>
+                Bolivares: {{ $mailData['bolivares'] }}
+                <br>
+                Gastos: {{ $mailData['gastos'] }}
             </h3>
-        </p>
-        <p style="text-align: justify; margin-left: 20px;">
-            Detalle de servicio:
-        </p>
-        @foreach($mailData['detalle'] as $item)
-        <h2 style="text-align: justify; margin-left: 20px;">
-            - {{ $item->servicio }}
-            <br>
-        </h2>
-        @endforeach
         </p>
         <p style="text-align: justify; margin-left: 20px;">
             Esta notificación confirma que el proceso de facturación asociado a su trabajo ha sido completado correctamente. <br>

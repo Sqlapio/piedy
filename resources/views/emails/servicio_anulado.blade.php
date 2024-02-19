@@ -10,8 +10,8 @@
             <h2 style="text-align: justify; margin-left: 20px;">Estimada Sr(a). {{ $mailData['user_fullname'] }}</h2>
         </p>
         <p style="text-align: justify; margin-left: 20px;">
-            Nos complace informarle que su servicio a sido facturado con éxito. <br>
-            A continuación, encontrará los detalles pertinentes de la transacción para su registro y referencia:
+            Se informa el servicio Nro. <strong>{{ $mailData['codigo'] }}</strong> fue anulado con éxito. <br>
+            A continuación, encontrará el detalle de la transacción para su referencia:
             <br>
         </p>
         <p style="text-align: justify; margin-left: 20px;">
@@ -22,16 +22,6 @@
                 <br>
                 Codigo de servicio: {{ $mailData['codigo'] }}
             </h3>
-        </p>
-        <p style="text-align: justify; margin-left: 20px;">
-            Detalle de servicio:
-        </p>
-        @foreach($mailData['detalle'] as $item)
-        <h2 style="text-align: justify; margin-left: 20px;">
-            - {{ $item->servicio }}
-            <br>
-        </h2>
-        @endforeach
         </p>
         <p style="text-align: justify; margin-left: 20px;">
             Esta notificación confirma que el proceso de facturación asociado a su trabajo ha sido completado correctamente. <br>

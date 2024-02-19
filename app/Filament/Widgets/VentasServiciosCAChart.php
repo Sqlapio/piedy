@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\VentaServicio;
+use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
@@ -31,7 +32,7 @@ class VentasServiciosCAChart extends ChartWidget
                     'borderColor' => '#22c55e',
                 ],
             ],
-            'labels' => $data->map(fn (TrendValue $value) => $value->date),
+            'labels' => ($data->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray()),
         ];
     }
 

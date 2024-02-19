@@ -44,8 +44,7 @@ class ClienteNuevoChart extends ChartWidget
                     'borderColor' => '#22c55e',
                 ],
             ],
-            'labels' => ($data->map(fn (TrendValue $value) => Carbon::parse($value->date)
-            ->isoFormat('dddd, D MMM'))->toArray()),
+            'labels' => ($data->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray()),
         ];
     }
 

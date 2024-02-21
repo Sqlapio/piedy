@@ -2,16 +2,21 @@
 
 namespace App\Livewire;
 
+use App\Models\CajaChica;
 use App\Models\Gasto;
+use App\Models\MovimientoCajaChica;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Livewire\WithPagination;
+use WireUi\Traits\Actions;
 
 class Gastos extends Component
 {
     use WithPagination;
+    use Actions;
 
     #[Rule('required', message: 'Campo requerido')]
     public $descripcion;
@@ -30,8 +35,24 @@ class Gastos extends Component
 
     public function ocultar_table()
     {
-        $this->ocultar_table_cliente = 'hidden';
-        $this->ocultar_form_cliente = '';
+        $hoy = date('d-m-Y');
+
+        $caja_chica = CajaChica::where('fecha', $hoy)->first();
+
+        if($caja_chica == null)
+        {
+            $this->dialog()->error(
+                $title = 'Error !!!',
+                $description = 'La caja chica no ha sido aperturada. Debe cargar el monto incial.'
+            );
+
+        }else{
+
+            $this->ocultar_table_cliente = 'hidden';
+            $this->ocultar_form_cliente = '';
+
+        }
+
     }
 
     public function store()
@@ -41,7 +62,7 @@ class Gastos extends Component
         try {
 
             $user = Auth::user();
-
+            $cc = CajaChica::where('fecha', date('d-m-Y'))->first();
             $gasto = new Gasto();
             $gasto->descripcion = $this->descripcion;
             $gasto->forma_pago = $this->forma_pago;
@@ -51,7 +72,6 @@ class Gastos extends Component
                 $gasto->referencia = 'No aplica';
 
             }else{
-
                 $gasto->referencia = $this->referencia;
 
             }
@@ -69,6 +89,19 @@ class Gastos extends Component
             $gasto->responsable = $user->name;
             $gasto->save();
 
+            $mov_caja_chica = new MovimientoCajaChica();
+            $mov_caja_chica->gasto_id       = $gasto->id;
+            $mov_caja_chica->caja_chica_id  = $cc->id;
+            $mov_caja_chica->saldo          = $cc->saldo - $gasto->monto_usd;
+            $mov_caja_chica->fecha          = date('d-m-Y');
+            $mov_caja_chica->responsable    = Auth::user()->name;
+            $mov_caja_chica->save();
+
+            /**
+             * Actualizo el saldo de la caja chica
+             */
+            DB::table('caja_chicas')->where('id', $cc->id)->update(['saldo' => $mov_caja_chica->saldo]);
+
             Notification::make()
                 ->title('El gasto fue registrado con éxito')
                 ->success()
@@ -77,7 +110,7 @@ class Gastos extends Component
             $this->reset();
 
         } catch (\Throwable $th) {
-            //throw $th;
+            dd($th);
         }
     }
 

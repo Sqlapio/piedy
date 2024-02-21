@@ -21,7 +21,8 @@ class Gasto extends Model
      */
     protected $fillable = [
         'descripcion',
-        'monto',
+        'monto_usd',
+        'monto_bsd',
         'forma_pago',
         'referencia',
         'fecha',

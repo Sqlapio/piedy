@@ -1,8 +1,36 @@
+
+@php
+use App\Models\CajaChica as ModelsCajaChica;
+$hoy = date('d-m-Y');
+$monto = ModelsCajaChica::where('fecha', $hoy)->first();
+@endphp
 <div>
     <div class="p-5">
         @livewire('notifications')
         <h1 class="text-xl mb-6 font-bold text-[#bd9c95]">Modulo de Gastos</h1>
         {{-- tabla y boton del formulario de clientes --}}
+
+        {{-- BCV linea --}}
+        <div class="grid grid-cols-1 gap-4 py-3">
+            {{-- CAJA CHICA --}}
+            <div class="flex justify-between">
+                <div class="flex items-center space-x-2 py-2" onclick="Livewire.dispatch('openModal', { component: 'modal-caja-chica' })">
+                    <img class="w-10 h-auto" src="{{ asset('images/expenses.png') }}" alt="">
+                    <div class="titulos">
+                        <div class="font-bold dark:text-white cursor-pointer">CAJA CHICA</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400 cursor-pointer">Monto de apertura: ${{ ($monto == null) ? '0.00' : $monto->monto }}</div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 py-2" onclick="Livewire.dispatch('openModal', { component: 'modal-caja-chica' })">
+                    <img class="w-10 h-auto" src="{{ asset('images/calculator.png') }}" alt="">
+                    <div class="titulos">
+                        <div class="font-bold dark:text-white cursor-pointer">HABER:</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400 cursor-pointer">${{ ($monto == null) ? '0.00' : $monto->saldo }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="bg-white rounded-xl {{ $ocultar_form_cliente }}">
             <div class="grid md:grid-cols-2 md:gap-6">
                 <div class="px-2">

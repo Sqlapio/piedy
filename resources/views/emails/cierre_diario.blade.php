@@ -20,13 +20,21 @@
                 <br>
                 Fecha: {{ $mailData['fecha'] }}
                 <br>
+                Total de Ventas: {{ $mailData['total_ventas'] }}
+                <br>
+                Total($): {{ $mailData['total_dolares'] }}
+                <br>
+                Zelle($): {{ $mailData['zelle'] }}
+                <br>
+                Total(Bs.): {{ $mailData['total_bolivares'] }}
+                <br>
+                Conversión (Bs.) -> ($): {{ $mailData['conversion'] }}
+                <br>
                 Efectivo($) en caja: {{ $mailData['efectivo_caja_usd'] }}
                 <br>
-                Zelle: {{ $mailData['zelle'] }}
+                Gastos($): {{ $mailData['gastos'] }}
                 <br>
-                Bolivares: {{ $mailData['bolivares'] }}
-                <br>
-                Gastos: {{ $mailData['gastos'] }}
+                Saldo Caja Chica($): {{ $mailData['efectivo_caja_chica'] }}
             </h3>
         </p>
         <p style="text-align: justify; margin-left: 20px;">

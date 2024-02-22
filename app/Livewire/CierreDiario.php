@@ -109,7 +109,7 @@ class CierreDiario extends Component implements HasForms, HasTable
                     'gastos' => $cierre->total_gastos,
                     'efectivo_caja_chica' => $cierre->saldo_caja_chica,
                     'fecha' => $cierre->created_at,
-                    'user_email' => 'gusta.acp@gmail.com',
+                    'user_email' => $correo,
                     'responsable' => $cierre->responsable,
                 ];
 

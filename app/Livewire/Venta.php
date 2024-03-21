@@ -26,8 +26,11 @@ class Venta extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
+        $fecha_venta = date('d-m-Y');
+
+
         return $table
-            ->query(VentaServicio::query())
+            ->query(VentaServicio::query()->where('fecha_venta', $fecha_venta))
             ->columns([
                 TextColumn::make('cod_asignacion')
                     ->sortable()

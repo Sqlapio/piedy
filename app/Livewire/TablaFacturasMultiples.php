@@ -30,8 +30,11 @@ class TablaFacturasMultiples extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
+
+        $fecha_venta = date('d-m-Y');
+
         return $table
-            ->query(FacturaMultiple::query())
+            ->query(FacturaMultiple::query()->where('fecha_venta', $fecha_venta))
             ->columns([
                 TextColumn::make('responsable')
                     ->sortable()

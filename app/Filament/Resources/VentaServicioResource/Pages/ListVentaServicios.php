@@ -49,6 +49,7 @@ class ListVentaServicios extends ListRecords
 
         return [
 
+            'Todo' => ListRecords\Tab::make('Todo'),
             'Mes' => Tab::make()
                 ->query(fn ($query) => $query->whereBetween('created_at', [$desde_mes, $hasta_mes]))
                 ->badge(VentaServicio::query()->whereBetween('created_at',[$desde_mes, $hasta_mes])->count()),
@@ -61,7 +62,6 @@ class ListVentaServicios extends ListRecords
             'Quincena 16/30' => Tab::make()
                 ->query(fn ($query) => $query->whereBetween('created_at', [$desde_II, $hasta_II]))
                 ->badge(VentaServicio::query()->whereBetween('created_at',[$desde_II, $hasta_II])->count()),
-            'Todo' => ListRecords\Tab::make('Todo'),
         ];
     }
 }

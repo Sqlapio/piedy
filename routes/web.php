@@ -53,6 +53,21 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('productos');
     })->name('productos');
 
+    Route::prefix('productos')->group(function () {
+
+        Route::get('/crear', function () {
+            return view('productos.crear_producto');
+        })->name('crear_producto');
+
+        Route::get('/asignar', function () {
+            return view('productos.asignar_producto');
+        })->name('asignar_producto');
+
+        Route::get('/venta', function () {
+            return view('productos.vender_producto');
+        })->name('vender_producto');
+    });
+
     Route::get('/gastos', function () {
         return view('gastos');
     })->name('gastos');
@@ -104,6 +119,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/lista/metodo/pago', [ApiClientesController::class, 'metodo_pago'])->name('api.metodo_pago');
     Route::get('/lista/metodo/pago/uno', [ApiClientesController::class, 'metodo_pago_uno'])->name('api.metodo_pago_uno');
     Route::get('/lista/metodo/pago/dos', [ApiClientesController::class, 'metodo_pago_dos'])->name('api.metodo_pago_dos');
+    Route::get('/lista/productos', [ApiClientesController::class, 'lista_productos'])->name('api.lista_productos');
+    Route::get('/lista/categoria', [ApiClientesController::class, 'categoria_producto'])->name('api.categoria_producto');
+
 
     Route::get('/{record}/edit', function () {
         return view('clientes');

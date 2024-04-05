@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categoria;
 use App\Models\Cliente;
 use App\Models\Empleado;
 use App\Models\MetodoPago;
+use App\Models\Producto;
 use App\Models\Servicio;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -146,6 +148,48 @@ class ApiClientesController extends Controller
             ->get()
             ->map(function (MetodoPago $metodo_pago) {
                 return $metodo_pago;
+            });
+    }
+
+    public function categoria_producto(Request $request): Collection
+    {
+        return Categoria::query()
+            ->select('id', 'descripcion')
+            ->orderBy('descripcion')
+            ->when(
+                $request->search,
+                fn (Builder $query) => $query
+                    ->where('descripcion', 'like', "%{$request->search}%")
+            )
+            ->when(
+                $request->exists('selected'),
+                fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
+                fn (Builder $query) => $query->limit(5)
+            )
+            ->get()
+            ->map(function (Categoria $categoria) {
+                return $categoria;
+            });
+    }
+
+    public function lista_productos(Request $request): Collection
+    {
+        return Producto::query()
+            ->select('id', 'descripcion')
+            ->orderBy('descripcion')
+            ->when(
+                $request->search,
+                fn (Builder $query) => $query
+                    ->where('descripcion', 'like', "%{$request->search}%")
+            )
+            ->when(
+                $request->exists('selected'),
+                fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
+                fn (Builder $query) => $query->limit(5)
+            )
+            ->get()
+            ->map(function (Producto $producto) {
+                return $producto;
             });
     }
 }

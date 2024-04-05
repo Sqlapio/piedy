@@ -50,7 +50,6 @@ class ProductoResource extends Resource
                             ->required(),
                     ])
                     ->required(),
-                TextInput::make('proveedor'),
                 TextInput::make('precio_venta')
                     ->prefix('$')
                     ->numeric()
@@ -59,30 +58,26 @@ class ProductoResource extends Resource
                     ->numeric()
                     ->required(),
                 DatePicker::make('fecha_carga')->format('d-m-Y'),
-                Select::make('comision_id')
-                    ->relationship('comision', 'porcentaje')
-                    ->options(Comision::where('aplicacion', 'producto')->pluck('porcentaje', 'id'))
-                    ->searchable()
-                    ->preload()
-                    ->createOptionForm([
-                        TextInput::make('cod_comision')->default('Pco-'.random_int(11111, 99999)),
-                        TextInput::make('porcentaje')
-                            ->prefix('%')
-                            ->required(),
-                    ])
-                    ->required(),
+                TextInput::make('unidad')
+                    ->numeric(),
+                TextInput::make('contenido_neto')
+                    ->numeric(),
+                TextInput::make('comision_venta_emp')
+                    ->numeric(),
+                TextInput::make('comision_venta_gte')
+                    ->numeric(),
                 Select::make('status')
                     ->options([
                         'activo' => 'Activo',
                         'inactivo' => 'Inactivo',
                     ]),
                 FileUpload::make('image')
-                ->imageEditor()
-                ->imageEditorAspectRatios([
-                    '16:9',
-                    '4:3',
-                    '1:1',
-                ]),
+                    ->imageEditor()
+                    ->imageEditorAspectRatios([
+                        '16:9',
+                        '4:3',
+                        '1:1',
+                    ]),
             ]);
     }
 
@@ -91,14 +86,26 @@ class ProductoResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('cod_producto')->searchable(),
-                ImageColumn::make('image')->circular(),
+                ImageColumn::make('image')
+                    ->circular()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable(),
                 TextColumn::make('descripcion')->searchable(),
                 TextColumn::make('categoria.descripcion')->searchable(),
-                TextColumn::make('precio_venta')->money('USD')->searchable(),
+                TextColumn::make('precio_venta')
+                    ->money('USD')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable(),
                 TextColumn::make('existencia')->searchable(),
                 TextColumn::make('fecha_carga')->searchable(),
-                TextColumn::make('fecha_carga')->searchable(),
-                TextColumn::make('comision.porcentaje')->searchable(),
+                TextColumn::make('unidad')->searchable(),
+                TextColumn::make('contenido_neto')->searchable(),
+                TextColumn::make('comision_venta_emp')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable(),
+                TextColumn::make('comision_venta_gte')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable(),
                 IconColumn::make('status')
                 ->options([
                     'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
@@ -108,7 +115,12 @@ class ProductoResource extends Resource
                     'danger' => 'inactivo',
                     'success' => 'activo',
                 ]),
+                TextColumn::make('responsable')->searchable(),
 
+            ])
+            ->groups([
+                'categoria.descripcion',
+                'unidad'
             ])
             ->filters([
                 //

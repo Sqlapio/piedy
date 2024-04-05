@@ -179,7 +179,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
     {{-- Primera linea para empleados --}}
     @if(Auth::user()->tipo_usuario == 'empleado')
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-                {{-- Perfil --}}
+                {{-- Crear producto --}}
                 <div class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/abstract-light-blue-background-geometry-pattern-hd-wallpaper_1000823-2187.jpg'); background-size: cover;">
                     <a href="{{ route('perfil') }}">
                     <div class="flex items-center">
@@ -197,8 +197,8 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                         </a>
                     </div>
                 </div>
-                {{-- Servicios Asignado --}}
-                {{-- <div class="p-6 rounded-lg" style="background-image: url('/images/empleados.jpg'); background-size: cover;">
+                {{-- producto Asignado --}}
+                <div class="p-6 rounded-lg" style="background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20201015/pngtree-modern-low-poly-background-with-red-and-blue-gradient-colors-image_417695.jpg');background-size: cover;">
                     <a href="{{ route('servicio_asignado') }}">
                     <div class="flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
@@ -214,8 +214,8 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                             </div>
                         </a>
                     </div>
-                </div> --}}
-                {{-- Historico --}}
+                </div>
+                {{-- Vender producto --}}
                 <div class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/abstract-light-blue-background-hd-wallpaper_1000823-2469.jpg?size=626&ext=jpg&ga=GA1.1.1016474677.1696809600&semt=ais');background-size: cover;">
                     <a href="{{ route('historico_servicios') }}">
                     <div class="flex items-center">

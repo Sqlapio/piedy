@@ -16,14 +16,16 @@ return new class extends Migration
             $table->string('cod_producto')->unique();
             $table->string('categoria_id');
             $table->string('descripcion');
-            $table->string('proveedor');
-            $table->decimal('precio_venta', 8, 2);
+            $table->decimal('precio_venta', 8, 2)->nullable();
             $table->integer('existencia');
             $table->string('fecha_carga');
-            $table->integer('comision_id');
-            $table->string('image');
+            $table->string('unidad');
+            $table->integer('contenido_neto');
+            $table->integer('comision_venta_emp')->nullable();
+            $table->integer('comision_venta_gte')->nullable();
+            $table->string('image')->nullable();
             $table->string('status')->default('activo');
-
+            $table->string('responsable');
             $table->timestamps();
         });
     }

@@ -4,36 +4,62 @@ namespace App\Filament\Widgets;
 
 use App\Models\Frecuencia;
 use App\Models\VentaServicio;
-use Carbon\Carbon;
+// use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Filament\Widgets\ChartWidget;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 
 class ClienteNuevoChart extends ChartWidget
 {
+    use InteractsWithPageFilters;
+
     protected static ?string $heading = 'Frecuencia de registro de clientes';
 
     protected static ?int $sort = 4;
 
+    // public ?string $filter = 'today';
+
+    // protected function getFilters(): ?array
+    // {
+    //     return [
+    //         'today' => 'Hoy',
+    //         'week'  => 'Semana',
+    //         'month' => 'Mes',
+    //         'year'  => 'Año',
+    //     ];
+    // }
+
     protected function getData(): array
     {
-        $activeFilter = $this->filter;
-        // dd($star = now()->startOfMonth());
-        // $end = now()->endOfMonth()->isoFormat('dddd, D MMM');
+        $start = $this->filters['startDate'];
+        $end = $this->filters['endDate'];
+        // $activeFilter = $this->filter;
+
+        // if ($activeFilter === 'today') {
+        //     $rangeStartDate = now()->startOfDay();
+        //     $rangeEndDate = now()->endOfDay();
+        // } elseif ($activeFilter === 'week') {
+        //     $rangeStartDate = now()->subWeek()->startOfWeek();
+        //     dd($rangeStartDate);
+        //     $rangeEndDate = now()->endOfWeek();
+        // } elseif ($activeFilter === 'month') {
+        //     $rangeStartDate = now()->subMonthNoOverflow()->startOfMonth();
+        //     $rangeEndDate = now()->endOfMonth();
+        // } elseif ($activeFilter === 'year'){
+        //     $rangeStartDate = now()->subMonthNoOverflow()->startOfYear();
+        //     $rangeEndDate = now()->endOfYear();
+        // }
 
         $data = Trend::model(Frecuencia::class)
             ->between(
-                now()->startOfMonth(),
-                now()->endOfMonth(),
+                start: (isset($start)) ? Carbon::parse($start) : now()->startOfMonth(),
+                end: (isset($end)) ? Carbon::parse($end) : now()->endOfMonth(),
             )
-            // ->perMonth()
+
             ->perDay()
             ->count('cliente_id');
-            // ->count();
-        // $labels = ($data->map(fn (TrendValue $value) => $value->date))->toArray();
-        // $r = Carbon::parse($labels[0])->isoFormat('dddd, D MMM');
-        // $p = strtotime($labels[0]);
-        // dd($p, $r, count($labels));
 
         return [
             'datasets' => [

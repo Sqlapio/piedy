@@ -33,6 +33,7 @@ class ListVentaServicios extends ListRecords
         return [
             VentaServicioResource\Widgets\VentaServicioStats::class,
             VentaServicioResource\Widgets\VentaServicioComisionStats::class,
+            VentaServicioResource\Widgets\VentaServicioPropinasStats::class,
         ];
     }
 

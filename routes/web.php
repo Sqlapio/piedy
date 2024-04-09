@@ -2,10 +2,13 @@
 
 use App\Http\Controllers\ApiClientesController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\NotificacionesController;
 use App\Livewire\Login;
 use App\Models\Cliente;
 use App\Models\VentaServicio;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotificacionesEmail;
 
 /*
 |--------------------------------------------------------------------------
@@ -111,9 +114,20 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 });
 
 Route::get('/pp', function () {
-    $venta_servicio = VentaServicio::where('cod_asignacion', 'Pca-73744285')->first();
+    $fecha_anterior =  date("d-m-Y", strtotime(date("d-m-Y") . "-1 day"));
+    $clientes = VentaServicio::where('fecha_venta', $fecha_anterior)->get();
 
-    $cliente = Cliente::where('id', '1')->first();
-    dd($cliente->get_disponibles);
+    foreach($clientes as $item)
+    {
+        $cliente = Cliente::find($item->cliente_id);
+        dump($cliente);
+        // $view = 'emails.correo_masivo';
+        // $mailData = [
+        //     'cliente' => $cliente->nombre.' '.$cliente->apellido
+        // ];
+
+        // Mail::to($cliente->email)->send(new NotificacionesEmail($mailData, $view));
+
+    }
 
 });

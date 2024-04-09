@@ -40,6 +40,13 @@ class DetalleAsignacion extends ModalComponent
     #[Rule('required', message: 'Campo obligatorio')]
     public $servicio_id;
 
+    /**
+     * ATRIBUTOS PARA L A EDICION DEL SERVICIO
+     */
+    public $es_empleado_id;
+    public $es_cliente_id;
+    public $es_servicio_id;
+
     public $descripcion;
     public $referencia;
     public $buscar;
@@ -51,6 +58,9 @@ class DetalleAsignacion extends ModalComponent
     public $atr6 = '';
     public $atr7 = '';
     public $atr8 = '';
+    public $atr9 = 'hidden';
+    public $atr10 = 'hidden';
+    public $atr11 = '';
     public $grid = 'grid-cols-1';
     public $servicios = [];
 
@@ -69,6 +79,66 @@ class DetalleAsignacion extends ModalComponent
         $this->atr6 = 'hidden';
         $this->atr7 = 'hidden';
         $this->atr8 = 'hidden';
+    }
+
+    public function editar_servicio()
+    {
+        $this->atr9 = '';
+        $this->atr10 = '';
+
+        /** Atributos para ocultar los servicios asignados */
+
+        $this->atr3 = 'hidden';
+        $this->atr4 = 'hidden';
+        $this->atr5 = 'hidden';
+        $this->atr6 = 'hidden';
+        $this->atr7 = 'hidden';
+        $this->atr8 = 'hidden';
+        $this->atr11 = 'hidden';
+
+    }
+
+    public function guardar_editado($id)
+    {
+        $disponible =  Disponible::findOrFail($id);
+
+        $cliente = Cliente::find($this->es_cliente_id);
+
+        $empleado = User::find($this->es_empleado_id);
+
+        $servicio = Servicio::find($this->es_servicio_id);
+
+        DB::table('disponibles')
+              ->where('id', $id)
+              ->update([
+                'cliente_id' => $cliente->id,
+                'cliente' => $cliente->nombre.' '.$cliente->apellido,
+                'empleado_id' => $empleado->id,
+                'empleado' => $empleado->name,
+                'cod_servicio' => $servicio->cod_servicio,
+                'servicio_id' => $servicio->id,
+                'servicio' => $servicio->descripcion,
+                'costo' => $servicio->costo,
+            ]);
+
+        DB::table('detalle_asignacions')
+              ->where('cod_asignacion', $disponible->cod_asignacion)
+              ->update([
+                'cod_servicio' => $servicio->cod_servicio,
+                'empleado_id' => $empleado->id,
+                'empleado' => $empleado->name,
+                'servicio_id' => $servicio->id,
+                'servicio' => $servicio->descripcion,
+                'cliente_id' => $cliente->id,
+                'cliente' => $cliente->nombre.' '.$cliente->apellido,
+                'costo' => $servicio->costo,
+            ]);
+
+        $this->forceClose()->closeModal();
+        
+        $this->redirect('/cabinas');
+
+
     }
 
     public function otro_tecnico_asignar()

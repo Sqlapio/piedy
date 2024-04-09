@@ -18,7 +18,7 @@ class Citas extends Component
     use WithPagination;
 
     use Actions;
-    
+
     #[Rule('required')]
     public $fecha;
 
@@ -32,10 +32,18 @@ class Citas extends Component
     public $servicio_id;
     // public $empleado_id;
 
+    public $mes;
+
     public $ocultar = 'hidden';
     public $botton_agendar_cita = '';
 
+
     public bool $myModal = false;
+
+    public function mount()
+    {
+        $this->mes = Carbon::now()->format('m');
+    }
 
     protected $messages = [
 
@@ -50,6 +58,11 @@ class Citas extends Component
     {
         $this->ocultar = '';
         $this->botton_agendar_cita = 'hidden';
+    }
+
+    public function asignar()
+    {
+        redirect()->to('/clientes');
     }
 
     public function inicio(){
@@ -76,10 +89,10 @@ class Citas extends Component
         redirect()->to('/servicios');
     }
 
-    public function store() 
+    public function store()
     {
 
-        $this->validate(); 
+        $this->validate();
 
         try {
 
@@ -105,20 +118,20 @@ class Citas extends Component
                         ->iconColor('danger')
                         ->body('Por favor intente agendar en horas diferentes.')
                         ->send();
-                    
+
                 } else {
                     $cita->save();
 
                     $this->reset();
-    
+
                     $this->dialog()->success(
                         $title = 'Cliente agendado',
                         $description = 'El cliente fue agendado de forma exitosa'
                     );
-    
+
                     $cliente = Cliente::where('id', $cita->cliente_id)->first();
                     $type = 'cliente';
-                    
+
                     $mailData = [
                         'cliente_email' => $cliente->email,
                         'cliente_fullname' => $cliente->nombre.' '.$cliente->apellido,
@@ -126,26 +139,26 @@ class Citas extends Component
                         'hora_cita' => Carbon::createFromFormat('H:i', $cita->hora)->timezone('America/Caracas')->format('h:i A'),
                         'servicio' => $cita->servicio->descripcion,
                         'costo' => $cita->servicio->costo,
-    
+
                     ];
-    
+
                     NotificacionesController::notification($mailData, $type);
-    
+
                 }
             }else{
 
                 $cita->save();
-                
+
                 $this->reset();
-    
+
                     $this->dialog()->success(
                         $title = 'Cliente agendado',
                         $description = 'El cliente fue agendado de forma exitosa'
                     );
-    
+
                     $cliente = Cliente::where('id', $cita->cliente_id)->first();
                     $type = 'cliente';
-                    
+
                     $mailData = [
                         'cliente_email' => $cliente->email,
                         'cliente_fullname' => $cliente->nombre.' '.$cliente->apellido,
@@ -154,9 +167,9 @@ class Citas extends Component
                         // 'empleado_cita' => $cita->get_empleado->nombre.' '.$cita->get_empleado->apellido,
                         'servicio' => $cita->servicio->descripcion,
                         'costo' => $cita->servicio->costo,
-    
+
                     ];
-    
+
                     // NotificacionesController::notification($mailData, $type);
             }
 
@@ -167,6 +180,7 @@ class Citas extends Component
 
     public function render()
     {
+        $prueba = $this->mes;
         $date = date('Y-m-d');
         return view('livewire.citas', [
             'data' => Cita::where('fecha', $date)

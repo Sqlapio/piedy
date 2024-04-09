@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Categoria;
 use App\Models\Cliente;
 use App\Models\Empleado;
+use App\Models\Mes;
 use App\Models\MetodoPago;
 use App\Models\Producto;
 use App\Models\Servicio;
@@ -192,4 +193,27 @@ class ApiClientesController extends Controller
                 return $producto;
             });
     }
+
+    public function meses(Request $request): Collection
+    {
+        return Mes::query()
+            ->select('id','mes','numero')
+            ->orderBy('id', 'asc')
+            ->when(
+                $request->search,
+                fn (Builder $query) => $query
+                    ->where('mes', 'like', "%{$request->search}%")
+            )
+            ->when(
+                $request->exists('selected'),
+                fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
+                fn (Builder $query) => $query->limit(12)
+            )
+            ->get()
+            ->map(function (Mes $mes) {
+                $mes->mes;
+                return $mes;
+            });
+    }
+
 }

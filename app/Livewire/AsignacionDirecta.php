@@ -119,7 +119,12 @@ class AsignacionDirecta extends ModalComponent
             }
 
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
         }
 
     }

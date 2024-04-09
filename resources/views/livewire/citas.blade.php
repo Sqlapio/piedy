@@ -1,403 +1,57 @@
-
+@php
+use App\Models\Cita;
+use Carbon\Carbon;
+use Flowframe\Trend\Trend;
+use Flowframe\Trend\TrendValue;
+    $data_citas = Cita::where('status', 1)->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->get();
+    $datas = Trend::model(Cita::class)
+            ->between(
+                now()->startOfMonth()->month($mes),
+                now()->endOfMonth()->month($mes),
+            )
+            ->perDay()
+            ->count();
+    $array = $datas->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray();
+@endphp
     <div class="">
         @livewire('notifications')
         <h1 class="text-2xl mb-4 font-bold text-[#bd9c95]">Agenda del dia</h1>
-
-        {{-- tabla y boton del formulario de clientes --}}
-        <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-4 mb-4 mt-8 {{ $ocultar }}">
-            {{-- Descripcion --}}
-            <div class="p-2">
-                <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Fecha de cita</label>
-                <x-input type="date" wire:model.defer="fecha" id="focus" class="focus:ring-check-blue focus:border-check-blue" />
+            <div class="p-2 flex justify-between items-center">
+                <h1 class="text-lg font-bold leading-6 text-black uppercase">
+                    {{ Carbon::parse(date('d-m-Y'))->isoFormat('dddd, D MMMM Y ') }}
+                </h1>
+                  <div class="p-2">
+                    <x-select wire:change="$emit('selected', $event.target.value)" wire:model.live="mes" placeholder="Seleccion" :async-data="route('api.meses')" option-label="mes" option-value="numero" />
+                  </div>
             </div>
-            <div class="p-2">
-                <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Hora de cita</label>
-                <x-time-picker placeholder="hora" format="12" interval="30" wire:model.defer="hora" />
-            </div>
-            <div class="p-2">
-                <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Cliente</label>
-                <x-select wire:model.defer="cliente_id" placeholder="Seleccion" :async-data="route('api.clientes')" option-label="nombre" option-value="id" />
-            </div>
-            <div class="p-2">
-                <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Servicio</label>
-                <x-select wire:model.defer="servicio_id" placeholder="Seleccion" :async-data="route('api.servicios')" option-label="descripcion" option-value="id" />
-            </div>
-        </div>
 
-        <div class="flex justify-end p-2 mt-auto mb-4 {{ $ocultar }}">
-            <button type="submit" wire:click.prevent="store()" class="justify-end rounded-md border border-transparent bg-[#7898a5] py-2 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">
-                <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="store" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                </svg>
-                <span>Guardar</span>
-            </button>
-        </div>
-
-        {{-- --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 ">
-
-            <!-- card group 1 -->
-            <div class="p-2">
-                <div class="flex rounded-lg h-full bg-[#4bbcf4] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <div class="flex items-center mb-3 p-2">
-                        <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/calendar.png') }}" alt="">
-                        </div>
-                        <h2 class="text-white dark:text-black text-sm font-extrabold">7:00am - 7:30am</h2>
-                    </div>
-                    <div class="flex flex-col justify-betweeCliente agendadon text-xs">
-                        @foreach ($data as $item)
-                        @if($item->hora == '07:00')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#0e9de5] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @if($item->hora == '07:30')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#0e9de5] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @endforeach
-                    </div>
+        {{-- Citas agendadas --}}
+        <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7">
+            @foreach ($array as $key => $item)
+            <div class="flex rounded-lg h-44  p-2 flex-col border-gray-400 border" >
+                <div class="flex items-center mb-1 p-2">
+                    <h2 class="text-black dark:text-black text-xs font-bold cursor-pointer" wire:click="$dispatch('openModal', { component: 'modal-agenda', arguments: { fecha: {{ $key }}, mes: {{ $mes }} }})">{{ $item }}</h2>
                 </div>
-            </div>
-
-            <!-- card group 1 -->
-            <div class="p-2">
-                <div class="flex rounded-lg h-full bg-[#61c0bf] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <div class="flex items-center mb-3 p-2">
-                        <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/calendar.png') }}" alt="">
-                        </div>
-                        <h2 class="text-white dark:text-white text-sm font-extrabold">8:00am - 8:30am</h2>
-                    </div>
+                <div class="flex rounded-lg h-44 flex-col zona overflow-x-auto overflow-y-auto">
                     <div class="flex flex-col justify-between text-xs">
-                        @foreach ($data as $item)
-                        @if($item->hora == '08:00')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#3d9897] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @if($item->hora == '08:30')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#3d9897] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
+                        @foreach ($data_citas as $items)
+                        <div class="max-w-md space-y-1 text-gray-700 list-inside dark:text-gray-400">
+                                    @if($items->fecha == $item )
+                                        <li class="flex items-center p-1" wire:click="$dispatch('openModal', { component: 'modal-cita', arguments: { cita: {{ $items->id }} }})">
+                                            <svg  class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                                            </svg>
+                                            {{ $items->cliente }} <br> Hora: {{$items->hora}}
+                                        </li>
+                                    @endif
+                                </div>
                         @endforeach
                     </div>
                 </div>
             </div>
-
-            <!-- card group 1 -->
-            <div class="p-2">
-                <div class="flex rounded-lg h-full bg-[#9ec0b8] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <div class="flex items-center mb-3 p-2">
-                        <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/calendar.png') }}" alt="">
-                        </div>
-                        <h2 class="text-white dark:text-white text-sm font-extrabold">9:00am - 9:30am</h2>
-                    </div>
-                    <div class="flex flex-col justify-between text-xs">
-                        @foreach ($data as $item)
-                        @if($item->hora == '09:00')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#70a296] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @if($item->hora == '09:30')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#70a296] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-            <!-- card group 1 -->
-            <div class="p-2">
-                <div class="flex rounded-lg h-full bg-[#ffb6b9] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <div class="flex items-center mb-3 p-2">
-                        <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/calendar.png') }}" alt="">
-                        </div>
-                        <h2 class="text-white dark:text-white text-sm font-extrabold">10:00am - 10:30am</h2>
-                    </div>
-                    <div class="flex flex-col justify-between text-xs">
-                        @foreach ($data as $item)
-                        @if($item->hora == '10:00')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#ff6a70] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @if($item->hora == '10:30')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{$item->hora}}am" class="mb-2 bg-[#ff6a70] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
+            @endforeach
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 ">
-
-            <!-- card group 1 -->
-            <div class="p-2">
-                <div class="flex rounded-lg h-full bg-[#4bbcf4] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <div class="flex items-center mb-3 p-2">
-                        <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/calendar.png') }}" alt="">
-                        </div>
-                        <h2 class="text-white dark:text-black text-sm font-extrabold">11:00am - 11:30am</h2>
-                    </div>
-                    <div class="flex flex-col justify-between text-xs">
-                        @foreach ($data as $item)
-                        @if($item->hora == '11:00')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#0e9de5] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @if($item->hora == '11:30')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#0e9de5] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-            <!-- card 2 -->
-            <div class="p-2">
-                <div class="flex rounded-lg h-full bg-[#61c0bf] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <div class="flex items-center mb-3 p-2">
-                        <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/calendar.png') }}" alt="">
-                        </div>
-                        <h2 class="text-white dark:text-black text-sm font-extrabold">12:00pm - 12:30pm</h2>
-                    </div>
-                    <div class="flex flex-col justify-between">
-                        @foreach ($data as $item)
-                        @if($item->hora == '12:00')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#3d9897] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @if($item->hora == '12:30')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#3d9897] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-            <!-- card 3 -->
-            <div class="p-2">
-                <div class="flex rounded-lg h-full bg-[#9ec0b8] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <div class="flex items-center mb-3 p-2">
-                        <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/calendar.png') }}" alt="">
-                        </div>
-                        <h2 class="text-white dark:text-black text-sm font-extrabold">1:00pm - 1:30pm</h2>
-                    </div>
-                    <div class="flex flex-col justify-between">
-                        @foreach ($data as $item)
-                        @if($item->hora == '13:00')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#70a296] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @if($item->hora == '13:30')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#70a296] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-            <!-- card 4 -->
-            <div class="p-2">
-                <div class="flex rounded-lg h-full bg-[#ffb6b9] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <div class="flex items-center mb-3 p-2">
-                        <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/calendar.png') }}" alt="">
-                        </div>
-                        <h2 class="text-white dark:text-black text-sm font-extrabold">2:00pm - 2:30pm</h2>
-                    </div>
-                    <div class="flex flex-col justify-between">
-                        @foreach ($data as $item)
-                        @if($item->hora == '14:00')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#ff6a70] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @if($item->hora == '14:30')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#ff6a70] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 ">
-
-            <!-- card group 1 -->
-            <div class="p-2">
-                <div class="flex rounded-lg h-full bg-[#4bbcf4] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <div class="flex items-center mb-3 p-2">
-                        <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/calendar.png') }}" alt="">
-                        </div>
-                        <h2 class="text-white dark:text-black text-sm font-extrabold">3:00pm - 3:30pm</h2>
-                    </div>
-                    <div class="flex flex-col justify-between">
-                        @foreach ($data as $item)
-                        @if($item->hora == '15:00')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#0e9de5] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @if($item->hora == '15:30')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#0e9de5] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-            <!-- card 2 -->
-            <div class="p-2">
-                <div class="flex rounded-lg h-full bg-[#61c0bf] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <div class="flex items-center mb-3 p-2">
-                        <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/calendar.png') }}" alt="">
-                        </div>
-                        <h2 class="text-white dark:text-black text-sm font-extrabold">4:00pm - 4:30pm</h2>
-                    </div>
-                    <div class="flex flex-col justify-between">
-                        @foreach ($data as $item)
-                        @if($item->hora == '16:00')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#3d9897] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @if($item->hora == '16:30')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#3d9897] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-            <!-- card 3 -->
-            <div class="p-2">
-                <div class="flex rounded-lg h-full bg-[#9ec0b8] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <div class="flex items-center mb-3 p-2">
-                        <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/calendar.png') }}" alt="">
-                        </div>
-                        <h2 class="text-white dark:text-black text-sm font-extrabold">5:00pm - 5:30pm</h2>
-                    </div>
-                    <div class="flex flex-col justify-between">
-                        @foreach ($data as $item)
-                        @if($item->hora == '17:00')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#70a296] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @if($item->hora == '17:30')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#70a296] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-            <!-- card 4 -->
-            <div class="p-2">
-                <div class="flex rounded-lg h-full bg-[#ffb6b9] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <div class="flex items-center mb-3 p-2">
-                        <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/calendar.png') }}" alt="">
-                        </div>
-                        <h2 class="text-white dark:text-black text-sm font-extrabold">6:00pm - 6:30pm</h2>
-                    </div>
-                    <div class="flex flex-col justify-between">
-                        @foreach ($data as $item)
-                        @if($item->hora == '18:00')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#ff6a70] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @if($item->hora == '18:30')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#ff6a70] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 ">
-
-            <!-- card group 1 -->
-            <div class="p-2">
-                <div class="flex rounded-lg h-full bg-[#4bbcf4] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <div class="flex items-center mb-3 p-2">
-                        <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/calendar.png') }}" alt="">
-                        </div>
-                        <h2 class="text-white dark:text-black text-sm font-extrabold">7:00pm - 7:30pm</h2>
-                    </div>
-                    <div class="flex flex-col justify-between">
-                        @foreach ($data as $item)
-                        @if($item->hora == '19:00')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#0e9de5] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @if($item->hora == '19:30')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}am" class="mb-2 bg-[#0e9de5] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-            <!-- card 2 -->
-            <div class="p-2">
-                <div class="flex rounded-lg h-full bg-[#61c0bf] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <div class="flex items-center mb-3 p-2">
-                        <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/calendar.png') }}" alt="">
-                        </div>
-                        <h2 class="text-white dark:text-black text-sm font-extrabold">8:00pm - 8:30pm</h2>
-                    </div>
-                    <div class="flex flex-col justify-between">
-                        @foreach ($data as $item)
-                        @if($item->hora == '20:00')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#3d9897] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @if($item->hora == '20:30')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#3d9897] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-            <!-- card 3 -->
-            <div class="p-2">
-                <div class="flex rounded-lg h-full bg-[#9ec0b8] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <div class="flex items-center mb-3 p-2">
-                        <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/calendar.png') }}" alt="">
-                        </div>
-                        <h2 class="text-white dark:text-black text-sm font-extrabold">9:00pm - 9:30pm</h2>
-                    </div>
-                    <div class="flex flex-col justify-between">
-                        @foreach ($data as $item)
-                        @if($item->hora == '21:00')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#70a296] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @if($item->hora == '21:30')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#70a296] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-            <!-- card 4 -->
-            <div class="p-2">
-                <div class="flex rounded-lg h-full bg-[#ffb6b9] p-2 flex-col shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <div class="flex items-center mb-3 p-2">
-                        <div class="w-9 h-9 mr-3 inline-flex items-center justify-center  text-black flex-shrink-0">
-                            <img src="{{ asset('images/calendar.png') }}" alt="">
-                        </div>
-                        <h2 class="text-white dark:text-black text-sm font-extrabold">10:00pm</h2>
-                    </div>
-                    <div class="flex flex-col justify-between">
-                        @foreach ($data as $item)
-                        @if($item->hora == '22:00')
-                        <x-badge rounded label="{{ $item->cliente->nombre }} {{ $item->cliente->apellido }}: {{ $item->hora }}pm" class="mb-2 bg-[#ff6a70] text-white border-none" onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" />
-                        @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-        </div>
 
         <div class="w-full h-28"></div>
 
@@ -491,7 +145,45 @@
                 </div>
             </div>
         </div>
+        <script>
+            const columns = document.querySelectorAll(".zona");
+            document.addEventListener("dragstart", (e) => {
+            e.target.classList.add("dragging");
+            });
+
+            document.addEventListener("dragend", (e) => {
+            e.target.classList.remove("dragging");
+            });
+
+            columns.forEach((item) => {
+            item.addEventListener("dragover", (e) => {
+            const dragging = document.querySelector(".dragging");
+            const applyAfter = getNewPosition(item, e.clientY);
+
+            if (applyAfter) {
+            console.log('estoy aqui');
+            applyAfter.insertAdjacentElement("afterend", dragging);
+            } else {
+
+            item.prepend(dragging);
+            }
+            });
+            });
+
+            function getNewPosition(column, posY) {
+            console.log('estoy aqui2');
+            const cards = column.querySelectorAll(".item:not(.dragging)");
+            let result;
+
+            for (let refer_card of cards) {
+            const box = refer_card.getBoundingClientRect();
+            const boxCenterY = box.y + box.height / 1;
+
+            if (posY >= boxCenterY) result = refer_card;
+            }
+
+            return result;
+            }
+
+        </script>
     </div>
-
-
-

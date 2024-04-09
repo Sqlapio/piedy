@@ -19,10 +19,6 @@
                 Fecha: {{ $mailData['fecha_cita'] }}
                 <br>
                 Hora: {{ $mailData['hora_cita'] }}
-                <br>
-                servicio: {{ $mailData['servicio'] }}
-                <br>
-                Costo: ${{ $mailData['costo'] }}
             </h3>
         </p>
         <p style="text-align: justify; margin-left: 20px;">

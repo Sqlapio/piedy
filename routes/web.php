@@ -6,6 +6,10 @@ use App\Livewire\Login;
 use App\Models\Cliente;
 use App\Models\VentaServicio;
 use Illuminate\Support\Facades\Route;
+use Carbon\Carbon;
+use Flowframe\Trend\Trend;
+use Flowframe\Trend\TrendValue;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -121,6 +125,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/lista/metodo/pago/dos', [ApiClientesController::class, 'metodo_pago_dos'])->name('api.metodo_pago_dos');
     Route::get('/lista/productos', [ApiClientesController::class, 'lista_productos'])->name('api.lista_productos');
     Route::get('/lista/categoria', [ApiClientesController::class, 'categoria_producto'])->name('api.categoria_producto');
+    Route::get('/lista/periodo', [ApiClientesController::class, 'meses'])->name('api.meses');
 
 
     Route::get('/{record}/edit', function () {
@@ -129,9 +134,12 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 });
 
 Route::get('/pp', function () {
-    $venta_servicio = VentaServicio::where('cod_asignacion', 'Pca-73744285')->first();
 
-    $cliente = Cliente::where('id', '1')->first();
-    dd($cliente->get_disponibles);
+    $fechaIni = '2024-01-01';
+    $fechaFin = '2024-01-31';
+
+    $resultados = DB::select("CALL Sp_ObtenerComisionesEmpleados(?, ?)", array($fechaIni, $fechaFin));
+
+    return $resultados->toArray();
 
 });

@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('citas', function (Blueprint $table) {
             $table->id();
             $table->string('cod_cita')->unique();
-            $table->integer('cliente_id');
-            $table->integer('servicio_id');
+            $table->integer('cliente_id')->nullable();
+            $table->string('cliente');
+            $table->string('correo');
             $table->string('fecha');
             $table->string('hora');
             $table->string('responsable');
             $table->integer('status')->default(1);
-
             $table->timestamps();
         });
     }

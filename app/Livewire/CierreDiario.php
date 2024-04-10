@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Http\Controllers\NotificacionesController;
 use App\Models\CajaChica;
 use App\Models\CierreDiario as ModelsCierreDiario;
+use App\Models\DetalleAsignacion;
 use App\Models\FacturaMultiple;
 use App\Models\Gasto;
 use App\Models\TasaBcv;
@@ -67,7 +68,7 @@ class CierreDiario extends Component implements HasForms, HasTable
             $query = ModelsCierreDiario::where('fecha', date('d-m-Y'))->count();
 
             if($query >= 2){
-                throw new Exception("No puede ejecutar mas de dos cierres en una jornada laboral. Por favor contacte con el administrador");
+                throw new Exception("No puede ejecutar mas de dos cierres en una jornada laboral");
 
             }else{
 
@@ -98,8 +99,8 @@ class CierreDiario extends Component implements HasForms, HasTable
                 $cierre->total_bolivares         = $total_bs;
                 $cierre->total_gastos            = $total_gastos_usd;
                 $cierre->saldo_caja_chica        = $efectivo_caja_usd;
-                $cierre->fecha = date('d-m-Y');
-                $cierre->responsable = $user->name;
+                $cierre->fecha                   = date('d-m-Y');
+                $cierre->responsable             = $user->name;
                 $cierre->save();
 
                 /** Notificacion para el usuario cuando su servicio fue anulado */
@@ -109,6 +110,7 @@ class CierreDiario extends Component implements HasForms, HasTable
 
                 $mailData = [
                         'tasa_bcv' => $tasa,
+                        'total_servicios' => DetalleAsignacion::where('fecha', date('d-m-Y'))->count(),
                         'total_ventas' => $cierre->total_ventas,
                         'total_dolares' => VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_usd'),
                         'zelle' => $cierre->total_dolares_zelle,

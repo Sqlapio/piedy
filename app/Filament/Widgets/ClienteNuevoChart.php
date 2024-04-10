@@ -15,7 +15,11 @@ class ClienteNuevoChart extends ChartWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $heading = 'Frecuencia de registro de clientes';
+    protected static ?string $heading = 'Clientes Registrados(Nuevos) / Clientes Atendidos';
+
+    protected static ?string $maxHeight = '300px';
+
+    protected int | string | array $columnSpan = 'full';
 
     protected static ?int $sort = 4;
 

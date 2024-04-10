@@ -4,6 +4,7 @@ use App\Http\Controllers\ApiClientesController;
 use App\Http\Controllers\LoginController;
 use App\Livewire\Login;
 use App\Models\Cliente;
+use App\Models\DetalleAsignacion;
 use App\Models\VentaServicio;
 use Illuminate\Support\Facades\Route;
 use Carbon\Carbon;
@@ -165,5 +166,5 @@ Route::get('/pp', function () {
 
     $resultados = DB::select("CALL Sp_ObtenerComisionesEmpleados(?, ?)", array($fechaIni, $fechaFin));
 
-    return $resultados->toArray();
+    dd(DetalleAsignacion::where('fecha', date('d-m-Y'))->count());
 });

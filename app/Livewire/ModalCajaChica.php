@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 
 use App\Models\CajaChica as ModelsCajaChica;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use LivewireUI\Modal\ModalComponent;
@@ -25,17 +26,46 @@ class ModalCajaChica extends ModalComponent
     public function actualiza_caja_chica()
     {
 
-        $hoy = date('d-m-Y');
+        try {
 
-        $caja_chica_apr = new ModelsCajaChica();
-        $caja_chica_apr->monto = $this->monto;
-        $caja_chica_apr->saldo = $this->monto;
-        $caja_chica_apr->fecha = $hoy;
-        $caja_chica_apr->save();
+            $query = ModelsCajaChica::where('fecha', date('d-m-Y'))->first();
 
-        $this->forceClose()->closeModal();
+            if($query){
+                DB::table('caja_chicas')
+                ->where('id', $query->id)
+                ->update([
+                    'monto' => $this->monto,
+                    'saldo' => $this->monto
+                ]);
 
-        redirect()->to('/gastos');
+            }else{
+                $caja_chica_apr = new ModelsCajaChica();
+                $caja_chica_apr->monto = $this->monto;
+                $caja_chica_apr->saldo = $this->monto;
+                $caja_chica_apr->fecha = date('d-m-Y');
+                $caja_chica_apr->save();
+
+            }
+
+            $this->forceClose()->closeModal();
+
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body('El saldo de la caja chica fue actualizado con éxito')
+            ->send();
+
+            redirect()->to('/gastos');
+
+        } catch (\Throwable $th) {
+            Notification::make()
+            ->title('NOTIFICACIÓN DE ERRROR')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
+        }
 
     }
 

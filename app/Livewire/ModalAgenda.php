@@ -55,7 +55,6 @@ class ModalAgenda extends ModalComponent
 
     public function store()
     {
-
         $this->validate();
 
         try {
@@ -63,6 +62,7 @@ class ModalAgenda extends ModalComponent
             $dia = UtilsController::agenda($this->fecha, $this->mes);
             $citas = new Cita();
             $citas->cod_cita = 'Pci-'.random_int(11111, 99999);
+
             if($this->cliente_id != '')
             {
                 $cliente = Cliente::find($this->cliente_id);
@@ -75,9 +75,9 @@ class ModalAgenda extends ModalComponent
                 $citas->cliente = $this->cliente;
             }
 
-            if($this->hora > '22:00' || $this->hora < '10:00')
-            {
+            if($this->hora > '22:00' || $this->hora < '10:00'){
                 throw new Exception("La hora debe estar entre las 10:00am y las 22:00pm. Por favor intente nuevamente");
+                
             }else{
                 $citas->hora = date("h:i a", strtotime($this->hora));
             }
@@ -121,12 +121,10 @@ class ModalAgenda extends ModalComponent
             ->body($th->getMessage())
             ->send();
         }
-
-
     }
+
     public function render()
     {
-
         $dia = UtilsController::agenda($this->fecha, $this->mes);
         return view('livewire.modal-agenda', compact('dia'));
     }

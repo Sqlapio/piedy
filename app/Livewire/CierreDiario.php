@@ -10,9 +10,11 @@ use App\Models\Gasto;
 use App\Models\TasaBcv;
 use App\Models\VentaServicio;
 use Barryvdh\Debugbar\Facades\Debugbar;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -62,68 +64,82 @@ class CierreDiario extends Component implements HasForms, HasTable
 
         try {
 
-            /** Responsable del cierre */
-            $user = Auth::user();
+            $query = ModelsCierreDiario::where('fecha', date('d-m-Y'))->count();
 
-            /** totales en la tabla de ventas */
-            $total_venta = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('total_USD');
+            if($query >= 2){
+                throw new Exception("No puede ejecutar mas de dos cierres en una jornada laboral. Por favor contacte con el administrador");
 
-            /** totales de pagos en Dolares*/
-            $total_efectivo_usd = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Efectivo Usd')->sum('pago_usd');
-            $total_zelle = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Zelle')->sum('pago_usd');
+            }else{
 
-            /** totales de pagos en Bolivares*/
-            $total_bs = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
+                /** Responsable del cierre */
+                $user = Auth::user();
 
-            /** totales gastos en Dolares*/
-            $total_gastos_usd = Gasto::where('fecha', date('d-m-Y'))->sum('monto_usd');
+                /** totales en la tabla de ventas */
+                $total_venta = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('total_USD');
 
-            /** totales gastos en Dolares*/
-            $efectivo_caja_usd = CajaChica::where('fecha', date('d-m-Y'))->first()->saldo;
+                /** totales de pagos en Dolares*/
+                $total_efectivo_usd = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Efectivo Usd')->sum('pago_usd');
+                $total_zelle = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Zelle')->sum('pago_usd');
+
+                /** totales de pagos en Bolivares*/
+                $total_bs = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
+
+                /** totales gastos en Dolares*/
+                $total_gastos_usd = Gasto::where('fecha', date('d-m-Y'))->sum('monto_usd');
+
+                /** totales gastos en Dolares*/
+                $efectivo_caja_usd = CajaChica::where('fecha', date('d-m-Y'))->first()->saldo;
 
 
-            $cierre = new ModelsCierreDiario();
-            $cierre->total_ventas            = $total_venta;
-            $cierre->total_dolares_efectivo  = $total_efectivo_usd;
-            $cierre->total_dolares_zelle     = $total_zelle;
-            $cierre->total_bolivares         = $total_bs;
-            $cierre->total_gastos            = $total_gastos_usd;
-            $cierre->saldo_caja_chica        = $efectivo_caja_usd;
-            $cierre->fecha = date('d-m-Y');
-            $cierre->responsable = $user->name;
-            $cierre->save();
+                $cierre = new ModelsCierreDiario();
+                $cierre->total_ventas            = $total_venta;
+                $cierre->total_dolares_efectivo  = $total_efectivo_usd;
+                $cierre->total_dolares_zelle     = $total_zelle;
+                $cierre->total_bolivares         = $total_bs;
+                $cierre->total_gastos            = $total_gastos_usd;
+                $cierre->saldo_caja_chica        = $efectivo_caja_usd;
+                $cierre->fecha = date('d-m-Y');
+                $cierre->responsable = $user->name;
+                $cierre->save();
 
-            /** Notificacion para el usuario cuando su servicio fue anulado */
-            $type = 'cierre_diario';
-            $correo = env('CEO');
-            $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
+                /** Notificacion para el usuario cuando su servicio fue anulado */
+                $type = 'cierre_diario';
+                $correo = env('CEO');
+                $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
 
-            $mailData = [
-                    'tasa_bcv' => $tasa,
-                    'total_ventas' => $cierre->total_ventas,
-                    'total_dolares' => VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_usd'),
-                    'zelle' => $cierre->total_dolares_zelle,
-                    'total_bolivares' => $cierre->total_bolivares,
-                    'conversion' => $cierre->total_bolivares / $tasa,
-                    'efectivo_caja_usd' => $cierre->total_dolares_efectivo,
-                    'gastos' => $cierre->total_gastos,
-                    'efectivo_caja_chica' => $cierre->saldo_caja_chica,
-                    'fecha' => $cierre->created_at,
-                    'user_email' => $correo,
-                    'responsable' => $cierre->responsable,
-                ];
+                $mailData = [
+                        'tasa_bcv' => $tasa,
+                        'total_ventas' => $cierre->total_ventas,
+                        'total_dolares' => VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_usd'),
+                        'zelle' => $cierre->total_dolares_zelle,
+                        'total_bolivares' => $cierre->total_bolivares,
+                        'conversion' => $cierre->total_bolivares / $tasa,
+                        'efectivo_caja_usd' => $cierre->total_dolares_efectivo,
+                        'gastos' => $cierre->total_gastos,
+                        'efectivo_caja_chica' => $cierre->saldo_caja_chica,
+                        'fecha' => $cierre->created_at,
+                        'user_email' => $correo,
+                        'responsable' => $cierre->responsable,
+                    ];
 
-            NotificacionesController::notification($mailData, $type);
+                NotificacionesController::notification($mailData, $type);
 
-            sleep(1);
+                sleep(1);
 
-            $this->dialog()->success(
-                $title = 'NOTIFICACION !!!',
-                $description = 'El cierre de caja se ha realizado de forma exitósa.'
-            );
+                $this->dialog()->success(
+                    $title = 'NOTIFICACION !!!',
+                    $description = 'El cierre de caja se ha realizado de forma exitósa.'
+                );
+
+            }
 
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->color('danger')
+            ->icon('heroicon-o-exclamation-triangle')
+            ->body($th->getMessage())
+            ->send();
         }
 
     }
@@ -145,26 +161,26 @@ class CierreDiario extends Component implements HasForms, HasTable
                 ->searchable(),
                 TextColumn::make('total_dolares_zelle')
                 ->money('USD')
-                ->label(_('Zelle($)'))
+                ->label('Zelle($)')
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('total_bolivares')
                 ->money('VES')
-                ->label(_('Bolivares(Bs)'))
+                ->label('Bolivares(Bs)')
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('total_gastos')
                 ->money('USD')
-                ->label(_('Gastos($)'))
+                ->label('Gastos($)')
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('saldo_caja_chica')
                 ->money('USD')
-                ->label(_('Efectivo($) Caja Chica'))
+                ->label('Efectivo($) Caja Chica')
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('created_at')
-                ->label(_('Fecha de cierre'))
+                ->label('Fecha de cierre')
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('responsable')

@@ -143,6 +143,11 @@ class Dashboard extends Component
         }
     }
 
+    public function cierre_general()
+    {
+        $this->redirect('/cierre/general');
+    }
+
     public function cancel()
     {
         dd('cancelar');

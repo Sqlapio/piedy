@@ -29,13 +29,16 @@ Route::get('/', function () {
 Route::post('/actualiza/password', [LoginController::class, 'actualiza_password'])->name('actualiza_password');
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
+
+    /**
+     * Menu principal de la aplicación
+     * que se utiliza en tienda
+     */
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('/cierre/general', function () {
-        return view('dashboard_gerente');
-    })->name('dashboard_gerente');
+
 
     Route::get('/dashboard_empleado', function () {
         return view('dashboard_empleado');
@@ -61,6 +64,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('productos');
     })->name('productos');
 
+    /**
+     * Ruta creadas para el modulo de inventario
+     */
     Route::prefix('productos')->group(function () {
 
         Route::get('/crear', function () {
@@ -76,13 +82,28 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         })->name('vender_producto');
     });
 
+    /**
+     * Rutas para cierres parciales
+     */
+    Route::get('/cierre/diario', function () {
+        return view('cierre_diario');
+    })->name('cierre_diario');
+
+    /**
+     * Ruta para cierre general
+     * ejecutado solo por el gerente de la tienda
+     */
+    Route::get('/cierre/general', function () {
+        return view('cierre_general');
+    })->name('cierre_general');
+
+    /**
+     * Rutas para gastos
+     */
     Route::get('/gastos', function () {
         return view('gastos');
     })->name('gastos');
 
-    Route::get('/cierre/diario', function () {
-        return view('cierre_diario');
-    })->name('cierre_diario');
 
     Route::get('/citas', function () {
         return view('citas');
@@ -145,5 +166,4 @@ Route::get('/pp', function () {
     $resultados = DB::select("CALL Sp_ObtenerComisionesEmpleados(?, ?)", array($fechaIni, $fechaFin));
 
     return $resultados->toArray();
-
 });

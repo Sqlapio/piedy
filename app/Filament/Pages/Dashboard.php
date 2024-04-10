@@ -13,6 +13,7 @@ class Dashboard extends \Filament\Pages\Dashboard
 {
     use BaseDashboard\Concerns\HasFiltersForm;
 
+
     public function filtersForm(Form $form): Form
     {
         return $form

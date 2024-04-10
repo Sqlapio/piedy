@@ -36,20 +36,20 @@ class TablaCierreGastos extends Component implements HasForms, HasTable
     {
 
         return $table
-            ->query(Gasto::query())
+            ->query(Gasto::query()->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]))
             ->columns([
                 TextColumn::make('monto_usd')
-                ->label(_('Gasto($)'))
+                ->label('Gasto($)')
                 ->money('USD')
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('monto_bsd')
-                ->label(_('Gasto(Bs.)'))
+                ->label('Gasto(Bs.)')
                 ->money('VES')
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('created_at')
-                ->label(_('Fecha de gasto'))
+                ->label('Fecha de gasto')
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('responsable')

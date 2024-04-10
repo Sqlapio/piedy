@@ -13,6 +13,7 @@ use Exception;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Rule;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithPagination;
 use WireUi\Traits\Actions;
@@ -30,15 +31,12 @@ class ModalAgenda extends ModalComponent
     public $nuevo = 'hidden';
     public $ocultar = '';
 
-
-
-    #[Rule('required')]
-    public $hora;
-
     public $correo;
 
-    public $cliente;
+    #[Validate('required')]
+    public $hora;
 
+    public $cliente;
     public $cliente_id;
 
     protected $messages = [

@@ -222,83 +222,83 @@ class FacturarCliente extends Component
             /**
              * Pago total en DOLARES
              */
-            if ($this->descripcion == 'Efectivo Usd') {
+            // if ($this->descripcion == 'Efectivo Usd') {
 
-                if (count($this->servicios) <= 0) {
+            //     if (count($this->servicios) <= 0) {
 
-                    $this->dialog()->error(
-                        $title = 'Error !!!',
-                        $description = 'Debe seleccionar al menos un servicio para poder realizar la facturación'
-                    );
+            //         $this->dialog()->error(
+            //             $title = 'Error !!!',
+            //             $description = 'Debe seleccionar al menos un servicio para poder realizar la facturación'
+            //         );
 
-                } else {
+            //     } else {
 
-                    try {
+            //         try {
 
-                        $factura = new FacturaMultiple();
-                        $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
-                        $factura->responsable       = $user->name;
-                        $factura->metodo_pago       = $this->descripcion;
-                        $factura->referencia        = $factura->cod_asignacion;
-                        $factura->fecha_venta       = date('d-m-Y');
-                        $factura->pago_usd          = $this->total_vista;
-                        $factura->total_usd         = $this->total_vista;
-                        $factura->responsable       = $user->name;
-                        $factura->save();
+            //             $factura = new FacturaMultiple();
+            //             $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
+            //             $factura->responsable       = $user->name;
+            //             $factura->metodo_pago       = $this->descripcion;
+            //             $factura->referencia        = $factura->cod_asignacion;
+            //             $factura->fecha_venta       = date('d-m-Y');
+            //             $factura->pago_usd          = $this->total_vista;
+            //             $factura->total_usd         = $this->total_vista;
+            //             $factura->responsable       = $user->name;
+            //             $factura->save();
 
-                        /** Calculo del 40% del total de la vista
-                         * Este valor sera el asignado a los empleados
-                         * segun el porcentace de representacion.
-                         */
-                        $_40porciento = ($this->total_vista * 40) / 100;
+            //             /** Calculo del 40% del total de la vista
+            //              * Este valor sera el asignado a los empleados
+            //              * segun el porcentace de representacion.
+            //              */
+            //             $_40porciento = ($this->total_vista * 40) / 100;
 
-                        for ($i = 0; $i < count($this->servicios); $i++) {
-                            Disponible::where('id', $this->servicios[$i])->update([
-                                'status' => 'facturado'
-                            ]);
+            //             for ($i = 0; $i < count($this->servicios); $i++) {
+            //                 Disponible::where('id', $this->servicios[$i])->update([
+            //                     'status' => 'facturado'
+            //                 ]);
 
-                            $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
+            //                 $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
 
-                            DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
-                                'status' => 2
-                            ]);
+            //                 DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
+            //                     'status' => 2
+            //                 ]);
 
-                            /**
-                             * Calculo de la comision por empleado
-                             * y el resultado se actualiza en la tabla de ventas
-                             */
-                            $costo_servicio = Disponible::where('id', $this->servicios[$i])->first()->costo;
-                            $porcen_venta = ($costo_servicio * 100) / $this->total_vista;
-                            $comision_empleado = ($porcen_venta * $_40porciento) / 100;
+            //                 /**
+            //                  * Calculo de la comision por empleado
+            //                  * y el resultado se actualiza en la tabla de ventas
+            //                  */
+            //                 $costo_servicio = Disponible::where('id', $this->servicios[$i])->first()->costo;
+            //                 $porcen_venta = ($costo_servicio * 100) / $this->total_vista;
+            //                 $comision_empleado = ($porcen_venta * $_40porciento) / 100;
 
-                            /**
-                             * Calculo del costo del servicio
-                             */
-                            $porcentaje_servicio = ($porcen_venta * $factura->pago_usd) / 100;
+            //                 /**
+            //                  * Calculo del costo del servicio
+            //                  */
+            //                 $porcentaje_servicio = ($porcen_venta * $factura->pago_usd) / 100;
 
-                            VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                'metodo_pago'       => 'Facturación multiple',
-                                'referencia'        => $factura->cod_asignacion,
-                                'pago_usd'          => $porcentaje_servicio,
-                                'comision_dolares'  => $comision_empleado,
-                                'responsable'       => $user->name
-                            ]);
-                        }
+            //                 VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
+            //                     'metodo_pago'       => 'Facturación multiple',
+            //                     'referencia'        => $factura->cod_asignacion,
+            //                     'pago_usd'          => $porcentaje_servicio,
+            //                     'comision_dolares'  => $comision_empleado,
+            //                     'responsable'       => $user->name
+            //                 ]);
+            //             }
 
-                        Notification::make()
-                            ->title('La factura fue cerrada con exito')
-                            ->success()
-                            ->send();
+            //             Notification::make()
+            //                 ->title('La factura fue cerrada con exito')
+            //                 ->success()
+            //                 ->send();
 
-                        $this->redirect('/cabinas');
+            //             $this->redirect('/cabinas');
 
-                    } catch (\Throwable $th) {
-                        //throw $th;
-                    }
+            //         } catch (\Throwable $th) {
+            //             //throw $th;
+            //         }
 
 
-                }
-            }
+            //     }
+            // }
 
             /**
              * Pago total en DOLARES con referenia
@@ -323,7 +323,7 @@ class FacturarCliente extends Component
                     try {
 
                         $factura = new FacturaMultiple();
-                        $factura->cod_asignacion = 'FM-' . random_int(11111111, 99999999);
+                        $factura->cod_asignacion = 'FM-' .$this->referencia;
                         $factura->responsable    = $user->name;
                         $factura->metodo_pago    = $this->descripcion;
                         $factura->referencia     = $this->referencia;
@@ -364,7 +364,7 @@ class FacturarCliente extends Component
                             $porcentaje_servicio = ($porcen_venta * $factura->pago_usd) / 100;
 
                             VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                'metodo_pago'       => 'Facturación multiple',
+                                'metodo_pago'       => $this->descripcion,
                                 'referencia'        => $factura->cod_asignacion,
                                 'pago_usd'          => $porcentaje_servicio,
                                 'comision_dolares'  => $comision_empleado,
@@ -389,81 +389,81 @@ class FacturarCliente extends Component
             /**
              * Pago total en BOLIVARES
              */
-            if ($this->descripcion == 'Efectivo Bsd') {
-                if (count($this->servicios) <= 0) {
+            // if ($this->descripcion == 'Efectivo Bsd') {
+            //     if (count($this->servicios) <= 0) {
 
-                    $this->dialog()->error(
-                        $title = 'Error !!!',
-                        $description = 'Debe seleccionar al menos un servicio para poder realizar la facturación'
-                    );
+            //         $this->dialog()->error(
+            //             $title = 'Error !!!',
+            //             $description = 'Debe seleccionar al menos un servicio para poder realizar la facturación'
+            //         );
 
-                } else {
+            //     } else {
 
-                    try {
+            //         try {
 
-                        $factura = new FacturaMultiple();
-                        $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
-                        $factura->responsable       = $user->name;
-                        $factura->metodo_pago       = $this->descripcion;
-                        $factura->referencia        = $factura->cod_asignacion;
-                        $factura->fecha_venta       = date('d-m-Y');
-                        $factura->pago_bsd          = $this->total_vista_bsd;
-                        $factura->total_usd         = $this->total_vista;
-                        $factura->responsable       = $user->name;
-                        $factura->save();
+            //             $factura = new FacturaMultiple();
+            //             $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
+            //             $factura->responsable       = $user->name;
+            //             $factura->metodo_pago       = $this->descripcion;
+            //             $factura->referencia        = $factura->cod_asignacion;
+            //             $factura->fecha_venta       = date('d-m-Y');
+            //             $factura->pago_bsd          = $this->total_vista_bsd;
+            //             $factura->total_usd         = $this->total_vista;
+            //             $factura->responsable       = $user->name;
+            //             $factura->save();
 
-                        /** Calculo del 40% del total de la vista
-                         * Este valor sera el asignado a los empleados
-                         * segun el porcentace de representacion.
-                         */
-                        $_40porciento = ($this->total_vista_bsd * 40) / 100;
+            //             /** Calculo del 40% del total de la vista
+            //              * Este valor sera el asignado a los empleados
+            //              * segun el porcentace de representacion.
+            //              */
+            //             $_40porciento = ($this->total_vista_bsd * 40) / 100;
 
-                        for ($i = 0; $i < count($this->servicios); $i++) {
-                            Disponible::where('id', $this->servicios[$i])->update([
-                                'status' => 'facturado'
-                            ]);
+            //             for ($i = 0; $i < count($this->servicios); $i++) {
+            //                 Disponible::where('id', $this->servicios[$i])->update([
+            //                     'status' => 'facturado'
+            //                 ]);
 
-                            $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
+            //                 $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
 
-                            DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
-                                'status' => 2
-                            ]);
+            //                 DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
+            //                     'status' => 2
+            //                 ]);
 
-                            /**
-                             * Calculo de la comision por empleado
-                             * y el resultado se actualiza en la tabla de ventas
-                             */
-                            $costo_servicio = Disponible::where('id', $this->servicios[$i])->first()->costo;
-                            $porcen_venta = ($costo_servicio * 100) / $this->total_vista;
-                            $comision_empleado = ($porcen_venta * $_40porciento) / 100;
+            //                 /**
+            //                  * Calculo de la comision por empleado
+            //                  * y el resultado se actualiza en la tabla de ventas
+            //                  */
+            //                 $costo_servicio = Disponible::where('id', $this->servicios[$i])->first()->costo;
+            //                 $porcen_venta = ($costo_servicio * 100) / $this->total_vista;
+            //                 $comision_empleado = ($porcen_venta * $_40porciento) / 100;
 
-                            /**
-                             * Calculo del costo del servicio
-                             */
-                            $porcentaje_servicio = ($porcen_venta * $factura->pago_bsd) / 100;
+            //                 /**
+            //                  * Calculo del costo del servicio
+            //                  */
+            //                 $porcentaje_servicio = ($porcen_venta * $factura->pago_bsd) / 100;
 
-                            VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                'metodo_pago'       => 'Facturación multiple',
-                                'referencia'        => $factura->cod_asignacion,
-                                'pago_bsd'          => $porcentaje_servicio,
-                                'comision_bolivares'  => $comision_empleado,
-                                'responsable'       => $user->name
-                            ]);
-                        }
+            //                 VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
+            //                     'metodo_pago'       => 'Facturación multiple',
+            //                     'referencia'        => $factura->cod_asignacion,
+            //                     'pago_bsd'          => $porcentaje_servicio,
+            //                     'comision_bolivares'  => $comision_empleado,
+            //                     'responsable'       => $user->name
+            //                 ]);
+            //             }
 
-                        Notification::make()
-                            ->title('La factura fue cerrada con exito')
-                            ->success()
-                            ->send();
+            //             Notification::make()
+            //                 ->title('La factura fue cerrada con exito')
+            //                 ->success()
+            //                 ->send();
 
-                        $this->redirect('/cabinas');
+            //             $this->redirect('/cabinas');
 
-                    } catch (\Throwable $th) {
-                        //throw $th;
-                    }
+            //         } catch (\Throwable $th) {
+            //             //throw $th;
+            //         }
 
-                }
-            }
+            //     }
+            // }
 
             /**
              * Pago total en BOLIVARES con referenia
@@ -488,7 +488,7 @@ class FacturarCliente extends Component
                     try {
 
                         $factura = new FacturaMultiple();
-                        $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
+                        $factura->cod_asignacion    = 'FM-'.$this->referencia;
                         $factura->responsable       = $user->name;
                         $factura->metodo_pago       = $this->descripcion;
                         $factura->referencia        = $this->referencia;
@@ -529,7 +529,7 @@ class FacturarCliente extends Component
                             $porcentaje_servicio = ($porcen_venta * $factura->pago_bsd) / 100;
 
                             VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                'metodo_pago'           => 'Facturación multiple',
+                                'metodo_pago'           => $this->descripcion,
                                 'referencia'            => $factura->cod_asignacion,
                                 'pago_bsd'              => $porcentaje_servicio,
                                 'comision_bolivares'    => $comision_empleado,
@@ -555,127 +555,127 @@ class FacturarCliente extends Component
             /**
              * Pago total en MULTIPLE
              */
-            if ($this->descripcion == 'Multiple') {
-                if (count($this->servicios) <= 0) {
+            // if ($this->descripcion == 'Multiple') {
+            //     if (count($this->servicios) <= 0) {
 
-                    $this->dialog()->error(
-                        $title = 'Error !!!',
-                        $description = 'Debe seleccionar al menos un servicio de lo contrario no podra facturar'
-                    );
+            //         $this->dialog()->error(
+            //             $title = 'Error !!!',
+            //             $description = 'Debe seleccionar al menos un servicio de lo contrario no podra facturar'
+            //         );
 
-                } else {
-                    /**
-                     * CASO 1
-                     */
-                    if ($this->op1 == 'Efectivo Usd' || $this->op1 == 'Zelle') {
-                        if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta') {
-                            if ($this->valor_uno == '' and $this->valor_dos == '') {
-                                /** Notificacion al usuario */
-                                $this->dialog()->error(
-                                    $title = 'Error !!!',
-                                    $description = 'El monto debe coincidir con el valor de factura.'
-                                );
+            //     } else {
+            //         /**
+            //          * CASO 1
+            //          */
+            //         if ($this->op1 == 'Efectivo Usd' || $this->op1 == 'Zelle') {
+            //             if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta') {
+            //                 if ($this->valor_uno == '' and $this->valor_dos == '') {
+            //                     /** Notificacion al usuario */
+            //                     $this->dialog()->error(
+            //                         $title = 'Error !!!',
+            //                         $description = 'El monto debe coincidir con el valor de factura.'
+            //                     );
 
-                            } elseif ($this->valor_uno == 0) {
-                                /** Notificacion al usuario */
-                                $this->dialog()->error(
-                                    $title = 'Error !!!',
-                                    $description = 'Los monto en dolares deben ser mayores a cero.'
-                                );
+            //                 } elseif ($this->valor_uno == 0) {
+            //                     /** Notificacion al usuario */
+            //                     $this->dialog()->error(
+            //                         $title = 'Error !!!',
+            //                         $description = 'Los monto en dolares deben ser mayores a cero.'
+            //                     );
 
-                            } elseif ($this->op1 == $this->op2) {
-                                /** Notificacion al usuario */
-                                $this->dialog()->error(
-                                    $title = 'Error !!!',
-                                    $description = 'Los metodos de pago no pueden ser iguales'
-                                );
+            //                 } elseif ($this->op1 == $this->op2) {
+            //                     /** Notificacion al usuario */
+            //                     $this->dialog()->error(
+            //                         $title = 'Error !!!',
+            //                         $description = 'Los metodos de pago no pueden ser iguales'
+            //                     );
 
-                            } else {
+            //                 } else {
 
-                                try {
+            //                     try {
 
-                                    $factura = new FacturaMultiple();
-                                    $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
-                                    $factura->responsable       = $user->name;
-                                    $factura->metodo_pago       = $this->descripcion;
-                                    $factura->referencia        = $factura->cod_asignacion;
-                                    $factura->fecha_venta       = date('d-m-Y');
-                                    $factura->pago_bsd          = str_replace(',', '.', str_replace('.', '', $this->valor_dos));
-                                    $factura->pago_usd          = str_replace(',', '.', $this->valor_uno);
-                                    $factura->total_usd         = $this->total_vista;
-                                    $factura->responsable       = $user->name;
-                                    $factura->save();
+            //                         $factura = new FacturaMultiple();
+            //                         $factura->cod_asignacion    = 'FM-' . random_int(11111111, 99999999);
+            //                         $factura->responsable       = $user->name;
+            //                         $factura->metodo_pago       = $this->descripcion;
+            //                         $factura->referencia        = $factura->cod_asignacion;
+            //                         $factura->fecha_venta       = date('d-m-Y');
+            //                         $factura->pago_bsd          = str_replace(',', '.', str_replace('.', '', $this->valor_dos));
+            //                         $factura->pago_usd          = str_replace(',', '.', $this->valor_uno);
+            //                         $factura->total_usd         = $this->total_vista;
+            //                         $factura->responsable       = $user->name;
+            //                         $factura->save();
 
-                                    /** Calculo del 40% del total de la vista
-                                     * Este valor sera el asignado a los empleados
-                                     * segun el porcentace de representacion.
-                                     */
-                                    $_40porciento = ($this->total_vista * 40) / 100;
+            //                         /** Calculo del 40% del total de la vista
+            //                          * Este valor sera el asignado a los empleados
+            //                          * segun el porcentace de representacion.
+            //                          */
+            //                         $_40porciento = ($this->total_vista * 40) / 100;
 
-                                    for ($i = 0; $i < count($this->servicios); $i++) {
-                                        Disponible::where('id', $this->servicios[$i])->update([
-                                            'status' => 'facturado'
-                                        ]);
+            //                         for ($i = 0; $i < count($this->servicios); $i++) {
+            //                             Disponible::where('id', $this->servicios[$i])->update([
+            //                                 'status' => 'facturado'
+            //                             ]);
 
-                                        $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
+            //                             $cod_asignacion = Disponible::where('id', $this->servicios[$i])->first()->cod_asignacion;
 
-                                        DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
-                                            'status' => 2
-                                        ]);
+            //                             DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->update([
+            //                                 'status' => 2
+            //                             ]);
 
-                                        /**
-                                         * Calculo de la comision por empleado
-                                         * y el resultado se actualiza en la tabla de ventas
-                                         */
-                                        $costo_servicio = Disponible::where('id', $this->servicios[$i])->first()->costo;
-                                        $porcen_venta = ($costo_servicio * 100) / $this->total_vista;
+            //                             /**
+            //                              * Calculo de la comision por empleado
+            //                              * y el resultado se actualiza en la tabla de ventas
+            //                              */
+            //                             $costo_servicio = Disponible::where('id', $this->servicios[$i])->first()->costo;
+            //                             $porcen_venta = ($costo_servicio * 100) / $this->total_vista;
 
-                                        /** Comison en dolares */
-                                        $comision_empleado_usd = ($porcen_venta * $factura->pago_usd) / 100;
-                                        $total_comision_empleado_usd = ($comision_empleado_usd * 40) / 100;
+            //                             /** Comison en dolares */
+            //                             $comision_empleado_usd = ($porcen_venta * $factura->pago_usd) / 100;
+            //                             $total_comision_empleado_usd = ($comision_empleado_usd * 40) / 100;
 
-                                        /** Comison en bolivares */
-                                        $comision_empleado_bsd = ($porcen_venta * $factura->pago_bsd) / 100;
-                                        $total_comision_empleado_bsd = ($comision_empleado_bsd * 40) / 100;
+            //                             /** Comison en bolivares */
+            //                             $comision_empleado_bsd = ($porcen_venta * $factura->pago_bsd) / 100;
+            //                             $total_comision_empleado_bsd = ($comision_empleado_bsd * 40) / 100;
 
 
-                                        /**
-                                         * Calculo del costo del servicio en bolivares
-                                         */
-                                        $porcentaje_servicio_bsd = ($porcen_venta * $factura->pago_bsd) / 100;
+            //                             /**
+            //                              * Calculo del costo del servicio en bolivares
+            //                              */
+            //                             $porcentaje_servicio_bsd = ($porcen_venta * $factura->pago_bsd) / 100;
 
-                                        /**
-                                         * Calculo del costo del servicio en dolares
-                                         */
-                                        $porcentaje_servicio_usd = ($porcen_venta * $factura->pago_usd) / 100;
+            //                             /**
+            //                              * Calculo del costo del servicio en dolares
+            //                              */
+            //                             $porcentaje_servicio_usd = ($porcen_venta * $factura->pago_usd) / 100;
 
-                                        VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                            'metodo_pago'        => 'Facturación multiple',
-                                            'referencia'         => $factura->cod_asignacion,
-                                            'pago_usd'           => $porcentaje_servicio_usd,
-                                            'pago_bsd'           => $porcentaje_servicio_bsd,
-                                            'comision_dolares'   => $total_comision_empleado_usd,
-                                            'comision_bolivares' => $total_comision_empleado_bsd,
-                                            'responsable'        => $user->name
-                                        ]);
-                                    }
+            //                             VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
+            //                                 'metodo_pago'        => 'Facturación multiple',
+            //                                 'referencia'         => $factura->cod_asignacion,
+            //                                 'pago_usd'           => $porcentaje_servicio_usd,
+            //                                 'pago_bsd'           => $porcentaje_servicio_bsd,
+            //                                 'comision_dolares'   => $total_comision_empleado_usd,
+            //                                 'comision_bolivares' => $total_comision_empleado_bsd,
+            //                                 'responsable'        => $user->name
+            //                             ]);
+            //                         }
 
-                                    Notification::make()
-                                        ->title('La factura fue cerrada con exito')
-                                        ->success()
-                                        ->send();
+            //                         Notification::make()
+            //                             ->title('La factura fue cerrada con exito')
+            //                             ->success()
+            //                             ->send();
 
-                                    $this->redirect('/cabinas');
+            //                         $this->redirect('/cabinas');
 
-                                } catch (\Throwable $th) {
-                                    //throw $th;
-                                }
+            //                     } catch (\Throwable $th) {
+            //                         //throw $th;
+            //                     }
 
-                            }
-                        }
-                    }
-                }
-            }
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
         }
     }
 

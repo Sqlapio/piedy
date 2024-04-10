@@ -126,12 +126,12 @@ class CierreDiario extends Component implements HasForms, HasTable
 
                 NotificacionesController::notification($mailData, $type);
 
-                sleep(1);
-
-                $this->dialog()->success(
-                    $title = 'NOTIFICACION !!!',
-                    $description = 'El cierre de caja se ha realizado de forma exitósa.'
-                );
+                Notification::make()
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-o-shield-check')
+                ->color('success')
+                ->body('El Cierre General fue realizado con éxito')
+                ->send();
 
             }
 

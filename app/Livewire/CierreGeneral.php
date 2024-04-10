@@ -6,6 +6,7 @@ use App\Models\CierreDiario;
 use App\Models\CierreGeneral as ModelsCierreGeneral;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -55,6 +56,10 @@ class CierreGeneral extends Component implements HasForms, HasTable
 
         try {
 
+            $ultimo_cierre = ModelsCierreGeneral::latest()->first();
+
+            $fecha_siguiente =  date("Y-m-d", strtotime(date($ultimo_cierre->fecha) . "+1 day"));
+
             $movimientos = DB::table('cierre_diarios')
                 ->select
                     (
@@ -64,7 +69,8 @@ class CierreGeneral extends Component implements HasForms, HasTable
                         DB::raw('SUM(total_bolivares) as total_bolivares'),
                         DB::raw('SUM(total_gastos) as total_gastos')
                     )
-                ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+                // ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+                ->whereBetween('created_at', [$fecha_siguiente.' 00:00:00' , now()->endOfMonth()])
                 ->get();
 
             $res = json_decode(json_encode($movimientos), true);
@@ -76,14 +82,28 @@ class CierreGeneral extends Component implements HasForms, HasTable
             $cierre->total_ventas            = $res[0]['total_ventas'];
             $cierre->total_dolares_efectivo  = $res[0]['total_dolares_efectivo'];
             $cierre->total_dolares_zelle     = $res[0]['total_dolares_zelle'];
-            $cierre->total_bolivares         = $res[0]['total_bolivares'];
+            $cierre->total_bolivares         = $res[0]['total_bolivares'] + $ultimo_cierre->total_bolivares;
             $cierre->fecha = date('d-m-Y');
             $cierre->responsable = $user->name;
             $cierre->save();
 
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('success')
+            ->body('El Cierre General se realizo con éxito')
+            ->send();
+
+            return redirect()->route('cierre_general');
+
 
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
         }
 
     }

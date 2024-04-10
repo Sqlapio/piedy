@@ -1,6 +1,6 @@
 <div>
     <div class="p-5">
-        {{-- @livewire('notifications') --}}
+        @livewire('notifications')
         <h1 class="text-xl mb-6 font-bold text-[#bd9c95]">Modulo de Cierre General</h1>
         <div class="flex justify-start mt-auto">
             <button type="submit" wire:click.prevent="notificacion_cierre" class="justify-end rounded-md border border-transparent bg-[#7898a5] p-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">

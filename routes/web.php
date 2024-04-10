@@ -3,6 +3,7 @@
 use App\Http\Controllers\ApiClientesController;
 use App\Http\Controllers\LoginController;
 use App\Livewire\Login;
+use App\Models\CierreGeneral;
 use App\Models\Cliente;
 use App\Models\DetalleAsignacion;
 use App\Models\VentaServicio;
@@ -160,6 +161,12 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 });
 
 Route::get('/pp', function () {
+
+
+    $ultimo_cierre = CierreGeneral::latest()->first()->fecha;
+
+    $fecha_anterior =  date("d-m-Y", strtotime(date($ultimo_cierre) . "+1 day"));
+    dd($ultimo_cierre, $fecha_anterior);
 
     $fechaIni = '2024-01-01';
     $fechaFin = '2024-01-31';

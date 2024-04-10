@@ -66,7 +66,7 @@ class Caja extends Component
         {
             $this->op1_hidden = '';
             $this->op2_hidden = '';
-            $this->ref_hidden = 'hidden';
+            $this->ref_hidden = '';
         }
 
         if($this->descripcion == 'Efectivo Usd' || $this->descripcion == 'Efectivo Bsd')
@@ -502,7 +502,8 @@ class Caja extends Component
 
                         }else{
 
-                            $this->referencia = 'pago multiple';
+                            // dd($this->referencia);
+                            // $this->referencia = 'pago multiple';
 
                                 try {
 
@@ -561,7 +562,7 @@ class Caja extends Component
                             );
                         }else{
 
-                            $this->referencia = 'pago multiple';
+                            // $this->referencia = 'pago multiple';
 
                             try {
 
@@ -627,7 +628,6 @@ class Caja extends Component
         ]);
 
     }
-
 
     /** Ejecutar el cliente especial */
     public function ejecuta_ce(Request $request)

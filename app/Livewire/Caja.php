@@ -6,6 +6,7 @@ use App\Http\Controllers\UtilsController;
 use App\Http\Controllers\NotificacionesController;
 use App\Models\DetalleAsignacion;
 use App\Models\Disponible;
+use App\Models\Servicio;
 use App\Models\TasaBcv;
 use App\Models\User;
 use App\Models\VentaServicio;
@@ -255,6 +256,7 @@ class Caja extends Component
 
     public function facturar_servicio(Request $request)
     {
+
         if($this->descripcion == ''){
             $this->dialog()->error(
                 $title = 'Error !!!',
@@ -265,13 +267,11 @@ class Caja extends Component
             /**
              * El codigo es tomado de la variables de sesion
              * del usuario
-             *
              * @param $codigo
              */
             $codigo = $request->session()->all();
 
             $item = VentaServicio::where('cod_asignacion', $codigo['cod_asignacion'])->first();
-            Debugbar::info($item);
 
             $total = DB::table('detalle_asignacions')
                 ->select(DB::raw('SUM(costo) as total'))
@@ -292,6 +292,25 @@ class Caja extends Component
             {
                 try {
 
+                    /**Obtengo el codigo del servicio a facturar */
+                    $cod_srv_vip = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->first()->cod_servicio;
+
+                    /**Pregunto? si la asignacion del servicio en VIP */
+                    $srv_vip_tipo = Servicio::where('cod_servicio', $cod_srv_vip)->first()->asignacion;
+
+                    /**Realizo el calculo de las respectivas comisiones */
+                    if($srv_vip_tipo == 'vip'){
+
+                        $comision_dolares_emp = UtilsController::comision_empleado_srvvip($total_vista);
+
+                        $comision_dolares_gte_vip = UtilsController::comision_gerente_srvvip($total_vista);
+
+                    }else{
+                        /**Si el servicio facturado es diferente de los VIP */
+                        $comision_dolares_emp = UtilsController::cal_comision_empleado($total_vista);
+
+                    }
+
                     $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
                         ->update([
                             'metodo_pago'   => $this->descripcion,
@@ -300,7 +319,8 @@ class Caja extends Component
                             'pago_usd'      => $total_vista,
                             'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                             'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                            'comision_dolares' => UtilsController::cal_comision_empleado($total_vista),
+                            'comision_dolares' => $comision_dolares_emp,
+                            'comision_gerente' => (isset($comision_dolares_gte_vip)) ? $comision_dolares_gte_vip : 0,
                             'responsable'   => Auth::user()->name,
                         ]);
 
@@ -323,7 +343,7 @@ class Caja extends Component
                     $this->redirect('/cabinas');
 
                 } catch (\Throwable $th) {
-                    //throw $th;
+                    dd($th);
                 }
 
             }
@@ -550,59 +570,59 @@ class Caja extends Component
                 /**
                  * CASO 2 DOLARES -> DOLARES
                  */
-                if ($this->op1 == 'Efectivo Usd')
-                {
-                    if ($this->op2 == 'Zelle')
-                    {
-                        if($this->valor_uno == '' and $this->valor_dos == '')
-                        {
-                            $this->dialog()->error(
-                                $title = 'Error !!!',
-                                $description = 'Los monto deben ser myor a 0.'
-                            );
-                        }else{
+                // if ($this->op1 == 'Efectivo Usd')
+                // {
+                //     if ($this->op2 == 'Zelle')
+                //     {
+                //         if($this->valor_uno == '' and $this->valor_dos == '')
+                //         {
+                //             $this->dialog()->error(
+                //                 $title = 'Error !!!',
+                //                 $description = 'Los monto deben ser myor a 0.'
+                //             );
+                //         }else{
 
-                            // $this->referencia = 'pago multiple';
+                //             // $this->referencia = 'pago multiple';
 
-                            try {
+                //             try {
 
-                                $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
-                                    ->update([
-                                        'metodo_pago' => $this->descripcion,
-                                        'referencia' => $this->referencia,
-                                        'total_USD' => $total_vista,
-                                        'pago_usd' => $total_vista,
-                                        'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                                        'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                                        'comision_dolares' => UtilsController::cal_comision_empleado($total_vista),
-                                        'responsable'   => Auth::user()->name,
-                                    ]);
+                //                 $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
+                //                     ->update([
+                //                         'metodo_pago' => $this->descripcion,
+                //                         'referencia' => $this->referencia,
+                //                         'total_USD' => $total_vista,
+                //                         'pago_usd' => $total_vista,
+                //                         'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
+                //                         'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
+                //                         'comision_dolares' => UtilsController::cal_comision_empleado($total_vista),
+                //                         'responsable'   => Auth::user()->name,
+                //                     ]);
 
-                                DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
-                                    ->update([
-                                        'status' => '2',
-                                    ]);
+                //                 DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
+                //                     ->update([
+                //                         'status' => '2',
+                //                     ]);
 
-                                Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
-                                    ->update([
-                                        'status' => 'facturado'
-                                    ]);
+                //                 Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
+                //                     ->update([
+                //                         'status' => 'facturado'
+                //                     ]);
 
-                                Notification::make()
-                                    ->title('La factura fue cerrada con exito')
-                                    ->success()
-                                    ->send();
+                //                 Notification::make()
+                //                     ->title('La factura fue cerrada con exito')
+                //                     ->success()
+                //                     ->send();
 
-                                $this->redirect('/cabinas');
+                //                 $this->redirect('/cabinas');
 
-                            } catch (\Throwable $th) {
-                                //throw $th;
-                            }
+                //             } catch (\Throwable $th) {
+                //                 //throw $th;
+                //             }
 
-                        }
+                //         }
 
-                    }
-                }
+                //     }
+                // }
 
             }
 

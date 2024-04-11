@@ -131,7 +131,7 @@ class AgregraServicios extends Component
                     $data_servicios = Servicio::where('id', $this->servicios[$i])->first();
                     $detalle_asignacion = new DetalleAsignacion();
                     $detalle_asignacion->cod_asignacion     = $codigo['cod_asignacion'];
-                    $detalle_asignacion->cod_servicio       = $data->cod_servicio;
+                    $detalle_asignacion->cod_servicio       = $data_servicios->cod_servicio;
                     $detalle_asignacion->empleado_id        = $data->empleado_id;
                     $detalle_asignacion->empleado           = $data->empleado;
                     $detalle_asignacion->cliente_id         = $data->cliente_id;

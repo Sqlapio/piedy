@@ -37,9 +37,11 @@ class UtilsController extends Controller
         /**Optengo el costo de la quiropedia basica */
         $costo = Servicio::where('cod_servicio', 'Sco-21760')->first()->costo;
 
+        /**Calculo la comision del empleado 40% */
         $comision_1 = Comision::where('aplicacion', 'servicio')->where('beneficiario', 'empleado')->first()->porcentaje;
         $porcentaje_qiro_basica = ($comision_1 * $costo) / 100;
 
+        /**Calculo la comision adicional del empleado 10%  */
         $comision_2 = Comision::where('aplicacion', 'servicio_vip')->where('beneficiario', 'empleado')->first()->porcentaje;
         $restante = ($comision_2 * ($total_venta - $costo)) / 100;
 
@@ -54,6 +56,7 @@ class UtilsController extends Controller
         /**Optengo el costo de la quiropedia basica */
         $costo = Servicio::where('cod_servicio', 'Sco-21760')->first()->costo;
 
+        /**Calculo la comision del gerente 10% */
         $comision = Comision::where('aplicacion', 'servicio_vip')->where('beneficiario', 'gerente')->first()->porcentaje;
         $restante = ($comision * ($total_venta - $costo)) / 100;
 

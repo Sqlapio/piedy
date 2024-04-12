@@ -24,7 +24,6 @@ class Clientes extends Component
     #[Validate('required', message: 'Apellido requerido')]
     public $apellido;
 
-    #[Validate('required', message: 'El correo electrónico requerido')]
     #[Validate('unique:clientes', message: 'El correo electrónico ya se encuentra registrado. Intente con otra dirección de correo.')]
     public $email;
 

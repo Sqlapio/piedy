@@ -1,6 +1,6 @@
 <div>
     <div class="p-5">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
             {{-- Perfil --}}
             <div class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/abstract-light-blue-background-geometry-pattern-hd-wallpaper_1000823-2187.jpg'); background-size: cover;">
                 <a href="{{ route('crear_producto') }}">
@@ -15,24 +15,6 @@
                     </div>
                         <div class="mt-3 text-right text-md font-semibold text-black">
                             <div>Modulo para la creación de productos</div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            {{-- Servicios Asignado --}}
-            <div class="p-6 rounded-lg" style="background-image: url('/images/empleados.jpg'); background-size: cover;">
-                <a href="{{ route('asignar_producto') }}">
-                <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3" />
-                    </svg>
-                </div>
-                <div class="ml-12 text-right">
-                    <div class="mt-2 text-2xl text-black leading-7 font-bold">
-                        ASIGNAR PRODUCTO
-                    </div>
-                        <div class="mt-3 text-right text-md font-semibold text-black">
-                            <div>Asignación de productos para los empleados</div>
                         </div>
                     </a>
                 </div>

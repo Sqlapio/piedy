@@ -1,32 +1,31 @@
 <div>
     <div class="p-5">
         @livewire('notifications')
-        <h1 class="text-xl mb-6 font-bold text-[#bd9c95]">Crear Productos</h1>
-        {{-- tabla y boton del formulario de clientes --}}
+        {{-- formulario para crear productos --}}
         <div class="bg-white rounded-xl {{ $ocultar_form }}">
-            <div class="grid md:grid-cols-2 md:gap-6">
-                <div class="relative z-0 w-full mb-6 group">
+            <div class="grid md:grid-cols-2 md:gap-4">
+                <div class="p-2">
                     <label class="opacity-60 mb-1 block text-md font-extrabold text-[#B9A7B4] text-left">DESCRIPCIÓN</label>
                     <x-input wire:model="descripcion" right-icon="pencil" placeholder="Ejemplo: Esfoliante para manos" />
                 </div>
-                <div class="relative z-0 w-full mb-6 group">
+                <div class="p-2">
                     <label class="opacity-60 mb-1 block text-md font-extrabold text-[#BC9B94] text-left">CATEGORÍA</label>
                     <x-select wire:change="$emit('selected', $event.target.value)" wire:model.defer="categoria" placeholder="Seleccion" :async-data="route('api.categoria_producto')" option-label="descripcion" option-value="id" />
                 </div>
-                <div class="relative z-0 w-full mb-6 group">
+                <div class="p-2">
                     <label class="opacity-60 mb-1 block text-md font-extrabold text-[#7796A3] text-left">EXISTENCIA</label>
                     <x-input wire:model="existencia" right-icon="pencil" placeholder="Númros enteros: 10 - 20 - 100" />
                 </div>
-                <div class="relative z-0 w-full mb-6 group">
+                <div class="p-2">
                     <label class="opacity-60 mb-1 block text-md font-extrabold text-[#7796A3] text-left">UNIDAD</label>
                     <x-input wire:model="unidad" right-icon="pencil" placeholder="ml - gr - hojas - lts" />
                 </div>
-                <div class="relative z-0 w-full mb-6 group">
+                <div class="p-2">
                     <label class="opacity-60 mb-1 block text-md font-extrabold text-[#BC9B94] text-left">CONTENIDO NETO</label>
                     <x-input wire:model="contenido_neto" right-icon="pencil" placeholder="Númros enteros: 350ml, 50gr, 45hojas" />
                 </div>
-                <div class="relative z-0 w-full mb-6 group">
-                    <label class="opacity-60 mb-1 block text-md font-extrabold text-[#7796A3] text-left">PRECIO(si aplica)</label>
+                <div class="p-2">
+                    <label class="opacity-60 mb-1 block text-md font-extrabold text-[#7796A3] text-left">PRECIO DE VENTA(si aplica)</label>
                     <x-input wire:model="precio_venta" right-icon="pencil" placeholder="50 , 1542.36" />
                 </div>
             </div>
@@ -40,83 +39,53 @@
             </div>
         </div>
 
-        <div class="relative overflow-x-auto shadow-md rounded-lg  {{ $ocultar_table_productos }}">
-            <div class="flex justify-between mb-4">
-                <input wire:model.live="buscar" type="search" id="search" name="buscar" class="border-b border-gray-200 py-2 text-sm rounded-full shadow-lg focus:ring-check-blue focus:border-check-blue" placeholder="Buscar cliente" autocomplete="off">
-                <button type="submit" wire:click.prevent="asignar_servicio()" class="justify-end rounded-md border border-transparent bg-green-600 py-2 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">
+        {{-- formulario para asignar productos --}}
+        <div class="bg-white rounded-xl {{ $ocultar_form_asignar }}">
+            <div class="">
+                <div class="grid md:grid-cols-2 md:gap-6">
+                    <div class="p-2">
+                        <label class="opacity-60 mb-1 block text-md font-extrabold text-amber-700 text-italblue text-left">PRODUCTO</label>
+                        <x-select wire:model.defer="producto" placeholder="Seleccion" :async-data="route('api.lista_productos')" option-label="descripcion" option-value="id" />
+                    </div>
+                    <div class="p-2">
+                        <label class="opacity-60 mb-1 block text-md font-extrabold text-blue-700 text-italblue text-left">EMPLEADO</label>
+                        <x-select wire:model.defer="empleado" placeholder="Seleccion" :async-data="route('api.empleados')" option-label="name" option-value="id" />
+                    </div>
+                    <div class="p-2">
+                        <label class="opacity-60 mb-1 block text-md font-extrabold text-blue-700 text-italblue text-left">CANTIDAD A ENTREGAR</label>
+                        <x-input wire:model="cantidad" right-icon="pencil" placeholder="Númros enteros: 10 - 20 - 100" />
+                    </div>
+                </div>
+                <div class="flex justify-end p-2 mt-auto mb-52">
+                    <button type="submit" wire:click.prevent="asignar()" class="justify-end rounded-md border border-transparent bg-[#7898a5] py-2 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">
+                        <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="store" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                        <span>Asignar Producto</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="{{ $ocultar_table_productos }}">
+            <div class="flex justify-end mb-4 px-4">
+                <button type="submit" wire:click.prevent="ocultar_table()" class="justify-end rounded-md border border-transparent bg-green-600 py-2 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">
+                    <span>Crear Producto</span>
+                </button>
+                <button type="submit" wire:click.prevent="formulario_asignar()" class="justify-end rounded-md border border-transparent bg-orange-400 py-2 px-4 ml-2 text-sm font-bold text-white shadow-sm hover:bg-check-green">
                     <span>Asignar Producto</span>
                 </button>
             </div>
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 rounded-lg">
-                <thead class="text-xs text-gray-700 uppercase bg-[#7898a5] dark:bg-gray-700 dark:text-gray-400 rounded-lg">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">
-                            Código
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Producto
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Categoría
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Existencia
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Unidad
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Contenido Neto
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Precio Venta
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Acciones
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($data as $item)
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $item->cod_producto }}
-                        </th>
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $item->descripcion }}
-                        </th>
-                        <td class="px-6 py-4">
-                            {{ $item->categoria->descripcion }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $item->existencia }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $item->unidad }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $item->contenido_neto }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $item->precio_venta }}
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex justify-between">
-                                <x-badge rounded negative md label="Eliminar" wire:click='eliminar_producto({{ $item->id }})' class="cursor-pointer"/>
-                            </div>
-                        </td>
-
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <div class="border rounded-lg mb-5">
+                <p class="p-4 text-xl font-bold uppercase text-[#cfb4b0]">Lista de productos registrados</p>
+                @livewire('list-products')
+            </div>
+            <div class="border rounded-lg mb-5">
+                <p class="p-4 text-xl font-bold uppercase text-[#cfb4b0]">Productos Asignados</p>
+                @livewire('asignacion-producto')
+            </div>
         </div>
 
-        {{-- Paginacion --}}
-        <div class="bg-white px-4 py-3 mt-4 items-center justify-between border-t border-gray-200 sm:px-6 ">
-            {{-- Paginacion --}}
-            {{ $data->links() }}
-        </div>
     </div>
 
     {{-- div para separacion ene le diseno --}}

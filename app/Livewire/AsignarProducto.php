@@ -107,7 +107,7 @@ class AsignarProducto extends Component
     public function render()
     {
         return view('livewire.asignar-producto', [
-            'data' => ModelsAsignarProducto::orderBy('producto')->paginate(5)
+            'data' => ModelsAsignarProducto::orderBy('producto_id')->paginate(5)
         ]);
     }
 }

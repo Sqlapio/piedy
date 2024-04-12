@@ -13,14 +13,11 @@ return new class extends Migration
     {
         Schema::create('asignar_productos', function (Blueprint $table) {
             $table->id();
-            $table->string('cod_producto');
+            $table->string('cod_producto')->nullable();
             $table->integer('producto_id');
-            $table->string('producto');
+            $table->string('user_id');
             $table->string('cantidad');
-            $table->string('contenido_neto');
             $table->string('fecha_entrega');
-            $table->string('empleado_id');
-            $table->string('empleado');
             $table->string('responsable');
             $table->timestamps();
         });

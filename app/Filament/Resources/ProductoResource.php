@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Widgets\Concerns\InteractsWithPageTable;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Auth;
 
 class ProductoResource extends Resource
 {
@@ -59,7 +60,7 @@ class ProductoResource extends Resource
                     ->required(),
                 DatePicker::make('fecha_carga')->format('d-m-Y'),
                 TextInput::make('unidad')
-                    ->numeric(),
+                    ->required(),
                 TextInput::make('contenido_neto')
                     ->numeric(),
                 TextInput::make('comision_venta_emp')
@@ -71,6 +72,7 @@ class ProductoResource extends Resource
                         'activo' => 'Activo',
                         'inactivo' => 'Inactivo',
                     ]),
+                TextInput::make('responsable')->default(Auth::user()->name),
                 FileUpload::make('image')
                     ->imageEditor()
                     ->imageEditorAspectRatios([

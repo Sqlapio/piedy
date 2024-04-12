@@ -83,4 +83,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(TipoServicio::class, 'tipo_servicio_id', 'id');
     }
+
+    /**
+     * Get all of the comments for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function asignaciones(): HasMany
+    {
+        return $this->hasMany(AsignarProducto::class, 'id', 'user_id');
+    }
 }

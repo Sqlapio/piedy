@@ -25,13 +25,16 @@ class Producto extends Model
         'cod_producto',
         'categoria_id',
         'descripcion',
-        'proveedor',
         'precio_venta',
         'existencia',
         'fecha_carga',
-        'comision_id',
+        'unidad',
+        'contenido_neto',
+        'comision_venta_emp',
+        'comision_venta_gte',
         'image',
         'status',
+        'responsable',
     ];
 
     public function comision():BelongsTo

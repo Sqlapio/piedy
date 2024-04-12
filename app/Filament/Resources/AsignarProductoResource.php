@@ -5,13 +5,21 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AsignarProductoResource\Pages;
 use App\Filament\Resources\AsignarProductoResource\RelationManagers;
 use App\Models\AsignarProducto;
+use App\Models\Producto;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class AsignarProductoResource extends Resource
 {
@@ -25,33 +33,22 @@ class AsignarProductoResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('cod_producto')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('producto_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('producto')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('cantidad')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('contenido_neto')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('fecha_entrega')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('empleado_id')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('empleado')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('responsable')
-                    ->required()
-                    ->maxLength(255),
+                Select::make('producto_id')
+                ->label('Producto')
+                ->options(Producto::all()->pluck('descripcion', 'id'))
+                ->searchable()
+                ->required(),
+                TextInput::make('cantidad')->required(),
+                DatePicker::make('fecha_entrega')
+                    ->label('Fecha de entraga')
+                    ->format('d-m-Y')
+                    ->required(),
+                Select::make('user_id')
+                    ->label('Empleado')
+                    ->options(User::all()->where('tipo_usuario', 'empleado')->pluck('name', 'id'))
+                    ->searchable()
+                    ->required(),
+                TextInput::make('responsable')->default(Auth::user()->name),
             ]);
     }
 
@@ -59,29 +56,20 @@ class AsignarProductoResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('cod_producto')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('producto')
-                    ->searchable(),
+                TextColumn::make('producto.cod_producto')->searchable(),
+                TextColumn::make('producto.descripcion')->searchable(),
                 Tables\Columns\TextColumn::make('cantidad')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('contenido_neto')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('fecha_entrega')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('empleado')
+                TextColumn::make('user.name')
+                    ->label('Empleado')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('responsable')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                ->label('Fecha de entrega')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
             ->filters([
                 //

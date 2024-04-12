@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\VentaServicio;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Carbon\Carbon;
+use Exception;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Rule;
@@ -65,6 +66,7 @@ class Caja extends Component
 
         if($this->descripcion == 'Multiple')
         {
+
             $this->op1_hidden = '';
             $this->op2_hidden = '';
             $this->ref_hidden = '';
@@ -320,7 +322,7 @@ class Caja extends Component
                             'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                             'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
                             'comision_dolares' => $comision_dolares_emp,
-                            'comision_gerente' => (isset($comision_dolares_gte_vip)) ? $comision_dolares_gte_vip : 0,
+                            'comision_gerente_usd' => (isset($comision_dolares_gte_vip)) ? $comision_dolares_gte_vip : 0,
                             'responsable'   => Auth::user()->name,
                         ]);
 
@@ -356,6 +358,27 @@ class Caja extends Component
 
                 try {
 
+                    /**Obtengo el codigo del servicio a facturar */
+                    $cod_srv_vip = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->first()->cod_servicio;
+
+                    /**Pregunto? si la asignacion del servicio en VIP */
+                    $srv_vip_tipo = Servicio::where('cod_servicio', $cod_srv_vip)->first();
+
+                    /**Realizo el calculo de las respectivas comisiones */
+                    if($srv_vip_tipo->asignacion == 'vip'){
+
+                        $_costosrv = $srv_vip_tipo->costo;
+
+                        $comision_bolivares_emp = UtilsController::comision_empleado_srvvip_bs($_costosrv);
+
+                        $comision_bolivares_gte_vip = UtilsController::comision_gerente_srvvip_bs($_costosrv);
+
+                    }else{
+                        /**Si el servicio facturado es diferente de los VIP */
+                        $comision_bolivares_emp = UtilsController::cal_comision_empleado($total_vista * $tasa_bcv);
+
+                    }
+
                     $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
                         ->update([
                             'metodo_pago' => $this->descripcion,
@@ -364,7 +387,8 @@ class Caja extends Component
                             'pago_bsd' => $total_vista * $tasa_bcv,
                             'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                             'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                            'comision_bolivares' => UtilsController::cal_comision_empleado($total_vista * $tasa_bcv),
+                            'comision_bolivares' => $comision_bolivares_emp,
+                            'comision_gerente_bs' => (isset($comision_bolivares_gte_vip)) ? $comision_bolivares_gte_vip : 0,
                             'responsable'   => Auth::user()->name,
                         ]);
 
@@ -400,6 +424,27 @@ class Caja extends Component
                 {
                     try {
 
+                        /**Obtengo el codigo del servicio a facturar */
+                        $cod_srv_vip = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->first()->cod_servicio;
+
+                        /**Pregunto? si la asignacion del servicio en VIP */
+                        $srv_vip_tipo = Servicio::where('cod_servicio', $cod_srv_vip)->first();
+
+                        /**Realizo el calculo de las respectivas comisiones */
+                        if($srv_vip_tipo->asignacion == 'vip'){
+
+                            $_costosrv = $srv_vip_tipo->costo;
+
+                            $comision_bolivares_emp = UtilsController::comision_empleado_srvvip_bs($_costosrv);
+
+                            $comision_bolivares_gte_vip = UtilsController::comision_gerente_srvvip_bs($_costosrv);
+
+                        }else{
+                            /**Si el servicio facturado es diferente de los VIP */
+                            $comision_bolivares_emp = UtilsController::cal_comision_empleado($total_vista * $tasa_bcv);
+
+                        }
+
                         $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
                             ->update([
                                 'metodo_pago' => $this->descripcion,
@@ -408,7 +453,8 @@ class Caja extends Component
                                 'pago_bsd' => $total_vista * $tasa_bcv,
                                 'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                                 'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                                'comision_bolivares' => UtilsController::cal_comision_empleado($total_vista * $tasa_bcv),
+                                'comision_bolivares' => $comision_bolivares_emp,
+                                'comision_gerente_bs' => (isset($comision_bolivares_gte_vip)) ? $comision_bolivares_gte_vip : 0,
                                 'responsable'   => Auth::user()->name,
                             ]);
 
@@ -446,6 +492,7 @@ class Caja extends Component
              */
             if($this->descripcion == 'Zelle')
             {
+
                 if($this->referencia == ''){
                     $this->dialog()->error(
                         $title = 'Error !!!',
@@ -456,6 +503,25 @@ class Caja extends Component
 
                     try {
 
+                        /**Obtengo el codigo del servicio a facturar */
+                        $cod_srv_vip = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->first()->cod_servicio;
+
+                        /**Pregunto? si la asignacion del servicio en VIP */
+                        $srv_vip_tipo = Servicio::where('cod_servicio', $cod_srv_vip)->first()->asignacion;
+
+                        /**Realizo el calculo de las respectivas comisiones */
+                        if($srv_vip_tipo == 'vip'){
+
+                            $comision_dolares_emp = UtilsController::comision_empleado_srvvip($total_vista);
+
+                            $comision_dolares_gte_vip = UtilsController::comision_gerente_srvvip($total_vista);
+
+                        }else{
+                            /**Si el servicio facturado es diferente de los VIP */
+                            $comision_dolares_emp = UtilsController::cal_comision_empleado($total_vista);
+
+                        }
+
                         $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
                             ->update([
                                 'metodo_pago' => $this->descripcion,
@@ -464,7 +530,8 @@ class Caja extends Component
                                 'pago_usd' => $total_vista,
                                 'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
                                 'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                                'comision_dolares' => UtilsController::cal_comision_empleado($total_vista),
+                                'comision_dolares' => $comision_dolares_emp,
+                                'comision_gerente_usd' => (isset($comision_dolares_gte_vip)) ? $comision_dolares_gte_vip : 0,
                                 'responsable'   => Auth::user()->name,
                             ]);
 
@@ -497,6 +564,17 @@ class Caja extends Component
              */
             if($this->descripcion == 'Multiple')
             {
+
+                /**Obtengo el codigo del servicio a facturar */
+                $cod_srv_vip = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->first()->cod_servicio;
+
+                /**Pregunto? si la asignacion del servicio en VIP */
+                $srv_vip_tipo = Servicio::where('cod_servicio', $cod_srv_vip)->first()->asignacion;
+
+                /**Realizo el calculo de las respectivas comisiones */
+                if($srv_vip_tipo == 'vip'){
+                    throw new Exception("No se puede realizar este pago");
+                }
 
                 /**
                  * CASO 1 DOLARES -> BOLIVARES
@@ -558,8 +636,11 @@ class Caja extends Component
 
                                     $this->redirect('/cabinas');
 
-                                } catch (\Throwable $th) {
-                                    //throw $th;
+                                } catch (\Exception $e) {
+                                    $this->dialog()->error(
+                                        $title = 'Error !!!',
+                                        $description = $e->getMessage()
+                                    );
                                 }
 
                         }
@@ -661,7 +742,6 @@ class Caja extends Component
         $codigo = $request->session()->all();
 
         $item = VentaServicio::where('cod_asignacion', $codigo['cod_asignacion'])->first();
-        Debugbar::info($item);
 
         $total = DB::table('detalle_asignacions')
         ->select(DB::raw('SUM(costo) as total'))

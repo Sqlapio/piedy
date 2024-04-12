@@ -1,7 +1,7 @@
 <div>
     <div class="p-5">
         @livewire('notifications')
-        <h1 class="text-xl mb-6 font-bold text-[#bd9c95]">Modulo de Clientes</h1>
+        <h1 class="text-xl mb-6 font-bold text-[#bd9c95]">REGISTRO DE CLIENTES NUEVOS</h1>
         {{-- tabla y boton del formulario de clientes --}}
         <div class="bg-white rounded-xl {{ $ocultar_form_cliente }}">
 

@@ -10,7 +10,7 @@
             <h2 style="text-align: justify; margin-left: 20px;">Sr(a). {{ $mailData['cliente'] }}</h2>
         </p>
         <p style="text-align: justify; margin-left: 20px;">
-            Usted acaba de agendar una cita en PiedyCcs,
+            ESTO ES UNA PRUEBA DE CORREO MASIVO
             <br>
             Los detalles a continuacion:
         </p>
@@ -23,18 +23,6 @@
             Para cualquier consulta o asistencia adicional que necesite, puede comunicarse las 24
             horas del dia con nuestro equipo a traves de piedyccs@gmail.com
         </p>
-        {{-- <p style="text-align: justify; margin-left: 20px; font-size: 9px">
-            <br>
-            Atentamente,
-            <br>
-            <br>
-            <img style="
-                    display: block;
-                    margin-left: 0px;
-                    width: 80px;
-                    height: auto;" src="{{ asset('img/notification_email/fir_jm.png') }}">
-            Ing. Jhonny Martinez<br>CEO
-        </p> --}}
     </div>
 
 </body>

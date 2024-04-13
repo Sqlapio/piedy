@@ -1,6 +1,5 @@
 
 <div class="z-index w-full max-w-2xl max-h-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
-    @livewire('notifications')
      <div class="flex flex-col mb-2">
         <div class="flex">
             <h1 class="mb-1 text-base font-semibold text-[#bd9c95] md:text-xl dark:text-white">

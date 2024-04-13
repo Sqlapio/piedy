@@ -1,5 +1,4 @@
 <div class="z-index sm:max-w-5xl md:max-w-5xl p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
-    @livewire('notifications')
 
     {{-- header el componente --}}
     <h5 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">

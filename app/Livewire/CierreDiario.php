@@ -89,7 +89,7 @@ class CierreDiario extends Component implements HasForms, HasTable
                 $total_gastos_usd = Gasto::where('fecha', date('d-m-Y'))->sum('monto_usd');
 
                 /** totales gastos en Dolares*/
-                $efectivo_caja_usd = CajaChica::where('fecha', date('d-m-Y'))->first()->saldo;
+                $efectivo_caja_usd = CajaChica::where('fecha', date('d-m-Y'))->first();
 
 
                 $cierre = new ModelsCierreDiario();
@@ -98,7 +98,7 @@ class CierreDiario extends Component implements HasForms, HasTable
                 $cierre->total_dolares_zelle     = $total_zelle;
                 $cierre->total_bolivares         = $total_bs;
                 $cierre->total_gastos            = $total_gastos_usd;
-                $cierre->saldo_caja_chica        = $efectivo_caja_usd;
+                $cierre->saldo_caja_chica        = (isset($efectivo_caja_usd->saldo)) ? $efectivo_caja_usd->saldo : 0;
                 $cierre->fecha                   = date('d-m-Y');
                 $cierre->responsable             = $user->name;
                 $cierre->save();
@@ -136,6 +136,7 @@ class CierreDiario extends Component implements HasForms, HasTable
             }
 
         } catch (\Throwable $th) {
+            dd($th);
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->color('danger')

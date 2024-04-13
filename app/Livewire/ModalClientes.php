@@ -9,6 +9,7 @@ use App\Models\Servicio;
 use App\Models\User;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -32,6 +33,7 @@ class ModalClientes extends ModalComponent
 
     public function asignar_tecnico()
     {
+
         $this->validate();
 
         try {
@@ -84,22 +86,31 @@ class ModalClientes extends ModalComponent
                 $detalle_asignacion->fecha              = date('d-m-Y');
                 $detalle_asignacion->save();
 
+                /**Actualizamos la agenda */
+                DB::table('citas')->where('correo', $this->cliente->email)->update(['status' => 2]);
+
                 $this->forceClose()->closeModal();
 
                 $this->redirect('/cabinas');
 
             }else{
 
-                $this->notification([
-                    'title'       => 'Acción no permitida!',
-                    'description' => 'El tecnico debe cerrar el servicio anterior.',
-                    'icon'        => 'error'
-                ]);
+                Notification::make()
+                    ->title('NOTIFICACIÓN')
+                    ->icon('heroicon-o-shield-check')
+                    ->iconColor('danger')
+                    ->body('Debe cerrar el servicio anterior para poder asignar uno nuevamente.')
+                    ->send();
 
             }
 
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
         }
 
     }

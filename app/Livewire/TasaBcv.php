@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\CajaChica;
 use App\Models\TasaBcv as ModelsTasaBcv;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -12,7 +13,7 @@ use WireUi\Traits\Actions;
 class TasaBcv extends ModalComponent
 {
     use Actions;
-    
+
     #[Rule('required')]
     public $tasa;
 
@@ -20,10 +21,10 @@ class TasaBcv extends ModalComponent
         'nombre' => 'Campo requerido',
     ];
 
-    public function actualiza_tasa() 
+    public function actualiza_tasa()
     {
 
-        $hoy = date('d-m-Y'); 
+        $hoy = date('d-m-Y');
 
         $tasa_actualizada = ModelsTasaBcv::first();
 
@@ -45,6 +46,8 @@ class TasaBcv extends ModalComponent
                 'fecha' => $hoy
             ]);
 
+            
+
             $this->forceClose()->closeModal();
 
             // $this->dialog()->success(
@@ -55,7 +58,7 @@ class TasaBcv extends ModalComponent
             redirect()->to('/dashboard');
 
         }
-        
+
 
     }
     public function render()

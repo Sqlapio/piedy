@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Http\Controllers\NotificacionesController;
 use App\Models\CierreDiario;
 use App\Models\CierreGeneral as ModelsCierreGeneral;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -86,6 +87,22 @@ class CierreGeneral extends Component implements HasForms, HasTable
             $cierre->fecha = date('d-m-Y');
             $cierre->responsable = $user->name;
             $cierre->save();
+
+            /** Notificacion para el usuario cuando su servicio fue anulado */
+            $type = 'cierre_general';
+            $correo = env('CEO');
+            $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
+
+            $mailData = [
+                    'tasa_bcv' => $tasa,
+                    'total_ventas' => $cierre->total_ventas,
+                    'total_dolares_efectivo' => $cierre->total_dolares_efectivo,
+                    'total_dolares_zelle' => $cierre->total_dolares_zelle,
+                    'total_bolivares' => $cierre->total_bolivares,
+                    'user_email' => $correo,
+                ];
+
+            NotificacionesController::notification($mailData, $type);
 
             Notification::make()
             ->title('NOTIFICACIÓN')

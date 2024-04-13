@@ -41,8 +41,6 @@
             <br>
             <strong>TASA BCV: {{ $mailData['tasa_bcv'] }}</strong>
             <br>
-            <strong>TOTAL DE SERVICIOS: {{ $mailData['total_servicios'] }}</strong>
-            <br>
         </p>
         <div style="margin: auto; width: 600px; padding: 10px;">
             <table id="customers">
@@ -51,12 +49,8 @@
                     <th>Valor</th>
                 </tr>
                 <tr>
-                    <td>Responsable</td>
-                    <td>{{ $mailData['responsable'] }}</td>
-                </tr>
-                <tr>
                     <td>Fecha</td>
-                    <td>{{ $mailData['fecha'] }}</td>
+                    <td>{{ date('d-m-Y H:i') }}</td>
                 </tr>
                 <tr>
                     <td>Total General de Ventas($)</td>
@@ -64,31 +58,15 @@
                 </tr>
                 <tr>
                     <td>Total($)</td>
-                    <td>{{ round($mailData['total_dolares']) }}</td>
+                    <td>{{ round($mailData['total_dolares_efectivo']) }}</td>
                 </tr>
                 <tr>
                     <td>Zelle($)</td>
-                    <td>{{ round($mailData['zelle']) }}</td>
+                    <td>{{ round($mailData['total_dolares_zelle']) }}</td>
                 </tr>
                 <tr>
                     <td>Total(Bs.)</td>
                     <td>{{ round($mailData['total_bolivares']) }}</td>
-                </tr>
-                <tr>
-                    <td>Conversión (Bs.) -> ($)</td>
-                    <td>{{ round($mailData['conversion']) }}</td>
-                </tr>
-                <tr>
-                    <td>Efectivo($) en caja</td>
-                    <td>{{ $mailData['efectivo_caja_usd'] }}</td>
-                </tr>
-                <tr>
-                    <td>Gastos($)</td>
-                    <td>{{ round($mailData['gastos']) }}</td>
-                </tr>
-                <tr>
-                    <td>Saldo Caja Chica($)</td>
-                    <td>{{ $mailData['efectivo_caja_chica'] }}</td>
                 </tr>
             </table>
         </div>

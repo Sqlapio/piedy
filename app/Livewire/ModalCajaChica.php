@@ -5,6 +5,7 @@ namespace App\Livewire;
 
 use App\Models\CajaChica as ModelsCajaChica;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use LivewireUI\Modal\ModalComponent;
@@ -34,8 +35,9 @@ class ModalCajaChica extends ModalComponent
                 DB::table('caja_chicas')
                 ->where('id', $query->id)
                 ->update([
-                    'monto' => $this->monto,
-                    'saldo' => $this->monto
+                    'monto'         => $this->monto,
+                    'saldo'         => $this->monto,
+                    'responsable'   => Auth::user()->name,
                 ]);
 
             }else{
@@ -43,6 +45,7 @@ class ModalCajaChica extends ModalComponent
                 $caja_chica_apr->monto = $this->monto;
                 $caja_chica_apr->saldo = $this->monto;
                 $caja_chica_apr->fecha = date('d-m-Y');
+                $caja_chica_apr->responsable = Auth::user()->name;
                 $caja_chica_apr->save();
 
             }

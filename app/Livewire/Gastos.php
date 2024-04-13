@@ -73,7 +73,6 @@ class Gastos extends Component
 
         try {
 
-            $user = Auth::user();
             $cc = CajaChica::where('fecha', date('d-m-Y'))->first();
 
             $gasto = new Gasto();
@@ -94,9 +93,10 @@ class Gastos extends Component
             }
 
             $gasto->fecha = date('d-m-Y');
-            $gasto->responsable = $user->name;
+            $gasto->responsable = Auth::user()->name;
             $gasto->save();
 
+            /**Logica para guardar los movimientos de caja chica */
             $mov_caja_chica = new MovimientoCajaChica();
             $mov_caja_chica->gasto_id       = $gasto->id;
             $mov_caja_chica->caja_chica_id  = $cc->id;
@@ -113,7 +113,11 @@ class Gastos extends Component
                 /**
                  * Actualizo el saldo de la caja chica
                  */
-                DB::table('caja_chicas')->where('id', $cc->id)->update(['saldo' => $mov_caja_chica->saldo]);
+                DB::table('caja_chicas')->where('id', $cc->id)
+                    ->update([
+                        'saldo' => $mov_caja_chica->saldo,
+                        'responsable' => Auth::user()->name
+                    ]);
 
                 Notification::make()
                     ->title('El gasto fue registrado con éxito')

@@ -167,8 +167,9 @@ class CierreDiario extends Component implements HasForms, HasTable
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('total_bolivares')
-                ->money('VES')
                 ->label('Bolivares(Bs)')
+                ->numeric()
+                ->money('VES',2, ",", ".")
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('total_gastos')

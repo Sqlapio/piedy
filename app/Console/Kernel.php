@@ -21,7 +21,7 @@ class Kernel extends ConsoleKernel
             DB::table('disponibles')->delete();
         })->everyFiveMinutes();
     }
- 
+
     /**
      * Register the commands for the application.
      */
@@ -32,3 +32,6 @@ class Kernel extends ConsoleKernel
         require base_path('routes/console.php');
     }
 }
+// php artisan schedule:run
+// php artisan schedule:work
+// php artisan

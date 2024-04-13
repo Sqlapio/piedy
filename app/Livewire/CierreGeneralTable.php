@@ -30,14 +30,17 @@ class CierreGeneralTable extends Component implements HasForms, HasTable
                 Tables\Columns\TextColumn::make('total_dolares_efectivo')
                     ->label('Total Dolares($) Efectivo')
                     ->numeric()
+                    ->money('USD')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_dolares_zelle')
                     ->label('Total Dolares($) ZELLE')
                     ->numeric()
+                    ->money('USD')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_bolivares')
                     ->label('Total Bolivares')
                     ->numeric()
+                    ->money('VES',2, ",", ".")
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha de cierre')

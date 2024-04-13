@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApiClientesController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\NotificacionesController;
 use App\Livewire\Login;
 use App\Models\CierreGeneral;
 use App\Models\Cliente;
@@ -12,6 +13,8 @@ use Carbon\Carbon;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotificacionesEmail;
 
 /*
 |--------------------------------------------------------------------------
@@ -162,6 +165,22 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
 Route::get('/pp', function () {
 
+    $fecha_anterior =  date("d-m-Y", strtotime(date("d-m-Y") . "-1 day"));
+    $clientes = VentaServicio::where('fecha_venta', $fecha_anterior)->get();
+
+    dd($clientes, $fecha_anterior);
+    foreach($clientes as $item)
+    {
+        $cliente = Cliente::find($item->cliente_id);
+        dump($cliente);
+        // $view = 'emails.correo_masivo';
+        // $mailData = [
+        //     'cliente' => $cliente->nombre.' '.$cliente->apellido
+        // ];
+
+        // Mail::to($cliente->email)->send(new NotificacionesEmail($mailData, $view));
+
+    }
 
     $ultimo_cierre = CierreGeneral::latest()->first()->fecha;
 

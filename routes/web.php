@@ -117,6 +117,7 @@ Route::get('/pp', function () {
     $fecha_anterior =  date("d-m-Y", strtotime(date("d-m-Y") . "-1 day"));
     $clientes = VentaServicio::where('fecha_venta', $fecha_anterior)->get();
 
+    dd($clientes, $fecha_anterior);
     foreach($clientes as $item)
     {
         $cliente = Cliente::find($item->cliente_id);

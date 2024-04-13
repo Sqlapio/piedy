@@ -13,15 +13,23 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->call(function () {
-            DB::table('citas')->delete();
-        })->everyFiveMinutes();
+        $schedule->command('app:send-mail-command')
+        ->everyMinute()
+        ->emailOutputTo('gusta.acp@gmail.com');
 
-        $schedule->call(function () {
-            DB::table('disponibles')->delete();
-        })->everyFiveMinutes();
+        $schedule->command('app:appointment-reminder')
+        ->everyMinute()
+        ->emailOutputTo('gusta.acp@gmail.com');
+
+        // $schedule->call(function () {
+        //     DB::table('citas')->delete();
+        // })->everyFiveMinutes();
+
+        // $schedule->call(function () {
+        //     DB::table('disponibles')->delete();
+        // })->everyFiveMinutes();
     }
- 
+
     /**
      * Register the commands for the application.
      */

@@ -15,6 +15,7 @@ use Flowframe\Trend\TrendValue;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificacionesEmail;
+use App\Models\Cita;
 
 /*
 |--------------------------------------------------------------------------
@@ -165,32 +166,38 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
 Route::get('/pp', function () {
 
-    $fecha_anterior =  date("d-m-Y", strtotime(date("d-m-Y") . "-1 day"));
-    $clientes = VentaServicio::where('fecha_venta', $fecha_anterior)->get();
+    // $fecha_anterior =  date("d-m-Y", strtotime(date("d-m-Y") . "-1 day"));
+    // $clientes = VentaServicio::where('fecha_venta', $fecha_anterior)->get();
 
-    dd($clientes, $fecha_anterior);
-    foreach($clientes as $item)
-    {
-        $cliente = Cliente::find($item->cliente_id);
-        dump($cliente);
-        // $view = 'emails.correo_masivo';
-        // $mailData = [
-        //     'cliente' => $cliente->nombre.' '.$cliente->apellido
-        // ];
+    // dd($clientes, $fecha_anterior);
+    // foreach($clientes as $item)
+    // {
+    //     $cliente = Cliente::find($item->cliente_id);
+    //     dump($cliente);
+    //     // $view = 'emails.correo_masivo';
+    //     // $mailData = [
+    //     //     'cliente' => $cliente->nombre.' '.$cliente->apellido
+    //     // ];
 
-        // Mail::to($cliente->email)->send(new NotificacionesEmail($mailData, $view));
+    //     // Mail::to($cliente->email)->send(new NotificacionesEmail($mailData, $view));
 
-    }
+    // }
 
-    $ultimo_cierre = CierreGeneral::latest()->first()->fecha;
+    // $ultimo_cierre = CierreGeneral::latest()->first()->fecha;
 
-    $fecha_anterior =  date("d-m-Y", strtotime(date($ultimo_cierre) . "+1 day"));
-    dd($ultimo_cierre, $fecha_anterior);
+    // $fecha_anterior =  date("d-m-Y", strtotime(date($ultimo_cierre) . "+1 day"));
+    // dd($ultimo_cierre, $fecha_anterior);
 
-    $fechaIni = '2024-01-01';
-    $fechaFin = '2024-01-31';
+    // $fechaIni = '2024-01-01';
+    // $fechaFin = '2024-01-31';
 
-    $resultados = DB::select("CALL Sp_ObtenerComisionesEmpleados(?, ?)", array($fechaIni, $fechaFin));
+    // $resultados = DB::select("CALL Sp_ObtenerComisionesEmpleados(?, ?)", array($fechaIni, $fechaFin));
 
-    dd(DetalleAsignacion::where('fecha', date('d-m-Y'))->count());
+    // dd(DetalleAsignacion::where('fecha', date('d-m-Y'))->count());
+
+    $fecha_posterior =  date("d-m-Y", strtotime(date("d-m-Y") . "+1 day"));
+    $citas_posteriores = Cita::where('fecha', Carbon::parse(date($fecha_posterior))->isoFormat('dddd, D MMM '))->get();
+
+    dd($fecha_posterior, $citas_posteriores);
+
 });

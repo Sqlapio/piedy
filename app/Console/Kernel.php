@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('app:send-mail-command')
         ->everyMinute()
+
         ->emailOutputTo('gusta.acp@gmail.com');
 
         $schedule->command('app:appointment-reminder')

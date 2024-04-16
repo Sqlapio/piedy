@@ -152,6 +152,7 @@ class ApiClientesController extends Controller
             });
     }
 
+
     public function categoria_producto(Request $request): Collection
     {
         return Categoria::query()
@@ -170,6 +171,28 @@ class ApiClientesController extends Controller
             ->get()
             ->map(function (Categoria $categoria) {
                 return $categoria;
+            });
+    }
+
+    public function metodo_pago_ref(Request $request): Collection
+    {
+        return MetodoPago::query()
+            ->select('id', 'descripcion')
+            ->where('ref', '1')
+            ->orderBy('descripcion')
+            ->when(
+                $request->search,
+                fn (Builder $query) => $query
+                    ->where('descripcion', 'like', "%{$request->search}%")
+            )
+            ->when(
+                $request->exists('selected'),
+                fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
+                fn (Builder $query) => $query->limit(5)
+            )
+            ->get()
+            ->map(function (MetodoPago $metodo_pago) {
+                return $metodo_pago;
             });
     }
 
@@ -215,5 +238,4 @@ class ApiClientesController extends Controller
                 return $mes;
             });
     }
-
 }

@@ -76,10 +76,38 @@
         </button>
     </div>
 
+    {{-- Fomulario para editar servicios --}}
+    <div class="mt-10 text-center sm:mt-5 {{ $atr9 }}">
+        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-1 mb-4 mt-5">
+            <div class="py-2">
+                <label class="opacity-60 mb-1 block text-md font-extrabold text-green-700 text-italblue text-left">TÉCNICO</label>
+                <x-select wire:model.defer="es_empleado_id" placeholder="Seleccion" :async-data="route('api.empleados')" option-label="name" option-value="id" />
+            </div>
+            <div class="py-2">
+                <label class="opacity-60 mb-1 block text-md font-extrabold text-blue-700 text-italblue text-left">CLIENTE</label>
+                <x-select wire:model.defer="es_cliente_id" placeholder="Seleccion" :async-data="route('api.clientes')" option-label="nombre.' '.apellido" option-value="id" />
+            </div>
+            <div class="py-2">
+                <label class="opacity-60 mb-1 block text-md font-extrabold text-blue-700 text-italblue text-left">SERVICIO</label>
+                <x-select wire:model.defer="es_servicio_id" placeholder="Seleccion" :async-data="route('api.servicios')" option-label="descripcion" option-value="id" />
+            </div>
+        </div>
+    </div>
+    <div class="sm:mt-2 {{ $atr10 }}">
+        <button type="button" wire:click="guardar_editado({{ $data->id }})" class="inline-flex w-full justify-center rounded-lg bg-green-700 px-2 py-2 mt-20 text-md font-semibold text-white shadow-sm">
+            <span>Guardar</span>
+        </button>
+    </div>
+
     {{-- Botones de accion --}}
     @if($data->status == 'activo')
+        <div class="sm:mt-2 {{ $atr11 }}">
+            <button type="button" wire:click="editar_servicio()" class="inline-flex w-full justify-center rounded-lg bg-blue-500 px-2 py-2 mt-14 text-md font-semibold text-white shadow-sm">
+                <span>Editar servicio</span>
+            </button>
+        </div>
         <div class="sm:mt-2 {{ $atr5 }}">
-            <button type="button" wire:click="agregar_servicio()" class="inline-flex w-full justify-center rounded-lg bg-green-700 px-2 py-2 mt-14 text-md font-semibold text-white shadow-sm">
+            <button type="button" wire:click="agregar_servicio()" class="inline-flex w-full justify-center rounded-lg bg-green-700 px-2 py-2 mt-1 text-md font-semibold text-white shadow-sm">
                 <span>Añadir servicio</span>
             </button>
         </div>
@@ -88,32 +116,34 @@
                 <span>Asignar otro técnico</span>
             </button>
         </div>
-    <div class="sm:mt-2 {{ $atr7 }}">
-        <button type="button" wire:click="cerrar_servicio()" class="inline-flex w-full justify-center rounded-lg bg-red-700 px-2 py-2 mt-1 text-md font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
-            <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="cerrar_servicio" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-            </svg>
-            <span>Cerrar servicio</span>
-        </button>
-    </div>
+        <div class="sm:mt-2 {{ $atr7 }}">
+            <button type="button" wire:click="cerrar_servicio()" class="inline-flex w-full justify-center rounded-lg bg-red-700 px-2 py-2 mt-1 text-md font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="cerrar_servicio" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+                <span>Cerrar servicio</span>
+            </button>
+        </div>
+
     @endif
+
     @if($data->status == 'por facturar')
-    <div class="sm:mt-2">
-        <button type="button" wire:click="facturar_servicio()" class="inline-flex w-full justify-center rounded-lg bg-red-700 px-3 py-3 mt-10 text-sm font-semibold text-white shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="facturar_servicio" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-            </svg>
-            <span>Facturar servicio</span>
-        </button>
-    </div>
-    <div class="sm:mt-2">
-        <button type="button" wire:click="anular_servicio()" class="inline-flex w-full justify-center rounded-lg bg-yellow-400 px-3 py-3 text-sm font-semibold text-white shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="anular_servicio" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-            </svg>
-            <span>Anular servicio</span>
-        </button>
-    </div>
+        <div class="sm:mt-2">
+            <button type="button" wire:click="facturar_servicio()" class="inline-flex w-full justify-center rounded-lg bg-red-700 px-3 py-3 mt-10 text-sm font-semibold text-white shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="facturar_servicio" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+                <span>Facturar servicio</span>
+            </button>
+        </div>
+        {{-- <div class="sm:mt-2">
+            <button type="button" wire:click="anular_servicio()" class="inline-flex w-full justify-center rounded-lg bg-yellow-400 px-3 py-3 text-sm font-semibold text-white shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="anular_servicio" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+                <span>Anular servicio</span>
+            </button>
+        </div> --}}
     @endif
 </div>
 

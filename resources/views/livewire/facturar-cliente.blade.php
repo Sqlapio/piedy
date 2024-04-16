@@ -61,7 +61,7 @@
             <div class="mt-8 space-y-6">
                 <div class="px-2">
                     <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Forma de pago:</p>
-                    <x-select wire:blur="$dispacht('metodo_principal', value: $event.target.value)" wire:model.live="descripcion" placeholder="Método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
+                    <x-select wire:blur="$dispacht('metodo_principal', value: $event.target.value)" wire:model.live="descripcion" placeholder="Método de pago" :async-data="route('api.metodo_pago_ref')" option-label="descripcion" option-value="descripcion" />
                 </div>
                 <div class="px-2 {{ $ref_hidden }}">
                     <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Nro. referencia:</p>

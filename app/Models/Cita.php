@@ -24,10 +24,10 @@ class Cita extends Model
     protected $fillable = [
         'cod_cita',
         'cliente_id',
-        'empleado_id',
+        'cliente',
+        'correo',
         'fecha',
         'hora',
-        'servicio_id',
         'responsable',
         'status',
     ];
@@ -36,7 +36,7 @@ class Cita extends Model
     {
         return $this->BelongsTo(Cliente::class, 'cliente_id', 'id');
     }
-    
+
     public function get_empleado(): BelongsTo
     {
         return $this->belongsTo(Empleado::class, 'empleado_id');

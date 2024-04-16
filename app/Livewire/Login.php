@@ -57,7 +57,7 @@ class Login extends Component
 
     public function login()
     {
-        dd('aqui');
+
         try {
 
             // Reglas de Validación
@@ -65,7 +65,7 @@ class Login extends Component
 
             $user = User::where('email', $this->email)->get();
 
-            if (count($user) > 0) 
+            if (count($user) > 0)
             {
                 foreach ($user as $item) {
                     $password = $item->password;
@@ -73,7 +73,7 @@ class Login extends Component
                 }
 
                     // Condicion para manera el login del checkmas para Banco del tesoro
-                    if (Hash::check($this->password, $password)) 
+                    if (Hash::check($this->password, $password))
                     {
                         $credenciales = [
                             'email' => $this->email,
@@ -99,7 +99,7 @@ class Login extends Component
                             /**
                              * Manejo de roles en checkmas -> Banco del Tesoro
                              */
-                            if ($user->status_registro == '1') 
+                            if ($user->status_registro == '1')
                             {
 
                                 if ($user->rol == '7' || $user->rol == '8') {
@@ -154,7 +154,7 @@ class Login extends Component
                             }
 
                         }
-    
+
                     } else {
                         $this->password = '';
                         $this->notification()->success(

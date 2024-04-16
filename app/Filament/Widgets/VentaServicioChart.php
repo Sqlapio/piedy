@@ -12,14 +12,45 @@ class VentaServicioChart extends ChartWidget
 {
     protected static ?string $heading = 'Ventas';
 
+    protected static ?string $maxHeight = '300px';
+
+    protected int | string | array $columnSpan = 'full';
+
+    public ?string $filter = 'today';
+
+    protected function getFilters(): ?array
+    {
+        return [
+            'today' => 'Hoy',
+            'week'  => 'Semana',
+            'month' => 'Mes',
+            'year'  => 'Año',
+        ];
+    }
+
     protected function getData(): array
     {
+
         $activeFilter = $this->filter;
+
+        if ($activeFilter === 'today') {
+            $rangeStartDate = now()->startOfDay();
+            $rangeEndDate = now()->endOfDay();
+        } elseif ($activeFilter === 'week') {
+            $rangeStartDate = now()->subWeek()->startOfWeek();
+            $rangeEndDate = now()->endOfWeek();
+        } elseif ($activeFilter === 'month') {
+            $rangeStartDate = now()->subMonthNoOverflow()->startOfMonth();
+            $rangeEndDate = now()->endOfMonth();
+        } elseif ($activeFilter === 'year'){
+            $rangeStartDate = now()->subMonthNoOverflow()->startOfYear();
+            $rangeEndDate = now()->endOfYear();
+        }
 
         $data = Trend::model(VentaServicio::class)
             ->between(
-                start: now()->startOfMonth(),
-                end: now()->endOfMonth(),
+                start: $rangeStartDate ? $rangeStartDate : now()->startOfMonth(),
+                end: $rangeEndDate ? $rangeEndDate : now()->endOfMonth(),
             )
             // ->perMonth()
             ->perDay()

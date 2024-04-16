@@ -17,7 +17,7 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-
+        dd('aqui');
         try {
 
             $user = User::where('email', $request->email)->get();

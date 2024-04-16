@@ -25,13 +25,16 @@ class Producto extends Model
         'cod_producto',
         'categoria_id',
         'descripcion',
-        'proveedor',
         'precio_venta',
         'existencia',
         'fecha_carga',
-        'comision_id',
+        'unidad',
+        'contenido_neto',
+        'comision_venta_emp',
+        'comision_venta_gte',
         'image',
         'status',
+        'responsable',
     ];
 
     public function comision():BelongsTo
@@ -49,9 +52,9 @@ class Producto extends Model
      *
      * Un producto tiene Muchos movimiento de entrada
      */
-    public function get_entradas():HasMany
+    public function get_productos_asignados():HasMany
     {
-        return $this->hasMany(MovimientoEntrada::class, 'producto_id', 'id');
+        return $this->hasMany(AsignarProducto::class, 'id', 'producto_id');
     }
 
     /**

@@ -26,6 +26,7 @@ class Servicio extends Model
         'cod_servicio',
         'descripcion',
         'costo',
+        'asignacion',
         'duracion_max', //este valor debe ser expresado en minutos
         'categoria',
         'tipo_servicio_id',

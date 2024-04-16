@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('movimiento_salidas', function (Blueprint $table) {
+        Schema::create('mes', function (Blueprint $table) {
             $table->id();
+            $table->string('mes', 100)->nullable();
+            $table->string('numero', 2)->nullable();
             $table->timestamps();
         });
     }
@@ -22,6 +24,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('movimiento_salidas');
+        Schema::dropIfExists('mes');
     }
 };
+

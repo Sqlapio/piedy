@@ -4,16 +4,23 @@ use App\Models\TasaBcv as ModelsTasaBcv;
 @endphp
 <div class="py-1 my-auto">
 
-    @if(Auth::user()->tipo_usuario == 'gerente')
+    @if(Auth::user()->tipo_usuario == 'encargado' || Auth::user()->tipo_usuario == 'gerente')
         {{-- BCV linea --}}
         <div class="grid grid-cols-1 gap-4 p-3">
             {{-- TASA BCV --}}
-            <div class="flex items-center space-x-4 p-2" onclick="Livewire.dispatch('openModal', { component: 'tasa-bcv' })">
-                <img class="w-14 h-14 rounded-full" src="{{ asset('images/BCV.png') }}" alt="">
-                <div class="titulos">
-                    <div class="font-bold dark:text-white">BCV</div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">Tasa del dia: {{ $tasa->tasa }}</div>
+            <div class="flex justify-between items-center space-x-4 p-2">
+                <div class="flex items-center" onclick="Livewire.dispatch('openModal', { component: 'tasa-bcv' })">
+                    <img class="w-14 h-14 rounded-full" src="{{ asset('images/BCV.png') }}" alt="">
+                    <div class="ml-2 titulos">
+                        <div class="font-bold dark:text-white">BCV</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">Tasa del dia: {{ $tasa->tasa }}</div>
+                    </div>
                 </div>
+                @if(Auth::user()->tipo_usuario == 'gerente')
+                    <div class="titulos">
+                        <button type="button" wire:click="cierre_general()" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">CIERRE GENERAL</button>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -174,66 +181,6 @@ use App\Models\TasaBcv as ModelsTasaBcv;
             </div>
         </div>
 
-    @endif
-
-    {{-- Primera linea para empleados --}}
-    @if(Auth::user()->tipo_usuario == 'empleado')
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-                {{-- Perfil --}}
-                <div class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/abstract-light-blue-background-geometry-pattern-hd-wallpaper_1000823-2187.jpg'); background-size: cover;">
-                    <a href="{{ route('perfil') }}">
-                    <div class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
-                        </svg>
-                    </div>
-                    <div class="ml-12 text-right">
-                        <div class="mt-2 text-2xl text-black leading-7 font-bold">
-                            MI PERFIL
-                        </div>
-                            <div class="mt-3 text-right text-md font-semibold text-black">
-                                <div>Informacion de usuario</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                {{-- Servicios Asignado --}}
-                {{-- <div class="p-6 rounded-lg" style="background-image: url('/images/empleados.jpg'); background-size: cover;">
-                    <a href="{{ route('servicio_asignado') }}">
-                    <div class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3" />
-                        </svg>
-                    </div>
-                    <div class="ml-12 text-right">
-                        <div class="mt-2 text-2xl text-black leading-7 font-bold">
-                            SERVICIO ASIGNADOS
-                        </div>
-                            <div class="mt-3 text-right text-md font-semibold text-black">
-                                <div>Servício asignado</div>
-                            </div>
-                        </a>
-                    </div>
-                </div> --}}
-                {{-- Historico --}}
-                <div class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/abstract-light-blue-background-hd-wallpaper_1000823-2469.jpg?size=626&ext=jpg&ga=GA1.1.1016474677.1696809600&semt=ais');background-size: cover;">
-                    <a href="{{ route('historico_servicios') }}">
-                    <div class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                        </svg>
-                    </div>
-                    <div class="ml-12 text-right">
-                        <div class="mt-2 text-2xl text-black leading-7 font-bold">
-                            HITORICO DE SERVICIOS
-                        </div>
-                            <div class="mt-3 text-right text-md font-semibold text-black">
-                                <div>Lista de servicio realizados</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-        </div>
     @endif
 
 </div>

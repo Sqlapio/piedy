@@ -9,6 +9,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Filament\Notifications\Notification;
 use Livewire\Attributes\Rule;
+use Livewire\Attributes\Validate;
 use WireUi\Traits\Actions;
 
 class Clientes extends Component
@@ -17,12 +18,15 @@ class Clientes extends Component
 
     use Actions;
 
-    #[Rule('required', message: 'Nombre requerido')]
+    #[Validate('required', message: 'Nombre requerido')]
     public $nombre;
 
+    #[Validate('required', message: 'Apellido requerido')]
     public $apellido;
 
+    #[Validate('unique:clientes', message: 'El correo electrónico ya se encuentra registrado. Intente con otra dirección de correo.')]
     public $email;
+
     public $telefono;
 
     public $buscar;
@@ -70,7 +74,12 @@ class Clientes extends Component
             $this->reset();
 
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
         }
 
     }

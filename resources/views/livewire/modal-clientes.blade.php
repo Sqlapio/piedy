@@ -1,5 +1,4 @@
 <div class="flex max-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-    @livewire('notifications')
     <div class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all w-full sm:p-6">
         <div>
             <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">

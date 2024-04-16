@@ -49,25 +49,25 @@ class TablaFacturasMultiples extends Component implements HasForms, HasTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
-                    ->label(__('Fecha de registro'))
+                    ->label('Fecha de registro')
                     ->searchable(),
                 TextColumn::make('metodo_pago')->searchable(),
                 TextColumn::make('referencia')->searchable(),
 
                 TextColumn::make('total_usd')->money('USD')
-                    ->label(_('Costo servicio($)'))
+                    ->label('Costo servicio($)')
                     ->summarize(Sum::make()
                     ->label('Venta Neta($)'))
                     ->searchable(),
 
                 TextColumn::make('pago_usd')->money('USD')
-                ->label(_('Pago($)'))
+                ->label('Pago($)')
                 ->summarize(Sum::make()
                 ->label('Total($)'))
                 ->searchable(),
 
                 TextColumn::make('pago_bsd')->money('VES')
-                ->label(_('Pago(Bs)'))
+                ->label('Pago(Bs)')
                 ->summarize(Sum::make()
                 ->label('Total(Bs)'))
                 ->searchable(),

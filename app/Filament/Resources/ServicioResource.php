@@ -52,11 +52,18 @@ class ServicioResource extends Resource
                     ->minValue(1)
                     ->maxValue(100)
                     ->required(),
+                    Select::make('asignacion')
+                    ->options([
+                        'general' => 'General',
+                        'vip' => 'VIP',
+                    ])
+                    ->required(),
                 Select::make('status')
                     ->options([
                         'activo' => 'Activo',
                         'inactivo' => 'Inactivo',
-                    ]),
+                    ])
+                    ->required(),
             ]);
     }
 
@@ -75,6 +82,13 @@ class ServicioResource extends Resource
                 ->searchable(),
                 TextColumn::make('tipo_servicio.descripcion')->label('Tipo de servício')->searchable(),
                 TextColumn::make('costo')->money('USD')->searchable()->label('Costo($)'),
+                TextColumn::make('asignacion')
+                ->badge()
+                ->colors([
+                    'info' => 'general',
+                    'success' => 'vip',
+                ])
+                ->searchable(),
                 IconColumn::make('status')
                 ->options([
                     'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === 'activo',

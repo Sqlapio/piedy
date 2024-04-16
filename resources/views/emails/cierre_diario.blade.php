@@ -41,6 +41,8 @@
             <br>
             <strong>TASA BCV: {{ $mailData['tasa_bcv'] }}</strong>
             <br>
+            <strong>TOTAL DE SERVICIOS: {{ $mailData['total_servicios'] }}</strong>
+            <br>
         </p>
         <div style="margin: auto; width: 600px; padding: 10px;">
             <table id="customers">
@@ -58,23 +60,23 @@
                 </tr>
                 <tr>
                     <td>Total General de Ventas($)</td>
-                    <td>{{ $mailData['total_ventas'] }}</td>
+                    <td>{{ round($mailData['total_ventas']) }}</td>
                 </tr>
                 <tr>
                     <td>Total($)</td>
-                    <td>{{ $mailData['total_dolares'] }}</td>
+                    <td>{{ round($mailData['total_dolares']) }}</td>
                 </tr>
                 <tr>
                     <td>Zelle($)</td>
-                    <td>{{ $mailData['zelle'] }}</td>
+                    <td>{{ round($mailData['zelle']) }}</td>
                 </tr>
                 <tr>
                     <td>Total(Bs.)</td>
-                    <td>{{ $mailData['total_bolivares'] }}</td>
+                    <td>{{ round($mailData['total_bolivares']) }}</td>
                 </tr>
                 <tr>
                     <td>Conversión (Bs.) -> ($)</td>
-                    <td>{{ $mailData['conversion'] }}</td>
+                    <td>{{ round($mailData['conversion']) }}</td>
                 </tr>
                 <tr>
                     <td>Efectivo($) en caja</td>
@@ -82,7 +84,7 @@
                 </tr>
                 <tr>
                     <td>Gastos($)</td>
-                    <td>{{ $mailData['gastos'] }}</td>
+                    <td>{{ round($mailData['gastos']) }}</td>
                 </tr>
                 <tr>
                     <td>Saldo Caja Chica($)</td>
@@ -90,29 +92,6 @@
                 </tr>
             </table>
         </div>
-        {{-- <p style="text-align: justify; margin-left: 20px;">
-            <h3 style="text-align: justify; margin-left: 20px;">
-                Responsable: {{ $mailData['responsable'] }}
-                <br>
-                Fecha: {{ $mailData['fecha'] }}
-                <br>
-                Total de Ventas: {{ $mailData['total_ventas'] }}
-                <br>
-                Total($): {{ $mailData['total_dolares'] }}
-                <br>
-                Zelle($): {{ $mailData['zelle'] }}
-                <br>
-                Total(Bs.): {{ $mailData['total_bolivares'] }}
-                <br>
-                Conversión (Bs.) -> ($): {{ $mailData['conversion'] }}
-                <br>
-                Efectivo($) en caja: {{ $mailData['efectivo_caja_usd'] }}
-                <br>
-                Gastos($): {{ $mailData['gastos'] }}
-                <br>
-                Saldo Caja Chica($): {{ $mailData['efectivo_caja_chica'] }}
-            </h3>
-        </p> --}}
         <p style="text-align: justify; margin-left: 20px;">
             Esta notificación confirma que el proceso de facturación asociado a su trabajo ha sido completado correctamente. <br>
             Agradecemos su esfuerzo continuo y la dedicación con la que lleva a cabo cada servicio, lo cual es fundamental para nuestro compromiso con la excelencia. <br>

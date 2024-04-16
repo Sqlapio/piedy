@@ -73,10 +73,19 @@ class Dashboard extends Component
 
         if($valor == 5)
         {
-            $this->dialog()->success(
-                $title = 'NOTIFICACION !!!',
-                $description = 'El equipo de desarrollo se encuentra trabajando en ECOMMERCE.'
-            );
+            // $this->dialog()->success(
+            //     $title = 'NOTIFICACION !!!',
+            //     $description = 'El equipo de desarrollo se encuentra trabajando en ECOMMERCE.'
+            // );
+            if($tasa->fecha != date('d-m-Y'))
+            {
+                $this->dialog()->error(
+                    $title = 'Error !!!',
+                    $description = 'Debe actualizar la tasa del BCV para poder utilizar el sistema. Por favor haga click en el simbolo del BCV.'
+                );
+            }else{
+                $this->redirect('/productos');
+            }
         }
 
         if($valor == 6)
@@ -132,6 +141,11 @@ class Dashboard extends Component
             }
 
         }
+    }
+
+    public function cierre_general()
+    {
+        $this->redirect('/cierre/general');
     }
 
     public function cancel()

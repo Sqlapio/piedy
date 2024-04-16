@@ -7,11 +7,11 @@ $monto = ModelsCajaChica::where('fecha', $hoy)->first();
 <div>
     <div class="p-5">
         @livewire('notifications')
-        <h1 class="text-xl mb-6 font-bold text-[#bd9c95]">Modulo de Gastos</h1>
+        <h1 class="text-xl mb-6 font-bold uppercase text-[#bd9c95]">Modulo de Gastos</h1>
         {{-- tabla y boton del formulario de clientes --}}
 
         {{-- BCV linea --}}
-        <div class="grid grid-cols-1 gap-4 py-3">
+        <div class="grid grid-cols-1 gap-4 py-3 mt-5">
             {{-- CAJA CHICA --}}
             <div class="flex justify-between">
                 <div class="flex items-center space-x-2 py-2" onclick="Livewire.dispatch('openModal', { component: 'modal-caja-chica' })">
@@ -31,23 +31,14 @@ $monto = ModelsCajaChica::where('fecha', $hoy)->first();
             </div>
         </div>
 
+        {{-- Formulario de registro de gastos --}}
         <div class="bg-white rounded-xl {{ $ocultar_form_cliente }}">
-            <div class="grid md:grid-cols-2 md:gap-6">
+            <div class="grid md:grid-cols-3 md:gap-6 mt-5">
                 <div class="px-2">
                     <x-input wire:model="descripcion" right-icon="user" label="Descripción" placeholder="Artículo de compra" />
                 </div>
                 <div class="px-2">
-                    <x-select
-                        label="Tipo de pago"
-                        placeholder="Tipo moneda de pago"
-                        :options="['USD', 'BS']"
-                        wire:model.defer="forma_pago"
-                    />
-                </div>
-            </div>
-            <div class="grid md:grid-cols-2 md:gap-6 mt-14">
-                <div class="px-2">
-                    <x-input wire:model="referencia" right-icon="user" label="Nro. de referencia" placeholder="aplica pa pago movil y transferencia ($ ó Bs.)" />
+                    <x-select label="Tipo de pago" placeholder="Tipo moneda de pago" :options="['USD']" wire:model.defer="forma_pago" />
                 </div>
                 <div class="px-2">
                     <x-input wire:model="monto" label="Monto en ($ ó Bs.)" placeholder="monto de la compra" hint="Ejemplo: 1.258,62" />
@@ -63,70 +54,16 @@ $monto = ModelsCajaChica::where('fecha', $hoy)->first();
             </div>
         </div>
 
-
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg  {{ $ocultar_table_cliente }}">
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-[#7898a5] dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">
-                            Descripcion
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Forma de pago
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Referencia
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Monto($)
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Monto(Bs.)
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Fecha
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Responsable
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($data as $item)
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $item->descripcion }}
-                        </th>
-                        <td class="px-6 py-4">
-                            {{ $item->forma_pago }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $item->referencia }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $item->monto_usd }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $item->monto_bsd }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $item->fecha }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $item->responsable }}
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+        {{-- Tabla de gastos --}}
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg border rounded-lg  {{ $ocultar_table_cliente }}">
+            @livewire('list-gastos')
         </div>
 
-        {{-- Paginacion --}}
-        <div class="bg-white px-4 py-3 mt-4 items-center justify-between border-t border-gray-200 sm:px-6 {{ $ocultar_table_cliente }}">
-            {{-- Paginacion --}}
-            {{ $data->links() }}
-        </div>
     </div>
+
+    {{-- div para sepracion del menu --}}
+    <div class="w-full h-28"></div>
+    
     {{-- Menu para table --}}
     <div class="fixed sm:z-0 md:z-0 lg:z-50 w-full h-16 mt-5 max-w-lg -translate-x-1/2 bg-white border border-gray-200 rounded-full bottom-4 left-1/2 dark:bg-gray-700 dark:border-gray-600">
         <div class="grid h-full max-w-lg grid-cols-7 mx-auto ">

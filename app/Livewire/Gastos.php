@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\CajaChica;
 use App\Models\Gasto;
 use App\Models\MovimientoCajaChica;
+use Exception;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -37,20 +38,31 @@ class Gastos extends Component
     {
         $hoy = date('d-m-Y');
 
-        $caja_chica = CajaChica::where('fecha', $hoy)->first();
+        try {
 
-        if($caja_chica == null)
-        {
-            $this->dialog()->error(
-                $title = 'Error !!!',
-                $description = 'La caja chica no ha sido aperturada. Debe cargar el monto incial.'
-            );
+            $caja_chica = CajaChica::where('fecha', $hoy)->first();
 
-        }else{
+            if($caja_chica == null)
+            {
+                $this->dialog()->error(
+                    $title = 'Error !!!',
+                    $description = 'La caja chica no ha sido aperturada. Debe cargar el monto incial.'
+                );
 
-            $this->ocultar_table_cliente = 'hidden';
-            $this->ocultar_form_cliente = '';
+            }else{
 
+                $this->ocultar_table_cliente = 'hidden';
+                $this->ocultar_form_cliente = '';
+
+            }
+
+        } catch (\Throwable $th) {
+            Notification::make()
+            ->title('NOTIFICACIÓN DE ERROR')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
         }
 
     }
@@ -61,56 +73,68 @@ class Gastos extends Component
 
         try {
 
-            $user = Auth::user();
             $cc = CajaChica::where('fecha', date('d-m-Y'))->first();
+
             $gasto = new Gasto();
             $gasto->descripcion = $this->descripcion;
             $gasto->forma_pago = $this->forma_pago;
 
-            if($this->referencia == '')
-            {
+            if($this->referencia == ''){
                 $gasto->referencia = 'No aplica';
-
             }else{
                 $gasto->referencia = $this->referencia;
-
             }
 
-            if($this->forma_pago == 'USD')
-            {
+            if($this->forma_pago == 'USD'){
                 $gasto->monto_usd = str_replace(',', '.', str_replace('.', '', $this->monto));
             }
             if($this->forma_pago == 'BS'){
-
                 $gasto->monto_bsd = str_replace(',', '.', str_replace('.', '', $this->monto));
             }
 
             $gasto->fecha = date('d-m-Y');
-            $gasto->responsable = $user->name;
+            $gasto->responsable = Auth::user()->name;
             $gasto->save();
 
+            /**Logica para guardar los movimientos de caja chica */
             $mov_caja_chica = new MovimientoCajaChica();
             $mov_caja_chica->gasto_id       = $gasto->id;
             $mov_caja_chica->caja_chica_id  = $cc->id;
             $mov_caja_chica->saldo          = $cc->saldo - $gasto->monto_usd;
             $mov_caja_chica->fecha          = date('d-m-Y');
             $mov_caja_chica->responsable    = Auth::user()->name;
-            $mov_caja_chica->save();
+            if($mov_caja_chica->saldo < 0)
+            {
+                throw new Exception("El monto de caja chica no permite valores negativo.");
+                $this->reset();
+            }else{
 
-            /**
-             * Actualizo el saldo de la caja chica
-             */
-            DB::table('caja_chicas')->where('id', $cc->id)->update(['saldo' => $mov_caja_chica->saldo]);
+                $mov_caja_chica->save();
+                /**
+                 * Actualizo el saldo de la caja chica
+                 */
+                DB::table('caja_chicas')->where('id', $cc->id)
+                    ->update([
+                        'saldo' => $mov_caja_chica->saldo,
+                        'responsable' => Auth::user()->name
+                    ]);
 
-            Notification::make()
-                ->title('El gasto fue registrado con éxito')
-                ->success()
-                ->send();
+                Notification::make()
+                    ->title('El gasto fue registrado con éxito')
+                    ->success()
+                    ->send();
 
-            $this->reset();
+                $this->reset();
+            }
+
 
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+            ->title('NOTIFICACIÓN DE ERROR')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
         }
     }
 

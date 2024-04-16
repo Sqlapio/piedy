@@ -4,47 +4,96 @@ namespace App\Filament\Widgets;
 
 use App\Models\Frecuencia;
 use App\Models\VentaServicio;
-use Carbon\Carbon;
+// use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Filament\Widgets\ChartWidget;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 
 class ClienteNuevoChart extends ChartWidget
 {
-    protected static ?string $heading = 'Frecuencia de registro de clientes';
+    use InteractsWithPageFilters;
+
+    protected static ?string $heading = 'Clientes Registrados(Nuevos) / Clientes Atendidos';
+
+    protected static ?string $maxHeight = '300px';
+
+    protected int | string | array $columnSpan = 'full';
 
     protected static ?int $sort = 4;
 
+    // public ?string $filter = 'today';
+
+    // protected function getFilters(): ?array
+    // {
+    //     return [
+    //         'today' => 'Hoy',
+    //         'week'  => 'Semana',
+    //         'month' => 'Mes',
+    //         'year'  => 'Año',
+    //     ];
+    // }
+
     protected function getData(): array
     {
-        $activeFilter = $this->filter;
-        // dd($star = now()->startOfMonth());
-        // $end = now()->endOfMonth()->isoFormat('dddd, D MMM');
+        $start = $this->filters['startDate'];
+        $end = $this->filters['endDate'];
 
-        $data = Trend::model(Frecuencia::class)
+        // $activeFilter = $this->filter;
+
+        // if ($activeFilter === 'today') {
+        //     $rangeStartDate = now()->startOfDay();
+        //     $rangeEndDate = now()->endOfDay();
+        // } elseif ($activeFilter === 'week') {
+        //     $rangeStartDate = now()->subWeek()->startOfWeek();
+        //     $rangeEndDate = now()->endOfWeek();
+        // } elseif ($activeFilter === 'month') {
+        //     $rangeStartDate = now()->subMonthNoOverflow()->startOfMonth();
+        //     $rangeEndDate = now()->endOfMonth();
+        // } elseif ($activeFilter === 'year'){
+        //     $rangeStartDate = now()->subMonthNoOverflow()->startOfYear();
+        //     $rangeEndDate = now()->endOfYear();
+        // }
+
+        $data1 = Trend::model(Frecuencia::class)
             ->between(
-                now()->startOfMonth(),
-                now()->endOfMonth(),
+                start: (isset($start)) ? Carbon::parse($start) : now()->startOfMonth(),
+                end: (isset($end)) ? Carbon::parse($end) : now()->endOfMonth(),
+                // start: now()->startOfMonth(),
+                // end: now()->endOfMonth(),
+            )
+
+            ->perDay()
+            ->count('cliente_id');
+
+        $data2 = Trend::model(VentaServicio::class)
+            ->between(
+                start: (isset($start)) ? Carbon::parse($start) : now()->startOfMonth(),
+                end: (isset($end)) ? Carbon::parse($end) : now()->endOfMonth(),
+                // start: now()->startOfMonth(),
+                // end: now()->endOfMonth(),
             )
             // ->perMonth()
             ->perDay()
-            ->count('cliente_id');
-            // ->count();
-        // $labels = ($data->map(fn (TrendValue $value) => $value->date))->toArray();
-        // $r = Carbon::parse($labels[0])->isoFormat('dddd, D MMM');
-        // $p = strtotime($labels[0]);
-        // dd($p, $r, count($labels));
+            ->count('cliente');
 
         return [
             'datasets' => [
                 [
                     'label' => 'Clientes Nuevos',
-                    'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
-                    'backgroundColor' => '#36A2EB',
+                    'data' => $data1->map(fn (TrendValue $value) => $value->aggregate),
+                    'backgroundColor' => '#22c55e',
                     'borderColor' => '#22c55e',
                 ],
+                [
+                    'label' => 'Clientes Atendidos',
+                    'data' => $data2->map(fn (TrendValue $value) => $value->aggregate),
+                    'backgroundColor' => '#36A2EB',
+                    'borderColor' => '#36A2EB',
+                ],
             ],
-            'labels' => ($data->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray()),
+            'labels' => ($data1->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray()),
         ];
     }
 

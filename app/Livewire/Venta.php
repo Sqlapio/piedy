@@ -62,30 +62,30 @@ class Venta extends Component implements HasForms, HasTable
                 ->searchable(),
 
                 TextColumn::make('total_USD')
-                    ->label(_('Costo servicio($)'))
+                    ->label('Costo servicio($)')
                         ->summarize(Sum::make()
-                        ->label(_('Total'))
+                        ->label('Total')
                         ->money('USD'))
                     ->searchable(),
 
                 TextColumn::make('pago_usd')->money('USD')
-                    ->label(_('Pagos($)'))
+                    ->label('Pagos($)')
                     ->summarize(Sum::make()
-                        ->label(_('Total'))
+                        ->label('Total')
                         ->money('USD'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('pago_bsd')->money('VES')
-                    ->label(_('Pagos(Bs.)'))
+                    ->label('Pagos(Bs.)')
                     ->summarize(Sum::make()
-                        ->label(_('Total'))
+                        ->label('Total')
                         ->money('VES'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('comision_dolares')->money('USD')
-                    ->label(_('Comision($)'))
+                    ->label('Comision($)')
                         ->summarize(Sum::make()
                             ->money('USD')
                             ->label('Neto Empleado($)'))
@@ -94,7 +94,7 @@ class Venta extends Component implements HasForms, HasTable
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('comision_bolivares')->money('VES')
-                    ->label(_('Comision(Bs.)'))
+                    ->label('Comision(Bs.)')
                         ->summarize(Sum::make()
                             ->money('VES')
                             ->label('Neto Empleado(Bs.)'))

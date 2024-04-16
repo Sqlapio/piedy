@@ -1,6 +1,12 @@
 @php
 use App\Models\TasaBcv as ModelsTasaBcv;
     $tasa = ModelsTasaBcv::first();
+    if(Auth::user()->tipo_usuario == 'gerente')
+    {
+        $style = 'lg:grid-cols-3';
+    }else{
+        $style = 'lg:grid-cols-2';
+    }
 @endphp
 <div class="py-1 my-auto">
 
@@ -25,8 +31,9 @@ use App\Models\TasaBcv as ModelsTasaBcv;
         </div>
 
         {{-- Primera linea --}}
-        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-2 mb-2 px-3">
+        <div class="grid grid-cols-1 md:grid-cols-1 {{ $style }} gap-2 mb-2 px-3">
             {{-- Empleados --}}
+            @if(Auth::user()->tipo_usuario == 'gerente')
             <div wire:click="valida_tasa({{ 1 }})" class="p-6 rounded-lg" style="background-image: url('https://img.favpng.com/0/11/4/polygon-geometry-plane-desktop-wallpaper-png-favpng-e7CGay7DssGUF8FwFkeWviuCM.jpg'); background-size: cover;">
                 <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-20">
@@ -42,6 +49,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                     </div>
                 </div>
             </div>
+            @endif
             {{-- Clientes --}}
             <div wire:click="valida_tasa({{ 2 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/abstract-light-blue-background-geometry-pattern-hd-wallpaper_1000823-2187.jpg'); background-size: cover;">
                 <div class="flex items-center">

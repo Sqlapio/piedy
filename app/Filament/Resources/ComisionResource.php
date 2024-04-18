@@ -43,6 +43,7 @@ class ComisionResource extends Resource
                         'producto' => 'Producto',
                         'servicio' => 'Servicio',
                         'cupones' => 'Cupones',
+                        'servicio_vip' => 'Servicios VIP',
                     ]),
                 Select::make('beneficiario')
                     ->options([

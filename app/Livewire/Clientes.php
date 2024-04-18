@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Cliente;
 use App\Models\Frecuencia;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -24,7 +25,6 @@ class Clientes extends Component
     #[Validate('required', message: 'Apellido requerido')]
     public $apellido;
 
-    #[Validate('unique:clientes', message: 'El correo electrónico ya se encuentra registrado. Intente con otra dirección de correo.')]
     public $email;
 
     public $telefono;
@@ -52,6 +52,10 @@ class Clientes extends Component
             $cliente = new Cliente();
             $cliente->nombre      = strtoupper($this->nombre);
             $cliente->apellido    = strtoupper($this->apellido);
+            if(Cliente::where('email', $this->email)->exists())
+            {
+                throw new Exception("El email que intenta registrar ya se encuentra en nuestra base de datos. Por favor intente con otro");
+            }
             $cliente->email       = $this->email;
             $cliente->telefono    = $this->telefono;
             $cliente->user_id     = $user->id;
@@ -77,7 +81,7 @@ class Clientes extends Component
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-shield-check')
-            ->iconColor('danger')
+            ->color('primary')
             ->body($th->getMessage())
             ->send();
         }

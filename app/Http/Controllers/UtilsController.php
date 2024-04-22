@@ -51,5 +51,12 @@ class UtilsController extends Controller
 
     }
 
+    static function webhook(Request $request)
+    {
+
+        return response()->json(['success' => 'success'], 200);
+
+    }
+
 
 }

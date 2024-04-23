@@ -23,8 +23,20 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                     </div>
                 </div>
                 @if(Auth::user()->tipo_usuario == 'gerente')
-                    <div class="titulos">
-                        <button type="button" wire:click="cierre_general()" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">CIERRE GENERAL</button>
+                    <div class="flex justify-end titulos gap-3">
+                        <div wire:click="cierre_general()" class="flex items-center border px-3 rounded-xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+                            <img class="w-14 h-14 rounded-full" src="{{ asset('images/gift-voucher.png') }}" alt="">
+                            <div class="ml-1 titulos">
+                                <div class="text-sm text-gray-500 dark:text-gray-400">GiftCard</div>
+                            </div>
+                        </div>
+                        <div wire:click="cierre_general()" class="flex items-center border cursor-pointer px-3 rounded-xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+                            <img class="w-14 h-14 rounded-full" src="{{ asset('images/money-management.png') }}" alt="">
+                            <div class="ml-1 titulos">
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Cierre General</div>
+                            </div>
+                        </div>
+                        {{-- <button type="button" wire:click="cierre_general()" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">CIERRE GENERAL</button> --}}
                     </div>
                 @endif
             </div>

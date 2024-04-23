@@ -1,6 +1,8 @@
 <div>
     <div class="p-5">
-        <h1 class="text-xl mb-4 font-bold text-[#bd9c95]">Modulo de Servicios</h1>
+        <div class="grid grid-cols-1 gap-4 p-3">
+            <h1 class="text-xl mb-1 font-bold text-[#bd9c95]">MODULO DE SERVICIOS</h1>
+        </div>
         {{-- tabla --}}
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">

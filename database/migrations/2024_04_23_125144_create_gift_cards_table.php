@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('monto');
             $table->integer('saldo');
             $table->string('fecha_emicion');
-            $table->string('fecha_vence');
+            $table->string('fecha_vence')->nullable();
             $table->string('responsable');
             $table->string('status')->default(1); // 0: Inactivo, 1: Activo
             $table->timestamps();

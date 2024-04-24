@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Http\Controllers\NotificacionesController;
 use App\Models\CierreDiario;
 use App\Models\CierreGeneral as ModelsCierreGeneral;
+use App\Models\TasaBcv;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;

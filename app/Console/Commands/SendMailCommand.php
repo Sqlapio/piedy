@@ -104,15 +104,59 @@ class SendMailCommand extends Command
 
         // return response()->json($res);
 
-        $view = 'emails.promociones.DiaDeLasMadres';
-        $email = 'jhonnymartinez901@gmail.com';
-        $mailData = [
-            'cliente' => 'Jonny Martinez'
-        ];
+        $clientes = DB::table('clientes')
+        ->select('nombre', 'apellido','email')
+        ->groupBy('nombre', 'apellido','email')
+        ->where('email', '!=', '')
+        ->get();
 
-        Mail::to($email)->send(new NotificacionesEmail($mailData, $view));
+        foreach($clientes as $item){
+            $view = 'emails.promociones.DiaDeLasMadres';
+            $email = $item->email;
+            $mailData = [
+                'cliente' => $clientes->nombre.' '.$clientes->apellido
+            ];
 
-        $this->info('tarea 1');
+            Mail::to($email)->send(new NotificacionesEmail($mailData, $view));
 
+        }
+
+
+
+        // $params = array(
+        //     'token' => '863lb4l0wmldpl3s',
+        //     'to' => '+584147365309',
+        //     'image' => 'https://piedy.sqlapio.net/images/PROMO_DiaDeLasMadres.jpg',
+        //     'caption' => '¡Este Día de las Madres, regala el cuidado que ella merece! Disfruta de nuestra promoción especial en quiropedia o manicure y haz que mamá se sienta mimada y radiante. ¡Reserva ahora y dale a mamá un momento de relajación y belleza inigualable!. https://linktr.ee/Piedyccs'
+        //             );
+        //             $curl = curl_init();
+        //                 curl_setopt_array($curl, array(
+        //                 CURLOPT_URL => "https://api.ultramsg.com/instance83564/messages/image",
+        //                 CURLOPT_RETURNTRANSFER => true,
+        //                 CURLOPT_ENCODING => "",
+        //                 CURLOPT_MAXREDIRS => 10,
+        //                 CURLOPT_TIMEOUT => 30,
+        //                 CURLOPT_SSL_VERIFYHOST => 0,
+        //                 CURLOPT_SSL_VERIFYPEER => 0,
+        //                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //                 CURLOPT_CUSTOMREQUEST => "POST",
+        //                 CURLOPT_POSTFIELDS => http_build_query($params),
+        //                 CURLOPT_HTTPHEADER => array(
+        //                     "content-type: application/x-www-form-urlencoded"
+        //                 ),
+        //             ));
+
+        //             $response = curl_exec($curl);
+        //             $err = curl_error($curl);
+
+        //             curl_close($curl);
+
+        //             if ($err) {
+        //                 echo "cURL Error #:" . $err;
+        //             } else {
+        //                 echo $response;
+        //             }
+
+                    $this->info('tarea 1');
     }
 }

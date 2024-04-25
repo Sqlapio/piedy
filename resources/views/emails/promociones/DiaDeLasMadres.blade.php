@@ -10,9 +10,9 @@
             <h2 style="text-align: justify; margin-left: 20px;">Sr(a). {{ $mailData['cliente'] }}</h2>
         </p>
         <p style="text-align: justify; margin-left: 20px;">
-            Texto 1
+            ¡Este Día de las Madres, regala el cuidado que ella merece! Disfruta de nuestra promoción especial en quiropedia o manicure y haz que mamá se sienta mimada y radiante. ¡Reserva ahora y dale a mamá un momento de relajación y belleza inigualable!.
             <br>
-            Texto 2
+            Haga click! Aquí https://linktr.ee/Piedyccs
         </p>
         <p style="text-align: justify; margin-left: 20px;">
             Para cualquier consulta o asistencia adicional que necesite, puede comunicarse las 24

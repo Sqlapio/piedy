@@ -105,7 +105,7 @@ class SendMailCommand extends Command
         // return response()->json($res);
 
         $clientes = Cliente::where('email', '!=', '')
-        ->where('id', '>', 173)
+        ->where('id', '>', 377)
         ->get();
 
         foreach($clientes as $item){

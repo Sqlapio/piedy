@@ -104,17 +104,14 @@ class SendMailCommand extends Command
 
         // return response()->json($res);
 
-        $clientes = DB::table('clientes')
-        ->select('nombre', 'apellido','email')
-        ->groupBy('nombre', 'apellido','email')
-        ->where('email', '!=', '')
+        $clientes = Cliente::where('email', '!=', '')
         ->get();
 
         foreach($clientes as $item){
             $view = 'emails.promociones.DiaDeLasMadres';
             $email = $item->email;
             $mailData = [
-                'cliente' => $clientes->nombre.' '.$clientes->apellido
+                'cliente' => $item->nombre.' '.$item->apellido
             ];
 
             Mail::to($email)->send(new NotificacionesEmail($mailData, $view));

@@ -104,20 +104,33 @@ class SendMailCommand extends Command
 
         // return response()->json($res);
 
-        $clientes = Cliente::where('email', '!=', '')
-        ->where('id', '>', 461)
-        ->get();
+        // $clientes = Cliente::where('email', '!=', '')
+        // ->where('id', '>', 461)
+        // ->get();
 
-        foreach($clientes as $item){
-            $view = 'emails.promociones.DiaDeLasMadres';
-            $email = $item->email;
+        // foreach($clientes as $item){
+        //     $view = 'emails.promociones.DiaDeLasMadres';
+        //     $email = $item->email;
+        //     $mailData = [
+        //         'cliente' => $item->nombre.' '.$item->apellido
+        //     ];
+
+        //     Mail::to($email)->send(new NotificacionesEmail($mailData, $view));
+
+        // }
+
+
+
+
+
+
+        $view = 'emails.promociones.DiaDeLasMadres';
+            $email = 'gusta.acp@gmail.com';
             $mailData = [
-                'cliente' => $item->nombre.' '.$item->apellido
+                'cliente' => 'Gustavo Camacho'
             ];
 
             Mail::to($email)->send(new NotificacionesEmail($mailData, $view));
-
-        }
 
 
 

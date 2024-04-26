@@ -105,7 +105,7 @@ class SendMailCommand extends Command
         // return response()->json($res);
 
         $clientes = Cliente::where('email', '!=', '')
-        ->where('id', '>', 461)
+        ->where('id', '>', 485)
         ->where('email', 'like', '%@gmail.com')
         ->get();
 

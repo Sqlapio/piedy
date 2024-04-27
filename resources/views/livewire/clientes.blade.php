@@ -31,12 +31,12 @@
         {{-- Encuenta --}}
         <div class="p-5 mt-5 bg-[#e9d4cf] rounded-xl">
             <h1 class="text-xl mb-6 font-bold text-black">Ficha Médica</h1>
-            <h1 class="text-sm mb-3 font-bold text-black">Antecedentes Médicos:</h1>
+            <h1 class="text-sm mb-3 font-bold text-black">Historial Médico:</h1>
             <div class="grid md:grid-cols-1 md:gap-2 mb-7">
                 {{-- Pregunta 1 --}}
                 <div class="flex justify-between items-center">
                     <div>
-                        <p class="text-sm font-medium">1.- ¿Tiene alguna enfermedad crónica? (ej. diabetes, enfermedades cardiovasculares, etc.)</p>
+                        <p class="text-sm font-medium">1.- ¿Tiene alguna condición médica preexistente o alergias que debamos conocer? <br>(Por ejemplo, diabetes, problemas circulatorios, alergias a productos químicos o cosméticos)</p>
                     </div>
                     <div>
                         <label class="inline-flex items-center cursor-pointer">
@@ -48,59 +48,14 @@
 
                     </div>
                 </div>
-                {{-- pregunta 2 --}}
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-sm font-medium">2.- ¿Toma algún medicamento de forma regular? </p>
-                    </div>
-                    <div>
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer" wire:model="am_p2">
-                            <span class="mr-1 text-xs font-medium text-red-800 dark:text-gray-300">No</span>
-                            <div class="relative w-11 h-6 bg-red-700 peer-focus:outline-none dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-700"></div>
-                            <span class="ms-1 text-xs font-medium text-green-800 dark:text-gray-300">Si</span>
-                        </label>
-
-                    </div>
-                </div>
-                {{-- pregunta 3 --}}
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-sm font-medium">3.- ¿Ha tenido alguna cirugía reciente? </p>
-                    </div>
-                    <div>
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer" wire:model="am_p3">
-                            <span class="mr-1 text-xs font-medium text-red-800 dark:text-gray-300">No</span>
-                            <div class="relative w-11 h-6 bg-red-700 peer-focus:outline-none dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-700"></div>
-                            <span class="ms-1 text-xs font-medium text-green-800 dark:text-gray-300">Si</span>
-                        </label>
-
-                    </div>
-                </div>
-                {{-- pregunta 4 --}}
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-sm font-medium">4.- ¿Padece de alguna alergia (medicamentos, materiales, etc.)?</p>
-                    </div>
-                    <div>
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer" wire:model="am_p4">
-                            <span class="mr-1 text-xs font-medium text-red-800 dark:text-gray-300">No</span>
-                            <div class="relative w-11 h-6 bg-red-700 peer-focus:outline-none dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-700"></div>
-                            <span class="ms-1 text-xs font-medium text-green-800 dark:text-gray-300">Si</span>
-                        </label>
-
-                    </div>
-                </div>
             </div>
 
-            <h1 class="text-sm mb-3 font-bold text-black">Historial Podológico:</h1>
+            <h1 class="text-sm mb-3 font-bold text-black">Salud de los Pies:</h1>
             <div class="grid md:grid-cols-1 md:gap-2 mb-7">
                 {{-- Pregunta 1 --}}
                 <div class="flex justify-between items-center">
                     <div>
-                        <p class="text-sm font-medium">1.- ¿Ha tenido problemas podológicos anteriores? (ej. hongos en las uñas, callos, juanetes, etc.)</p>
+                        <p class="text-sm font-medium">1.- ¿Sufre de alguna de las siguientes afecciones en los pies? <br>(Por ejemplo, hongos en las uñas, callosidades, juanetes, pie diabético)</p>
                     </div>
                     <div>
                         <label class="inline-flex items-center cursor-pointer">
@@ -111,28 +66,14 @@
                         </label>
                     </div>
                 </div>
-                {{-- pregunta 2 --}}
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-sm font-medium">2.- ¿Ha tenido alguna lesión en los pies recientemente? </p>
-                    </div>
-                    <div>
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer" wire:model.live="hp_p2">
-                            <span class="mr-1 text-xs font-medium text-red-800 dark:text-gray-300">No</span>
-                            <div class="relative w-11 h-6 bg-red-700 peer-focus:outline-none dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-700"></div>
-                            <span class="ms-1 text-xs font-medium text-green-800 dark:text-gray-300">Si</span>
-                        </label>
-                    </div>
-                </div>
             </div>
 
-            <h1 class="text-sm mb-3 font-bold text-black">Estilo de Vida:</h1>
+            <h1 class="text-sm mb-3 font-bold text-black">Cuidado de las Uñas y la Piel:</h1>
             <div class="grid md:grid-cols-1 md:gap-2 mb-7">
                 {{-- Pregunta 1 --}}
                 <div class="flex justify-between items-center">
                     <div>
-                        <p class="text-sm font-medium">1.- ¿Realiza algún tipo de actividad física regularmente?</p>
+                        <p class="text-sm font-medium">1.- ¿Ha experimentado alguna reacción adversa a productos utilizados en tratamientos de manicure o pedicure anteriores? <br>Si es así, ¿podría detallar qué productos o sustancias causaron la reacción?</p>
                     </div>
                     <div>
                         <label class="inline-flex items-center cursor-pointer">
@@ -144,14 +85,18 @@
 
                     </div>
                 </div>
-                {{-- pregunta 2 --}}
+            </div>
+
+            <h1 class="text-sm mb-3 font-bold text-black">Preferencias y Consentimiento:</h1>
+            <div class="grid md:grid-cols-1 md:gap-2 mb-7">
+                {{-- Pregunta 1 --}}
                 <div class="flex justify-between items-center">
                     <div>
-                        <p class="text-sm font-medium">2.- ¿Pasa mucho tiempo de pie durante el día? </p>
+                        <p class="text-sm font-medium">1.- ¿Tiene alguna preferencia específica o necesita algún ajuste especial durante su tratamiento de quiropedia o manicure?<br>(Por ejemplo, evitar el uso de ciertos esmaltes o productos)</p>
                     </div>
                     <div>
                         <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer" wire:model="ev_p2">
+                            <input type="checkbox" value="" class="sr-only peer" wire:model="ev_p1">
                             <span class="mr-1 text-xs font-medium text-red-800 dark:text-gray-300">No</span>
                             <div class="relative w-11 h-6 bg-red-700 peer-focus:outline-none dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-700"></div>
                             <span class="ms-1 text-xs font-medium text-green-800 dark:text-gray-300">Si</span>
@@ -159,14 +104,14 @@
 
                     </div>
                 </div>
-                {{-- pregunta 3 --}}
+                {{-- Pregunta 2 --}}
                 <div class="flex justify-between items-center">
                     <div>
-                        <p class="text-sm font-medium">3.- ¿Usa calzado adecuado para la actividad que realiza?</p>
+                        <p class="text-sm font-medium">2.- ¿Consiente en recibir tratamientos de quiropedia y manicure según las prácticas estándar de nuestro establecimiento?</p>
                     </div>
                     <div>
                         <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer" wire:model="ev_p3">
+                            <input type="checkbox" value="" class="sr-only peer" wire:model="ev_p1">
                             <span class="mr-1 text-xs font-medium text-red-800 dark:text-gray-300">No</span>
                             <div class="relative w-11 h-6 bg-red-700 peer-focus:outline-none dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-700"></div>
                             <span class="ms-1 text-xs font-medium text-green-800 dark:text-gray-300">Si</span>

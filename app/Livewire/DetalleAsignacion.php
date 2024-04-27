@@ -26,6 +26,7 @@ use Livewire\Attributes\Rule;
 use Livewire\WithPagination;
 use LivewireUI\Modal\ModalComponent;
 use WireUi\Traits\Actions;
+use DateTime;
 
 
 class DetalleAsignacion extends ModalComponent
@@ -79,6 +80,7 @@ class DetalleAsignacion extends ModalComponent
         $this->atr6 = 'hidden';
         $this->atr7 = 'hidden';
         $this->atr8 = 'hidden';
+        $this->atr11 = 'hidden';
     }
 
     public function editar_servicio()
@@ -135,7 +137,7 @@ class DetalleAsignacion extends ModalComponent
             ]);
 
         $this->forceClose()->closeModal();
-        
+
         $this->redirect('/cabinas');
 
 
@@ -180,23 +182,6 @@ class DetalleAsignacion extends ModalComponent
                     ->send();
 
                 $this->forceClose()->closeModal();
-
-                /**
-                 * Guardamos la asignacion directa en la
-                 * tabla de citas para llevar el control
-                 * de la entrada de los clientes
-                 */
-                $user = Auth::user();
-
-                $cita = new Cita();
-                $cita->cod_cita = 'Pci-'.random_int(11111, 99999);
-                $cita->fecha = date('d-m-Y');
-                $cita->hora = date('HH:i');
-                $cita->cliente_id = $data->cliente_id;
-                $cita->servicio_id = $this->servicio_id;
-                $cita->status = 2;
-                $cita->responsable = $user->id;
-                $cita->save();
 
                 /**
                  * Cargamos el servicio principal asigando
@@ -270,9 +255,7 @@ class DetalleAsignacion extends ModalComponent
                 ->where('status', '1')
                 ->first();
 
-            /**
-             * Cargo la venta en la tabla de ventas
-             */
+            /** Cargo el registro en la tabla de ventas */
 
             $venta_servicio = new VentaServicio();
             $venta_servicio->cod_asignacion     = $this->disponible->cod_asignacion;
@@ -282,20 +265,32 @@ class DetalleAsignacion extends ModalComponent
             $venta_servicio->empleado_id        = $this->disponible->empleado_id;
             $venta_servicio->fecha_venta        = date('d-m-Y');
             $venta_servicio->total_USD          = $total->total;
-            // $venta_servicio->comision_empleado  = UtilsController::cal_comision_empleado($total->total);
-            // $venta_servicio->comision_gerente   = UtilsController::cal_comision_gerente($total->total);
             $venta_servicio->save();
 
+            /**Coloco la asignacion en estatus 'por facturar'. Aqui ya el servicio esta cerrado */
             Disponible::where('cod_asignacion', $this->disponible->cod_asignacion)
             ->update([
                     'costo' => $total->total,
                     'status' => 'por facturar'
                 ]);
 
-            /**
-             * Actualizamos en contador para el numero de visitas
-             * del cliente
-             */
+            /**Pregunto por el servicio en la tabla de detalle de asignacion usando el 'cod_asignacion' */
+            /**1.- Consulta el servicio */
+            $duracion = ModelsDetalleAsignacion::where('cod_asignacion', $this->disponible->cod_asignacion)->first();
+
+            /**2.- Calculo la duracion del servicio, es decir, el tiempo que duro el tecnico con el cliente */
+            $inicio = new DateTime($duracion->created_at);
+            $final  = new DateTime($venta_servicio->created_at);
+            $intervalo = date_diff($inicio, $final);
+            $tiempo_final = $intervalo->format('%I');
+
+            /**3.- Guardo la duracion del servicio en la tabla de ventas */
+            ModelsDetalleAsignacion::where('cod_asignacion', $this->disponible->cod_asignacion)->update([
+                'duracion' => $tiempo_final
+            ]);
+
+
+            /** Actualizamos en contador para el numero de visitas del cliente */
             $visitas = Cliente::where('id', $this->disponible->cliente_id)->first();
             Cliente::where('id', $this->disponible->cliente_id)
                 ->update([

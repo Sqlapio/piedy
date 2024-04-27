@@ -25,6 +25,7 @@ return new class extends Migration
             $table->decimal('costo', 8, 2);
             $table->string("fecha");
             $table->integer("status")->default(1);
+            $table->integer("duracion")->default(0);
             $table->timestamps();
         });
     }

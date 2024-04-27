@@ -31,7 +31,6 @@
         {{-- Encuenta --}}
         <div class="p-5 mt-5 bg-[#e9d4cf] rounded-xl">
             <h1 class="text-xl mb-6 font-bold text-black">Ficha Médica</h1>
-            <h1 class="text-sm mb-3 font-bold text-black">Historial Médico:</h1>
             <div class="grid md:grid-cols-1 md:gap-2 mb-7">
                 {{-- Pregunta 1 --}}
                 <div class="flex justify-between items-center">
@@ -50,12 +49,11 @@
                 </div>
             </div>
 
-            <h1 class="text-sm mb-3 font-bold text-black">Salud de los Pies:</h1>
             <div class="grid md:grid-cols-1 md:gap-2 mb-7">
                 {{-- Pregunta 1 --}}
                 <div class="flex justify-between items-center">
                     <div>
-                        <p class="text-sm font-medium">1.- ¿Sufre de alguna de las siguientes afecciones en los pies? <br>(Por ejemplo, hongos en las uñas, callosidades, juanetes, pie diabético)</p>
+                        <p class="text-sm font-medium">2.- ¿Sufre de alguna de las siguientes afecciones en los pies? <br>(Por ejemplo, hongos en las uñas, callosidades, juanetes, pie diabético)</p>
                     </div>
                     <div>
                         <label class="inline-flex items-center cursor-pointer">
@@ -68,12 +66,11 @@
                 </div>
             </div>
 
-            <h1 class="text-sm mb-3 font-bold text-black">Cuidado de las Uñas y la Piel:</h1>
             <div class="grid md:grid-cols-1 md:gap-2 mb-7">
                 {{-- Pregunta 1 --}}
                 <div class="flex justify-between items-center">
                     <div>
-                        <p class="text-sm font-medium">1.- ¿Ha experimentado alguna reacción adversa a productos utilizados en tratamientos de manicure o pedicure anteriores? <br>Si es así, ¿podría detallar qué productos o sustancias causaron la reacción?</p>
+                        <p class="text-sm font-medium">3.- ¿Ha experimentado alguna reacción adversa a productos utilizados en tratamientos de manicure o pedicure anteriores? <br>Si es así, ¿podría detallar qué productos o sustancias causaron la reacción?</p>
                     </div>
                     <div>
                         <label class="inline-flex items-center cursor-pointer">
@@ -87,12 +84,11 @@
                 </div>
             </div>
 
-            <h1 class="text-sm mb-3 font-bold text-black">Preferencias y Consentimiento:</h1>
-            <div class="grid md:grid-cols-1 md:gap-2 mb-7">
+            <div class="grid md:grid-cols-1 gap-7 mb-7">
                 {{-- Pregunta 1 --}}
                 <div class="flex justify-between items-center">
                     <div>
-                        <p class="text-sm font-medium">1.- ¿Tiene alguna preferencia específica o necesita algún ajuste especial durante su tratamiento de quiropedia o manicure?<br>(Por ejemplo, evitar el uso de ciertos esmaltes o productos)</p>
+                        <p class="text-sm font-medium">4.- ¿Tiene alguna preferencia específica o necesita algún ajuste especial durante su tratamiento de quiropedia o manicure?<br>(Por ejemplo, evitar el uso de ciertos esmaltes o productos)</p>
                     </div>
                     <div>
                         <label class="inline-flex items-center cursor-pointer">
@@ -107,7 +103,7 @@
                 {{-- Pregunta 2 --}}
                 <div class="flex justify-between items-center">
                     <div>
-                        <p class="text-sm font-medium">2.- ¿Consiente en recibir tratamientos de quiropedia y manicure según las prácticas estándar de nuestro establecimiento?</p>
+                        <p class="text-sm font-medium">5.- ¿Consiente en recibir tratamientos de quiropedia y manicure según las prácticas estándar de nuestro establecimiento?</p>
                     </div>
                     <div>
                         <label class="inline-flex items-center cursor-pointer">
@@ -122,7 +118,14 @@
             </div>
 
             <h1 class="text-sm mb-1 font-bold text-black">Comentarios Adicionales:</h1>
-            <textarea wire:model="comentario_adicional" id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="¿Hay algún otro detalle médico o preocupación que le gustaría compartir con nosotros?"></textarea>
+            <textarea wire:model="comentario_adicional" id="message" rows="4" class="block p-2.5 mt-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="¿Hay algún otro detalle médico o preocupación que le gustaría compartir con nosotros?"></textarea>
+            <footer class="flex justify-center w-full">
+                <div class="p-5">
+                    <p class="text-xs text-center">
+                        Estas preguntas ayudan a recopilar información crucial para proporcionar un servicio seguro y personalizado, tomando en cuenta las necesidades médicas y las preferencias de los clientes.
+                    </p>
+                </div>
+            </footer>
         </div>
 
         {{-- Boton --}}

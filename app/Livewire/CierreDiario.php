@@ -110,7 +110,7 @@ class CierreDiario extends Component implements HasForms, HasTable
 
                 $mailData = [
                         'tasa_bcv' => $tasa,
-                        'total_servicios' => DetalleAsignacion::where('fecha', date('d-m-Y'))->count(),
+                        'total_servicios' => VentaServicio::where('fecha_venta', date('d-m-Y'))->count(),
                         'total_ventas' => $cierre->total_ventas,
                         'total_dolares' => VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_usd'),
                         'zelle' => $cierre->total_dolares_zelle,

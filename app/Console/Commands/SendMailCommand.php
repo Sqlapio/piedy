@@ -30,95 +30,102 @@ class SendMailCommand extends Command
      */
     public function handle()
     {
-        // $fecha_anterior =  date("d-m-Y", strtotime(date("d-m-Y") . "-15 day"));
-        // $clientes = DB::table('venta_servicios')
-        // ->select('cliente_id', 'cliente')
-        // ->groupBy('cliente_id', 'cliente')
-        // ->where('fecha_venta', $fecha_anterior)
-        // ->get();
-
-        // foreach($clientes as $item)
-        // {
-        //     $data = Cliente::find($item->cliente_id);
-
-        //     if($data->email != null){
-        //         $view = 'emails.correo_masivo';
-        //         $mailData = [
-        //             'cliente' => $item->nombre.' '.$item->apellido,
-        //         ];
-
-        //         Mail::to($item->email)->send(new NotificacionesEmail($mailData, $view));
-
-        //     }
-
-        // }
-
-        // $clientes_tel = VentaServicio::where('fecha_venta', $fecha_anterior)->get();
-        // foreach($clientes_tel as $items)
-        // {
-        //     $data = Cliente::find($items->cliente_id);
-
-        //     if($data->telefono != null){
-        //         $params = array(
-        //             'token' => '863lb4l0wmldpl3s',
-        //             'to' => '+58'.$data->telefono,
-        //             'body' => 'Prueba de mensaje desde piedy code'
-        //         );
-        //         $curl = curl_init();
-        //         curl_setopt_array($curl, array(
-        //             CURLOPT_URL => "https://api.ultramsg.com/instance83564/messages/chat",
-        //             CURLOPT_RETURNTRANSFER => true,
-        //             CURLOPT_ENCODING => "",
-        //             CURLOPT_MAXREDIRS => 10,
-        //             CURLOPT_TIMEOUT => 30,
-        //             CURLOPT_SSL_VERIFYHOST => 0,
-        //             CURLOPT_SSL_VERIFYPEER => 0,
-        //             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        //             CURLOPT_CUSTOMREQUEST => "POST",
-        //             CURLOPT_POSTFIELDS => http_build_query($params),
-        //             CURLOPT_HTTPHEADER => array(
-        //                 "content-type: application/x-www-form-urlencoded"
-        //             ),
-        //         ));
-
-        //         $response = curl_exec($curl);
-        //         $err = curl_error($curl);
-
-        //         curl_close($curl);
-
-        //         if ($err) {
-        //             echo "cURL Error #:" . $err;
-        //         } else {
-        //             echo $response;
-        //         }
-
-        //     }
-
-        // }
-
-        // $res = [
-        //     'Emails' => 'Correo enviado a '.count($clientes).' destinatarios correctamente',
-        //     'Mensajes' => 'Mensajes enviados a '.count($clientes_tel).' destinatarios correctamente'
-        // ];
-
-
-        // return response()->json($res);
-
-        $clientes = Cliente::where('email', '!=', '')
-        ->where('id', '>', 485)
-        ->where('email', 'like', '%@gmail.com')
+        $fecha_anterior =  date("d-m-Y", strtotime(date("d-m-Y") . "-15 day"));
+        $clientes = DB::table('venta_servicios')
+        ->select('cliente_id', 'cliente')
+        ->groupBy('cliente_id', 'cliente')
+        ->where('fecha_venta', $fecha_anterior)
         ->get();
 
-        foreach($clientes as $item){
-            $view = 'emails.promociones.DiaDeLasMadres';
-            $email = $item->email;
-            $mailData = [
-                'cliente' => $item->nombre.' '.$item->apellido
-            ];
+        foreach($clientes as $item)
+        {
+            $data = Cliente::find($item->cliente_id);
 
-            Mail::to($email)->send(new NotificacionesEmail($mailData, $view));
+            if($data->email != null){
+                $view = 'emails.correo_masivo';
+                $mailData = [
+                    'cliente' => $item->nombre.' '.$item->apellido,
+                ];
+
+                Mail::to($item->email)->send(new NotificacionesEmail($mailData, $view));
+
+            }
 
         }
+
+        $tel_cliente = Cliente::where('telefono', '!=', 'null')->get();
+        // $p->each(function ($item) {
+        //     // $item->update(['email' => $item->email]);
+        //     // dump($item->telefono);
+        // });
+            // $array = [
+        //     ['numero' => '04145407247'],
+        //     ['numero' => '04142682379'],
+        //     ['numero' => '04127018390'],
+        //     ['numero' => '04241200815'],
+        //     ['numero' => '04129929796'],
+        // ];
+        foreach($tel_cliente as $items)
+        {
+            $params = array(
+                'token'     => '863lb4l0wmldpl3s',
+                'to'        => '+58'.$items->telefono,
+                'image'     => 'https://piedy.sqlapio.net/images/PROMO_DiaDeLasMadres.jpg',
+                'caption'   => 'Este Día de las Madres, regala el cuidado que ella merece! Disfruta de nuestra promoción especial en quiropedia o manicure y haz que mamá se sienta mimada y radiante. ¡Reserva ahora y dale a mamá un momento de relajación y belleza inigualable!. https://linktr.ee/Piedyccs'
+                        );
+                        $curl = curl_init();
+                            curl_setopt_array($curl, array(
+                            CURLOPT_URL => "https://api.ultramsg.com/instance83564/messages/image",
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_ENCODING => "",
+                            CURLOPT_MAXREDIRS => 10,
+                            CURLOPT_TIMEOUT => 30,
+                            CURLOPT_SSL_VERIFYHOST => 0,
+                            CURLOPT_SSL_VERIFYPEER => 0,
+                            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                            CURLOPT_CUSTOMREQUEST => "POST",
+                            CURLOPT_POSTFIELDS => http_build_query($params),
+                            CURLOPT_HTTPHEADER => array(
+                                "content-type: application/x-www-form-urlencoded"
+                            ),
+                        ));
+
+                        $response = curl_exec($curl);
+                        $err = curl_error($curl);
+
+                        curl_close($curl);
+
+                        if ($err) {
+                            echo "cURL Error #:" . $err;
+                        } else {
+                            echo $response;
+                        }
+
+        }
+
+        $res = [
+            // 'Emails' => 'Correo enviado a '.count($clientes).' destinatarios correctamente',
+            'Mensajes' => 'Mensajes enviados a '.count($tel_cliente).' destinatarios correctamente'
+        ];
+
+
+        return response()->json($res);
+
+        // $clientes = Cliente::where('email', '!=', '')
+        // ->where('id', '>', 485)
+        // ->where('email', 'like', '%@gmail.com')
+        // ->get();
+
+        // foreach($clientes as $item){
+        //     $view = 'emails.promociones.DiaDeLasMadres';
+        //     $email = $item->email;
+        //     $mailData = [
+        //         'cliente' => $item->nombre.' '.$item->apellido
+        //     ];
+
+        //     Mail::to($email)->send(new NotificacionesEmail($mailData, $view));
+
+        // }
 
 
 
@@ -136,10 +143,10 @@ class SendMailCommand extends Command
 
 
         // $params = array(
-        //     'token' => '863lb4l0wmldpl3s',
-        //     'to' => '+584147365309',
-        //     'image' => 'https://piedy.sqlapio.net/images/PROMO_DiaDeLasMadres.jpg',
-        //     'caption' => '¡Este Día de las Madres, regala el cuidado que ella merece! Disfruta de nuestra promoción especial en quiropedia o manicure y haz que mamá se sienta mimada y radiante. ¡Reserva ahora y dale a mamá un momento de relajación y belleza inigualable!. https://linktr.ee/Piedyccs'
+        //     'token'     => '863lb4l0wmldpl3s',
+        //     'to'        => '+5804241200815',
+        //     'image'     => 'https://piedy.sqlapio.net/images/PROMO_DiaDeLasMadres.jpg',
+        //     'caption'   => 'Este Día de las Madres, regala el cuidado que ella merece! Disfruta de nuestra promoción especial en quiropedia o manicure y haz que mamá se sienta mimada y radiante. ¡Reserva ahora y dale a mamá un momento de relajación y belleza inigualable!. https://linktr.ee/Piedyccs'
         //             );
         //             $curl = curl_init();
         //                 curl_setopt_array($curl, array(

@@ -1,3 +1,6 @@
+@php
+use App\Models\FichaMedica;
+@endphp
 <div class="p-5">
     <div class="p-5 {{ $ocultar_form_cliente }}">
         @livewire('notifications')
@@ -183,7 +186,7 @@
                         <td class="px-6 py-4">
                             {{ $item->telefono }}
                         </td>
-                        @if(app\Http\Models\FichaMedica::where('cliente_id', $item->id)->first())
+                        @if(FichaMedica::where('cliente_id', $item->id)->first())
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             <x-avatar sm label="EN" class="bg-green-600"/>
                         </th>

@@ -39,7 +39,7 @@
                     </div>
                     <div>
                         <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer" wire:model="am_p1">
+                            <input type="checkbox" value="" class="sr-only peer" wire:model="p1">
                             <span class="mr-1 text-xs font-medium text-red-800 dark:text-gray-300">No</span>
                             <div class="relative w-11 h-6 bg-red-700 peer-focus:outline-none dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-700"></div>
                             <span class="ms-1 text-xs font-medium text-green-800 dark:text-gray-300">Si</span>
@@ -57,7 +57,7 @@
                     </div>
                     <div>
                         <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer" wire:model.live="hp_p1">
+                            <input type="checkbox" value="" class="sr-only peer" wire:model.live="p2">
                             <span class="mr-1 text-xs font-medium text-red-800 dark:text-gray-300">No</span>
                             <div class="relative w-11 h-6 bg-red-700 peer-focus:outline-none dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-700"></div>
                             <span class="ms-1 text-xs font-medium text-green-800 dark:text-gray-300">Si</span>
@@ -74,7 +74,7 @@
                     </div>
                     <div>
                         <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer" wire:model="ev_p1">
+                            <input type="checkbox" value="" class="sr-only peer" wire:model="p3">
                             <span class="mr-1 text-xs font-medium text-red-800 dark:text-gray-300">No</span>
                             <div class="relative w-11 h-6 bg-red-700 peer-focus:outline-none dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-700"></div>
                             <span class="ms-1 text-xs font-medium text-green-800 dark:text-gray-300">Si</span>
@@ -92,7 +92,7 @@
                     </div>
                     <div>
                         <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer" wire:model="ev_p1">
+                            <input type="checkbox" value="" class="sr-only peer" wire:model="p4">
                             <span class="mr-1 text-xs font-medium text-red-800 dark:text-gray-300">No</span>
                             <div class="relative w-11 h-6 bg-red-700 peer-focus:outline-none dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-700"></div>
                             <span class="ms-1 text-xs font-medium text-green-800 dark:text-gray-300">Si</span>
@@ -107,7 +107,7 @@
                     </div>
                     <div>
                         <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer" wire:model="ev_p1">
+                            <input type="checkbox" value="" class="sr-only peer" wire:model="p5">
                             <span class="mr-1 text-xs font-medium text-red-800 dark:text-gray-300">No</span>
                             <div class="relative w-11 h-6 bg-red-700 peer-focus:outline-none dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-700"></div>
                             <span class="ms-1 text-xs font-medium text-green-800 dark:text-gray-300">Si</span>
@@ -152,16 +152,13 @@
                             Cliente
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Cédula de Identidad
+                            Cédula
                         </th>
                         <th scope="col" class="px-6 py-3">
                             Email
                         </th>
                         <th scope="col" class="px-6 py-3">
                             Teléfono
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Registrado por:
                         </th>
                         <th scope="col" class="px-6 py-3">
                             Ficha Médica
@@ -186,28 +183,21 @@
                         <td class="px-6 py-4">
                             {{ $item->telefono }}
                         </td>
-                        <td class="px-6 py-4">
-                            {{ $item->responsable }}
-                        </td>
+                        @if(app\Http\Models\FichaMedica::where('cliente_id', $item->id)->first())
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            <x-avatar sm label="FM" class="bg-green-600"/>
+                            <x-avatar sm label="EN" class="bg-green-600"/>
                         </th>
+                        @else
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            <x-avatar sm label="EN" class="bg-gray-200"/>
+                        </th>
+                        @endif
                         <td class="px-6 py-4 text-center items-center">
-                            {{-- <svg onclick="Livewire.dispatch('openModal', { component: 'modal-clientes', arguments: { cliente: {{ $item->id }} }})" class="w-6 h-6 text-green-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19 17">
-                                <path d="M2.057 6.9a8.718 8.718 0 0 1 6.41-3.62v-1.2A2.064 2.064 0 0 1 9.626.2a1.979 1.979 0 0 1 2.1.23l5.481 4.308a2.107 2.107 0 0 1 0 3.3l-5.479 4.308a1.977 1.977 0 0 1-2.1.228 2.063 2.063 0 0 1-1.158-1.876v-.942c-5.32 1.284-6.2 5.25-6.238 5.44a1 1 0 0 1-.921.807h-.06a1 1 0 0 1-.953-.7A10.24 10.24 0 0 1 2.057 6.9Z"/>
-                              </svg> --}}
-                              {{-- <svg onclick="Livewire.dispatch('openModal', { component: 'modal-clientes', arguments: { cliente: {{ $item->id }} }})" class="w-7 h-7 text-green-700 dark:text-white cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19 17">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 16 4-4-4-4m6 8 4-4-4-4"/>
-                              </svg> --}}
-                              {{-- <span class="bg-gray-100 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded me-2 dark:bg-gray-700 dark:text-gray-400 border border-gray-500 ">
-                                <svg onclick="Livewire.dispatch('openModal', { component: 'modal-clientes', arguments: { cliente: {{ $item->id }} }})" class="w-2.5 h-2.5 me-1.5 text-green-700 dark:text-white cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19 17">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 16 4-4-4-4m6 8 4-4-4-4"/>
-                                  </svg>
-                                Asignar servício
-                                </span> --}}
-                                <span onclick="Livewire.dispatch('openModal', { component: 'modal-clientes', arguments: { cliente: {{ $item->id }} }})" class="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-2.5 rounded-xl dark:bg-gray-700 dark:text-green-400 border border-green-400 cursor-pointer">Asignar Servicio</span>
+                                {{-- <span onclick="Livewire.dispatch('openModal', { component: 'modal-clientes', arguments: { cliente: {{ $item->id }} }})" class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-2.5 rounded-xl dark:bg-gray-700 dark:text-green-400 border border-green-400 cursor-pointer">Asignar Servicio</span> --}}
 
                               {{-- onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" --}}
+
+                              <span onclick="Livewire.dispatch('openModal', { component: 'modal-clientes', arguments: { cliente: {{ $item->id }} }})" class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">Asignar</span>
                         </td>
                     </tr>
                     @endforeach

@@ -33,19 +33,12 @@ class Clientes extends Component
 
     public $telefono;
 
-    /**Propiedades de la encuenta */
-    /** Antecedentes Medicos */
-    public $am_p1;
-    public $am_p2;
-    public $am_p3;
-    public $am_p4;
-    /** Historial Podologico */
-    public $hp_p1;
-    public $hp_p2;
-    /** Estilo de Vida */
-    public $ev_p1;
-    public $ev_p2;
-    public $ev_p3;
+    public $p1;
+    public $p2;
+    public $p3;
+    public $p4;
+    public $p5;
+
     public $comentario_adicional;
 
     public $buscar;
@@ -72,10 +65,6 @@ class Clientes extends Component
             $cliente->nombre      = strtoupper($this->nombre);
             $cliente->apellido    = strtoupper($this->apellido);
             $cliente->cedula      = $this->cedula;
-            if(Cliente::where('email', $this->email)->exists())
-            {
-                throw new Exception("El email que intenta registrar ya se encuentra en nuestra base de datos. Por favor intente con otro");
-            }
             $cliente->email       = $this->email;
             $cliente->telefono    = $this->telefono;
             $cliente->user_id     = $user->id;
@@ -92,15 +81,11 @@ class Clientes extends Component
 
             /** Logica para cargar los datos de la encuesta despues de guardar el cliente nuevo */
             $ficha_medica = new FichaMedica();
-            $ficha_medica->am_p1 = $this->am_p1;
-            $ficha_medica->am_p2 = $this->am_p2;
-            $ficha_medica->am_p3 = $this->am_p3;
-            $ficha_medica->am_p4 = $this->am_p4;
-            $ficha_medica->hp_p1 = $this->hp_p1;
-            $ficha_medica->hp_p2 = $this->hp_p2;
-            $ficha_medica->ev_p1 = $this->ev_p1;
-            $ficha_medica->ev_p2 = $this->ev_p2;
-            $ficha_medica->ev_p3 = $this->ev_p3;
+            $ficha_medica->p1 = $this->p1;
+            $ficha_medica->p2 = $this->p2;
+            $ficha_medica->p3 = $this->p3;
+            $ficha_medica->p4 = $this->p4;
+            $ficha_medica->p5 = $this->p5;
             $ficha_medica->comentario_adicional = $this->comentario_adicional;
             $ficha_medica->cliente_id = $cliente->id;
             $ficha_medica->save();

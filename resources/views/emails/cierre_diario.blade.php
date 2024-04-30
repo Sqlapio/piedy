@@ -41,7 +41,9 @@
             <br>
             <strong>TASA BCV: {{ $mailData['tasa_bcv'] }}</strong>
             <br>
-            <strong>TOTAL DE SERVICIOS: {{ $mailData['total_servicios'] }}</strong>
+            <strong>TOTAL CLIENTES ATENDIDOS: {{ $mailData['clientes_atendidos'] }}</strong>
+            <br>
+            <strong>TOTAL SERVICIOS : {{ $mailData['servicios_clientes'] }}</strong>
             <br>
         </p>
         <div style="margin: auto; width: 600px; padding: 10px;">

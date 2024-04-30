@@ -167,7 +167,10 @@ use App\Models\FichaMedica;
                             Ficha Médica
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Asginar
+
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+
                         </th>
                     </tr>
                 </thead>
@@ -196,11 +199,18 @@ use App\Models\FichaMedica;
                         </th>
                         @endif
                         <td class="px-6 py-4 text-center items-center">
-                                {{-- <span onclick="Livewire.dispatch('openModal', { component: 'modal-clientes', arguments: { cliente: {{ $item->id }} }})" class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-2.5 rounded-xl dark:bg-gray-700 dark:text-green-400 border border-green-400 cursor-pointer">Asignar Servicio</span> --}}
-
-                              {{-- onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" --}}
-
-                              <span onclick="Livewire.dispatch('openModal', { component: 'modal-clientes', arguments: { cliente: {{ $item->id }} }})" class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">Asignar</span>
+                            <span
+                            onclick="Livewire.dispatch('openModal', { component: 'modal-clientes', arguments: { cliente: {{ $item->id }} }})"
+                            class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
+                            Asignar
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-center items-center">
+                            <span
+                            onclick="Livewire.dispatch('openModal', { component: 'modal-editar-cliente', arguments: { cliente: {{ $item->id }} }})"
+                            class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
+                            Editar
+                            </span>
                         </td>
                     </tr>
                     @endforeach

@@ -46,6 +46,7 @@ class ModalEditarCliente extends ModalComponent
         $this->validate();
 
         try {
+
             $this->cliente->update([
                 "nombre" => $this->nombre,
                 "apellido" => $this->apellido,
@@ -60,6 +61,12 @@ class ModalEditarCliente extends ModalComponent
             ->iconColor('danger')
             ->body('La información del cliente fue actualizada con exito')
             ->send();
+
+            $this->reset();
+
+            $this->closeModal();
+
+            redirect(route('clientes'));
 
         } catch (\Throwable $th) {
             Notification::make()

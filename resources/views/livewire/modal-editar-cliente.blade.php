@@ -67,6 +67,8 @@
                             required />
                         </div>
                     </div>
+
+
                     <!-- telefono -->
                     <div class="p-2">
                         <label class="opacity-60 mb-1 block text-md font-extrabold text-blue-700 text-italblue text-left">Teléfono</label>
@@ -76,13 +78,7 @@
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 13h3.439a.991.991 0 0 1 .908.6 3.978 3.978 0 0 0 7.306 0 .99.99 0 0 1 .908-.6H20M4 13v6a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6M4 13l2-9h12l2 9"/>
                                   </svg>
                             </div>
-                            <input
-                            wire:model.live='email'
-                            type="text"
-                            id="simple-search"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="correo electronico"
-                            required />
+                            <x-inputs.maskable icon="credit-card" wire:model.live='telefono' mask="#### #######" placeholder="número de teléfono"/>
                         </div>
                     </div>
                 </div>

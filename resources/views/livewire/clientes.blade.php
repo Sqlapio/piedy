@@ -2,8 +2,8 @@
 use App\Models\FichaMedica;
 @endphp
 <div class="p-5">
+    @livewire('notifications')
     <div class="p-5 {{ $ocultar_form_cliente }}">
-        @livewire('notifications')
         <h1 class="text-xl mb-6 font-bold text-[#bd9c95]">FICHA DEL CLIENTE</h1>
         {{-- tabla y boton del formulario de clientes --}}
         <div class="p-5 bg-[#e9d4cf] rounded-xl">
@@ -194,21 +194,21 @@ use App\Models\FichaMedica;
                             <x-avatar sm label="EN" class="bg-green-600"/>
                         </th>
                         @else
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            <x-avatar sm label="EN" class="bg-gray-200"/>
+                        <th scope="row" class="cursor-pointer px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            <x-avatar sm label="EN" class="bg-gray-200" onclick="Livewire.dispatch('openModal', { component: 'modal-encuesta', arguments: { cliente: {{ $item->id }} }})"/>
                         </th>
                         @endif
                         <td class="px-6 py-4 text-center items-center">
                             <span
                             onclick="Livewire.dispatch('openModal', { component: 'modal-clientes', arguments: { cliente: {{ $item->id }} }})"
-                            class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
+                            class="cursor-pointer bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
                             Asignar
                             </span>
                         </td>
                         <td class="px-6 py-4 text-center items-center">
                             <span
                             onclick="Livewire.dispatch('openModal', { component: 'modal-editar-cliente', arguments: { cliente: {{ $item->id }} }})"
-                            class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
+                            class="cursor-pointer bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
                             Editar
                             </span>
                         </td>

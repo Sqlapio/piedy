@@ -22,8 +22,10 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Contracts\View\View;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
+use PHPUnit\Event\Code\Throwable;
 use WireUi\Traits\Actions;
 
 class CierreDiario extends Component implements HasForms, HasTable
@@ -68,8 +70,14 @@ class CierreDiario extends Component implements HasForms, HasTable
             $query = ModelsCierreDiario::where('fecha', date('d-m-Y'))->count();
 
             if($query >= 2){
-                throw new Exception("No puede ejecutar mas de dos cierres en una jornada laboral");
-
+                $error = ValidationException::withMessages(['cierre' => 'No se pueden ejecutar mas de dos(2) cierres en una jornada laboral']);
+                    Notification::make()
+                    ->title('NOTIFICACIÓN')
+                    ->icon('heroicon-o-shield-check')
+                    ->color('danger')
+                    ->body($error->getMessage())
+                    ->send();
+                    return redirect('/cierre/diario');
             }else{
 
                 /** Responsable del cierre */
@@ -90,6 +98,20 @@ class CierreDiario extends Component implements HasForms, HasTable
 
                 /** totales gastos en Dolares*/
                 $efectivo_caja_usd = CajaChica::where('fecha', date('d-m-Y'))->first();
+
+                /**Logica para evitar que una persona haga mas de dos cierres en el dia */
+                $existe_cierre = ModelsCierreDiario::where('fecha', date('d-m-Y'))->where('responsable', $user->name)->first();
+
+                if(isset($existe_cierre)){
+                    $error = ValidationException::withMessages(['cierre' => 'Ya el usuario realizo el cierre del turno.']);
+                    Notification::make()
+                    ->title('NOTIFICACIÓN')
+                    ->icon('heroicon-o-shield-check')
+                    ->color('danger')
+                    ->body($error->getMessage())
+                    ->send();
+                    return redirect('/cierre/diario');
+                }
 
 
                 $cierre = new ModelsCierreDiario();
@@ -137,7 +159,6 @@ class CierreDiario extends Component implements HasForms, HasTable
             }
 
         } catch (\Throwable $th) {
-            dd($th);
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->color('danger')

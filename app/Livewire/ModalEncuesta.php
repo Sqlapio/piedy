@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Cliente;
 use App\Models\FichaMedica;
+use Filament\Notifications\Notification;
 use Livewire\Component;
 use Livewire\WithPagination;
 use LivewireUI\Modal\ModalComponent;
@@ -53,8 +54,22 @@ class ModalEncuesta extends ModalComponent
             $ficha_medica->cliente_id = $this->cliente->id;
             $ficha_medica->save();
 
+            Notification::make()
+                ->title('Cliente creado con éxito')
+                ->success()
+                ->send();
+
+            $this->reset();
+            
+            $this->forceClose()->closeModal();
+
         } catch (\Throwable $th) {
-            //throw $th;
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-shield-check')
+            ->color('primary')
+            ->body($th->getMessage())
+            ->send();
         }
     }
     

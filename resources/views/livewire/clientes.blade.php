@@ -1,16 +1,22 @@
-<div>
-    <div class="p-5">
-        @livewire('notifications')
-        <h1 class="text-xl mb-6 font-bold text-[#bd9c95]">Modulo de Clientes</h1>
+@php
+use App\Models\FichaMedica;
+@endphp
+<div class="p-5">
+    @livewire('notifications')
+    <div class="p-5 {{ $ocultar_form_cliente }}">
+        <h1 class="text-xl mb-6 font-bold text-[#bd9c95]">FICHA DEL CLIENTE</h1>
         {{-- tabla y boton del formulario de clientes --}}
-        <div class="bg-white rounded-xl {{ $ocultar_form_cliente }}">
-
-            <div class="grid md:grid-cols-2 md:gap-6">
+        <div class="p-5 bg-[#e9d4cf] rounded-xl">
+            <h1 class="text-xl mb-6 font-bold text-black">Datos Personales</h1>
+            <div class="grid md:grid-cols-3 md:gap-6">
                 <div class="relative z-0 w-full mb-6 group">
                     <x-input wire:model="nombre" right-icon="user" label="Nombre" placeholder="Nombre del cliente" />
                 </div>
                 <div class="relative z-0 w-full mb-6 group">
                     <x-input wire:model="apellido" right-icon="user" label="Apellido" placeholder="Apellido del cliente" />
+                </div>
+                <div class="relative z-0 w-full mb-6 group">
+                    <x-input wire:model="cedula" right-icon="user" label="Cédula de Identidad" placeholder="Ejemplo: 16543678" />
                 </div>
             </div>
             <div class="grid md:grid-cols-2 md:gap-6 mt-5">
@@ -23,17 +29,121 @@
                     {{-- <label for="floating_company" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono</label> --}}
                 </div>
             </div>
-            <div class="flex justify-end p-2 mt-auto">
-                <button type="submit" wire:click.prevent="store()" class="justify-end rounded-md border border-transparent bg-[#7898a5] py-2 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">
-                    <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="store" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                    </svg>
-                    <span>Guardar cliente</span>
-                </button>
-            </div>
         </div>
 
+        {{-- Encuenta --}}
+        <div class="p-5 mt-5 bg-[#e9d4cf] rounded-xl">
+            <h1 class="text-xl mb-6 font-bold text-black">Ficha Médica</h1>
+            <div class="grid md:grid-cols-1 md:gap-2 mb-7">
+                {{-- Pregunta 1 --}}
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-sm font-medium">1.- ¿Tiene alguna condición médica preexistente o alergias que debamos conocer? <br>(Por ejemplo, diabetes, problemas circulatorios, alergias a productos químicos o cosméticos)</p>
+                    </div>
+                    <div>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" value="" class="sr-only peer" wire:model="p1">
+                            <span class="mr-1 text-xs font-medium text-red-800 dark:text-gray-300">No</span>
+                            <div class="relative w-11 h-6 bg-red-700 peer-focus:outline-none dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-700"></div>
+                            <span class="ms-1 text-xs font-medium text-green-800 dark:text-gray-300">Si</span>
+                        </label>
 
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-1 md:gap-2 mb-7">
+                {{-- Pregunta 1 --}}
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-sm font-medium">2.- ¿Sufre de alguna de las siguientes afecciones en los pies? <br>(Por ejemplo, hongos en las uñas, callosidades, juanetes, pie diabético)</p>
+                    </div>
+                    <div>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" value="" class="sr-only peer" wire:model.live="p2">
+                            <span class="mr-1 text-xs font-medium text-red-800 dark:text-gray-300">No</span>
+                            <div class="relative w-11 h-6 bg-red-700 peer-focus:outline-none dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-700"></div>
+                            <span class="ms-1 text-xs font-medium text-green-800 dark:text-gray-300">Si</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-1 md:gap-2 mb-7">
+                {{-- Pregunta 1 --}}
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-sm font-medium">3.- ¿Ha experimentado alguna reacción adversa a productos utilizados en tratamientos de manicure o pedicure anteriores? <br>Si es así, ¿podría detallar qué productos o sustancias causaron la reacción?</p>
+                    </div>
+                    <div>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" value="" class="sr-only peer" wire:model="p3">
+                            <span class="mr-1 text-xs font-medium text-red-800 dark:text-gray-300">No</span>
+                            <div class="relative w-11 h-6 bg-red-700 peer-focus:outline-none dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-700"></div>
+                            <span class="ms-1 text-xs font-medium text-green-800 dark:text-gray-300">Si</span>
+                        </label>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-1 gap-7 mb-7">
+                {{-- Pregunta 1 --}}
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-sm font-medium">4.- ¿Tiene alguna preferencia específica o necesita algún ajuste especial durante su tratamiento de quiropedia o manicure?<br>(Por ejemplo, evitar el uso de ciertos esmaltes o productos)</p>
+                    </div>
+                    <div>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" value="" class="sr-only peer" wire:model="p4">
+                            <span class="mr-1 text-xs font-medium text-red-800 dark:text-gray-300">No</span>
+                            <div class="relative w-11 h-6 bg-red-700 peer-focus:outline-none dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-700"></div>
+                            <span class="ms-1 text-xs font-medium text-green-800 dark:text-gray-300">Si</span>
+                        </label>
+
+                    </div>
+                </div>
+                {{-- Pregunta 2 --}}
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-sm font-medium">5.- ¿Consiente en recibir tratamientos de quiropedia y manicure según las prácticas estándar de nuestro establecimiento?</p>
+                    </div>
+                    <div>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" value="" class="sr-only peer" wire:model="p5">
+                            <span class="mr-1 text-xs font-medium text-red-800 dark:text-gray-300">No</span>
+                            <div class="relative w-11 h-6 bg-red-700 peer-focus:outline-none dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-700"></div>
+                            <span class="ms-1 text-xs font-medium text-green-800 dark:text-gray-300">Si</span>
+                        </label>
+
+                    </div>
+                </div>
+            </div>
+
+            <h1 class="text-sm mb-1 font-bold text-black">Comentarios Adicionales:</h1>
+            <textarea wire:model="comentario_adicional" id="message" rows="4" class="block p-2.5 mt-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="¿Hay algún otro detalle médico o preocupación que le gustaría compartir con nosotros?"></textarea>
+            <footer class="flex justify-center w-full">
+                <div class="p-5">
+                    <p class="text-xs text-center">
+                        Estas preguntas ayudan a recopilar información crucial para proporcionar un servicio seguro y personalizado, tomando en cuenta las necesidades médicas y las preferencias de los clientes.
+                    </p>
+                </div>
+            </footer>
+        </div>
+
+        {{-- Boton --}}
+        <div class="flex justify-end py-5 mt-auto">
+            <button type="submit" wire:click.prevent="store()" class="justify-end rounded-md border border-transparent bg-[#7898a5] py-3 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">
+                <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="store" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+                <span>Guardar cliente</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="p-5">
+        {{-- Table de clientes registrados --}}
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg  {{ $ocultar_table_cliente }}">
             <div class="flex justify-start mb-4">
                 <input wire:model.live="buscar" type="search" id="search" name="buscar" class="border-b border-gray-200 py-2 text-sm rounded-full shadow-lg focus:ring-check-blue focus:border-check-blue" placeholder="Buscar cliente" autocomplete="off">
@@ -45,16 +155,22 @@
                             Cliente
                         </th>
                         <th scope="col" class="px-6 py-3">
+                            Cédula
+                        </th>
+                        <th scope="col" class="px-6 py-3">
                             Email
                         </th>
                         <th scope="col" class="px-6 py-3">
                             Teléfono
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Registrado por:
+                            Ficha Médica
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Asginar
+
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+
                         </th>
                     </tr>
                 </thead>
@@ -65,19 +181,36 @@
                             {{ $item->nombre.' '.$item->apellido }}
                         </th>
                         <td class="px-6 py-4">
+                            {{ $item->cedula }}
+                        </td>
+                        <td class="px-6 py-4">
                             {{ $item->email }}
                         </td>
                         <td class="px-6 py-4">
                             {{ $item->telefono }}
                         </td>
-                        <td class="px-6 py-4">
-                            {{ $item->responsable }}
+                        @if(FichaMedica::where('cliente_id', $item->id)->first())
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            <x-avatar sm label="EN" class="bg-green-600"/>
+                        </th>
+                        @else
+                        <th scope="row" class="cursor-pointer px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            <x-avatar sm label="EN" class="bg-gray-200" onclick="Livewire.dispatch('openModal', { component: 'modal-encuesta', arguments: { cliente: {{ $item->id }} }})"/>
+                        </th>
+                        @endif
+                        <td class="px-6 py-4 text-center items-center">
+                            <span
+                            onclick="Livewire.dispatch('openModal', { component: 'modal-clientes', arguments: { cliente: {{ $item->id }} }})"
+                            class="cursor-pointer bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
+                            Asignar
+                            </span>
                         </td>
                         <td class="px-6 py-4 text-center items-center">
-                            <svg onclick="Livewire.dispatch('openModal', { component: 'modal-clientes', arguments: { cliente: {{ $item->id }} }})" class="w-6 h-6 text-green-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19 17">
-                                <path d="M2.057 6.9a8.718 8.718 0 0 1 6.41-3.62v-1.2A2.064 2.064 0 0 1 9.626.2a1.979 1.979 0 0 1 2.1.23l5.481 4.308a2.107 2.107 0 0 1 0 3.3l-5.479 4.308a1.977 1.977 0 0 1-2.1.228 2.063 2.063 0 0 1-1.158-1.876v-.942c-5.32 1.284-6.2 5.25-6.238 5.44a1 1 0 0 1-.921.807h-.06a1 1 0 0 1-.953-.7A10.24 10.24 0 0 1 2.057 6.9Z"/>
-                              </svg>
-                              {{-- onclick="Livewire.dispatch('openModal', { component: 'asigna-servicio', arguments: { cita: {{ $item->id }} }})" --}}
+                            <span
+                            onclick="Livewire.dispatch('openModal', { component: 'modal-editar-cliente', arguments: { cliente: {{ $item->id }} }})"
+                            class="cursor-pointer bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
+                            Editar
+                            </span>
                         </td>
                     </tr>
                     @endforeach
@@ -91,6 +224,10 @@
             {{ $data->links() }}
         </div>
     </div>
+
+    {{-- div para separacion ene le diseno --}}
+    <div class="w-full h-28"></div>
+
     {{-- Menu para table --}}
     <div class="fixed sm:z-0 md:z-0 lg:z-50 w-full h-16 mt-5 max-w-lg -translate-x-1/2 bg-white border border-gray-200 rounded-full bottom-4 left-1/2 dark:bg-gray-700 dark:border-gray-600">
         <div class="grid h-full max-w-lg grid-cols-7 mx-auto ">

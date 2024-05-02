@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -61,5 +62,15 @@ class Cliente extends Model
     public function frecuencia(): HasOne
     {
         return $this->hasOne(Frecuencia::class, 'id', 'cliente_id');
+    }
+
+    /**
+     * Get the ficha that owns the Cliente
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function ficha(): BelongsTo
+    {
+        return $this->belongsTo(FichaMedica::class, 'id', 'cliente_id');
     }
 }

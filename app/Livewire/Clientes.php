@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Cliente;
+use App\Models\FichaMedica;
 use App\Models\Frecuencia;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -25,9 +26,20 @@ class Clientes extends Component
     #[Validate('required', message: 'Apellido requerido')]
     public $apellido;
 
+    #[Validate('required', message: 'El número de cedula es requido')]
+    public $cedula;
+
     public $email;
 
     public $telefono;
+
+    public $p1;
+    public $p2;
+    public $p3;
+    public $p4;
+    public $p5;
+
+    public $comentario_adicional;
 
     public $buscar;
     public $ocultar_form_cliente = 'hidden';
@@ -52,10 +64,7 @@ class Clientes extends Component
             $cliente = new Cliente();
             $cliente->nombre      = strtoupper($this->nombre);
             $cliente->apellido    = strtoupper($this->apellido);
-            if(Cliente::where('email', $this->email)->exists())
-            {
-                throw new Exception("El email que intenta registrar ya se encuentra en nuestra base de datos. Por favor intente con otro");
-            }
+            $cliente->cedula      = $this->cedula;
             $cliente->email       = $this->email;
             $cliente->telefono    = $this->telefono;
             $cliente->user_id     = $user->id;
@@ -69,6 +78,18 @@ class Clientes extends Component
             $cliente_nuevo->cliente_id  = $cliente->id;
             $cliente_nuevo->nombre      = strtoupper($cliente->nombre.' '.$cliente->apellido);
             $cliente_nuevo->save();
+
+            /** Logica para cargar los datos de la encuesta despues de guardar el cliente nuevo */
+            $ficha_medica = new FichaMedica();
+            $ficha_medica->p1 = $this->p1;
+            $ficha_medica->p2 = $this->p2;
+            $ficha_medica->p3 = $this->p3;
+            $ficha_medica->p4 = $this->p4;
+            $ficha_medica->p5 = $this->p5;
+            $ficha_medica->comentario_adicional = $this->comentario_adicional;
+            $ficha_medica->cliente_id = $cliente->id;
+            $ficha_medica->save();
+
 
             Notification::make()
                 ->title('Cliente creado con éxito')

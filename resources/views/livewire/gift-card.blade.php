@@ -2,57 +2,59 @@
     @livewire('notifications')
     <div class="p-8 bg-[#e9d4cf] rounded-xl mb-5">
         <h1 class="text-xl mb-6 font-bold text-black">Asignación de GiftCard</h1>
+        <!-- Formulario para la Gifcar -->
         <div class="flex justify-between items-center gap-x-8">
-            <div class="w-full">
-                <div class="w-96 h-56 m-auto bg-red-100 rounded-xl relative text-white shadow-2xl transition-transform transform hover:scale-110">
+            <div class="w-1/2">
+                <div class="w-96 h-56 m-auto bg-red-100 rounded-xl relative text-white shadow-2xl transition-transform transform hover:scale-110 ">
 
-                    <img class="relative object-cover w-full h-full rounded-xl" src="https://i.imgur.com/kGkSg1v.png">
+                    {{-- <img class="relative object-cover w-full h-full rounded-xl" src="https://i.imgur.com/kGkSg1v.png"> --}}
 
                     <div class="w-full px-8 absolute top-8">
                         <div class="flex justify-between">
                             <div class="">
-                                <p class="font-light">
-                                    Name
-                                </h1>
-                                <p class="font-medium tracking-widest">
-                                    Karthik P
+                                <p class="font-light text-black text-xs">
+                                    Nombre
+                                </p>
+                                <p class="font-medium tracking-widest text-black">
+                                    {{ $cliente }}
                                 </p>
                             </div>
-                            <img class="w- h-auto" src="{{ asset('images/logo.png') }}"/>
+                            <img class="w-1/4 h-auto" src="{{ asset('images/logo.png') }}"/>
                         </div>
                         <div class="pt-1">
-                            <p class="font-light">
-                                Card Number
-                            </h1>
-                            <p class="font-medium tracking-more-wider">
-                                4642  3489  9867  7632
+                            <p class="font-light text-black text-xs py-1">
+                                Código de Tarjeta
+                            </p>
+
+                            <p class="font-medium tracking-more-wider text-black">
+                                {!! $barcode !!}
                             </p>
                         </div>
                         <div class="pt-6 pr-6">
                             <div class="flex justify-between">
                                 <div class="">
-                                    <p class="font-light text-xs">
-                                        Valid
-                                    </h1>
-                                    <p class="font-medium tracking-wider text-sm">
-                                        11/15
+                                    <p class="font-light text-xs text-black">
+                                        Valida
+                                    </p>
+                                    <p class="font-bold tracking-more-wider text-sm text-black">
+                                        {{ date('m/y') }}
                                     </p>
                                 </div>
                                 <div class="">
-                                    <p class="font-light text-xs text-xs">
-                                        Expiry
-                                    </h1>
-                                    <p class="font-medium tracking-wider text-sm">
-                                        03/25
+                                    <p class="font-light text-xs text-xs text-black">
+                                        Expira
+                                    </p>
+                                    <p class="font-bold tracking-more-wider text-sm text-black">
+                                        11/24
                                     </p>
                                 </div>
 
                                 <div class="">
-                                    <p class="font-light text-xs">
-                                        CVV
-                                    </h1>
-                                    <p class="font-bold tracking-more-wider text-sm">
-                                        ···
+                                    <p class="font-light text-xs text-black">
+                                        PGC
+                                    </p>
+                                    <p wire:model.live='pgc' class="font-bold tracking-more-wider text-sm text-black">
+                                        {{ $pgc }}
                                     </p>
                                 </div>
                             </div>
@@ -61,23 +63,42 @@
                     </div>
                 </div>
             </div>
-            <div class="w-full">
+            <div class="w-full p-4">
                 {{-- linea 1 --}}
                 <div class="grid md:grid-cols-2 md:gap-6">
                     <div class="w-full mb-6 group">
-                        <x-input wire:model.live="cod_gift_card" right-icon="user" label="Codigo GiftCard"  disabled/>
+                        <label class="mb-1 block text-md text-black text-left">Código GiftCard</label>
+                        <x-input wire:model.live="cod_gift_card" right-icon="user" disabled/>
                     </div>
                     <div class="w-full mb-6 group">
-                        <x-select wire:model="cliente_id" label="Cliente" placeholder="Seleccion" hint="El cliente debe esta registrado" :async-data="route('api.clientes')" option-label="nombre" option-value="id" />
+                        <label class="mb-1 block text-md text-black text-left">Cliente</label>
+                        <x-select wire:model.live="cliente_id" placeholder="Seleccion" :async-data="route('api.clientes')" option-label="nombre" option-value="id" />
+                        <div class="py-2">
+                            <x-badge wire:click='nuevo_cliente()' rounded positive label="+ NUEVO CLIENTE" class="py-1 cursor-pointer"/>
+                        </div>
                     </div>
                 </div>
                 {{-- linea 2 --}}
-                <div class="grid md:grid-cols-2 md:gap-6 mt-5">
-                    <div class="w-full mb-6 group">
-                        <x-input wire:model.live="fecha_emicion" right-icon="user" label="Fecha de Emisión" placeholder="Email del cliente"  disabled/>
+                <div class="grid md:grid-cols-3 md:gap-6 mt-5">
+                    <div class="w-full mb-6 group hidden">
+                        <label class="mb-1 block text-md text-black text-left">Fecha de emición</label>
+                        <x-input wire:model.live="fecha_emicion" right-icon="user" disabled/>
+                    </div>
+                    <div class="w-full mb-6 group hidden">
+                        <label class="mb-1 block text-md text-black text-left">Vence</label>
+                        <x-input wire:model.live="fecha_vence" right-icon="user" disabled/>
                     </div>
                     <div class="w-full mb-6 group">
-                        <x-inputs.maskable wire:model="monto" label="Monto($)" mask="#### #######" placeholder="Ejemplo: 45 - 50 - 100" />
+                        <label class="mb-1 block text-md text-black text-left">Monto ($)</label>
+                        <x-inputs.maskable wire:model="monto" mask="#### #######" placeholder="Ejemplo: 45 - 50 - 100" />
+                    </div>
+                    <div class="w-full mb-6 group">
+                        <label class="mb-1 block text-md text-black text-left">Metodo de Pago</label>
+                        <x-select wire:change="$emit('metodo', $event.target.value)" wire:model="metodo_pago" placeholder="Método de pago" :async-data="route('api.metodo_pago')" option-label="descripcion" option-value="descripcion" />
+                    </div>
+                    <div class="w-full mb-6 group">
+                        <label class="mb-1 block text-md text-black text-left">Referencia</label>
+                        <x-input wire:model="referencia" right-icon="user"/>
                     </div>
                 </div>
             </div>

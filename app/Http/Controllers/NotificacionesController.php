@@ -43,6 +43,11 @@ class NotificacionesController extends Controller
 				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view));
 			}
 
+            if ($type == 'giftCard') {
+				$view = 'emails.giftCard';
+				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view));
+			}
+
 		} catch (\Throwable $th) {
 			$message = $th->getMessage();
 			dd('Error UtilsController.send_mail()', $message);

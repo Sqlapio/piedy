@@ -149,6 +149,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('historico_servicios');
     })->name('historico_servicios');
 
+    Route::get('/gift', function () {
+        return view('gift-card');
+    })->name('gift-card');
+
 
     Route::get('/lista/clientes', [ApiClientesController::class, 'lista_clientes'])->name('api.clientes');
     Route::get('/lista/empleados', [ApiClientesController::class, 'lista_empleados'])->name('api.empleados');

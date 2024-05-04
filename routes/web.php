@@ -172,9 +172,17 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
 Route::get('/pp', function () {
 
-    Schedule->command('app:send-mail-command')
-         ->daily()
-         ->emailOutputTo('gusta.acp@gmail.com');
+    $view = 'emails.prueba-email';
+    $mailData = [
+        'nombre' => 'gustavo'
+    ];
+    Mail::to('gusta.acp@gmail.com')->send(new NotificacionesEmail($mailData, $view));
+
+    return 'todo bien';
+
+    // Schedule->command('app:send-mail-command')
+    //      ->daily()
+    //      ->emailOutputTo('gusta.acp@gmail.com');
 
     // $fecha_anterior =  date("d-m-Y", strtotime(date("d-m-Y") . "-15 day"));
     // $clientes = VentaServicio::where('fecha_venta', $fecha_anterior)->get();
@@ -214,10 +222,10 @@ Route::get('/pp', function () {
 
     // // dd(DetalleAsignacion::where('fecha', date('d-m-Y'))->count());
 
-    $fecha_posterior =  date("d-m-Y", strtotime(date("d-m-Y") . "+1 day"));
-    $citas_posteriores = Cita::where('fecha', Carbon::parse(date($fecha_posterior))->isoFormat('dddd, D MMM '))->get();
+    // $fecha_posterior =  date("d-m-Y", strtotime(date("d-m-Y") . "+1 day"));
+    // $citas_posteriores = Cita::where('fecha', Carbon::parse(date($fecha_posterior))->isoFormat('dddd, D MMM '))->get();
 
-    dd($fecha_posterior, $citas_posteriores);
+    // dd($fecha_posterior, $citas_posteriores);
 
     // $params=array(
     //     'token' => '863lb4l0wmldpl3s',

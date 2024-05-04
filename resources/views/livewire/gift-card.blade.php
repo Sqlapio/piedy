@@ -4,12 +4,12 @@
         <h1 class="text-xl mb-6 font-bold text-black">Asignación de GiftCard</h1>
         <!-- Formulario para la Gifcar -->
         <div class="flex justify-between items-center gap-x-8">
-            <div class="w-1/2">
-                <div class="w-96 h-56 m-auto bg-red-100 rounded-xl relative text-white shadow-2xl transition-transform transform hover:scale-110 ">
+            <div class="w-full">
+                <div class="w-full h-auto m-auto bg-red-100 rounded-xl relative text-white shadow-2xl transition-transform transform hover:scale-110 ">
 
-                    {{-- <img class="relative object-cover w-full h-full rounded-xl" src="https://i.imgur.com/kGkSg1v.png"> --}}
+                    <img class="object-cover w-full h-full rounded-xl" src="{{ asset('images/gift-card1.png') }}"/>
 
-                    <div class="w-full px-8 absolute top-8">
+                    <div class="w-full -mb-10 px-8 absolute top-20">
                         <div class="flex justify-between">
                             <div class="">
                                 <p class="font-light text-black text-xs">
@@ -19,7 +19,8 @@
                                     {{ $cliente }}
                                 </p>
                             </div>
-                            <img class="w-1/4 h-auto" src="{{ asset('images/logo.png') }}"/>
+                            {{-- <img class="w-1/4 h-auto" src="{{ asset('images/logo.png') }}"/> --}}
+
                         </div>
                         <div class="pt-1">
                             <p class="font-light text-black text-xs py-1">
@@ -27,7 +28,7 @@
                             </p>
 
                             <p class="font-medium tracking-more-wider text-black">
-                                {!! $barcode !!}
+                                <img class="w-full h-full" src="{{ asset('/storage/barcodes/1613_barcode.jpg') }}"/>
                             </p>
                         </div>
                         <div class="pt-6 pr-6">

@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Models\GiftCard as ModelsGiftCard;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 
@@ -36,7 +37,9 @@ class GiftCard extends Component
 
         try {
 
-            $saldo = $this->monto;
+            $generator_email = new \Picqer\Barcode\BarcodeGeneratorJPG();
+            $image = $generator_email->getBarcode($this->codigo_seguridad, $generator_email::TYPE_CODE_128);
+            Storage::put('public/barcodes/'.$this->codigo_seguridad.'.jpg', $image);
 
             $asignar_giftCard = new ModelsGiftCard();
             $asignar_giftCard->cod_gift_card    = $this->cod_gift_card;
@@ -49,32 +52,28 @@ class GiftCard extends Component
             $asignar_giftCard->fecha_vence      = $this->fecha_vence;
             $asignar_giftCard->metodo_pago      = $this->metodo_pago;
             $asignar_giftCard->referencia      = ($this->referencia == '') ? 'efectivo' : $this->referencia;
+            $asignar_giftCard->barcode          = $this->codigo_seguridad.'.jpg';
             $asignar_giftCard->responsable      = Auth::user()->name;
             $asignar_giftCard->save();
 
 
-
-
-
             /** Notificacion para el usuario cuando su servicio fue anulado */
-            $type = 'giftCard';
+            $type = 'gift-card';
             // $correo = Cliente::where('id',  $asignar_giftCard->cliente_id)->first()->email;
             $correo = 'gusta.acp@gmail.com';
 
-            $generator_email = new \Picqer\Barcode\BarcodeGeneratorHTML();
-            $barcode_email = $generator_email->getBarcode($asignar_giftCard->codigo_seguridad, $generator_email::TYPE_CODE_128);
+            
 
             $mailData = [
-                     'codigo_seguridad' => $asignar_giftCard->codigo_seguridad,
-                     'pgc' => $asignar_giftCard->pgc,
-                     'cliente' =>$asignar_giftCard->cliente,
-                     'barcode' => $barcode_email,
-                 ];
+                    'codigo_seguridad'  => $asignar_giftCard->codigo_seguridad,
+                    'pgc'               => $asignar_giftCard->pgc,
+                    'cliente'           => $asignar_giftCard->cliente,
+                    'barcode'           => $asignar_giftCard->barcode,
+                    'user_email'        => $correo,
+                ];
 
             NotificacionesController::notification($mailData, $type);
-
-            $this->reset();
-
+            
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-shield-check')
@@ -82,6 +81,7 @@ class GiftCard extends Component
                 ->body("La GiftCard fue asignada de forma exitosa")
                 ->send();
 
+            $this->reset();
 
         } catch (\Throwable $th) {
             dd($th);

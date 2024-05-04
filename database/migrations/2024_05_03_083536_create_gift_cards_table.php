@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('metodo_pago');
             $table->string('referencia');
             $table->string('responsable');
+            $table->string('barcode');
             $table->string('status')->default(1); // 0: Inactivo, 1: Activo
             $table->timestamps(); 
         });

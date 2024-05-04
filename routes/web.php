@@ -176,7 +176,7 @@ Route::get('/pp', function () {
     $mailData = [
         'nombre' => 'gustavo'
     ];
-    Mail::to('gusta.acp@gmail.com')->send(new NotificacionesEmail($mailData, $view));
+    Mail::to('jhonnymartinez901@gmail.com')->send(new NotificacionesEmail($mailData, $view));
 
     return 'todo bien';
 

@@ -148,6 +148,11 @@ class Dashboard extends Component
         $this->redirect('/cierre/general');
     }
 
+    public function gift()
+    {
+        $this->redirect('/gift');
+    }
+
     public function cancel()
     {
         dd('cancelar');

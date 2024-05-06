@@ -59,29 +59,32 @@ class GiftCard extends Component
 
             /** Notificacion para el usuario cuando su servicio fue anulado */
             $type = 'gift-card';
-            // $correo = Cliente::where('id',  $asignar_giftCard->cliente_id)->first()->email;
-            $correo = 'gusta.acp@gmail.com';
 
-            
+            $correo = Cliente::where('id',  $asignar_giftCard->cliente_id)->first()->email;
+
+            if($asignar_giftCard->monto == 20){
+                $image = 'gift20.png';
+            }else{
+                $image = 'gift40.png';
+            }
 
             $mailData = [
                     'codigo_seguridad'  => $asignar_giftCard->codigo_seguridad,
                     'pgc'               => $asignar_giftCard->pgc,
                     'cliente'           => $asignar_giftCard->cliente,
                     'barcode'           => $asignar_giftCard->barcode,
-                    'user_email'        => $correo,
+                    'image'             => $image,
+                    'user_email'        => 'gusta.acp@gmail.com',
                 ];
 
             NotificacionesController::notification($mailData, $type);
-            
+
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-shield-check')
                 ->iconColor('danger')
                 ->body("La GiftCard fue asignada de forma exitosa")
                 ->send();
-
-            $this->reset();
 
         } catch (\Throwable $th) {
             dd($th);

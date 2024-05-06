@@ -9,7 +9,7 @@
 
                     <img class="object-cover w-full h-full rounded-xl" src="{{ asset('images/gift-card1.png') }}"/>
 
-                    <div class="w-full -mb-10 px-8 absolute top-20">
+                    <div class="w-full px-8 absolute top-12">
                         <div class="flex justify-between">
                             <div class="">
                                 <p class="font-light text-black text-xs">
@@ -28,10 +28,10 @@
                             </p>
 
                             <p class="font-medium tracking-more-wider text-black">
-                                <img class="w-full h-full" src="{{ asset('/storage/barcodes/1613_barcode.jpg') }}"/>
+                                {!! $barcode !!}
                             </p>
                         </div>
-                        <div class="pt-6 pr-6">
+                        <div class="pt-2 pr-6">
                             <div class="flex justify-between">
                                 <div class="">
                                     <p class="font-light text-xs text-black">
@@ -42,11 +42,11 @@
                                     </p>
                                 </div>
                                 <div class="">
-                                    <p class="font-light text-xs text-xs text-black">
+                                    <p class="font-light text-xs text-black">
                                         Expira
                                     </p>
                                     <p class="font-bold tracking-more-wider text-sm text-black">
-                                        11/24
+                                        {{ date("m/y",strtotime(date('m/y')."+ 6 month")) }}
                                     </p>
                                 </div>
 
@@ -91,7 +91,7 @@
                     </div>
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Monto ($)</label>
-                        <x-inputs.maskable wire:model="monto" mask="#### #######" placeholder="Ejemplo: 45 - 50 - 100" />
+                        <x-select placeholder="Monto" :options="[20, 40]" wire:model.defer="monto" mask='##'/>
                     </div>
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Metodo de Pago</label>

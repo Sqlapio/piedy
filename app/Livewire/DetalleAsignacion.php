@@ -135,7 +135,7 @@ class DetalleAsignacion extends ModalComponent
             ]);
 
         $this->forceClose()->closeModal();
-        
+
         $this->redirect('/cabinas');
 
 
@@ -260,7 +260,7 @@ class DetalleAsignacion extends ModalComponent
 
         Debugbar::info($this->disponible->cod_asignacion);
 
-        /**
+            /**
              * Calculo del total de venta para ser guardado
              * en la tabla de ventas
              */

@@ -15,52 +15,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-    <style>
-        /* .credit-card {
-            margin: auto;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            border-radius: 7px;
-            width: 400px;
-            height: 195px;
-            max-width: 400px;
-            position: relative;
-            transition: all 0.4s ease;
-            box-shadow: 0 2px 4px 0 #cfd7df;
-            min-height: 195px;
-            padding: 13px;
-            background: #1a1b1c;
-            color: black;
-        } */
-
-        /* .credit-card.selectable:hover {
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-        } */
-
-
-        /*  NUMBER FORMATTING */
-
-        /* .credit-card-last4 {
-            font-size: 18px;
-            padding-top: 80px;
-            padding-left: 25px;
-        } */
-
-
-        /* .credit-card-expiry {
-            font-family: "PT Mono", Helvetica, sans-serif;
-            font-size: 18px;
-            position: absolute;
-            bottom: 8px;
-            left: 15px;
-        } */
-
-
-
-
-    </style>
-
 </head>
 
 <body>
@@ -77,7 +31,7 @@
         </p>
             <div class="credit-card visa selectable"
                 style="
-                    background-image: url('https://piedy.sqlapio.net/images/giftcard1.png');
+                    background-image: url('https://piedy.sqlapio.net/images/gift40.png');
                     background-size: 100% 100%;
                     margin: auto;
                     margin-top: 20px;
@@ -92,8 +46,11 @@
                     min-height: 195px;
                     padding: 13px;
                 ">
-                <div class="credit-card-last4" style="font-size: 18px; padding-top: 80px; padding-left: 25px; color: black;">
-                    JHONNY MARTINEZ
+                    <div class="credit-card-last4" style="font-size: 13px; padding-top: 105px; padding-left: 25px; color: black;">
+                        <div>EXP: 05/24</div>
+                    </div>
+                <div class="credit-card-last4" style="font-size: 18px; padding-left: 25px; color: black;">
+                    JHONNY MARTINEZ <span style="margin-left: 85px; font-size: 13px;">PGC: 6743</span>
                 </div>
                 <div class="credit-card-expiry">
                     <img style="
@@ -102,11 +59,7 @@
                         margin-right: auto;
                         width: 350px;
                         height: auto;
-                        margin-top: 12px;
                         " src="https://piedy.sqlapio.net/images/barcode.jpg">
-                </div>
-                <div class="credit-card-last4" style="font-size: 13px; padding-left: 25px; color: black;">
-                    <div>VENCE: 12/12</div>
                 </div>
             </div>
         <p style="text-align: justify; margin-left: 20px;">

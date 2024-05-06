@@ -34,6 +34,18 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+Route::get('/l/e', function () {
+    return view('login-externo');
+})->name('login-externo');
+
+Route::get('/p/e', function () {
+    return view('pago-externo');
+})->name('pago-externo');
+
+Route::get('/pay/ex', function () {
+    return view('pago-exitoso');
+})->name('pago-exitoso');
+
 Route::post('/actualiza/password', [LoginController::class, 'actualiza_password'])->name('actualiza_password');
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
@@ -176,7 +188,7 @@ Route::get('/pp', function () {
     $mailData = [
         'nombre' => 'gustavo'
     ];
-    Mail::to('jhonnymartinez901@gmail.com')->send(new NotificacionesEmail($mailData, $view));
+    Mail::to('gusta.acp@gmail.com')->send(new NotificacionesEmail($mailData, $view));
 
     return 'todo bien';
 

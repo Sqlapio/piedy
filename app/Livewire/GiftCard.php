@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Http\Controllers\NotificacionesController;
 use App\Models\Cliente;
 use App\Models\GiftCard as ModelsGiftCard;
+use App\Models\TasaBcv;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -117,7 +118,9 @@ class GiftCard extends Component
             $this->cliente = $nom_ape;
         }
 
-        return view('livewire.gift-card', compact('barcode', 'pgc'));
+        $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
+
+        return view('livewire.gift-card', compact('barcode', 'pgc', 'tasa'));
     }
 }
 

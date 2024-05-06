@@ -91,11 +91,11 @@
                     </div>
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Monto ($)</label>
-                        <x-select placeholder="Monto" :options="[20, 40]" wire:model.defer="monto" mask='##'/>
+                        <x-select placeholder="Monto" :options="[20, 40]" wire:model.live="monto" mask='##' hint="{{ ($metodo_pago == 'Pago Movil' || $metodo_pago == 'Punto de Venta') ? 'Bs. '.$monto = $monto * $tasa : $monto }}"/>
                     </div>
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Metodo de Pago</label>
-                        <x-select placeholder="Método de pago" :options="['Efectivo USD', 'Pago Movil', 'Zelle', 'Punto de Venta']" wire:model.defer="metodo_pago"/>
+                        <x-select placeholder="Método de pago" :options="['Efectivo USD', 'Pago Movil', 'Zelle', 'Punto de Venta']" wire:model.live="metodo_pago"/>
                     </div>
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Referencia</label>

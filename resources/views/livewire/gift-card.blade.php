@@ -3,7 +3,7 @@
     <div class="p-8 bg-[#e9d4cf] rounded-xl mb-5">
         <h1 class="text-xl mb-6 font-bold text-black">Asignación de GiftCard</h1>
         <!-- Formulario para la Gifcar -->
-        <div class="flex justify-between sm:flex-col items-center gap-x-8">
+        <div class="md:flex justify-between items-center gap-x-8">
             <div class="w-full">
                 <div class="w-full h-auto m-auto bg-red-100 rounded-xl relative text-white shadow-2xl transition-transform transform hover:scale-110 ">
 
@@ -91,7 +91,10 @@
                     </div>
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Monto ($)</label>
-                        <x-select placeholder="Monto" :options="[20, 40]" wire:model.live="monto" mask='##' hint="{{ ($metodo_pago == 'Pago Movil' || $metodo_pago == 'Punto de Venta') ? 'Bs. '.$monto = $monto * $tasa : $monto }}"/>
+                        <x-select placeholder="Monto" :options="[20, 40]" wire:model.live="monto" mask='##'/>
+                        @if($metodo_pago == 'Pago Movil' || $metodo_pago == 'Punto de Venta')
+                        <label class="mb-1 block text-sm text-gray-500 text-left">Bs. {{ round($monto * $tasa, 2) }}</label>
+                        @endif
                     </div>
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Metodo de Pago</label>

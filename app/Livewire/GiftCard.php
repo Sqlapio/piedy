@@ -10,14 +10,15 @@ use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Rule;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class GiftCard extends Component
 {
-    #[Rule('required', message: 'Campo requerido')]
+    #[Validate('required', message: 'Campo requerido')]
     public $monto;
 
-    #[Rule('required', message: 'Campo requerido')]
+    #[Validate('required', message: 'Campo requerido')]
     public $cliente_id;
 
     public $cliente;
@@ -88,7 +89,6 @@ class GiftCard extends Component
                 ->send();
 
         } catch (\Throwable $th) {
-            dd($th);
             Notification::make()
             ->title('NOTIFICACIÓN DE ERROR')
             ->icon('heroicon-o-shield-check')

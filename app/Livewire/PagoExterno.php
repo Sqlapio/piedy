@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Rule;
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class PagoExterno extends Component
@@ -20,7 +21,7 @@ class PagoExterno extends Component
 
     public $barcode;
 
-    #[Rule('required', message: 'Campo requerido')]
+    #[Validate('required', message: 'Campo requerido')]
     public $cod_asignacion;
 
     public $pgc;
@@ -29,11 +30,46 @@ class PagoExterno extends Component
     public $atr_label = '';
     public $atr_input = '';
 
+    public $atr_acciones = 'hidden';
+    public $atr_btn_validar = '';
+    public $atr_btn_salir = 'hidden';
+    public $atr_facturar = 'hidden';
+
     public function input_pgc(){
         $this->atr_pgc = '';
         $this->atr_label = 'hidden';
         $this->atr_input = 'hidden';
 
+    }
+
+    public function validar_gift(){
+        $valida = GiftCard::Where('codigo_seguridad', $this->barcode)
+        ->orWhere('pgc', $this->pgc)
+        ->first();
+
+        if(isset($valida) and $valida->status == 1){
+            session()->flash('activa','TARJETA ACTIVA!');
+            $this->atr_acciones = '';
+            $this->atr_btn_validar = 'hidden';
+        }elseif(isset($valida) and $valida->status == 2){
+            session()->flash('vencida','TARJETA INACTIVA. YA FUE UTILIZADA!');
+            $this->atr_btn_validar = 'hidden';
+            $this->atr_btn_salir = '';
+        }else{
+            session()->flash('error','LA TARJETA NO EXISTE. INTENTE NUEVAMENTE!');
+            $this->atr_btn_validar = 'hidden';
+            $this->atr_btn_salir = '';
+        }
+    }
+
+    public function salir(){
+        return redirect('/l/e');
+    }
+
+    public function facturar(){
+        $this->atr_facturar = '';
+        $this->atr_acciones = 'hidden';
+        $this->atr_btn_validar = 'hidden';
     }
 
     public function facturtar_servicio(){
@@ -50,6 +86,9 @@ class PagoExterno extends Component
             if(isset($servicio) && $servicio->fecha_venta == date('d-m-Y')){
 
                 /**2. pregunto por la giftCard y me traigo toda la informacion */
+                $valida = GiftCard::Where('codigo_seguridad', $this->barcode)
+                ->orWhere('pgc', $this->pgc)
+                ->first();
                 $giftCard = GiftCard::where('cliente_id', $servicio->cliente_id)
                 ->where('status', '1')
                 ->orWhere('codigo_seguridad', $this->barcode)
@@ -107,7 +146,6 @@ class PagoExterno extends Component
                     return redirect('/p/e');
                 }
 
-
             }else{
                 $error = ValidationException::withMessages(['servicio' => 'Debe cerrar el servicio para poder ejecutar esta acción. Cierre y vuelva a intentar']);
 
@@ -126,7 +164,6 @@ class PagoExterno extends Component
             throw $th;
         }
     }
-
 
     public function render()
     {

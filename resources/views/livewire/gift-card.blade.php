@@ -81,6 +81,7 @@
                 </div>
                 {{-- linea 2 --}}
                 <div class="grid sm:grid-cols-1 md:grid-cols-3 md:gap-6 mt-5">
+                    {{-- Campos Ocultos --}}
                     <div class="w-full mb-6 group hidden">
                         <label class="mb-1 block text-md text-black text-left">Fecha de emición</label>
                         <x-input wire:model.live="fecha_emicion" right-icon="user" disabled/>
@@ -89,17 +90,20 @@
                         <label class="mb-1 block text-md text-black text-left">Vence</label>
                         <x-input wire:model.live="fecha_vence" right-icon="user" disabled/>
                     </div>
+                    {{-- Monto --}}
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Monto ($)</label>
                         <x-select placeholder="Monto" :options="[20, 40]" wire:model.live="monto" mask='##'/>
-                        @if($metodo_pago == 'Pago Movil' || $metodo_pago == 'Punto de Venta')
+                        @if($metodo_pago == 'Pago Movil' || $metodo_pago == 'transferencia')
                         <label class="mb-1 block text-sm text-gray-500 text-left">Bs. {{ round($monto * $tasa, 2) }}</label>
                         @endif
                     </div>
+                    {{-- Metodo de pago --}}
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Metodo de Pago</label>
-                        <x-select placeholder="Método de pago" :options="['Efectivo USD', 'Pago Movil', 'Zelle', 'Punto de Venta']" wire:model.live="metodo_pago"/>
+                        <x-select placeholder="Método de pago" :options="['Transferencia', 'Pago Movil', 'Zelle']" wire:model.live="metodo_pago"/>
                     </div>
+                    {{-- Referencia --}}
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Referencia</label>
                         <x-input wire:model="referencia" right-icon="user"/>

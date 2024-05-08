@@ -19,25 +19,30 @@ class GiftCard extends Component
     public $monto;
 
     #[Validate('required', message: 'Campo requerido')]
+    public $metodo_pago;
+
+    #[Validate('required', message: 'Campo requerido')]
+    public $referencia;
+
+    #[Validate('required', message: 'Campo requerido')]
     public $cliente_id;
 
+    public $pago_bsd;
     public $cliente;
-
     public $cod_gift_card;
     public $fecha_emicion;
     public $fecha_vence;
     public $pgc;
     public $codigo_seguridad;
 
-    public $metodo_pago;
-    public $referencia;
-
     public function store()
     {
-
         $this->validate();
 
         try {
+
+            /**Tasa BCV del dia */
+            $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
 
             $generator_email = new \Picqer\Barcode\BarcodeGeneratorJPG();
             $image = $generator_email->getBarcode($this->codigo_seguridad, $generator_email::TYPE_CODE_128);
@@ -53,13 +58,15 @@ class GiftCard extends Component
             $asignar_giftCard->fecha_emicion    = $this->fecha_emicion;
             $asignar_giftCard->fecha_vence      = $this->fecha_vence;
             $asignar_giftCard->metodo_pago      = $this->metodo_pago;
-            $asignar_giftCard->referencia      = ($this->referencia == '') ? 'efectivo' : $this->referencia;
+            $asignar_giftCard->pago_usd         = ($this->metodo_pago == 'Zelle') ? $this->monto : 0.00;
+            $asignar_giftCard->pago_bsd         = ($this->metodo_pago == 'Transferencia' || $this->metodo_pago == 'Pago Movil') ? $this->monto * $tasa : 0.00;
+            $asignar_giftCard->referencia       = ($this->referencia == '') ? 'efectivo' : $this->referencia;
             $asignar_giftCard->barcode          = $this->codigo_seguridad.'.jpg';
             $asignar_giftCard->responsable      = Auth::user()->name;
             $asignar_giftCard->save();
 
 
-            /** Notificacion para el usuario cuando su servicio fue anulado */
+            /** Notificacion para el usuario cuando adquiere la giftcard */
             $type = 'gift-card';
 
             $correo = Cliente::where('id',  $asignar_giftCard->cliente_id)->first()->email;
@@ -81,6 +88,25 @@ class GiftCard extends Component
 
             NotificacionesController::notification($mailData, $type);
 
+            /** Notificacion para el administrador de sistemas al asignar una nueva giftcard */
+            $type = 'gift-card-creada';
+            $correo = env('GIFTCARD_EMAIL');
+            $mailData = [
+                'codigo_seguridad'  => $asignar_giftCard->codigo_seguridad.'-'.$asignar_giftCard->pgc,
+                'cliente'           => $asignar_giftCard->cliente,
+                'emitida'           => date('m/y'),
+                'vence'             => date("m/y",strtotime($this->fecha_emicion."+ 6 month")),
+                'monto'             => $asignar_giftCard->monto,
+                'metodo_pago'       => $asignar_giftCard->metodo_pago,
+                'monto_pagado'      => ($asignar_giftCard->pago_usd != 0) ? $asignar_giftCard->pago_usd : $asignar_giftCard->pago_bsd,
+                'referencia'        => $asignar_giftCard->referencia,
+                'tasa'              => $tasa,
+                'user_email'        => 'jhonnymartinez901@gmail.com',
+            ];
+            NotificacionesController::notification($mailData, $type, $asignar_giftCard->pgc);
+            /**Fin del envio de notificacion al administrador */
+
+
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-shield-check')
@@ -97,7 +123,6 @@ class GiftCard extends Component
             ->send();
         }
     }
-
 
     public function render()
     {

@@ -8,44 +8,63 @@ use Illuminate\Support\Facades\Mail;
 
 class NotificacionesController extends Controller
 {
-    static function notification($mailData, $type)
+    static function notification($mailData, $type, $asunto=null)
 	{
 
 		try {
 
 			if ($type == 'cliente') {
 				$view = 'emails.cliente';
-				Mail::to($mailData['cliente_email'])->send(new NotificacionesEmail($mailData, $view));
+                $subject = 'Cliente Piedy';
+				Mail::to($mailData['cliente_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
 			}
 
 			if ($type == 'servicio') {
 				$view = 'emails.servicio_facturado';
-				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view));
+                $subject = 'Servicio Facturado';
+				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
 			}
 
             if ($type == 'reseteo_password') {
 				$view = 'emails.reseteo_password';
-				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view));
+                $subject = 'Reseteo de password';
+				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
 			}
 
             if ($type == 'servicio_anulado') {
 				$view = 'emails.servicio_anulado';
-				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view));
+                $subject = 'Servicio Anulado';
+				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
 			}
 
             if ($type == 'cierre_diario') {
 				$view = 'emails.cierre_diario';
-				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view));
+                $subject = 'Cierre Diario';
+				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
 			}
 
             if ($type == 'cierre_general') {
 				$view = 'emails.cierre_general';
-				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view));
+                $subject = 'Cierre General';
+				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
 			}
 
             if ($type == 'gift-card') {
                 $view = 'emails.gift-card';
-                Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view));
+                $subject = 'GiftCard';
+                Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
+            }
+
+            if ($type == 'gift-card-creada') {
+                $view = 'emails.gift-card-creada';
+                $subject = 'operación: '.$asunto;
+                Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
+            }
+
+            if ($type == 'gift-card-usada') {
+                $view = 'emails.gift-card-usada';
+                $subject = 'Fecha de Uso: '.date('d-m-Y');
+                Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
             }
 
 

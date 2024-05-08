@@ -22,11 +22,13 @@ return new class extends Migration
             $table->string('fecha_emicion');
             $table->string('fecha_vence');
             $table->string('metodo_pago');
+            $table->decimal('pago_usd', 8, 2)->default(0.00);
+            $table->decimal('pago_bsd', 8, 2)->default(0.00);
             $table->string('referencia');
             $table->string('responsable');
             $table->string('barcode');
             $table->string('status')->default(1); // 0: Inactivo, 1: Activo
-            $table->timestamps(); 
+            $table->timestamps();
         });
     }
 

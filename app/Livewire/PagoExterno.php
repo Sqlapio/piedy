@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Http\Controllers\NotificacionesController;
 use App\Http\Controllers\UtilsController;
 use App\Models\DetalleAsignacion;
 use App\Models\Disponible;
@@ -82,13 +83,10 @@ class PagoExterno extends Component
 
             /**1. pregunto por el servicio en base de datos y obtengo toda su informacion */
             $servicio = VentaServicio::where('cod_asignacion', $this->cod_asignacion)->first();
-            // dump($servicio);
+
             if(isset($servicio) && $servicio->fecha_venta == date('d-m-Y')){
 
                 /**2. pregunto por la giftCard y me traigo toda la informacion */
-                $valida = GiftCard::Where('codigo_seguridad', $this->barcode)
-                ->orWhere('pgc', $this->pgc)
-                ->first();
                 $giftCard = GiftCard::where('cliente_id', $servicio->cliente_id)
                 ->where('status', '1')
                 ->orWhere('codigo_seguridad', $this->barcode)
@@ -102,7 +100,7 @@ class PagoExterno extends Component
                         ->update([
                             'metodo_pago'   => 'giftCard',
                             'referencia'    => $giftCard->referencia,
-                            'total_USD'     => $giftCard->monto,
+                            // 'total_USD'     => $giftCard->monto,
                             'pago_usd'      => 0.00,
                             'pago_bsd'      => 0.00,
                             'propina_usd'   => 0.00,
@@ -114,7 +112,6 @@ class PagoExterno extends Component
                     DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)->where('status', '1')
                         ->update([
                             'status' => '2',
-
                         ]);
 
                     Disponible::where('cod_asignacion', $this->cod_asignacion)->where('status', 'por facturar')
@@ -128,8 +125,22 @@ class PagoExterno extends Component
                         ->orWhere('pgc', $this->pgc)
                         ->update([
                             'status' => '2',
-
                         ]);
+
+                    /** Notificacion para el administrador de sistemas al asignar una nueva giftcard */
+                    $type = 'gift-card-usada';
+                    $correo = env('GIFTCARD_EMAIL');
+                    $mailData = [
+                        'codigo_asignacion' => $this->cod_asignacion,
+                        'cliente'           => $servicio->cliente,
+                        'tecnico'           => $servicio->empleado,
+                        'fecha_venta'       => $servicio->fecha_venta,
+                        'servicio'          => Disponible::where('cod_asignacion', $this->cod_asignacion)->where('status', 'facturado')->first()->servicio,
+                        'responsable'       => $servicio->responsable,
+                        'user_email'        => 'jhonnymartinez901@gmail.com',
+                    ];
+                    NotificacionesController::notification($mailData, $type, $servicio->fecha_venta);
+                    /**Fin del envio de notificacion al administrador */
 
                     $this->redirect('/pay/ex');
 

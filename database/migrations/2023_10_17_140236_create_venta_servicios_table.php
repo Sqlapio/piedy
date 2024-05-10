@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('cliente');
             $table->integer('cliente_id');
             $table->string('metodo_pago')->nullable();
+            $table->string('metodo_pago_dos')->nullable();
             $table->string('referencia')->nullable();
             $table->string('fecha_venta');
             $table->decimal('comision_empleado', 8, 2)->default(0.00);
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->decimal('pago_bsd', 8, 2)->default(0.00);
             $table->decimal('propina_usd', 8, 2)->default(0.00);
             $table->decimal('propina_bsd', 8, 2)->default(0.00);
+            $table->string('referencia_propina')->nullable();
 
             $table->timestamps();
         });

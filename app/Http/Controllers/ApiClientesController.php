@@ -238,4 +238,26 @@ class ApiClientesController extends Controller
                 return $mes;
             });
     }
+
+    public function metodo_pago_multiple(Request $request): Collection
+    {
+        return MetodoPago::query()
+            ->select('id', 'descripcion')
+            ->where('moneda', 'multiple')
+            ->orderBy('descripcion')
+            ->when(
+                $request->search,
+                fn (Builder $query) => $query
+                    ->where('descripcion', 'like', "%{$request->search}%")
+            )
+            ->when(
+                $request->exists('selected'),
+                fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
+                fn (Builder $query) => $query->limit(10)
+            )
+            ->get()
+            ->map(function (MetodoPago $metodo_pago) {
+                return $metodo_pago;
+            });
+    }
 }

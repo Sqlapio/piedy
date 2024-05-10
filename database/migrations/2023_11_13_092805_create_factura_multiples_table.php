@@ -16,11 +16,12 @@ return new class extends Migration
             $table->string('cod_asignacion')->unique();
             $table->string('responsable');
             $table->string('metodo_pago')->nullable();
+            $table->string('metodo_pago_dos')->nullable();
             $table->string('referencia')->nullable();
             $table->string('fecha_venta');
+            $table->decimal('total_usd', 8, 2)->default(0.00);
             $table->decimal('pago_usd', 8, 2)->default(0.00);
             $table->decimal('pago_bsd', 8, 2)->default(0.00);
-            $table->decimal('total_usd', 8, 2)->default(0.00);
             $table->timestamps();
         });
     }

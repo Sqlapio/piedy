@@ -85,9 +85,9 @@
             </div>
 
         <div class="{{ $atr_facturar }}">
-            <div class="block">
-                <label class="opacity-60 mb-1 mt-4 block text-sm font-medium text-italblue">Código de Asignación</label>
-                <x-input wire:model='cod_asignacion' id="cod_asignacion" class="block mt-1 w-full" type="text" name="cod_asignacion" required autofocus />
+            <div class="block py-2">
+                <label class="opacity-60 mb-1 block text-md font-extrabold text-amber-700 text-italblue text-left">Código de Asignación</label>
+                <x-select wire:model="cod_asignacion" placeholder="Seleccion" :async-data="route('api.servicios_por_facturar')" option-label="cod_asignacion" option-value="cod_asignacion" />
             </div>
 
             <div class="flex items-center justify-end mt-6">

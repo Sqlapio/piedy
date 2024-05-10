@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Categoria;
 use App\Models\Cliente;
+use App\Models\Disponible;
 use App\Models\Empleado;
 use App\Models\Mes;
 use App\Models\MetodoPago;
@@ -236,6 +237,29 @@ class ApiClientesController extends Controller
             ->map(function (Mes $mes) {
                 $mes->mes;
                 return $mes;
+            });
+    }
+
+    public function servicios_por_facturar(Request $request): Collection
+    {
+        return Disponible::query()
+            ->select('id','cod_asignacion')
+            ->where('status', 'por facturar')
+            ->orderBy('id', 'asc')
+            ->when(
+                $request->search,
+                fn (Builder $query) => $query
+                    ->where('cod_asignacion', 'like', "%{$request->search}%")
+            )
+            ->when(
+                $request->exists('selected'),
+                fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
+                fn (Builder $query) => $query->limit(5)
+            )
+            ->get()
+            ->map(function (Disponible $desponible) {
+                $desponible->cod_asignacion;
+                return $desponible;
             });
     }
 }

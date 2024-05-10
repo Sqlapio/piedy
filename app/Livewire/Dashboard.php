@@ -150,7 +150,7 @@ class Dashboard extends Component
 
     public function gift()
     {
-        $this->redirect('/gift');
+        $this->redirect('/g/m');
     }
 
     public function cancel()

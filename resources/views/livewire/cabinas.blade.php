@@ -4,6 +4,7 @@
         {{-- Descripcion --}}
         @foreach ($data as $item)
         <div class="flex p-5">
+            
             <div class="w-full" type="submit"  onclick="Livewire.dispatch('openModal', { component: 'detalle-asignacion', arguments: { disponible: {{ $item->id }} }})">
                 @if($item->status == 'activo')
                 <div class="flex justify-start rounded-full bg-green-700 px-6 py-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">

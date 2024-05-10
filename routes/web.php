@@ -161,9 +161,17 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('historico_servicios');
     })->name('historico_servicios');
 
-    Route::get('/gift', function () {
+    Route::get('/g/m', function () {
+        return view('menu-gift-membresia');
+    })->name('menu-gift-membresia');
+
+    Route::get('/g/c', function () {
         return view('gift-card');
     })->name('gift-card');
+
+    Route::get('/m', function () {
+        return view('membresia');
+    })->name('membresia');
 
 
     Route::get('/lista/clientes', [ApiClientesController::class, 'lista_clientes'])->name('api.clientes');
@@ -176,6 +184,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/lista/categoria', [ApiClientesController::class, 'categoria_producto'])->name('api.categoria_producto');
     Route::get('/lista/periodo', [ApiClientesController::class, 'meses'])->name('api.meses');
     Route::get('/lista/metodo/pago/ref', [ApiClientesController::class, 'metodo_pago_ref'])->name('api.metodo_pago_ref');
+    Route::get('/lista/srv/x/facturar', [ApiClientesController::class, 'servicios_por_facturar'])->name('api.servicios_por_facturar');
 
     Route::get('/{record}/edit', function () {
         return view('clientes');

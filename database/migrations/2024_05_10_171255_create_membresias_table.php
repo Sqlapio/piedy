@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('membresias', function (Blueprint $table) {
             $table->id();
             $table->string('cod_membresia');
+            $table->string('pm');
             $table->integer('cliente_id');
             $table->string('cliente');
             $table->string('fecha_compra');

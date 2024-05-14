@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Categoria;
 use App\Models\Cliente;
+use App\Models\DetalleAsignacion;
 use App\Models\Disponible;
 use App\Models\Empleado;
 use App\Models\Mes;
@@ -242,9 +243,10 @@ class ApiClientesController extends Controller
 
     public function servicios_por_facturar(Request $request): Collection
     {
-        return Disponible::query()
+        return DetalleAsignacion::query()
             ->select('id','cod_asignacion')
-            ->where('status', 'por facturar')
+            ->where('status', '1')
+            ->where('servicio','like', '%Membresia%')
             ->orderBy('id', 'asc')
             ->when(
                 $request->search,
@@ -257,9 +259,9 @@ class ApiClientesController extends Controller
                 fn (Builder $query) => $query->limit(5)
             )
             ->get()
-            ->map(function (Disponible $desponible) {
-                $desponible->cod_asignacion;
-                return $desponible;
+            ->map(function (DetalleAsignacion $detalle_asignacion) {
+                $detalle_asignacion->cod_asignacion;
+                return $detalle_asignacion;
             });
     }
 }

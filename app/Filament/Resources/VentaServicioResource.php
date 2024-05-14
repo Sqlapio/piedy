@@ -64,8 +64,14 @@ class VentaServicioResource extends Resource
                         'transferencia'         => 'info',
                         'Punto de venta'        => 'info',
                         'Anulado'               => 'danger',
-                        'cliente especial'  => 'success',
+                        'cliente especial'      => 'success',
+                        'Membresia'             => 'success',
                     }),
+                TextColumn::make('membresia_exp')
+                ->label('Membresia EXP')
+                ->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
+                
                 TextColumn::make('referencia')
                 ->toggleable(isToggledHiddenByDefault: true)
                 ->searchable(),

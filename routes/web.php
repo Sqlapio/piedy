@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificacionesEmail;
 use App\Models\Cita;
+use App\Models\Membresia;
 use Illuminate\Console\Scheduling\Schedule;
 
 
@@ -193,92 +194,18 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
 Route::get('/pp', function () {
 
-    $view = 'emails.prueba-email';
+    $type = 'membresia-activada';
+    $info_cliente = Cliente::where('id', 1610)->first();
+
     $mailData = [
-        'nombre' => 'gustavo'
-    ];
-    Mail::to('gusta.acp@gmail.com')->send(new NotificacionesEmail($mailData, $view));
+            'codigo_seguridad'  => '34656545367567568745',
+            'pm'                => '2356',
+            'cliente'           => $info_cliente->nombre.' '.$info_cliente->apellido,
+            'barcode'           => '23432533453.jpg',
+            'user_email'        => 'gusta.acp@gmail.com',
+        ];
 
-    return 'todo bien';
+    NotificacionesController::notification($mailData, $type);
 
-    // Schedule->command('app:send-mail-command')
-    //      ->daily()
-    //      ->emailOutputTo('gusta.acp@gmail.com');
-
-    // $fecha_anterior =  date("d-m-Y", strtotime(date("d-m-Y") . "-15 day"));
-    // $clientes = VentaServicio::where('fecha_venta', $fecha_anterior)->get();
-    // $clientes = DB::table('venta_servicios')
-    // ->select('cliente_id', 'cliente')
-    // ->groupBy('cliente_id', 'cliente')
-    // ->where('fecha_venta', $fecha_anterior)
-    // ->get();
-
-    // dd($clientes, $fecha_anterior);
-    // foreach($clientes as $item)
-    // {
-    //     $data = Cliente::find($item->cliente_id);
-    //     if($data->email != null){
-    //         dump($data->email);
-
-    //     }
-    //     // $view = 'emails.correo_masivo';
-    //     // $mailData = [
-    //     //     'cliente' => $cliente->nombre.' '.$cliente->apellido
-    //     // ];
-
-    //     // Mail::to($cliente->email)->send(new NotificacionesEmail($mailData, $view));
-
-    // }
-    // dd($fecha_anterior);
-
-    // // $ultimo_cierre = CierreGeneral::latest()->first()->fecha;
-
-    // // $fecha_anterior =  date("d-m-Y", strtotime(date($ultimo_cierre) . "+1 day"));
-    // // dd($ultimo_cierre, $fecha_anterior);
-
-    // // $fechaIni = '2024-01-01';
-    // // $fechaFin = '2024-01-31';
-
-    // // $resultados = DB::select("CALL Sp_ObtenerComisionesEmpleados(?, ?)", array($fechaIni, $fechaFin));
-
-    // // dd(DetalleAsignacion::where('fecha', date('d-m-Y'))->count());
-
-    // $fecha_posterior =  date("d-m-Y", strtotime(date("d-m-Y") . "+1 day"));
-    // $citas_posteriores = Cita::where('fecha', Carbon::parse(date($fecha_posterior))->isoFormat('dddd, D MMM '))->get();
-
-    // dd($fecha_posterior, $citas_posteriores);
-
-    // $params=array(
-    //     'token' => '863lb4l0wmldpl3s',
-    //     'to' => '+5804142682379',
-    //     'body' => 'Prueba de mensaje desde piedy code'
-    //     );
-    //     $curl = curl_init();
-    //     curl_setopt_array($curl, array(
-    //       CURLOPT_URL => "https://api.ultramsg.com/instance83564/messages/chat",
-    //       CURLOPT_RETURNTRANSFER => true,
-    //       CURLOPT_ENCODING => "",
-    //       CURLOPT_MAXREDIRS => 10,
-    //       CURLOPT_TIMEOUT => 30,
-    //       CURLOPT_SSL_VERIFYHOST => 0,
-    //       CURLOPT_SSL_VERIFYPEER => 0,
-    //       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    //       CURLOPT_CUSTOMREQUEST => "POST",
-    //       CURLOPT_POSTFIELDS => http_build_query($params),
-    //       CURLOPT_HTTPHEADER => array(
-    //         "content-type: application/x-www-form-urlencoded"
-    //       ),
-    //     ));
-
-    //     $response = curl_exec($curl);
-    //     $err = curl_error($curl);
-
-    //     curl_close($curl);
-
-    //     if ($err) {
-    //       echo "cURL Error #:" . $err;
-    //     } else {
-    //       echo $response;
-    //     }
-
+    return 'listo';
 });

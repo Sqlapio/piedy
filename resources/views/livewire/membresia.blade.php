@@ -6,16 +6,16 @@
         <div class="md:flex justify-between items-center gap-x-8">
             <div class="w-full">
                 <div class="w-full h-auto m-auto bg-red-100 rounded-xl relative text-white shadow-2xl transition-transform transform hover:scale-110 ">
-                    <img class="object-cover w-full h-full rounded-xl" src="{{ asset('images/membresia.jpg') }}"/>
+                    <img class="object-cover w-full h-full rounded-xl" src="{{ asset('images/membresia-vip-3.png') }}"/>
                 </div>
             </div>
             <div class="w-full p-4">
                 {{-- linea 1 --}}
                 <div class="grid sm:grid-cols-1 md:grid-cols-2 md:gap-6">
-                    <div class="w-full mb-6 group">
+                    {{-- <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Código de Membresia</label>
-                        <x-input wire:model.live="cod_gift_card" right-icon="user" disabled/>
-                    </div>
+                        <x-input wire:model.live="cod_membresia" right-icon="user" disabled/>
+                    </div> --}}
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Cliente</label>
                         <x-select wire:model.live="cliente_id" placeholder="Seleccion" :async-data="route('api.clientes')" option-label="nombre" option-value="id" />
@@ -23,26 +23,30 @@
                             <x-badge wire:click='nuevo_cliente()' rounded positive label="+ NUEVO CLIENTE" class="py-1 cursor-pointer"/>
                         </div>
                     </div>
-                </div>
-                {{-- linea 2 --}}
-                <div class="grid sm:grid-cols-1 md:grid-cols-3 md:gap-6 mt-5">
                     {{-- Monto --}}
+                    @php
+                    use App\Models\TasaBcv;
+                    $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
+                    @endphp
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Monto($)</label>
                         <x-select placeholder="Monto" :options="[40]" wire:model.live="monto" mask='##'/>
-                        @if($metodo_pago == 'Pago Movil' || $metodo_pago == 'transferencia' || $metodo_pago == 'Punto de venta')
+                        @if($metodo_pago == 'Pago Movil' || $metodo_pago == 'Transferencia')
                         <label class="mb-1 block text-sm text-gray-500 text-left">Bs. {{ round($monto * $tasa, 2) }}</label>
                         @endif
                     </div>
+                </div>
+                {{-- linea 2 --}}
+                <div class="grid sm:grid-cols-1 md:grid-cols-2 md:gap-6 mt-5">
                     {{-- Metodo de pago --}}
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Metodo de Pago</label>
-                        <x-select placeholder="Método de pago" :options="['Punto de venta','Transferencia', 'Pago Movil', 'Zelle']" wire:model.live="metodo_pago"/>
+                        <x-select placeholder="Método de pago" :options="['Transferencia', 'Pago Movil', 'Zelle']" wire:model.live="metodo_pago"/>
                     </div>
                     {{-- Referencia --}}
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Referencia</label>
-                        <x-input wire:model="referencia" right-icon="user"/>
+                        <x-inputs.maskable wire:model="referencia" right-icon="user" mask="########"/>
                     </div>
                 </div>
             </div>

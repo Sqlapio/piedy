@@ -94,7 +94,7 @@
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Monto ($)</label>
                         <x-select placeholder="Monto" :options="[20, 40]" wire:model.live="monto" mask='##'/>
-                        @if($metodo_pago == 'Pago Movil' || $metodo_pago == 'transferencia')
+                        @if($metodo_pago == 'Pago Movil' || $metodo_pago == 'Transferencia')
                         <label class="mb-1 block text-sm text-gray-500 text-left">Bs. {{ round($monto * $tasa, 2) }}</label>
                         @endif
                     </div>

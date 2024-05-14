@@ -67,6 +67,30 @@ class NotificacionesController extends Controller
                 Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
             }
 
+            if ($type == 'membresia-usada') {
+                $view = 'emails.membresia-usada';
+                $subject = 'Membresia';
+                Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
+            }
+
+            if ($type == 'membresia') {
+                $view = 'emails.membresia';
+                $subject = 'Membresias Piedy';
+                Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
+            }
+
+            if ($type == 'membresia-renovada') {
+                $view = 'emails.membresia-renovada';
+                $subject = 'Membresia';
+                Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
+            }
+
+            if ($type == 'membresia-activada') {
+                $view = 'emails.membresia-activada';
+                $subject = 'Membresia '.$asunto;
+                Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
+            }
+
 
 		} catch (\Throwable $th) {
 			$message = $th->getMessage();

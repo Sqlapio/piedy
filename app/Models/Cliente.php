@@ -73,4 +73,14 @@ class Cliente extends Model
     {
         return $this->belongsTo(FichaMedica::class, 'id', 'cliente_id');
     }
+
+    /**
+     * Get the membresia associated with the Cliente
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function membresia(): HasOne
+    {
+        return $this->hasOne(Membresia::class, 'id', 'cliente_id');
+    }
 }

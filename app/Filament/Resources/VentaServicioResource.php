@@ -45,6 +45,7 @@ class VentaServicioResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('cliente')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('empleado')
@@ -52,6 +53,7 @@ class VentaServicioResource extends Resource
                     ->sortable(),
                 TextColumn::make('created_at')->searchable()->label('Fecha de venta'),
                 TextColumn::make('metodo_pago')
+                    ->label('Metodo Pago($)')
                     ->searchable()
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -59,6 +61,24 @@ class VentaServicioResource extends Resource
                         'Multiple'              => 'warning',
                         'Efectivo Usd'          => 'success',
                         'Zelle'                 => 'success',
+                        'giftCard'              => 'success',
+                        'Efectivo Bsd'          => 'info',
+                        'Pago movil'            => 'info',
+                        'transferencia'         => 'info',
+                        'Punto de venta'        => 'info',
+                        'Anulado'               => 'danger',
+                        'cliente especial'  => 'success',
+                    }),
+                TextColumn::make('metodo_pago_dos')
+                    ->label('Metodo Pago(Bs.)')
+                    ->searchable()
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Facturación multiple'  => 'warning',
+                        'Multiple'              => 'warning',
+                        'Efectivo Usd'          => 'success',
+                        'Zelle'                 => 'success',
+                        'giftCard'              => 'success',
                         'Efectivo Bsd'          => 'info',
                         'Pago movil'            => 'info',
                         'transferencia'         => 'info',
@@ -73,7 +93,6 @@ class VentaServicioResource extends Resource
                 ->toggleable(isToggledHiddenByDefault: true),
                 
                 TextColumn::make('referencia')
-                ->toggleable(isToggledHiddenByDefault: true)
                 ->searchable(),
 
                 TextColumn::make('total_USD')
@@ -88,16 +107,14 @@ class VentaServicioResource extends Resource
                     ->summarize(Sum::make()
                         ->label(('Total'))
                         ->money('USD'))
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
 
                 TextColumn::make('pago_bsd')->money('VES')
                     ->label(('Pagos(Bs.)'))
                     ->summarize(Sum::make()
                         ->label(('Total'))
                         ->money('VES'))
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
 
                 TextColumn::make('comision_dolares')->money('USD')
                     ->label(('Comision($)'))
@@ -117,21 +134,26 @@ class VentaServicioResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('propina_usd')->money('USD')
-                    ->summarize(Sum::make()
+                TextColumn::make('propina_usd')
                     ->money('USD')
-                    ->label('Total($)'))
+                    ->label('Propina($)')
+                    ->summarize(Sum::make()
+                        ->money('USD')
+                        ->label('Total($)'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('propina_bsd')
+                    ->label('Propina(Bs.)')
+                    ->money('VES')
                     ->summarize(Sum::make()
-                    ->numeric(
-                        decimalPlaces: 00,
-                        decimalSeparator: ',',
-                        thousandsSeparator: '.',
-                    )
-                    ->label('Total(Bs)'))
+                        ->money('VES')
+                        ->label('Total(Bs.)'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('referencia_propina')
+                    ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 

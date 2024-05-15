@@ -61,7 +61,7 @@
             <div class="mt-8 space-y-6">
                 <div class="px-2">
                     <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Forma de pago:</p>
-                    <x-select wire:blur="$dispacht('metodo_principal', value: $event.target.value)" wire:model.live="descripcion" placeholder="Método de pago" :async-data="route('api.metodo_pago_ref')" option-label="descripcion" option-value="descripcion" />
+                    <x-select wire:blur="$dispacht('metodo_principal', value: $event.target.value)" wire:model.live="descripcion" placeholder="Método de pago" :async-data="route('api.metodo_pago_multiple')" option-label="descripcion" option-value="descripcion" />
                 </div>
                 <div class="px-2 {{ $ref_hidden }}">
                     <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Nro. referencia:</p>
@@ -77,6 +77,7 @@
                         <x-select wire:change="$dispatch('metodo2', $event.target.value)" wire:model.live="op2" placeholder="Seleccione..." :async-data="route('api.metodo_pago_dos')" option-label="descripcion" option-value="descripcion" />
                     </div>
                 </div>
+                {{-- Monto 1 y monto 2 --}}
                 <div class="grid grid-cols-2 gap-2 {{ $op1_hidden }}">
                     <div class="px-2 {{ $op1_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Monto en Dolares($)</p>
@@ -84,8 +85,22 @@
                     </div>
                     <div class="px-2 {{ $op2_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Monto en Bolivares(Bs)</p>
-                        <x-input wire:model.live="valor_dos" value="{{ $valor_dos }}" placeholder="0.00"/>
+                        <x-input wire:model.live="valor_dos" value="{{ $valor_dos }}" placeholder="0.00" disabled/>
                     </div>
+                </div>
+                {{-- Referencia($) y Referencia(Bsd.) --}}
+                <div class="grid grid-cols-2 gap-2 {{ $op1_hidden }}">
+
+                    <div class="px-2">
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Referencia($)</p>
+                        <x-inputs.maskable wire:model.live="ref_usd" mask="########"/>
+                    </div>
+
+                    <div class="px-2">
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Referencia(Bs)</p>
+                        <x-inputs.maskable wire:model.live="ref_bsd" mask="########"/>
+                    </div>
+
                 </div>
                 <div class="sm:mt-2">
                     <button type="button" wire:click="facturar_servicio()" class="inline-flex w-full justify-center rounded-lg bg-red-600 px-3 py-3 mt-10 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">

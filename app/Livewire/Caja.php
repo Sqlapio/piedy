@@ -6,6 +6,7 @@ use App\Http\Controllers\UtilsController;
 use App\Http\Controllers\NotificacionesController;
 use App\Models\DetalleAsignacion;
 use App\Models\Disponible;
+use App\Models\Servicio;
 use App\Models\TasaBcv;
 use App\Models\User;
 use App\Models\VentaServicio;
@@ -228,7 +229,7 @@ class Caja extends Component
         //             $this->valor_uno = number_format($this->valor_uno, 2, ",", ".");
         //             $this->valor_dos = number_format($calculo_valor_dos, 2, ",", ".");
         //         }
-            
+
         //     }
         // }
 
@@ -506,6 +507,25 @@ class Caja extends Component
 
                     if($this->ref_usd != '' && $this->ref_bsd != ''){
                         $this->referencia = $this->ref_usd.'-'.$this->ref_bsd;
+                    }
+
+                    /**Obtengo el codigo del servicio a facturar */
+                    $cod_srv_vip = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->first()->cod_servicio;
+
+                    /**Pregunto? si la asignacion del servicio en VIP */
+                    $srv_vip_tipo = Servicio::where('cod_servicio', $cod_srv_vip)->first()->asignacion;
+
+                    /**Realizo el calculo de las respectivas comisiones */
+                    if($srv_vip_tipo == 'vip'){
+
+                        $comision_dolares_emp = UtilsController::comision_empleado_srvvip($this->valor_uno, $this->valor_dos);
+
+                        $comision_dolares_gte_vip = UtilsController::comision_gerente_srvvip($this->valor_uno, $this->valor_dos);
+
+                    }else{
+                        /**Si el servicio facturado es diferente de los VIP */
+                        $comision_dolares_emp = UtilsController::cal_comision_empleado($total_vista);
+
                     }
 
                     $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)

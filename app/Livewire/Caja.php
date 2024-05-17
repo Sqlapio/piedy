@@ -532,8 +532,9 @@ class Caja extends Component
                         'propina_usd'           => ($this->propina_usd != '') ? $this->propina_usd : 0.00,
                         'propina_bsd'           => ($this->propina_bsd != '') ? $this->propina_bsd : 0.00,
                         'referencia_propina'    => $this->ref_propina,
-                        'comision_dolares'      => $res[0],
-                        'comision_bolivares'    => $res[1],
+                        'comision_dolares'      => $res['comision_usd_emp_valorUno'],
+                        'comision_bolivares'    => $res['comision_bs_emp_valorDos'],
+                        'comision_gerente'      => $res['comision_usd_gte'],
                         'responsable'           => Auth::user()->name,
                     ]);
 

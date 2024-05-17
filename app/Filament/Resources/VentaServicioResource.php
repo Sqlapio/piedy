@@ -49,10 +49,14 @@ class VentaServicioResource extends Resource
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('empleado')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('created_at')->searchable()->label('Fecha de venta'),
+                TextColumn::make('created_at')->searchable()
+                    ->label('Fecha de venta')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('metodo_pago')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Metodo Pago($)')
                     ->searchable()
                     ->badge()
@@ -70,6 +74,7 @@ class VentaServicioResource extends Resource
                         'cliente especial'  => 'success',
                     }),
                 TextColumn::make('metodo_pago_dos')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Metodo Pago(Bs.)')
                     ->searchable()
                     ->badge()
@@ -91,11 +96,13 @@ class VentaServicioResource extends Resource
                 ->label('Membresia EXP')
                 ->searchable()
                 ->toggleable(isToggledHiddenByDefault: true),
-                
+
                 TextColumn::make('referencia')
+                ->toggleable(isToggledHiddenByDefault: true)
                 ->searchable(),
 
                 TextColumn::make('total_USD')
+                ->toggleable(isToggledHiddenByDefault: true)
                     ->label(('Costo servicio($)'))
                         ->summarize(Sum::make()
                         ->label(('Total'))
@@ -115,6 +122,15 @@ class VentaServicioResource extends Resource
                         ->label(('Total'))
                         ->money('VES'))
                     ->searchable(),
+
+                TextColumn::make('comision_gerente')->money('USD')
+                    ->label(('Comision Gerente($)'))
+                        ->summarize(Sum::make()
+                            ->money('USD')
+                            ->label('Neto Comisiones Gerente($)'))
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('comision_dolares')->money('USD')
                     ->label(('Comision($)'))

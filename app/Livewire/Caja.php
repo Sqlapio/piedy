@@ -510,23 +510,16 @@ class Caja extends Component
                     }
 
                     /**Obtengo el codigo del servicio a facturar */
-                    $cod_srv_vip = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->first()->cod_servicio;
+                    $srv_vip = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
+                    ->where('status', '1')
+                    ->first()
+                    ->cod_servicio;
 
                     /**Pregunto? si la asignacion del servicio en VIP */
-                    $srv_vip_tipo = Servicio::where('cod_servicio', $cod_srv_vip)->first()->asignacion;
+                    $tipoSrv = Servicio::where('cod_servicio', $srv_vip)->first()->asignacion;
 
-                    /**Realizo el calculo de las respectivas comisiones */
-                    if($srv_vip_tipo == 'vip'){
-
-                        $comision_dolares_emp = UtilsController::comision_empleado_srvvip($this->valor_uno, $this->valor_dos);
-
-                        $comision_dolares_gte_vip = UtilsController::comision_gerente_srvvip($this->valor_uno, $this->valor_dos);
-
-                    }else{
-                        /**Si el servicio facturado es diferente de los VIP */
-                        $comision_dolares_emp = UtilsController::cal_comision_empleado($total_vista);
-
-                    }
+                    /**Usamos la funcion para calcular las comisiones y retornamos un array con los resultados */
+                    $res = UtilsController::cal_comision_empleado($this->valor_uno, $this->valor_dos, $tipoSrv, $total_vista);
 
                     $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
                     ->update([
@@ -539,8 +532,8 @@ class Caja extends Component
                         'propina_usd'           => ($this->propina_usd != '') ? $this->propina_usd : 0.00,
                         'propina_bsd'           => ($this->propina_bsd != '') ? $this->propina_bsd : 0.00,
                         'referencia_propina'    => $this->ref_propina,
-                        'comision_dolares'      => ($this->valor_uno == '') ? 0.00 : UtilsController::cal_comision_empleado(floatval($this->valor_uno)),
-                        'comision_bolivares'    => ($this->valor_dos == '') ? 0.00 : UtilsController::cal_comision_empleado(Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos)))),
+                        'comision_dolares'      => $res[0],
+                        'comision_bolivares'    => $res[1],
                         'responsable'           => Auth::user()->name,
                     ]);
 

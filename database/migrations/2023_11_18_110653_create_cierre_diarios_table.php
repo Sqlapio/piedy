@@ -13,15 +13,14 @@ return new class extends Migration
     {
         Schema::create('cierre_diarios', function (Blueprint $table) {
             $table->id();
-
             $table->decimal('total_ventas',8 ,2)->nullable()->default(0.00);
-
             $table->decimal('total_dolares_efectivo',8 ,2)->nullable()->default(0.00);
             $table->decimal('total_dolares_zelle',8 ,2)->nullable()->default(0.00);
-
             $table->decimal('total_bolivares',8 ,2)->nullable()->default(0.00);
+            $table->string('ref_debito')->nullable();
+            $table->string('ref_credito')->nullable();
+            $table->string('ref_visaMaster')->nullable();
             $table->decimal('saldo_caja_chica',8 ,2)->nullable()->default(0.00);
-
             $table->string('fecha');
             $table->string('responsable');
             $table->timestamps();

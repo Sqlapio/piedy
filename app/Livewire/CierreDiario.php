@@ -26,6 +26,7 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 use PHPUnit\Event\Code\Throwable;
+use Livewire\Attributes\Validate;
 use WireUi\Traits\Actions;
 
 class CierreDiario extends Component implements HasForms, HasTable
@@ -36,8 +37,13 @@ class CierreDiario extends Component implements HasForms, HasTable
 
     public $observaciones;
 
+    public $ref_debito;
+    public $ref_credito;
+    public $ref_visaMaster;
+
     public function notificacion_cierre()
     {
+
         $this->dialog()->confirm([
 
                 'title'       => 'Notificación de sistema',
@@ -119,6 +125,9 @@ class CierreDiario extends Component implements HasForms, HasTable
                 $cierre->total_dolares_efectivo  = $total_efectivo_usd;
                 $cierre->total_dolares_zelle     = $total_zelle;
                 $cierre->total_bolivares         = $total_bs;
+                $cierre->ref_debito              = $this->ref_debito;
+                $cierre->ref_credito             = $this->ref_credito;
+                $cierre->ref_visaMaster          = $this->ref_visaMaster;
                 $cierre->total_gastos            = $total_gastos_usd;
                 $cierre->saldo_caja_chica        = (isset($efectivo_caja_usd->saldo)) ? $efectivo_caja_usd->saldo : 0;
                 $cierre->fecha                   = date('d-m-Y');
@@ -192,6 +201,10 @@ class CierreDiario extends Component implements HasForms, HasTable
                 TextColumn::make('total_bolivares')
                 ->label('Bolivares(Bs)')
                 ->money('VES')
+                ->sortable()
+                ->searchable(),
+                TextColumn::make('referencia')
+                ->label('Referencia cierre')
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('total_gastos')

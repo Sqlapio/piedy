@@ -13,6 +13,7 @@ use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
@@ -295,7 +296,7 @@ class FacturarCliente extends Component
                                     $factura->pago_bsd          = str_replace(',', '.', str_replace('.', '', $this->valor_dos));
                                     $factura->total_usd         = $this->total_vista;
                                     $factura->responsable       = $user->name;
-                                    $factura->save();
+                                    // $factura->save();
 
                                     /** Calculo del 40% del total de la vista
                                      * Este valor sera el asignado a los empleados
@@ -403,6 +404,7 @@ class FacturarCliente extends Component
 
         return view('livewire.facturar-cliente',[
             'data' => Disponible::Where('status', 'por facturar')
+            ->Where('servicio_asignacion', '!=', 'vip')
             ->Where('cliente', 'like', "%{$this->buscar}%")
             ->orderBy('id', 'desc')
                ->paginate(4)

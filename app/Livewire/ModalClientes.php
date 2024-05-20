@@ -55,6 +55,7 @@ class ModalClientes extends ModalComponent
             $disponible->servicio_id        = $this->servicio_id;
             $disponible->servicio           = $servicio->descripcion;
             $disponible->servicio_categoria = $servicio->categoria;
+            $disponible->servicio_asignacion= $servicio->asignacion;
             $disponible->costo              = $servicio->costo;
 
             if($existe == null)

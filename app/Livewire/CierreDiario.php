@@ -147,6 +147,9 @@ class CierreDiario extends Component implements HasForms, HasTable
                         'total_dolares' => VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_usd'),
                         'zelle' => $cierre->total_dolares_zelle,
                         'total_bolivares' => $cierre->total_bolivares,
+                        'ref_debito' => $cierre->ref_debito,
+                        'ref_credito' => $cierre->ref_credito,
+                        'ref_visaMaster' => $cierre->ref_visaMaster,
                         'conversion' => $cierre->total_bolivares / $tasa,
                         'efectivo_caja_usd' => $cierre->total_dolares_efectivo,
                         'gastos' => $cierre->total_gastos,
@@ -203,10 +206,20 @@ class CierreDiario extends Component implements HasForms, HasTable
                 ->money('VES')
                 ->sortable()
                 ->searchable(),
-                TextColumn::make('referencia')
-                ->label('Referencia cierre')
+
+                TextColumn::make('ref_debito')
+                ->label('Ref. Débito')
                 ->sortable()
                 ->searchable(),
+                TextColumn::make('ref_credito')
+                ->label('Ref. Credito')
+                ->sortable()
+                ->searchable(),
+                TextColumn::make('ref_visaMaster')
+                ->label('Ref. Visa/Master')
+                ->sortable()
+                ->searchable(),
+
                 TextColumn::make('total_gastos')
                 ->money('USD')
                 ->label('Gastos($)')

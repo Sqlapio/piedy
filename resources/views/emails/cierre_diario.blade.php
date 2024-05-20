@@ -77,6 +77,18 @@
                     <td>{{ round($mailData['total_bolivares']) }}</td>
                 </tr>
                 <tr>
+                    <td>Nro. Referencia Debito</td>
+                    <td>{{ round($mailData['ref_debito']) }}</td>
+                </tr>
+                <tr>
+                    <td>Nro. Referencia Credito</td>
+                    <td>{{ round($mailData['ref_credito']) }}</td>
+                </tr>
+                <tr>
+                    <td>Nro. Referencia Visa/Master</td>
+                    <td>{{ round($mailData['ref_visaMaster']) }}</td>
+                </tr>
+                <tr>
                     <td>Conversión (Bs.) -> ($)</td>
                     <td>{{ round($mailData['conversion']) }}</td>
                 </tr>

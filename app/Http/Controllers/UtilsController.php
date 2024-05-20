@@ -25,7 +25,7 @@ class UtilsController extends Controller
         return $calculo;
     }
 
-    static function cal_comision_empleado($valorUno, $valorDos, $tipoSrv, $total_vista)
+    static function cal_comision_empleado($valorUno, $valorDos, $tipoSrv, $total_vista = null)
     {
         try {
 

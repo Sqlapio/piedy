@@ -5,13 +5,13 @@
         <div class="flex justify-between mt-auto">
             <div class="grid md:grid-cols-3 md:gap-6">
                 <div class="w-full">
-                    <x-inputs.maskable wire:model="referencia" mask="########" right-icon="user" label="Cierre Debito Aprobado" placeholder="Nro. Lote" />
+                    <x-inputs.maskable wire:model="ref_debito" mask="########" right-icon="user" label="Cierre Debito Aprobado" placeholder="Nro. Lote" />
                 </div>
                 <div class="w-full">
-                    <x-inputs.maskable wire:model="referencia" mask="########" right-icon="user" label="Cierre Credito Aprobado" placeholder="Nro. Lote" />
+                    <x-inputs.maskable wire:model="ref_credito" mask="########" right-icon="user" label="Cierre Credito Aprobado" placeholder="Nro. Lote" />
                 </div>
                 <div class="w-full">
-                    <x-inputs.maskable wire:model="referencia" mask="########" right-icon="user" label="Cierre Visa/Master Debito Aprobado" placeholder="Nro. Lote" />
+                    <x-inputs.maskable wire:model="ref_visaMaster" mask="########" right-icon="user" label="Cierre Visa/Master Debito Aprobado" placeholder="Nro. Lote" />
                 </div>
             </div>
             <button type="submit" wire:click.prevent="notificacion_cierre()" class="justify-end rounded-md border border-transparent bg-[#7898a5] py-4 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">

@@ -62,6 +62,7 @@ class AsignaServicio extends ModalComponent
             $disponible->servicio_id        = $this->cita->servicio_id;
             $disponible->servicio           = $servicio->descripcion;
             $disponible->servicio_categoria = $servicio->categoria;
+            $disponible->servicio_asignacion= $servicio->asignacion;
             $disponible->costo              = $servicio->costo;
 
             if($existe == null)

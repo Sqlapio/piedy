@@ -89,9 +89,44 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 Método de pago
             </h2>
             <div class="mt-8 space-y-6">
-                <div class="px-2">
+                {{-- <div class="px-2">
                     <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Forma de pago:</p>
                     <x-select wire:change="$emit('metodo', $event.target.value)" wire:model.live="descripcion" placeholder="Método de pago" :async-data="route('api.metodo_pago_multiple')" option-label="descripcion" option-value="descripcion" />
+                </div> --}}
+
+                <div class="grid grid-cols-1 gap-2">
+                    <div class="px-2">
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Metodo de pago Prepagado:</p>
+                        <x-select placeholder="Select one status" :options="['GiftCard']" wire:model.live="metodo_pago_pre"/>
+                    </div>
+                </div>
+                {{-- Nro. de GiftCard y Monto --}}
+                <div class="grid grid-cols-2 gap-2 {{ $atr_giftCard }}">
+                    <div class="px-2">
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Codigo de GiftCard</p>
+                        <x-inputs.maskable wire:model.live="codigo" wire:keydown.enter="valida_giftcard($event.target.value)" mask="####" placeholder="4563"/>
+                        @if (session('activa'))
+                            <div class="flex justify-start alert alert-success text-xs text-green-800 font-bold text-left px-2">
+                                <img class="w-6 h-6 -ml-4 mt-1" src="{{ asset('images/checkmark.gif') }}" alt="">
+                                <div class="py-2">
+                                    {{ session('activa') }}
+                                </div>
+                            </div>
+                        @endif
+                        @if (session('error'))
+                            <div class="flex justify-start alert alert-success text-xs text-red-800 font-bold text-left px-2">
+                                <img class="w-6 h-6 -ml-4 mt-1" src="{{ asset('images/cancel.gif') }}" alt="">
+                                <div class="py-2">
+                                    {{ session('error') }}
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="px-2">
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Monto($)</p>
+                        <x-input wire:model.live="monto_giftcard" wire:keydown.enter="calculo($event.target.value)"/>
+                    </div>
                 </div>
 
                 {{-- Metodos de pago --}}
@@ -103,14 +138,6 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                     <div class="px-2 {{ $op2_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método de pago(Bs)</p>
                         <x-select wire:change="$emit('metodo2', $event.target.value)" wire:model.live="op2" placeholder="Seleccione..." :async-data="route('api.metodo_pago_dos')" option-label="descripcion" option-value="descripcion" />
-                    </div>
-                </div>
-
-                {{-- Nro. de GiftCard --}}
-                <div class="grid grid-cols-1 gap-2 {{ $codigo_giftCard }}">
-                    <div class="px-2">
-                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Codigo de GiftCard</p>
-                        <x-inputs.maskable wire:model.live="codigo" mask="####" placeholder="4563"/>
                     </div>
                 </div>
 
@@ -136,6 +163,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                         <x-inputs.maskable wire:model.live="ref_bsd" mask="########" placeholder="1236345678"/>
                     </div>
                 </div>
+
                 <div class="grid grid-cols-2 gap-2">
                     <div class="px-2">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Propina($)</p>
@@ -146,6 +174,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                         <x-input wire:model.live="propina_bsd" placeholder="0.00"/>
                     </div>
                 </div>
+
                 <div class="px-2 {{ $ref_hidden }}">
                     <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Referencia Propina:</p>
                     <x-inputs.maskable wire:model.live="ref_propina" mask="########" placeholder="1236345678"/>

@@ -34,6 +34,7 @@ class Caja extends Component
     public $op2;
     public $valor_uno;
     public $valor_dos;
+    public $monto_giftcard;
 
     public $propina_usd;
     public $propina_bsd;
@@ -46,12 +47,13 @@ class Caja extends Component
 
     public $prueba;
 
-    public $descripcion;
+    public $descripcion = 'Multiple';
     public $op1_hidden = 'hidden';
     public $op2_hidden = 'hidden';
     public $ref_hidden = 'hidden';
-    public $codigo_giftCard = 'hidden';
+    public $atr_giftCard = 'hidden';
     public $codigo;
+    public $metodo_pago_pre;
 
     public $option = false;
 
@@ -86,8 +88,8 @@ class Caja extends Component
             $this->op2_hidden = 'hidden';
         }
 
-        if($this->op1 == 'GiftCard'){
-            $this->codigo_giftCard = '';
+        if($this->metodo_pago_pre == 'GiftCard'){
+            $this->atr_giftCard = '';
         }
 
         if($this->descripcion == ''){
@@ -109,10 +111,14 @@ class Caja extends Component
 
         $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
 
-        $total_vista = $total->total;
-        $total_vista_bsd = $total_vista * $tasa_bcv;
+        if($this->monto_giftcard != ''){
+            $total_vista = $total->total - $this->monto_giftcard;
+            $total_vista_bsd = $total_vista * $tasa_bcv;
+        }else{
+            $total_vista = $total->total;
+            $total_vista_bsd = $total_vista * $tasa_bcv;
 
-        $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
+        }
 
         /**
          * Caso 1
@@ -120,7 +126,8 @@ class Caja extends Component
          * calquier metodo de pago en bolivares.
          * ---------------------------------------------------------------
          */
-        if ($this->op1 == 'Efectivo Usd' || $this->op1 == 'Zelle' || $this->op1 == 'GiftCard' || $this->op1 == '' && $this->op2 == '' || $this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta')
+
+        if ($this->op1 == 'Efectivo Usd' || $this->op1 == 'Zelle' || $this->op1 == '' && $this->op2 == '' || $this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta')
         {
             if($this->op1 == '' && $this->op2 == '')
             {
@@ -138,6 +145,36 @@ class Caja extends Component
             }
         }
 
+    }
+
+    public function valida_giftcard(Request $request)
+    {
+        /**
+         * El codigo es tomado de la variables de sesion
+         * del usuario
+         *
+         * @param $codigo
+         */
+        $codigo = $request->session()->all();
+
+        $item = VentaServicio::where('cod_asignacion', $codigo['cod_asignacion'])->first();
+
+        $valida_cod = GiftCard::where('pgc', $this->codigo)->first();
+
+        if(isset($valida_cod)){
+            if ($valida_cod->status == '1') {
+                session()->flash('activa', 'TARJETA GIFTCARD ACTIVA!');
+                if($valida_cod->cliente_id != $item->cliente_id){
+                    session()->flash('error', 'LA GIFTCARD NO PERTENECE AL CLIENTE!');
+                    $this->reset(['codigo']);
+                }
+            }else{
+                session()->flash('error', 'TARJETA GIFTCARD INACTIVA O NO PERTENECE AL CLIENTE!');
+            }
+
+        }else{
+            session()->flash('error', 'CODIGO NO EXISTE');
+        }
     }
 
     public function eliminar_servicio($value)
@@ -226,7 +263,7 @@ class Caja extends Component
                     $tipoSrv = Servicio::where('cod_servicio', $srv_vip)->first()->asignacion;
 
                     /**Usamos la funcion para calcular las comisiones y retornamos un array con los resultados */
-                    $res = UtilsController::cal_comision_empleado($this->valor_uno, $this->valor_dos, $tipoSrv, $total_vista);
+                    $res = UtilsController::cal_comision_empleado($this->valor_uno, $this->valor_dos, $tipoSrv, $total_vista, $this->monto_giftcard);
 
                     /**Logica para utilizar la GiftCard como metodo de pago */
                     if($this->op1 == 'GiftCard'){
@@ -412,10 +449,17 @@ class Caja extends Component
             ->where('status', '1')
             ->first();
 
-        $total_vista = $total->total;
-
         $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
-        $total_vista_bsd = $total_vista * $tasa_bcv;
+
+        if($this->monto_giftcard != ''){
+            $total_vista = $total->total - $this->monto_giftcard;
+            $total_vista_bsd = $total_vista * $tasa_bcv;
+        }else{
+            $total_vista = $total->total;
+            $total_vista_bsd = $total_vista * $tasa_bcv;
+
+        }
+
 
         return view('livewire.caja', compact('data', 'detalle', 'total_vista', 'total_vista_bsd'));
     }

@@ -25,7 +25,7 @@ class UtilsController extends Controller
         return $calculo;
     }
 
-    static function cal_comision_empleado($valorUno, $valorDos, $tipoSrv, $total_vista = null)
+    static function cal_comision_empleado($valorUno, $valorDos, $tipoSrv, $total_vista = null, $monto_giftcard = 0)
     {
         try {
 
@@ -46,6 +46,8 @@ class UtilsController extends Controller
             ->first()
             ->porcentaje;
 
+            $valorUno = floatval($valorUno) + floatval($monto_giftcard);
+
             if($tipoSrv != 'vip'){
                 /**Calculo de la comision en dolares */
                 $comision_usd = (floatval($valorUno) * $porcentaje) / 100;
@@ -64,6 +66,7 @@ class UtilsController extends Controller
             }
 
             if($tipoSrv == 'vip'){
+                dd($valorUno);
 
                 /**1.- Busco el valor de la quiropedia basica */
                 $quiroBasica = Servicio::where('descripcion', 'Quiropedia Basica')->first()->costo;

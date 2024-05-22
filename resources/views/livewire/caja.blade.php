@@ -93,10 +93,8 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                     <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Forma de pago:</p>
                     <x-select wire:change="$emit('metodo', $event.target.value)" wire:model.live="descripcion" placeholder="Método de pago" :async-data="route('api.metodo_pago_multiple')" option-label="descripcion" option-value="descripcion" />
                 </div>
-                {{-- <div class="px-2 {{ $ref_hidden }}">
-                    <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Nro. referencia:</p>
-                    <x-input wire:model.defer="referencia" placeholder="12363456" />
-                </div> --}}
+
+                {{-- Metodos de pago --}}
                 <div class="grid grid-cols-2 gap-2 {{ $op1_hidden }}">
                     <div class="px-2 {{ $op1_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método de pago($)</p>
@@ -107,6 +105,15 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                         <x-select wire:change="$emit('metodo2', $event.target.value)" wire:model.live="op2" placeholder="Seleccione..." :async-data="route('api.metodo_pago_dos')" option-label="descripcion" option-value="descripcion" />
                     </div>
                 </div>
+
+                {{-- Nro. de GiftCard --}}
+                <div class="grid grid-cols-1 gap-2 {{ $codigo_giftCard }}">
+                    <div class="px-2">
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Codigo de GiftCard</p>
+                        <x-inputs.maskable wire:model.live="codigo" mask="####" placeholder="4563"/>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-2 gap-2 {{ $op1_hidden }}">
                     <div class="px-2 {{ $op1_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Monto en Dolares($)</p>

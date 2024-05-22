@@ -45,7 +45,7 @@ class VentaServicioResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('cliente')
-                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->toggleable(isToggledHiddenByDefault: false)
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('empleado')
@@ -54,9 +54,9 @@ class VentaServicioResource extends Resource
                     ->sortable(),
                 TextColumn::make('created_at')->searchable()
                     ->label('Fecha de venta')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('metodo_pago')
-                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->toggleable(isToggledHiddenByDefault: false)
                     ->label('Metodo Pago($)')
                     ->searchable()
                     ->badge()
@@ -65,7 +65,7 @@ class VentaServicioResource extends Resource
                         'Multiple'              => 'warning',
                         'Efectivo Usd'          => 'success',
                         'Zelle'                 => 'success',
-                        'giftCard'              => 'success',
+                        'GiftCard'              => 'success',
                         'Efectivo Bsd'          => 'info',
                         'Pago movil'            => 'info',
                         'transferencia'         => 'info',
@@ -74,7 +74,7 @@ class VentaServicioResource extends Resource
                         'cliente especial'  => 'success',
                     }),
                 TextColumn::make('metodo_pago_dos')
-                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->toggleable(isToggledHiddenByDefault: false)
                     ->label('Metodo Pago(Bs.)')
                     ->searchable()
                     ->badge()
@@ -98,11 +98,11 @@ class VentaServicioResource extends Resource
                 ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('referencia')
-                ->toggleable(isToggledHiddenByDefault: true)
+                ->toggleable(isToggledHiddenByDefault: false)
                 ->searchable(),
 
                 TextColumn::make('total_USD')
-                ->toggleable(isToggledHiddenByDefault: true)
+                ->toggleable(isToggledHiddenByDefault: false)
                     ->label(('Costo servicio($)'))
                         ->summarize(Sum::make()
                         ->label(('Total'))
@@ -110,6 +110,7 @@ class VentaServicioResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('pago_usd')->money('USD')
+                ->toggleable(isToggledHiddenByDefault: false)
                     ->label(('Pagos($)'))
                     ->summarize(Sum::make()
                         ->label(('Total'))
@@ -117,6 +118,7 @@ class VentaServicioResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('pago_bsd')->money('VES')
+                ->toggleable(isToggledHiddenByDefault: false)
                     ->label(('Pagos(Bs.)'))
                     ->summarize(Sum::make()
                         ->label(('Total'))

@@ -126,7 +126,7 @@ class PagoExterno extends Component
                     if($giftCard->cliente_id == $servicio->cliente_id){
 
                         /**2.- El monto de la giftcard debe ser igual al total del servicio a facturar */
-                        if($giftCard->monto == $servicio->total_USD){
+                        if($giftCard->monto >= $servicio->total_USD){
 
                             DB::table('venta_servicios')->where('cod_asignacion', $this->cod_asignacion)
                                 ->update([

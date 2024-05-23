@@ -59,14 +59,13 @@
                 Método de pago
             </h2>
             <div class="mt-8 space-y-6">
-                <div class="px-2">
+                {{-- <div class="px-2">
                     <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Forma de pago:</p>
                     <x-select wire:blur="$dispacht('metodo_principal', value: $event.target.value)" wire:model.live="descripcion" placeholder="Método de pago" :async-data="route('api.metodo_pago_multiple')" option-label="descripcion" option-value="descripcion" />
-                </div>
-                <div class="px-2 {{ $ref_hidden }}">
-                    <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Nro. referencia:</p>
-                    <x-input wire:model.defer="referencia" placeholder="12363456" />
-                </div>
+                </div> --}}
+                
+
+                {{-- Metodos de pago $ y Bs. --}}
                 <div class="grid grid-cols-2 gap-2 {{ $op1_hidden }}">
                     <div class="px-2 {{ $op1_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método de pago($)</p>
@@ -77,6 +76,7 @@
                         <x-select wire:change="$dispatch('metodo2', $event.target.value)" wire:model.live="op2" placeholder="Seleccione..." :async-data="route('api.metodo_pago_dos')" option-label="descripcion" option-value="descripcion" />
                     </div>
                 </div>
+
                 {{-- Monto 1 y monto 2 --}}
                 <div class="grid grid-cols-2 gap-2 {{ $op1_hidden }}">
                     <div class="px-2 {{ $op1_hidden }}">
@@ -88,6 +88,7 @@
                         <x-input wire:model.live="valor_dos" value="{{ $valor_dos }}" placeholder="0.00" disabled/>
                     </div>
                 </div>
+
                 {{-- Referencia($) y Referencia(Bsd.) --}}
                 <div class="grid grid-cols-2 gap-2 {{ $op1_hidden }}">
 
@@ -102,6 +103,7 @@
                     </div>
 
                 </div>
+
                 <div class="sm:mt-2">
                     <button type="button" wire:click="facturar_servicio()" class="inline-flex w-full justify-center rounded-lg bg-red-600 px-3 py-3 mt-10 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
                         <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="facturar_servicio" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">

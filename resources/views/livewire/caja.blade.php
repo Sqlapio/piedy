@@ -89,17 +89,39 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 Método de pago
             </h2>
             <div class="mt-8 space-y-6">
-                {{-- <div class="px-2">
-                    <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Forma de pago:</p>
-                    <x-select wire:change="$emit('metodo', $event.target.value)" wire:model.live="descripcion" placeholder="Método de pago" :async-data="route('api.metodo_pago_multiple')" option-label="descripcion" option-value="descripcion" />
-                </div> --}}
-
+                {{-- Metodo de pago Prepagado --}}
                 <div class="grid grid-cols-1 gap-2">
                     <div class="px-2">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Metodo de pago Prepagado:</p>
-                        <x-select placeholder="Select one status" :options="['GiftCard']" wire:model.live="metodo_pago_pre"/>
+                        <x-select class="{{ ($metodo_pago_pre == 'GiftCard') ? 'border rounded-md border-green-400' : '' }}" placeholder="Select one status" :options="['GiftCard']" wire:model.live="metodo_pago_pre"/>
                     </div>
                 </div>
+
+                {{-- Membresia --}}
+                {{-- <div class="grid grid-cols-1 gap-2 {{ $atr_mem }}">
+                    <div class="px-2">
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Codigo de Membresia</p>
+                        <x-inputs.maskable wire:model.live="codigo_mem" wire:keydown.enter="valida_membresia($event.target.value)" mask="####" placeholder="4563"/>
+                        @if (session('activa'))
+                            <div class="flex justify-start alert alert-success text-xs text-green-800 font-bold text-left px-2">
+                                <img class="w-6 h-6 -ml-4 mt-1" src="{{ asset('images/checkmark.gif') }}" alt="">
+                                <div class="py-2">
+                                    {{ session('activa') }}
+                                </div>
+                            </div>
+                        @endif
+                        @if (session('error'))
+                            <div class="flex justify-start alert alert-success text-xs text-red-800 font-bold text-left px-2">
+                                <img class="w-6 h-6 -ml-4 mt-1" src="{{ asset('images/cancel.gif') }}" alt="">
+                                <div class="py-2">
+                                    {{ session('error') }}
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div> --}}
+
+
                 {{-- Nro. de GiftCard y Monto --}}
                 <div class="grid grid-cols-2 gap-2 {{ $atr_giftCard }}">
                     <div class="px-2">
@@ -125,7 +147,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
 
                     <div class="px-2">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Monto($)</p>
-                        <x-input wire:model.live="monto_giftcard" wire:keydown.enter="calculo($event.target.value)"/>
+                        <x-input wire:model.live="monto_giftcard" value="{{ $monto_giftcard }}" wire:keydown.enter="calculo($event.target.value)" disabled/>
                     </div>
                 </div>
 
@@ -133,14 +155,15 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 <div class="grid grid-cols-2 gap-2 {{ $op1_hidden }}">
                     <div class="px-2 {{ $op1_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método de pago($)</p>
-                        <x-select wire:change="$emit('metodo1', $event.target.value)" wire:model.live="op1" placeholder="Seleccione..." :async-data="route('api.metodo_pago_uno')" option-label="descripcion" option-value="descripcion" />
+                        <x-select class="{{ ($op1 == 'Efectivo Usd' || $op1 == 'Zelle') ? 'border rounded-md border-green-400' : '' }}" wire:change="$emit('metodo1', $event.target.value)" wire:model.live="op1" placeholder="Seleccione..." :async-data="route('api.metodo_pago_uno')" option-label="descripcion" option-value="descripcion" />
                     </div>
                     <div class="px-2 {{ $op2_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método de pago(Bs)</p>
-                        <x-select wire:change="$emit('metodo2', $event.target.value)" wire:model.live="op2" placeholder="Seleccione..." :async-data="route('api.metodo_pago_dos')" option-label="descripcion" option-value="descripcion" />
+                        <x-select class="{{ ($op2 == 'Efectivo Bsd' || $op2 == 'Pago movil' || $op2 == 'Punto de venta' || $op2 == 'Transferencia') ? 'border rounded-md border-orange-400' : '' }}" wire:change="$emit('metodo2', $event.target.value)" wire:model.live="op2" placeholder="Seleccione..." :async-data="route('api.metodo_pago_dos')" option-label="descripcion" option-value="descripcion" />
                     </div>
                 </div>
 
+                {{-- Montos en dolares o Bolivares --}}
                 <div class="grid grid-cols-2 gap-2 {{ $op1_hidden }}">
                     <div class="px-2 {{ $op1_hidden }}">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Monto en Dolares($)</p>

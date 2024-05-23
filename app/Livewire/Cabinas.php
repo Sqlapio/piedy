@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Disponible;
+use App\Models\Servicio;
 use Livewire\Component;
 use Carbon\Carbon;
 
@@ -63,6 +64,7 @@ class Cabinas extends Component
     public function render()
     {
         $data = Disponible::where('status', 'activo')->orWhere('status', 'cerrado')->orWhere('status', 'por facturar')->get();
+
         return view('livewire.cabinas', compact('data'));
     }
 }

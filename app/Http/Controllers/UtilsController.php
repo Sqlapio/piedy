@@ -66,7 +66,6 @@ class UtilsController extends Controller
             }
 
             if($tipoSrv == 'vip'){
-                dd($valorUno);
 
                 /**1.- Busco el valor de la quiropedia basica */
                 $quiroBasica = Servicio::where('descripcion', 'Quiropedia Basica')->first()->costo;
@@ -108,6 +107,7 @@ class UtilsController extends Controller
 
                 /**Comision total del empleado sobre el valor 1 */
                 $comisionEmpleado_valorUno = $comisionEmpleado_valorUno_1 + $comisionEmpleado_valorUno_2;
+
                 /**fin */
                 /******************************************* */
 

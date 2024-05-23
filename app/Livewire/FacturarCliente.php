@@ -5,6 +5,8 @@ namespace App\Livewire;
 use App\Models\DetalleAsignacion;
 use App\Models\Disponible;
 use App\Models\FacturaMultiple;
+use App\Models\GiftCard;
+use App\Models\Membresia;
 use App\Models\Servicio;
 use App\Models\TasaBcv;
 use App\Models\User;
@@ -36,6 +38,17 @@ class FacturarCliente extends Component
     public $valor_uno;
     public $valor_dos;
 
+    /**Atributos y propiedades para manejo de giftCard */
+    public $monto_giftcard;
+    public $codigo;
+    public $atr_giftCard = 'hidden';
+    public $metodo_pago_pre;
+
+    /**Atributos y propiedades para manejo de giftCard */
+    public $monto_mem;
+    public $codigo_mem;
+    public $atr_mem = 'hidden';
+
     public $ref_usd;
     public $ref_bsd;
 
@@ -44,7 +57,7 @@ class FacturarCliente extends Component
 
     public $referencia;
 
-    public $descripcion;
+    public $descripcion = 'Multiple';
     public $op1_hidden = 'hidden';
     public $op2_hidden = 'hidden';
     public $ref_hidden = 'hidden';
@@ -400,6 +413,14 @@ class FacturarCliente extends Component
             $this->ref_hidden = 'hidden';
             $this->op1_hidden = 'hidden';
             $this->op2_hidden = 'hidden';
+        }
+
+        if($this->metodo_pago_pre == 'GiftCard'){
+            $this->atr_giftCard = '';
+        }
+
+        if($this->metodo_pago_pre == 'Membresia'){
+            $this->atr_mem = '';
         }
 
         return view('livewire.facturar-cliente',[

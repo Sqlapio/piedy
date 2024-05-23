@@ -7,6 +7,7 @@ use App\Http\Controllers\NotificacionesController;
 use App\Models\DetalleAsignacion;
 use App\Models\Disponible;
 use App\Models\GiftCard;
+use App\Models\Membresia;
 use App\Models\MovimientoGiftCard;
 use App\Models\Servicio;
 use App\Models\TasaBcv;
@@ -57,6 +58,11 @@ class Caja extends Component
 
     public $option = false;
 
+    /**Atributos y propiedades para manejo de giftCard */
+    public $monto_mem;
+    public $codigo_mem;
+    public $atr_mem = 'hidden';
+
     protected $messages = [
         'dolares'     => 'Campo requerido',
     ];
@@ -90,6 +96,10 @@ class Caja extends Component
 
         if($this->metodo_pago_pre == 'GiftCard'){
             $this->atr_giftCard = '';
+        }
+
+        if($this->metodo_pago_pre == 'Membresia'){
+            $this->atr_mem = '';
         }
 
         if($this->descripcion == ''){
@@ -149,12 +159,6 @@ class Caja extends Component
 
     public function valida_giftcard(Request $request)
     {
-        /**
-         * El codigo es tomado de la variables de sesion
-         * del usuario
-         *
-         * @param $codigo
-         */
         $codigo = $request->session()->all();
 
         $item = VentaServicio::where('cod_asignacion', $codigo['cod_asignacion'])->first();
@@ -162,20 +166,50 @@ class Caja extends Component
         $valida_cod = GiftCard::where('pgc', $this->codigo)->first();
 
         if(isset($valida_cod)){
-            if ($valida_cod->status == '1') {
+            if ($valida_cod->status == '1' && $valida_cod->cliente_id == $item->cliente_id) {
                 session()->flash('activa', 'TARJETA GIFTCARD ACTIVA!');
+                $this->monto_giftcard = $valida_cod->monto;
                 if($valida_cod->cliente_id != $item->cliente_id){
                     session()->flash('error', 'LA GIFTCARD NO PERTENECE AL CLIENTE!');
-                    $this->reset(['codigo']);
+                    $this->reset(['codigo', 'monto_giftcard']);
                 }
             }else{
                 session()->flash('error', 'TARJETA GIFTCARD INACTIVA O NO PERTENECE AL CLIENTE!');
+                $this->reset(['codigo', 'monto_giftcard']);
             }
 
         }else{
             session()->flash('error', 'CODIGO NO EXISTE');
+            $this->reset(['codigo', 'monto_giftcard']);
         }
     }
+
+    // public function valida_membresia(Request $request)
+    // {
+    //     $codigo = $request->session()->all();
+
+    //     $item = VentaServicio::where('cod_asignacion', $codigo['cod_asignacion'])->first();
+
+    //     $valida_mem = Membresia::where('pm', $this->codigo_mem)->first();
+
+    //     if(isset($valida_mem)){
+    //         if ($valida_mem->status == '1' && $valida_mem->cliente_id == $item->cliente_id) {
+    //             session()->flash('activa', 'MEMBRESIA ACTIVA!');
+    //             $this->monto_mem = $valida_mem->monto;
+    //             if($valida_mem->cliente_id != $item->cliente_id){
+    //                 session()->flash('error', 'LA MEMBRESIA NO PERTENECE AL CLIENTE!');
+    //                 $this->reset(['codigo', 'monto_mem']);
+    //             }
+    //         }else{
+    //             session()->flash('error', 'MEMBRESIA INACTIVA O NO PERTENECE AL CLIENTE!');
+    //             $this->reset(['codigo', 'monto_mem']);
+    //         }
+
+    //     }else{
+    //         session()->flash('error', 'CODIGO NO EXISTE');
+    //         $this->reset(['codigo', 'monto_mem']);
+    //     }
+    // }
 
     public function eliminar_servicio($value)
     {

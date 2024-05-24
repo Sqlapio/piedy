@@ -60,6 +60,7 @@ class ModalAgenda extends ModalComponent
             $dia = UtilsController::agenda($this->fecha, $this->mes);
             $citas = new Cita();
             $citas->cod_cita = 'Pci-'.random_int(11111, 99999);
+            $fecha_formateada = date('Y-m-d', strtotime(date('Y-'.$this->mes.'-'.$this->fecha+1)));
 
             if($this->cliente_id != '')
             {
@@ -75,12 +76,17 @@ class ModalAgenda extends ModalComponent
 
             if($this->hora > '22:00' || $this->hora < '10:00'){
                 throw new Exception("La hora debe estar entre las 10:00am y las 22:00pm. Por favor intente nuevamente");
-                
+
             }else{
                 $citas->hora = date("h:i a", strtotime($this->hora));
             }
 
+            if($fecha_formateada < date('Y-m-d')){
+                throw new Exception("No puede agendar citas en días anteriores a la fecha actual. Por favor intente con otro dia");
+            }
+
             $citas->fecha = $dia;
+            $citas->fecha_formateada = $fecha_formateada;
             $citas->responsable = Auth::user()->name;
             $citas->status = 1;
             $citas->save();

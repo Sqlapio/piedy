@@ -13,13 +13,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('app:send-mail-command')
-        ->everyMinute()
-
-        ->emailOutputTo('gusta.acp@gmail.com');
+        // $schedule->command('app:send-mail-command')
+        // ->everyMinute()
+        // ->emailOutputTo('gusta.acp@gmail.com');
 
         $schedule->command('app:appointment-reminder')
-        ->everyMinute()
+        ->weekdays()
+        ->dailyAt('9:00')
         ->emailOutputTo('gusta.acp@gmail.com');
 
         // $schedule->call(function () {

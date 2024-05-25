@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\CajaChica;
+use App\Models\Cita;
 use App\Models\TasaBcv as ModelsTasaBcv;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -46,14 +47,15 @@ class TasaBcv extends ModalComponent
                 'fecha' => $hoy
             ]);
 
-            
+            /**Logica que limpia las citas del dia anterior para evitar el colapso de la agenda */
+            $clen_citas = Cita::where('fecha_formateada', '<', date('Y-m-d'))->get();
+            foreach ($clen_citas as $value) {
+                $value->update([
+                    'status' => '2'
+                ]);
+            }
 
             $this->forceClose()->closeModal();
-
-            // $this->dialog()->success(
-            //     $title = 'Exito !!!',
-            //     $description = 'La tasa fue actualizada de forma exitosa.'
-            // );
 
             redirect()->to('/dashboard');
 

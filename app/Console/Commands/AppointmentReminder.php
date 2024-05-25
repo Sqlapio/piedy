@@ -41,7 +41,7 @@ class AppointmentReminder extends Command
 
             *Sr(a):* {$cita->cliente}
 
-            Le informamos que para el día de hoy tiene una cita agendada en PIEDY. Te esperamos...
+            Le recordamos que para el día de hoy tiene una cita agendada en PIEDY. Te esperamos...
 
             *Fecha:* {$cita->fecha}
             *Hora:* {$cita->hora}

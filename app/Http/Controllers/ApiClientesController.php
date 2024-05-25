@@ -154,7 +154,6 @@ class ApiClientesController extends Controller
             });
     }
 
-
     public function categoria_producto(Request $request): Collection
     {
         return Categoria::query()
@@ -265,7 +264,6 @@ class ApiClientesController extends Controller
             });
     }
 
-
     public function metodo_pago_multiple(Request $request): Collection
     {
         return MetodoPago::query()
@@ -287,4 +285,5 @@ class ApiClientesController extends Controller
                 return $metodo_pago;
             });
     }
+
 }

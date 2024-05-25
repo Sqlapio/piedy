@@ -97,4 +97,57 @@ class NotificacionesController extends Controller
 			dd('Error UtilsController.send_mail()', $message);
 		}
 	}
+
+    static function notificacion_cita_wp(array $data)
+    {
+
+        try {
+
+            $ubication = 'https://maps.google.com/maps?q=Piedy%20Sambil%20Chacao,%20Distrito%20Capital&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=&amp;output=embed';
+
+            $body = <<<HTML
+
+            *Sr(a):* {$data['cliente_fullname']}
+
+            Le informamos que Usted acaba de agendar una cita en Piedy. Te esperamos...
+
+            *Detalle:*
+            *Fecha:* {$data['fecha_cita']}
+            *Hora:* {$data['hora_cita']}
+
+            *Ubicación:* {$ubication}
+            HTML;
+
+            $params = array(
+                'token' => env('TOKEN_API_WHATSAPP'),
+                'to' => $data['telefono'],
+                'image' => env('IMAGE'),
+                'caption' => $body
+            );
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('CURLOPT_URL_IMAGE'),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_SSL_VERIFYHOST => 0,
+                CURLOPT_SSL_VERIFYPEER => 0,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => http_build_query($params),
+                CURLOPT_HTTPHEADER => array(
+                    "content-type: application/x-www-form-urlencoded"
+                ),
+            ));
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            curl_close($curl);
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
 }

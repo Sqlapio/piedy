@@ -40,6 +40,7 @@ class VentaServicioResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(VentaServicio::query()->where('status', '1'))
             ->columns([
                 TextColumn::make('cod_asignacion')
                     ->sortable()
@@ -65,7 +66,7 @@ class VentaServicioResource extends Resource
                         'Multiple'              => 'warning',
                         'Efectivo Usd'          => 'success',
                         'Zelle'                 => 'success',
-                        'GiftCard'              => 'success',
+                        'giftCard'              => 'success',
                         'Efectivo Bsd'          => 'info',
                         'Pago movil'            => 'info',
                         'transferencia'         => 'info',
@@ -83,7 +84,6 @@ class VentaServicioResource extends Resource
                         'Multiple'              => 'warning',
                         'Efectivo Usd'          => 'success',
                         'Zelle'                 => 'success',
-                        'giftCard'              => 'success',
                         'Efectivo Bsd'          => 'info',
                         'Pago movil'            => 'info',
                         'transferencia'         => 'info',

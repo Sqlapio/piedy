@@ -62,6 +62,12 @@ class ModalAgenda extends ModalComponent
             $citas->cod_cita = 'Pci-'.random_int(11111, 99999);
             $fecha_formateada = date('Y-m-d', strtotime(date('Y-'.$this->mes.'-'.$this->fecha+1)));
 
+            $cliente_existe = Cita::where('cliente_id', $this->cliente_id)->where('fecha_formateada', $fecha_formateada)->first();
+
+            if(isset($cliente_existe) && $cliente_existe->hora == date("h:i a", strtotime($this->hora))){
+                throw new Exception("No puede agendar citas al msimo cliente a la misma hora. Debe agendar en otra hora");
+            }
+
             if($this->cliente_id != '')
             {
                 $cliente = Cliente::find($this->cliente_id);
@@ -92,23 +98,33 @@ class ModalAgenda extends ModalComponent
             $citas->save();
 
             Notification::make()
-            ->title('NOTIFICACIÓN')
-            ->icon('heroicon-o-shield-check')
-            ->iconColor('danger')
-            ->body('La cita fue agendada con éxito')
-            ->send();
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body('La cita fue agendada con éxito')
+                ->send();
 
             $cliente_citado = Cita::where('id', $citas->id)->first();
             $type = 'cliente';
-
             $mailData = [
                 'cliente_email' => $cliente_citado->correo,
                 'cliente_fullname' => $cliente_citado->cliente,
                 'fecha_cita' => $cliente_citado->fecha,
                 'hora_cita' => $cliente_citado->hora,
+                'telefono' => Cliente::where('id', $this->cliente_id)->first()->telefono,
             ];
 
-            NotificacionesController::notification($mailData, $type);
+            if($this->cliente_id != ''){
+                /**Notificacion por Whatsapp */
+                NotificacionesController::notificacion_cita_wp($mailData);
+
+                /**Notificacion por correo */
+                NotificacionesController::notification($mailData, $type);
+
+            }else{
+                /**Notificacion por correo */
+                NotificacionesController::notification($mailData, $type);
+            }
 
             $this->reset();
 

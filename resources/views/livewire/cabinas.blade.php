@@ -7,7 +7,7 @@
         <div class="flex p-5">
 
             <div class="w-full" type="submit"  onclick="Livewire.dispatch('openModal', { component: 'detalle-asignacion', arguments: { disponible: {{ $item->id }} }})">
-                {{-- Servicio activo y de color verde #ddccc9 #be9e97--}}
+                {{-- Servicio activo y de color verde --}}
                 @if($item->status == 'activo')
                 <div class="flex justify-start rounded-full {{ $item->servicio_asignacion == 'vip' ? 'border border-[#be9e97] bg-[#ddccc9]' : 'bg-green-700' }}  px-6 py-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
                     <div class="flex items-center space-x-4 w-full">
@@ -18,16 +18,16 @@
                         <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/mesas.png') }}" alt="">
                         @endif
                         <div class="flex-1 min-w-0">
-                            <p class="text-2xl font-extrabold text-white truncate dark:text-white">
+                            <p class="text-2xl font-extrabold text-white">
                                 {{ $item->empleado }}
                             </p>
-                            <p class="text-xs text-white truncate dark:text-gray-400">
+                            <p class="text-xs text-white font-bold">
                                 Cliente: {{ $item->cliente }}
                             </p>
-                            <p class="text-xs text-white truncate dark:text-gray-400">
+                            <p class="text-xs text-white font-bold">
                                 Codigo: {{ $item->cod_asignacion }}
                             </p>
-                            <p class="text-xs text-white truncate dark:text-gray-400">
+                            <p class="text-xs text-white font-bold">
                                 Fecha: {{ $item->created_at }}
                             </p>
                         </div>

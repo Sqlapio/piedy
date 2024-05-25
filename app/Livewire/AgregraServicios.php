@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Livewire\Component;
 use Livewire\WithPagination;
 use WireUi\Traits\Actions;
+use Exception;
 
 class AgregraServicios extends Component
 {
@@ -50,7 +51,6 @@ class AgregraServicios extends Component
             /**
              * Cargo la venta en la tabla de ventas
              */
-
             $venta_servicio = new VentaServicio();
             $venta_servicio->cod_asignacion     = $codigo['cod_asignacion'];
             $venta_servicio->cliente            = $data->cliente;
@@ -111,6 +111,7 @@ class AgregraServicios extends Component
 
     public function carga_servicios_adicionales(Request $request)
     {
+
         if(count($this->servicios) == 0)
         {
             $this->dialog()->warning(
@@ -124,6 +125,10 @@ class AgregraServicios extends Component
                 $codigo = $request->session()->all();
 
                 $data = Disponible::where('cod_asignacion', $codigo['cod_asignacion'])->first();
+                if(Servicio::where('cod_servicio', $data->cod_servicio)->first()->asignacion == 'vip'){
+                    throw new Exception("No puede agregar servicios adicionales, Los servicios VIP deben ser facturados de forma única.");
+                }
+
 
                 $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
 
@@ -162,7 +167,12 @@ class AgregraServicios extends Component
                 $this->servicios = [];
 
             } catch (\Throwable $th) {
-                //throw $th;
+                Notification::make()
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
             }
 
         }

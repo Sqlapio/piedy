@@ -19,6 +19,7 @@ use App\Models\Venta;
 use App\Models\VentaServicio;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -282,8 +283,6 @@ class DetalleAsignacion extends ModalComponent
             $venta_servicio->empleado_id        = $this->disponible->empleado_id;
             $venta_servicio->fecha_venta        = date('d-m-Y');
             $venta_servicio->total_USD          = $total->total;
-            // $venta_servicio->comision_empleado  = UtilsController::cal_comision_empleado($total->total);
-            // $venta_servicio->comision_gerente   = UtilsController::cal_comision_gerente($total->total);
             $venta_servicio->save();
 
             Disponible::where('cod_asignacion', $this->disponible->cod_asignacion)
@@ -291,6 +290,21 @@ class DetalleAsignacion extends ModalComponent
                     'costo' => $total->total,
                     'status' => 'por facturar'
                 ]);
+
+            /**Pregunto por el servicio en la tabla de detalle de asignacion usando el 'cod_asignacion' */
+            /**1.- Consulta el servicio */
+            $duracion = ModelsDetalleAsignacion::where('cod_asignacion', $this->disponible->cod_asignacion)->first();
+
+            /**2.- Calculo la duracion del servicio, es decir, el tiempo que duro el tecnico con el cliente */
+            $inicio = new DateTime($duracion->created_at);
+            $final  = new DateTime($venta_servicio->created_at);
+            $intervalo = date_diff($inicio, $final);
+            $tiempo_final = $intervalo->format('%I');
+
+            /**3.- Guardo la duracion del servicio en la tabla de ventas */
+            VentaServicio::where('cod_asignacion', $this->disponible->cod_asignacion)->update([
+                'duracion' => $tiempo_final
+            ]);
 
             /**
              * Actualizamos en contador para el numero de visitas

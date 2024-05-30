@@ -195,18 +195,20 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
 Route::get('/pp', function () {
 
-    $type = 'membresia-activada';
-    $info_cliente = Cliente::where('id', 1610)->first();
+    // $type = 'membresia-activada';
+    // $info_cliente = Cliente::where('id', 1610)->first();
 
-    $mailData = [
-            'codigo_seguridad'  => '34656545367567568745',
-            'pm'                => '2356',
-            'cliente'           => $info_cliente->nombre.' '.$info_cliente->apellido,
-            'barcode'           => '23432533453.jpg',
-            'user_email'        => 'gusta.acp@gmail.com',
-        ];
+    // $mailData = [
+    //         'codigo_seguridad'  => '34656545367567568745',
+    //         'pm'                => '2356',
+    //         'cliente'           => $info_cliente->nombre.' '.$info_cliente->apellido,
+    //         'barcode'           => '23432533453.jpg',
+    //         'user_email'        => 'gusta.acp@gmail.com',
+    //     ];
 
-    NotificacionesController::notification($mailData, $type);
+    // NotificacionesController::notification($mailData, $type);
 
-    return 'listo';
+    // return 'listo';
+    $products = DB::select('call nomina_quincenal(?, ?)', array('2024-05-16', '2024-05-30'));
+    dd($products);
 });

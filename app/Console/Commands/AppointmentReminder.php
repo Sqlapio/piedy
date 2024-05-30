@@ -47,6 +47,8 @@ class AppointmentReminder extends Command
             *Hora:* {$cita->hora}
 
             *Ubicación:* {$ubication}
+
+            *Con el fin de respetar el tiempo de nuestros clientes y empleados, le sugerimos debe llegar puntual a su cita. De no ser asi deberá esperar su nuevo turno o debe reagendar su cita.*
             HTML;
 
             $params = array(

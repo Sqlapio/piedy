@@ -20,8 +20,8 @@ class Cabinas extends Component
     public $duracion_max;
 
     public $count = 0;
-    public $minutos = 120;
-    public $tiempo = 0;
+    public $minutos;
+    public $tiempo;
     public $atr_activo = '';
     public $atr_finalizado = 'hidden';
 
@@ -63,6 +63,7 @@ class Cabinas extends Component
 
     public function render()
     {
+        $this->hora = date('H:m:s');
         $data = Disponible::where('status', 'activo')->orWhere('status', 'cerrado')->orWhere('status', 'por facturar')->get();
 
         return view('livewire.cabinas', compact('data'));

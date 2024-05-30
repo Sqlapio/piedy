@@ -71,6 +71,8 @@
                         <label class="mb-1 block text-md text-black text-left">Código GiftCard</label>
                         <x-input wire:model.live="cod_gift_card" right-icon="user" disabled/>
                     </div>
+                </div>
+                <div class="grid sm:grid-cols-1 md:grid-cols-2 md:gap-6">
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Cliente</label>
                         <x-select wire:model.live="cliente_id" placeholder="Seleccion" :async-data="route('api.clientes')" option-label="nombre" option-value="id" />
@@ -78,7 +80,12 @@
                             <x-badge wire:click='nuevo_cliente()' rounded positive label="+ NUEVO CLIENTE" class="py-1 cursor-pointer"/>
                         </div>
                     </div>
+                    <div class="w-full mb-6 group">
+                        <label class="mb-1 block text-md text-black text-left">Servicios</label>
+                        <x-select wire:model.live="servicios" multiselect placeholder="Seleccion" :async-data="route('api.servicios')" option-label="descripcion" option-value="costo" />
+                    </div>
                 </div>
+
                 {{-- linea 2 --}}
                 <div class="grid sm:grid-cols-1 md:grid-cols-3 md:gap-6 mt-5">
                     {{-- Campos Ocultos --}}
@@ -93,10 +100,12 @@
                     {{-- Monto --}}
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Monto ($)</label>
-                        <x-select placeholder="Monto" :options="[20, 40]" wire:model.live="monto" mask='##'/>
+                        <x-input wire:model.live="monto" right-icon="user"/>
+                        <label class="mb-1 block text-sm text-gray-500 text-left">Bs. {{ round($monto * $tasa, 2) }}</label>
+                        {{-- <x-select placeholder="Monto" :options="[20, 40]" wire:model.live="monto" mask='##'/>
                         @if($metodo_pago == 'Pago Movil' || $metodo_pago == 'Transferencia')
                         <label class="mb-1 block text-sm text-gray-500 text-left">Bs. {{ round($monto * $tasa, 2) }}</label>
-                        @endif
+                        @endif --}}
                     </div>
                     {{-- Metodo de pago --}}
                     <div class="w-full mb-6 group">

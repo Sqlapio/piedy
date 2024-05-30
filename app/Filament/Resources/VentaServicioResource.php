@@ -40,14 +40,14 @@ class VentaServicioResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->query(VentaServicio::query()->where('status', '1'))
+            // ->query(VentaServicio::query()->where('status', '1'))
             ->columns([
                 TextColumn::make('cod_asignacion')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('cliente')
                     ->toggleable(isToggledHiddenByDefault: false)
-                    ->searchable()
+                    // ->searchable()
                     ->sortable(),
                 TextColumn::make('empleado')
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -171,6 +171,12 @@ class VentaServicioResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('referencia_propina')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('duracion')
+                ->label('Duración(Minutos)')
                     ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),

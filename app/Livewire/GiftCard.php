@@ -35,6 +35,8 @@ class GiftCard extends Component
     public $pgc;
     public $codigo_seguridad;
 
+    public $servicios = [];
+
     public function store()
     {
         $this->validate();
@@ -126,6 +128,13 @@ class GiftCard extends Component
 
     public function render()
     {
+        if(count($this->servicios) > 0){
+            $this->monto = $this->monto + array_sum($this->servicios);
+        }
+        if($this->servicios == ''){
+            $this->reset('monto');
+            $this->monto = $this->monto;
+        }
         $this->codigo_seguridad = random_int(111111111111111, 999999999999999);
         $generator = new \Picqer\Barcode\BarcodeGeneratorHTML();
         $barcode = $generator->getBarcode($this->codigo_seguridad, $generator::TYPE_CODE_128);

@@ -11,6 +11,7 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+
         <style>
             [x-cloak] {
                 display: none !important;
@@ -19,7 +20,7 @@
 
         <!-- wireUI -->
         <wireui:scripts />
- 
+
         @filamentStyles
 
         <!-- Scripts -->
@@ -31,7 +32,7 @@
     <body class="font-sans antialiased">
         <x-notifications z-index="z-50" />
         <x-dialog z-index="z-50" blur="md" align="center" />
-        
+
         <x-banner />
         <div class="container mx-auto min-h-screen bg-white">
             @livewire('navigation-menu')
@@ -52,7 +53,7 @@
         </div>
 
         @filamentScripts
-        
+
         @stack('modals')
 
         @livewire('livewire-ui-modal')

@@ -10,6 +10,7 @@ use App\Models\Disponible;
 use App\Models\GiftCard;
 use App\Models\Membresia;
 use App\Models\MovimientoMembresia;
+use App\Models\Servicio;
 use App\Models\TasaBcv;
 use App\Models\VentaServicio;
 use Filament\Notifications\Notification;
@@ -106,6 +107,15 @@ class PagoExterno extends Component
             /**1. pregunto por el servicio en base de datos y obtengo toda su informacion */
             $servicio = VentaServicio::where('cod_asignacion', $this->cod_asignacion)->first();
 
+            /**Obtengo el codigo del servicio a facturar */
+            $srv_vip = DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)
+            ->where('status', '1')
+            ->first()
+            ->cod_servicio;
+
+            /**Pregunto? si la asignacion del servicio en VIP */
+            $tipoSrv = Servicio::where('cod_servicio', $srv_vip)->first()->asignacion;
+
             if(isset($servicio) && $servicio->fecha_venta == date('d-m-Y')){
 
                 /**2. pregunto por la giftCard y me traigo toda la informacion */
@@ -128,6 +138,8 @@ class PagoExterno extends Component
                         /**2.- El monto de la giftcard debe ser igual al total del servicio a facturar */
                         if($giftCard->monto >= $servicio->total_USD){
 
+                            $res = UtilsController::cal_comision_giftCard($giftCard->monto, $tipoSrv);
+
                             DB::table('venta_servicios')->where('cod_asignacion', $this->cod_asignacion)
                                 ->update([
                                     'metodo_pago'   => 'giftCard',
@@ -136,7 +148,8 @@ class PagoExterno extends Component
                                     'pago_bsd'      => 0.00,
                                     'propina_usd'   => 0.00,
                                     'propina_bsd'   => 0.00,
-                                    'comision_dolares' => UtilsController::cal_comision_empleado($giftCard->monto),
+                                    'comision_dolares' => $res['comision_usd_emp'],
+                                    'comision_gerente' => $res['comision_usd_gte'],
                                     'responsable'   => $user->name,
                                 ]);
 
@@ -153,7 +166,7 @@ class PagoExterno extends Component
                             /**4. Actualizo la giftcard a status 2 (Ya utilizada) */
                             GiftCard::where('cliente_id', $servicio->cliente_id)
                                 ->orWhere('codigo_seguridad', $this->barcode)
-                                ->orWhere('pgc', $this->pgc)
+                                ->orWhere('pgc', $this->pcs)
                                 ->update([
                                     'status' => '2',
                                 ]);

@@ -69,7 +69,7 @@ class ApiClientesController extends Controller
     public function lista_servicios(Request $request): Collection
     {
         return Servicio::query()
-            ->select('id', 'descripcion')
+            ->select('id', 'descripcion', 'costo')
             ->where('categoria', 'principal')
             ->where('status', 'activo')
             ->orderBy('descripcion')

@@ -317,6 +317,7 @@ class Caja extends Component
                                 throw new Exception('El monto a cancelar es mayor al monto de la giftCard. Por favor intente otro metodo de pago', 401);
                             }else{
                                 $movimiento->save();
+                                /**Actualizo el status de la giftCard a 2, que significa que ya fue utilizada */
                                 GiftCard::where('pgc', $this->codigo)
                                 ->update([
                                     'monto' => $valida_cod->monto - $movimiento->monto_pagado,
@@ -327,6 +328,39 @@ class Caja extends Component
                             throw new Exception("La tarjeta GiftCard ya fue consumida en su totalidad, ó no pertenece al cliente. Favor intente con otra", 401);
                         }
                     }
+
+
+                    /** Logica para utilizar la giftCard como metodo de pago total de la cuenta */
+                    if($this->op1 == 'GiftCard' && $total_vista == 0){
+                        dd('aqui');
+                        $valida_cod = GiftCard::where('pgc', $this->codigo)->first();
+
+                        if($valida_cod->status == '1' && $valida_cod->cliente_id == $item->cliente_id)
+                        {
+                            $movimiento = new MovimientoGiftCard();
+                            $movimiento->gift_card_id = $valida_cod->id;
+                            $movimiento->codigo_seguridad = $valida_cod->codigo_seguridad;
+                            $movimiento->cliente_id = $item->cliente_id;
+                            $movimiento->monto_pagado = floatval($this->valor_uno);
+                            $movimiento->fecha_debito = date('d-m-Y');
+                            $movimiento->responsable = Auth::user()->name;
+                            if($movimiento->monto_pagado > $valida_cod->monto){
+                                throw new Exception('El monto a cancelar es mayor al monto de la giftCard. Por favor intente otro metodo de pago', 401);
+                            }else{
+                                $movimiento->save();
+                                /**Actualizo el status de la giftCard a 2, que significa que ya fue utilizada */
+                                GiftCard::where('pgc', $this->codigo)
+                                ->update([
+                                    'monto' => $valida_cod->monto - $movimiento->monto_pagado,
+                                    'status' => ($valida_cod->monto - $movimiento->monto_pagado) == 0 ? '2' : '1'
+                                    ]);
+                            }
+                        }else{
+                            throw new Exception("La tarjeta GiftCard ya fue consumida en su totalidad, ó no pertenece al cliente. Favor intente con otra", 401);
+                        }
+                    }
+
+
 
                     $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
                     ->update([

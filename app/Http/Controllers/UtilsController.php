@@ -51,7 +51,7 @@ class UtilsController extends Controller
             ->where('beneficiario', 'gerente')
             ->first()
             ->porcentaje;
-            
+
             /**Calculo de la comision en dolares el 40%, Quipedia basica */
             $comision_usd_qb = (floatval($quiroBasica) * $porcentaje_basico) / 100;
 
@@ -97,6 +97,7 @@ class UtilsController extends Controller
 
     static function cal_comision_empleado($valorUno, $valorDos, $tipoSrv, $total_vista = null, $monto_giftcard = 0)
     {
+        dd('aqui');
         try {
 
             $porcentaje = Comision::where('aplicacion', 'servicio')

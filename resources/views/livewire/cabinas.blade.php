@@ -29,11 +29,6 @@
                             <p class="text-xs text-white font-bold">
                                 Fecha: {{ $item->created_at }}
                             </p>
-                            <p class="text-xs text-white font-bold">
-                                Contador:
-                                @livewire('count-down', ['start' => $item->id])
-                            </p>
-
                         </div>
                         <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
                             @if($item->servicio_asignacion == 'vip')

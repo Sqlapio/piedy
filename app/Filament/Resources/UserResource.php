@@ -40,6 +40,7 @@ class UserResource extends Resource
                         'administrador' => 'Administrador',
                         'gerente' => 'Gerente',
                         'empleado' => 'Empleado',
+                        'encargado' => 'Encargado',
                     ]),
                 Select::make('area_trabajo')
                     ->options([

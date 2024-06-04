@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('cod_membresia');
             $table->string('pm');
-            $table->integer('cliente_id');
-            $table->string('cliente');
-            $table->string('fecha_compra');
+            $table->integer('cliente_id')->unique();
+            $table->string('fecha_activacion');
+            $table->string('fecha_exp');
             $table->decimal('monto',8 ,2)->nullable()->default(40);
+            $table->string('barcode');
+            $table->integer('status')->default(1);
             $table->timestamps();
         });
     }

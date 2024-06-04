@@ -16,9 +16,9 @@ class UtilsController extends Controller
     static function cal_comision_gerente($total_venta)
     {
         $porcentaje = Comision::where('aplicacion', 'servicio')
-        ->where('beneficiario', 'gerente')
-        ->first()
-        ->porcentaje;
+            ->where('beneficiario', 'gerente')
+            ->first()
+            ->porcentaje;
 
         $calculo = ($total_venta * $porcentaje) / 100;
 
@@ -27,99 +27,105 @@ class UtilsController extends Controller
 
     static function cal_comision_giftCard($monto, $tipoSrv)
     {
-        /**1.- Busco el valor de la quiropedia basica */
-        $quiroBasica = Servicio::where('descripcion', 'Quiropedia Básico')->first()->costo;
+        try {
+            /**1.- Busco el valor de la quiropedia basica */
+            $quiroBasica = Servicio::where('descripcion', 'Quiropedia Basica')->first()->costo;
 
-        /**2.- Calculo la diferencia del los productos adicionales */
-        $prod_adi = $monto - $quiroBasica;
+            /**2.- Calculo la diferencia del los productos adicionales */
+            $prod_adi = $monto - $quiroBasica;
 
-        if($tipoSrv == 'vip'){
+            if ($tipoSrv == 'vip') {
 
-            /**Porcentaje de la quiropedia basica */
-            $porcentaje_basico = Comision::where('aplicacion', 'servicio')
-            ->where('beneficiario', 'empleado')
-            ->first()
-            ->porcentaje;
+                /**Porcentaje de la quiropedia basica */
+                $porcentaje_basico = Comision::where('aplicacion', 'servicio')
+                    ->where('beneficiario', 'empleado')
+                    ->first()
+                    ->porcentaje;
 
-            /**Porcentaje de los productos adicionales */
-            $porcentaje_vip = Comision::where('aplicacion', 'vip')
-            ->where('beneficiario', 'empleado')
-            ->first()
-            ->porcentaje;
+                /**Porcentaje de los productos adicionales */
+                $porcentaje_vip = Comision::where('aplicacion', 'vip')
+                    ->where('beneficiario', 'empleado')
+                    ->first()
+                    ->porcentaje;
 
-            $porcentaje_vip_gerente = Comision::where('aplicacion', 'vip')
-            ->where('beneficiario', 'gerente')
-            ->first()
-            ->porcentaje;
+                $porcentaje_vip_gerente = Comision::where('aplicacion', 'vip')
+                    ->where('beneficiario', 'gerente')
+                    ->first()
+                    ->porcentaje;
 
-            /**Calculo de la comision en dolares el 40%, Quipedia basica */
-            $comision_usd_qb = (floatval($quiroBasica) * $porcentaje_basico) / 100;
+                /**Calculo de la comision en dolares el 40%, Quipedia basica */
+                $comision_usd_qb = (floatval($quiroBasica) * $porcentaje_basico) / 100;
 
-            /**Calculo de la comision en dolares el 10%, productos adicionales */
-            $comision_usd_pa = (floatval($prod_adi) * $porcentaje_vip) / 100;
+                /**Calculo de la comision en dolares el 10%, productos adicionales */
+                $comision_usd_pa = (floatval($prod_adi) * $porcentaje_vip) / 100;
 
-            /**Calculo de la comision total */
-            $comision_usd_emp = $comision_usd_qb + $comision_usd_pa;
+                /**Calculo de la comision total */
+                $comision_usd_emp = $comision_usd_qb + $comision_usd_pa;
 
-            /**Calculo de la comision del gerente de tienda */
-            $comision_usd_gerente = (floatval($monto) * $porcentaje_vip_gerente) / 100;
+                /**Calculo de la comision del gerente de tienda */
+                $comision_usd_gerente = (floatval($monto) * $porcentaje_vip_gerente) / 100;
 
-            /**Array de comisiones */
-            $array_comisiones = [
-                'comision_usd_emp' => round($comision_usd_emp, 2),
-                'comision_usd_gte' => round($comision_usd_gerente, 2),
-            ];
+                /**Array de comisiones */
+                $array_comisiones = [
+                    'comision_usd_emp_valorUno' => round($comision_usd_emp, 2),
+                    'comision_bs_emp_valorDos'  => 0.00,
+                    'comision_usd_gte'          => round($comision_usd_gerente, 2),
+                ];
 
-            return $array_comisiones;
+                // dd($array_comisiones);
 
+                return $array_comisiones;
+            }
+
+            if ($tipoSrv != 'vip') {
+
+                $porcentaje = Comision::where('aplicacion', 'servicio')
+                    ->where('beneficiario', 'empleado')
+                    ->first()
+                    ->porcentaje;
+
+                $comision_usd_emp = ($monto * $porcentaje) / 100;
+
+                /**Array de comisiones */
+                $array_comisiones = [
+                    'comision_usd_emp_valorUno' => round($comision_usd_emp, 2),
+                    'comision_bs_emp_valorDos'  => 0.00,
+                    'comision_usd_gte' => 0.00,
+                ];
+
+                return $array_comisiones;
+            }
+            //code...
+        } catch (\Throwable $th) {
+            throw $th;
         }
-
-        if($tipoSrv != 'vip'){
-
-            $porcentaje = Comision::where('aplicacion', 'servicio')
-            ->where('beneficiario', 'empleado')
-            ->first()
-            ->porcentaje;
-
-            $comision_usd_emp = ($monto * $porcentaje) / 100;
-
-            /**Array de comisiones */
-            $array_comisiones = [
-                'comision_usd_emp' => round($comision_usd_emp, 2),
-                'comision_usd_gte' => 0.00,
-            ];
-
-            return $array_comisiones;
-
-        }
-
     }
 
     static function cal_comision_empleado($valorUno, $valorDos, $tipoSrv, $total_vista = null, $monto_giftcard = 0)
     {
-        dd('aqui');
+        
         try {
 
             $porcentaje = Comision::where('aplicacion', 'servicio')
-            ->where('beneficiario', 'empleado')
-            ->first()
-            ->porcentaje;
+                ->where('beneficiario', 'empleado')
+                ->first()
+                ->porcentaje;
 
             /**Porcentaje de comision para servicio vip para empleados */
             $porcen_vip_emp = Comision::where('aplicacion', 'vip')
-            ->where('beneficiario', 'empleado')
-            ->first()
-            ->porcentaje;
+                ->where('beneficiario', 'empleado')
+                ->first()
+                ->porcentaje;
 
             /**Porcentaje de comision para servicio vip para gerentes */
             $porcen_vip_gte = Comision::where('aplicacion', 'vip')
-            ->where('beneficiario', 'gerente')
-            ->first()
-            ->porcentaje;
+                ->where('beneficiario', 'gerente')
+                ->first()
+                ->porcentaje;
 
             $valorUno = floatval($valorUno) + floatval($monto_giftcard);
 
-            if($tipoSrv != 'vip'){
+            if ($tipoSrv != 'vip') {
                 /**Calculo de la comision en dolares */
                 $comision_usd = (floatval($valorUno) * $porcentaje) / 100;
 
@@ -136,7 +142,7 @@ class UtilsController extends Controller
                 return $array_comisiones;
             }
 
-            if($tipoSrv == 'vip'){
+            if ($tipoSrv == 'vip') {
 
                 /**1.- Busco el valor de la quiropedia basica */
                 $quiroBasica = Servicio::where('descripcion', 'Quiropedia Basica')->first()->costo;
@@ -233,8 +239,5 @@ class UtilsController extends Controller
         $array = $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray();
 
         return $array[$key];
-
     }
-
-
 }

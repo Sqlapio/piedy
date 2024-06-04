@@ -30,6 +30,9 @@ class Membresia extends Component
     public $cliente_id;
 
     public $tasa;
+    public $cliente;
+    public $codigo_seguridad;
+    public $code;
 
 
     public function store()
@@ -54,45 +57,34 @@ class Membresia extends Component
                 $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
 
                 /**Genero el codigo de la membresia */
-                $barcode = random_int(111111111111111, 999999999999999);
+                $barcode = random_int(11111111, 99999999);
 
                 /**genero el codigo de barra y lo guardo como imagen .jpg */
                 $generator = new \Picqer\Barcode\BarcodeGeneratorJPG();
                 $image = $generator->getBarcode($barcode, $generator::TYPE_CODE_128);
 
                 /**Guardo la imagen */
-                Storage::put('public/barcodes/membresias/' . $barcode . '.jpg', $image);
+                Storage::put('public/barcodes/' . $barcode . '.jpg', $image);
 
                 /**Guardo la informacion de la membresia y del usuario asignado */
                 $asignar_membresia = new ModelsMembresia();
-                $asignar_membresia->cod_membresia    = $barcode;
+                $asignar_membresia->cod_membresia       = $barcode;
                 $asignar_membresia->pm                  = rand('1111', '9999');
                 $asignar_membresia->cliente_id          = $this->cliente_id;
                 $asignar_membresia->fecha_activacion    = now()->format('d-m-Y');
                 $asignar_membresia->fecha_exp           = date("d-m-Y", strtotime(date($asignar_membresia->fecha_activacion) . "+1 month"));
                 $asignar_membresia->monto               = $this->monto;
-                $asignar_membresia->barcode             = $barcode . '.jpg';
+                $asignar_membresia->barcode             = '/barcodes/'.$barcode.'.jpg';
                 $asignar_membresia->save();
 
                 if ($asignar_membresia->save()) {
-
-                    $exite = MovimientoMembresia::where('cod_membresia', $asignar_membresia->cod_membresia)
-                        ->where('descripcion', 'activacion')
-                        ->first();
-
                     $mov_membresia = new MovimientoMembresia();
-                    $mov_membresia->membresia_id        = $asignar_membresia->id;
-                    $mov_membresia->cod_membresia       = $asignar_membresia->cod_membresia;
-                    $mov_membresia->descripcion         = (isset($exite)) ? 'renovacion' : 'activacion';
-                    $mov_membresia->cliente_id          = $this->cliente_id;
-                    $mov_membresia->fecha_inicio        = $asignar_membresia->fecha_activacion;
-                    $mov_membresia->fecha_fin           = date("d-m-Y", strtotime(date($asignar_membresia->fecha_activacion) . "+1 month"));
-                    $mov_membresia->monto               = $asignar_membresia->monto;
-                    $mov_membresia->metodo_pago         = $this->metodo_pago;
-                    $mov_membresia->pago_usd            = ($this->metodo_pago == 'Zelle') ? $this->monto : 0.00;
-                    $mov_membresia->pago_bsd            = ($this->metodo_pago == 'Transferencia' || $this->metodo_pago == 'Pago Movil') ? $this->monto * $tasa : 0.00;
-                    $mov_membresia->referencia          = ($this->referencia == '') ? 'efectivo' : $this->referencia;
+                    $mov_membresia->membresia_id   = $asignar_membresia->id;
+                    $mov_membresia->descripcion    = 'activacion';
+                    $mov_membresia->cliente_id     = $this->cliente_id;
+                    $mov_membresia->cliente        = $asignar_membresia->cliente->nombre.' '.$asignar_membresia->cliente->apellido;
                     $mov_membresia->save();
+
                 } else {
                     throw new Exception("Error al guardar en la informacion");
                 }
@@ -151,8 +143,17 @@ class Membresia extends Component
 
     public function render()
     {
+        $this->codigo_seguridad = random_int(11111111, 99999999);
+        $generator = new \Picqer\Barcode\BarcodeGeneratorHTML();
+        $barcode = $generator->getBarcode($this->codigo_seguridad, $generator::TYPE_CODE_128);
+
+        $cliente = Cliente::where('id', $this->cliente_id)->first();
+        if(isset($cliente)){
+            $nom_ape = $cliente->nombre.' '.$cliente->apellido;
+            $this->cliente = $nom_ape;
+        }
         /**Tasa BCV del dia */
         $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
-        return view('livewire.membresia', compact('tasa'));
+        return view('livewire.membresia', compact('tasa', 'barcode'));
     }
 }

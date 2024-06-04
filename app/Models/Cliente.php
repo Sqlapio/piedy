@@ -83,4 +83,14 @@ class Cliente extends Model
     {
         return $this->hasOne(Membresia::class, 'id', 'cliente_id');
     }
+
+    /**
+     * Get the membresia associated with the Cliente
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function giftCards(): HasMany
+    {
+        return $this->hasMany(GiftCard::class, 'id', 'cliente_id');
+    }
 }

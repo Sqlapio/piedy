@@ -21,6 +21,7 @@ use Livewire\Attributes\Rule;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Exception;
 
 class PagoExterno extends Component
 {
@@ -219,22 +220,27 @@ class PagoExterno extends Component
                         if($dia == '0' || $dia == '1' || $dia == '2' || $dia == '3' || $dia == '4'){
 
                             /**Me traigo de la base de datos toda la informacion de dicha membresia */
-                            $mov_membresia = MovimientoMembresia::where('cod_membresia', $this->barcode)->first();
-
-                            /**Fecha de EXP de la membresia */
-                            $fecha_exp = Membresia::where('cod_membresia', $this->barcode)->first()->fecha_exp;
+                            $_membresia = Membresia::where('cod_membresia', $this->barcode)->orWhere('pm', $this->pcs)->first();
 
                             DB::table('venta_servicios')->where('cod_asignacion', $this->cod_asignacion)
                                 ->update([
-                                    'metodo_pago'   => 'Membresia',
-                                    'referencia'    => $mov_membresia->referencia,
-                                    'membresia_exp' => date("m/y", strtotime($fecha_exp )),
+                                    'metodo_pago_prepagado'   => 'Membresia',
+                                    'referencia'    => $_membresia->referencia,
+                                    'membresia_exp' => date("m/y", strtotime($_membresia->fecha_exp )),
                                     'pago_usd'      => 0.00,
                                     'pago_bsd'      => 0.00,
                                     'propina_usd'   => 0.00,
                                     'propina_bsd'   => 0.00,
                                     'responsable'   => $user->name,
                                 ]);
+                        
+                            $mov_membresia = new MovimientoMembresia();
+                            $mov_membresia->membresia_id        = $_membresia->id;
+                            $mov_membresia->descripcion         = 'consumo en tienda';
+                            $mov_membresia->cliente_id          = $_membresia->cliente_id;
+                            $mov_membresia->cliente             = $_membresia->cliente->nombre.' '.$_membresia->cliente->apellido;
+                            $mov_membresia->save();
+                            
 
                             DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)->where('status', '1')
                                 ->update([
@@ -271,6 +277,7 @@ class PagoExterno extends Component
                             /**Fin del envio de notificacion al administrador */
 
                             $this->redirect('/pay/ex');
+
                         }else{
                             $error = ValidationException::withMessages(['gift' => 'La monto de la  GiftCard debe ser igual al monto total a pagar.']);
                             Notification::make()
@@ -318,7 +325,12 @@ class PagoExterno extends Component
             }
 
         } catch (\Throwable $th) {
-            throw $th;
+            Notification::make()
+                    ->title('NOTIFICACIÓN')
+                    ->icon('heroicon-o-shield-check')
+                    ->color('danger')
+                    ->body($th->getMessage())
+                    ->send();
         }
     }
 

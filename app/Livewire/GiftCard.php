@@ -63,7 +63,7 @@ class GiftCard extends Component
             $asignar_giftCard->pago_usd         = ($this->metodo_pago == 'Zelle') ? $this->monto : 0.00;
             $asignar_giftCard->pago_bsd         = ($this->metodo_pago == 'Transferencia' || $this->metodo_pago == 'Pago Movil') ? $this->monto * $tasa : 0.00;
             $asignar_giftCard->referencia       = ($this->referencia == '') ? 'efectivo' : $this->referencia;
-            $asignar_giftCard->barcode          = $this->codigo_seguridad.'.jpg';
+            $asignar_giftCard->barcode          = '/barcodes/'.$this->codigo_seguridad.'.jpg';
             $asignar_giftCard->responsable      = Auth::user()->name;
             $asignar_giftCard->save();
 

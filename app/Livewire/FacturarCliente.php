@@ -355,14 +355,15 @@ class FacturarCliente extends Component
                                         $porcentaje_servicio_usd = ($porcen_venta * $factura->pago_usd) / 100;
 
                                         VentaServicio::where('cod_asignacion', $cod_asignacion)->update([
-                                            'metodo_pago'        => $factura->metodo_pago,
-                                            'metodo_pago_dos'    => $factura->metodo_pago_dos,
-                                            'referencia'         => 'FM-'.$this->referencia,
-                                            'pago_usd'           => $porcentaje_servicio_usd,
-                                            'pago_bsd'           => $porcentaje_servicio_bsd,
-                                            'comision_dolares'   => $total_comision_empleado_usd,
-                                            'comision_bolivares' => $total_comision_empleado_bsd,
-                                            'responsable'        => $user->name
+                                            'metodo_pago'           => ($factura->metodo_pago != '') ? $factura->metodo_pago : 'N/A',
+                                            'metodo_pago_dos'       => ($factura->metodo_pago_dos != '') ? $factura->metodo_pago_dos : 'N/A',
+                                            'metodo_pago_prepagado' => 'N/A',
+                                            'referencia'            => ($this->referencia != '') ? 'FM-'.$this->referencia : 'N/A',
+                                            'pago_usd'              => $porcentaje_servicio_usd,
+                                            'pago_bsd'              => $porcentaje_servicio_bsd,
+                                            'comision_dolares'      => $total_comision_empleado_usd,
+                                            'comision_bolivares'    => $total_comision_empleado_bsd,
+                                            'responsable'           => $user->name
                                         ]);
                                     }
 

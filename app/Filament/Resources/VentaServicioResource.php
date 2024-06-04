@@ -59,6 +59,7 @@ class VentaServicioResource extends Resource
                 TextColumn::make('metodo_pago')
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->label('Metodo Pago($)')
+                    ->alignCenter()
                     ->searchable()
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -72,11 +73,14 @@ class VentaServicioResource extends Resource
                         'transferencia'         => 'info',
                         'Punto de venta'        => 'info',
                         'Anulado'               => 'danger',
-                        'cliente especial'  => 'success',
+                        'cliente especial'      => 'success',
+                        'giftcard'              => 'success',
+                        'N/A'                   => 'gray',
                     }),
                 TextColumn::make('metodo_pago_dos')
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->label('Metodo Pago(Bs.)')
+                    ->alignCenter()
                     ->searchable()
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -91,6 +95,18 @@ class VentaServicioResource extends Resource
                         'Anulado'               => 'danger',
                         'cliente especial'      => 'success',
                         'Membresia'             => 'success',
+                        'N/A'                   => 'gray',
+                    }),
+                TextColumn::make('metodo_pago_prepagado')
+                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->label('Metodo Prepagado')
+                    ->alignCenter()
+                    ->searchable()
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'giftcard'      => 'warning',
+                        'Membresia'     => 'warning',
+                        'N/A'           => 'gray',
                     }),
                 TextColumn::make('membresia_exp')
                 ->label('Membresia EXP')

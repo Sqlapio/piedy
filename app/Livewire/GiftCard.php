@@ -130,6 +130,8 @@ class GiftCard extends Component
     {
         if(count($this->servicios) > 0){
             $this->monto = $this->monto + array_sum($this->servicios);
+        }else{
+            $this->monto = $this->monto;
         }
         if($this->servicios == ''){
             $this->reset('monto');

@@ -158,18 +158,23 @@ class Caja extends Component
         $valida_cod = GiftCard::where('pgc', $this->codigo)->first();
 
         if (isset($valida_cod)) {
+            
             if ($valida_cod->status == '1' && $valida_cod->cliente_id == $item->cliente_id) {
                 session()->flash('activa', 'TARJETA GIFTCARD ACTIVA!');
                 $this->monto_giftcard = $valida_cod->monto;
-                if ($valida_cod->cliente_id != $item->cliente_id) {
-                    session()->flash('error', 'LA GIFTCARD NO PERTENECE AL CLIENTE!');
-                    $this->reset(['codigo', 'monto_giftcard']);
-                }
-            } else {
-                session()->flash('error', 'TARJETA GIFTCARD INACTIVA. FECHA DE USO: '.$valida_cod->updated_at.'');
-                $this->reset(['codigo', 'monto_giftcard']);
             }
-        } else {
+
+            if ($valida_cod->status == '1' && $valida_cod->cliente_id != $item->cliente_id) {
+                session()->flash('error', 'TARJETA GIFTCARD ACTIVA!, PERO NO PERTENECE AL CLIENTE');
+                $this->reset(['codigo', 'monto_giftcard']);
+
+            }
+
+            if ($valida_cod->status == '2') {
+                session()->flash('error', 'TARJETA GIFTCARD INACTIVA. FECHA DE USO: '.$valida_cod->updated_at.'');
+            }
+
+        }else {
             session()->flash('error', 'CODIGO NO EXISTE');
             $this->reset(['codigo', 'monto_giftcard']);
         }
@@ -283,9 +288,9 @@ class Caja extends Component
                                      */
                                     $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
                                         ->update([
-                                            'metodo_pago'           => ($this->op1 != '') ? $this->op1 : '',
-                                            'metodo_pago_dos'       => ($this->op2 != '') ? $this->op2 : '',
-                                            'metodo_pago_prepagado' => $this->metodo_pago_pre,
+                                            'metodo_pago'           => ($this->op1 != '') ? $this->op1 : 'N/A',
+                                            'metodo_pago_dos'       => ($this->op2 != '') ? $this->op2 : 'N/A',
+                                            'metodo_pago_prepagado' => ($this->metodo_pago_pre != '') ? $this->metodo_pago_pre : 'N/A',
                                             'referencia'            => $this->referencia,
                                             'total_USD'             => $total_vista,
                                             'pago_usd'              => $this->monto_giftcard,
@@ -298,7 +303,7 @@ class Caja extends Component
                                             'comision_gerente'      => $res['comision_usd_gte'],
                                             'responsable'           => Auth::user()->name,
                                         ]);
-                                    
+
                                     /**Valido el estatus de la giftcard se encuentre activa(1) y que pertenesca al cliente */
                                     if ($valida_cod->status == '1' && $valida_cod->cliente_id == $item->cliente_id) {
                                         $movimiento = new MovimientoGiftCard();
@@ -342,9 +347,9 @@ class Caja extends Component
                                      */
                                     $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
                                         ->update([
-                                            'metodo_pago'           => ($this->op1 != '') ? $this->op1 : '',
-                                            'metodo_pago_dos'       => ($this->op2 != '') ? $this->op2 : '',
-                                            'metodo_pago_prepagado' => $this->metodo_pago_pre,
+                                            'metodo_pago'           => ($this->op1 != '') ? $this->op1 : 'N/A',
+                                            'metodo_pago_dos'       => ($this->op2 != '') ? $this->op2 : 'N/A',
+                                            'metodo_pago_prepagado' => ($this->metodo_pago_pre != '') ? $this->metodo_pago_pre : 'N/A',
                                             'referencia'            => $this->referencia,
                                             'total_USD'             => $total_vista,
                                             'pago_usd'              => ($this->valor_uno == '') ? 0.00 : floatval($this->valor_uno),
@@ -357,7 +362,7 @@ class Caja extends Component
                                             'comision_gerente'      => $res['comision_usd_gte'],
                                             'responsable'           => Auth::user()->name,
                                         ]);
-                                    
+
                                     /**Valido el estatus de la giftcard se encuentre activa(1) y que pertenesca al cliente */
                                     if ($valida_cod->status == '1' && $valida_cod->cliente_id == $item->cliente_id) {
                                         $movimiento = new MovimientoGiftCard();
@@ -375,7 +380,7 @@ class Caja extends Component
                                             /**giftcard usada */
                                             'status' => '2'
                                         ]);
-                                        
+
                                     } else {
                                         throw new Exception("La tarjeta GiftCard ya fue consumida en su totalidad, ó no pertenece al cliente. Favor intente con otra", 401);
                                     }
@@ -395,8 +400,9 @@ class Caja extends Component
                              */
                             $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
                                 ->update([
-                                    'metodo_pago'           => ($this->op1 != '') ? $this->op1 : '',
-                                    'metodo_pago_dos'       => ($this->op2 != '') ? $this->op2 : '',
+                                    'metodo_pago'           => ($this->op1 != '') ? $this->op1 : 'N/A',
+                                    'metodo_pago_dos'       => ($this->op2 != '') ? $this->op2 : 'N/A',
+                                    'metodo_pago_prepagado' => ($this->metodo_pago_pre != '') ? $this->metodo_pago_pre : 'N/A',
                                     'referencia'            => $this->referencia,
                                     'total_USD'             => $total_vista,
                                     'pago_usd'              => ($this->valor_uno == '') ? 0.00 : floatval($this->valor_uno),

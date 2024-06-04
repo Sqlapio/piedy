@@ -58,6 +58,7 @@
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Servicios</label>
                         <x-select wire:model.live="servicios" multiselect placeholder="Seleccion" :async-data="route('api.servicios')" option-label="descripcion" option-value="costo" />
+                        <label class="mb-1 block text-sm text-gray-500 text-left">{{ $srv }}$ - Bs.{{ round($srv * $tasa, 2) }}</label>
                     </div>
                 </div>
 
@@ -76,7 +77,7 @@
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Monto ($)</label>
                         <x-input wire:model="monto" right-icon="user"/>
-                        <label class="mb-1 block text-sm text-gray-500 text-left">Bs. {{ round($monto * $tasa, 2) }}</label>
+
                     </div>
                     {{-- Metodo de pago --}}
                     <div class="w-full mb-6 group">
@@ -86,7 +87,7 @@
                     {{-- Referencia --}}
                     <div class="w-full mb-6 group">
                         <label class="mb-1 block text-md text-black text-left">Referencia</label>
-                        <x-input wire:model="referencia" right-icon="user"/>
+                        <x-inputs.maskable wire:model="referencia" right-icon="user" mask="########"/>
                     </div>
                 </div>
             </div>

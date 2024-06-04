@@ -74,6 +74,7 @@ class Membresia extends Component
                 $asignar_membresia->fecha_activacion    = now()->format('d-m-Y');
                 $asignar_membresia->fecha_exp           = date("d-m-Y", strtotime(date($asignar_membresia->fecha_activacion) . "+1 month"));
                 $asignar_membresia->monto               = $this->monto;
+                $asignar_membresia->referencia          = $this->referencia;
                 $asignar_membresia->barcode             = '/barcodes/'.$barcode.'.jpg';
                 $asignar_membresia->save();
 
@@ -83,6 +84,7 @@ class Membresia extends Component
                     $mov_membresia->descripcion    = 'activacion';
                     $mov_membresia->cliente_id     = $this->cliente_id;
                     $mov_membresia->cliente        = $asignar_membresia->cliente->nombre.' '.$asignar_membresia->cliente->apellido;
+                    $mov_membresia->cedula         = $asignar_membresia->cliente->cedula;
                     $mov_membresia->save();
 
                 } else {

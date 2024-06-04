@@ -129,14 +129,11 @@ class GiftCard extends Component
     public function render()
     {
         if(count($this->servicios) > 0){
-            $this->monto = $this->monto + array_sum($this->servicios);
+            $srv = array_sum($this->servicios);
         }else{
-            $this->monto = $this->monto;
+            $srv = 0;
         }
-        if($this->servicios == ''){
-            $this->reset('monto');
-            $this->monto = $this->monto;
-        }
+
         $this->codigo_seguridad = random_int(111111111111111, 999999999999999);
         $generator = new \Picqer\Barcode\BarcodeGeneratorHTML();
         $barcode = $generator->getBarcode($this->codigo_seguridad, $generator::TYPE_CODE_128);
@@ -156,7 +153,7 @@ class GiftCard extends Component
 
         $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
 
-        return view('livewire.gift-card', compact('barcode', 'pgc', 'tasa'));
+        return view('livewire.gift-card', compact('barcode', 'pgc', 'tasa', 'srv'));
     }
 }
 

@@ -56,6 +56,7 @@ class ServicioResource extends Resource
                     ->options([
                         'general' => 'General',
                         'vip' => 'VIP',
+                        'membresia' => 'Membresia',
                     ])
                     ->required(),
                 Select::make('status')
@@ -87,6 +88,7 @@ class ServicioResource extends Resource
                 ->colors([
                     'info' => 'general',
                     'success' => 'vip',
+                    'warning' => 'membresia',
                 ])
                 ->searchable(),
                 IconColumn::make('status')

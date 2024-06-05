@@ -15,14 +15,16 @@ class NotificacionesEmail extends Mailable implements ShouldQueue
 
     public $mailData;
     public $view;
+    public $subject;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($mailData, $view)
+    public function __construct($mailData, $view, $subject)
     {
         $this->mailData = $mailData;
         $this->view = $view;
+        $this->subject = $subject;
     }
 
     /**
@@ -31,7 +33,7 @@ class NotificacionesEmail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '@PiedyCcs',
+            subject: $this->subject,
         );
     }
 

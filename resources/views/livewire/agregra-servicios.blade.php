@@ -1,4 +1,5 @@
 <div class="">
+    @livewire('notifications')
     <div class="grid grid-cols-2 gap-2">
         {{-- servicio asignado --}}
         <div class="w-full max-h-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">

@@ -31,6 +31,21 @@ class ModalClientes extends ModalComponent
     #[Rule('required', message: 'Campo obligatorio')]
     public $servicio_id;
 
+    public $routelist = 'api.servicios';
+
+    public function updating($property, $value)
+    {
+        if ($property === 'empleado_id') {
+            $empleado_srv = User::where('id', $value)->first()->tipo_servicio_id;
+            if($empleado_srv == '1'){
+                $this->routelist = 'api.empleados';
+            }
+            if($empleado_srv == '2'){
+                $this->routelist = 'api.empleados';
+            }
+        }
+    }
+
     public function asignar_tecnico()
     {
 
@@ -55,6 +70,7 @@ class ModalClientes extends ModalComponent
             $disponible->servicio_id        = $this->servicio_id;
             $disponible->servicio           = $servicio->descripcion;
             $disponible->servicio_categoria = $servicio->categoria;
+            $disponible->servicio_asignacion= $servicio->asignacion;
             $disponible->costo              = $servicio->costo;
 
             if($existe == null)

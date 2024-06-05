@@ -6,6 +6,10 @@ use App\Http\Controllers\UtilsController;
 use App\Http\Controllers\NotificacionesController;
 use App\Models\DetalleAsignacion;
 use App\Models\Disponible;
+use App\Models\GiftCard;
+use App\Models\Membresia;
+use App\Models\MovimientoGiftCard;
+use App\Models\Servicio;
 use App\Models\TasaBcv;
 use App\Models\User;
 use App\Models\VentaServicio;
@@ -18,7 +22,9 @@ use WireUi\Traits\Actions;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
+use Exception;
 
 class Caja extends Component
 {
@@ -29,21 +35,33 @@ class Caja extends Component
     public $op2;
     public $valor_uno;
     public $valor_dos;
+    public $monto_giftcard;
 
     public $propina_usd;
     public $propina_bsd;
 
-    #[Rule('required')]
     public $referencia;
+
+    public $ref_usd;
+    public $ref_bsd;
+    public $ref_propina;
 
     public $prueba;
 
-    public $descripcion;
+    public $descripcion = 'Multiple';
     public $op1_hidden = 'hidden';
     public $op2_hidden = 'hidden';
     public $ref_hidden = 'hidden';
+    public $atr_giftCard = 'hidden';
+    public $codigo;
+    public $metodo_pago_pre;
 
     public $option = false;
+
+    /**Atributos y propiedades para manejo de giftCard */
+    public $monto_mem;
+    public $codigo_mem;
+    public $atr_mem = 'hidden';
 
     protected $messages = [
         'dolares'     => 'Campo requerido',
@@ -55,28 +73,33 @@ class Caja extends Component
 
     public function event()
     {
-        if($this->descripcion == 'Pago movil' || $this->descripcion == 'Transferencia' || $this->descripcion == 'Zelle' || $this->descripcion == 'Punto de venta')
-        {
+        if ($this->descripcion == 'Pago movil' || $this->descripcion == 'Transferencia' || $this->descripcion == 'Zelle' || $this->descripcion == 'Punto de venta') {
             $this->ref_hidden = '';
             $this->op1_hidden = 'hidden';
             $this->op2_hidden = 'hidden';
         }
 
-        if($this->descripcion == 'Multiple')
-        {
+        if ($this->descripcion == 'Multiple') {
             $this->op1_hidden = '';
             $this->op2_hidden = '';
             $this->ref_hidden = '';
         }
 
-        if($this->descripcion == 'Efectivo Usd' || $this->descripcion == 'Efectivo Bsd')
-        {
+        if ($this->descripcion == 'Efectivo Usd' || $this->descripcion == 'Efectivo Bsd') {
             $this->ref_hidden = 'hidden';
             $this->op1_hidden = 'hidden';
             $this->op2_hidden = 'hidden';
         }
 
-        if($this->descripcion == ''){
+        if ($this->metodo_pago_pre == 'GiftCard') {
+            $this->atr_giftCard = '';
+        }
+
+        if ($this->metodo_pago_pre == 'Membresia') {
+            $this->atr_mem = '';
+        }
+
+        if ($this->descripcion == '') {
             $this->reset();
         }
     }
@@ -88,17 +111,20 @@ class Caja extends Component
         $item = VentaServicio::where('cod_asignacion', $codigo['cod_asignacion'])->first();
 
         $total = DB::table('detalle_asignacions')
-        ->select(DB::raw('SUM(costo) as total'))
-        ->where('cod_asignacion', $item->cod_asignacion)
+            ->select(DB::raw('SUM(costo) as total'))
+            ->where('cod_asignacion', $item->cod_asignacion)
             ->where('status', '1')
             ->first();
 
         $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
 
-        $total_vista = $total->total;
-        $total_vista_bsd = $total_vista * $tasa_bcv;
-
-        $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
+        if ($this->monto_giftcard != '') {
+            $total_vista = $total->total - $this->monto_giftcard;
+            $total_vista_bsd = $total_vista * $tasa_bcv;
+        } else {
+            $total_vista = $total->total;
+            $total_vista_bsd = $total_vista * $tasa_bcv;
+        }
 
         /**
          * Caso 1
@@ -106,130 +132,52 @@ class Caja extends Component
          * calquier metodo de pago en bolivares.
          * ---------------------------------------------------------------
          */
-        if ($this->op1 == 'Efectivo Usd' || $this->op1 == 'Zelle')
-        {
-            //Evalua que el segundo metodo de pago no este vacio
-            //--------------------------------------------------
-            if($this->op2 == '')
-            {
+
+        if ($this->op1 == 'Efectivo Usd' || $this->op1 == 'Zelle' || $this->op1 == '' && $this->op2 == '' || $this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta') {
+            if ($this->op1 == '' && $this->op2 == '') {
                 $this->dialog()->error(
                     $title = 'Error !!!',
-                    $description = 'Debe seleccionar el segundo metodo de pago antes de ejecutar el calculo.'
+                    $description = 'Debe seleccionar la forma de pago antes de ejecutar el calculo.'
                 );
 
                 $this->reset(['valor_uno']);
-            }
-
-            if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta')
-            {
-                //Evalua que el monto a calcular no sea mayor o igual al total de la venta
-                //------------------------------------------------------------------------
-                if($this->valor_uno >= $total_vista){
-                    $this->dialog()->error(
-                        $title = 'Error !!!',
-                        $description = 'El monto debe ser menor al valor total de la venta.'
-                    );
-                    $this->reset(['valor_uno']);
-                }else{
-                    $calculo_valor_dos = $total_vista - $this->valor_uno;
-                    $this->valor_uno = number_format($this->valor_uno, 2, ",", ".");
-                    $this->valor_dos = number_format(($calculo_valor_dos * $tasa_bcv), 2, ",", ".");
-                }
-
+            } else {
+                $calculo_valor_dos = $total_vista - $this->valor_uno;
+                $this->valor_uno = number_format($this->valor_uno, 2, ",", ".");
+                $this->valor_dos = number_format(($calculo_valor_dos * $tasa_bcv), 2, ",", ".");
             }
         }
+    }
 
-        /**
-         * Caso 2
-         * Este contempla los metodos de pago en bolivares conbinados
-         * ----------------------------------------------------------
-         */
-        if ($this->op1 == 'Efectivo Bsd' || $this->op1 == 'Pago movil' || $this->op1 == 'Transferencia' || $this->op1 == 'Punto de venta')
-        {
-            //Evalua que el segundo metodo de pago no este vacio
-            //--------------------------------------------------
-            if($this->op2 == '')
-            {
-                $this->dialog()->error(
-                    $title = 'Error !!!',
-                    $description = 'Debe seleccionar el segundo metodo de pago antes de ejecutar el calculo.'
-                );
+    public function valida_giftcard(Request $request)
+    {
+        $codigo = $request->session()->all();
 
-                $this->reset(['valor_uno']);
+        $item = VentaServicio::where('cod_asignacion', $codigo['cod_asignacion'])->first();
+
+        $valida_cod = GiftCard::where('pgc', $this->codigo)->first();
+
+        if (isset($valida_cod)) {
+            
+            if ($valida_cod->status == '1' && $valida_cod->cliente_id == $item->cliente_id) {
+                session()->flash('activa', 'TARJETA GIFTCARD ACTIVA!');
+                $this->monto_giftcard = $valida_cod->monto;
             }
 
-            if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta')
-            {
-                //Evalua que el monto a calcular no sea mayor o igual al total de la venta
-                //------------------------------------------------------------------------
-                if($this->valor_uno >= $total_vista_bsd){
-                    $this->dialog()->error(
-                        $title = 'Error !!!',
-                        $description = 'El monto debe ser menor al valor total de la venta.'
-                    );
-                    $this->reset(['valor_uno']);
-
-                }else{
-                    $calculo_valor_uno = $this->valor_uno;
-                    $this->valor_uno = number_format(($calculo_valor_uno), 2, ",", ".");
-
-                    $calculo_valor_dos = $total_vista_bsd - $calculo_valor_uno;
-                    $this->valor_dos = number_format(($calculo_valor_dos), 2, ",", ".");
-                }
+            if ($valida_cod->status == '1' && $valida_cod->cliente_id != $item->cliente_id) {
+                session()->flash('error', 'TARJETA GIFTCARD ACTIVA!, PERO NO PERTENECE AL CLIENTE');
+                $this->reset(['codigo', 'monto_giftcard']);
 
             }
+
+            if ($valida_cod->status == '2') {
+                session()->flash('error', 'TARJETA GIFTCARD INACTIVA. FECHA DE USO: '.$valida_cod->updated_at.'');
+            }
+
+        }else {
+            session()->flash('error', 'CODIGO NO EXISTE');
+            $this->reset(['codigo', 'monto_giftcard']);
         }
-
-        /**
-         * Caso 2
-         * Este contempla el pago en efectivo emn usd y el restante en
-         * un transferncia en zelle
-         * -----------------------------------------------------------
-         */
-        if ($this->op1 == 'Efectivo Usd')
-        {
-            //Evalua que el segundo metodo de pago no este vacio
-            //--------------------------------------------------
-            if($this->op2 == '')
-            {
-                $this->dialog()->error(
-                    $title = 'Error !!!',
-                    $description = 'Debe seleccionar el segundo metodo de pago antes de ejecutar el calculo.'
-                );
-
-                $this->reset(['valor_uno']);
-            }
-
-            if ($this->op2 == 'Zelle')
-            {
-                //Evalua que el monto a calcular no sea mayor o igual al total de la venta
-                //------------------------------------------------------------------------
-                if($this->valor_uno >= $total_vista){
-                    $this->dialog()->error(
-                        $title = 'Error !!!',
-                        $description = 'El monto debe ser menor al valor total de la venta.'
-                    );
-                    $this->reset(['valor_uno']);
-                }else{
-                    $calculo_valor_dos = $total_vista - $this->valor_uno;
-                    $this->valor_uno = number_format($this->valor_uno, 2, ",", ".");
-                    $this->valor_dos = number_format($calculo_valor_dos, 2, ",", ".");
-                }
-
-            }
-        }
-
-        //Caso4
-        if ($this->op1 == $this->op2)
-        {
-            $this->dialog()->error(
-                $title = 'Error !!!',
-                $description = 'Seleccione un método de pago distinto.'
-            );
-            $this->reset(['op2', 'valor_uno']);
-        }
-
-
     }
 
     public function eliminar_servicio($value)
@@ -250,17 +198,16 @@ class Caja extends Component
         } catch (\Throwable $th) {
             dd($th);
         }
-
     }
 
     public function facturar_servicio(Request $request)
     {
-        if($this->descripcion == ''){
+        if ($this->descripcion == '') {
             $this->dialog()->error(
                 $title = 'Error !!!',
                 $description = 'Debe seleccionar un método de pago de lo contrario no podra facturar el servicio'
             );
-        }else{
+        } else {
 
             /**
              * El codigo es tomado de la variables de sesion
@@ -286,328 +233,218 @@ class Caja extends Component
             $total_vista_bsd = $total_vista * $tasa_bcv;
 
             /**
-             * Pago total en DOLARES
-             */
-            if($this->descripcion == 'Efectivo Usd')
-            {
-                try {
-
-                    $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
-                        ->update([
-                            'metodo_pago'   => $this->descripcion,
-                            'referencia'    => $this->referencia,
-                            'total_USD'     => $total_vista,
-                            'pago_usd'      => $total_vista,
-                            'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                            'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                            'comision_dolares' => UtilsController::cal_comision_empleado($total_vista),
-                            'responsable'   => Auth::user()->name,
-                        ]);
-
-                    DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
-                        ->update([
-                            'status' => '2',
-
-                        ]);
-
-                    Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
-                        ->update([
-                            'status' => 'facturado'
-                        ]);
-
-                    Notification::make()
-                        ->title('La factura fue cerrada con exito')
-                        ->success()
-                        ->send();
-
-                    $this->redirect('/cabinas');
-
-                } catch (\Throwable $th) {
-                    //throw $th;
-                }
-
-            }
-
-            /**
-             * Pago total en BOLIVARES
-             */
-            if($this->descripcion == 'Efectivo Bsd')
-            {
-
-                try {
-
-                    $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
-                        ->update([
-                            'metodo_pago' => $this->descripcion,
-                            'referencia' => $this->referencia,
-                            'total_USD' => $total_vista,
-                            'pago_bsd' => $total_vista * $tasa_bcv,
-                            'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                            'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                            'comision_bolivares' => UtilsController::cal_comision_empleado($total_vista * $tasa_bcv),
-                            'responsable'   => Auth::user()->name,
-                        ]);
-
-                    DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
-                        ->update([
-                            'status' => '2',
-                        ]);
-
-                    Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
-                        ->update([
-                            'status' => 'facturado'
-                        ]);
-
-                    Notification::make()
-                        ->title('La factura fue cerrada con exito')
-                        ->success()
-                        ->send();
-
-                    $this->redirect('/cabinas');
-
-                } catch (\Throwable $th) {
-                    //throw $th;
-                }
-
-            }
-
-            /**
-             * Pago total en PAGO MOVIL
-             */
-            if($this->descripcion == 'Pago movil' || $this->descripcion == 'Punto de venta' || $this->descripcion == 'Transferencia')
-            {
-                if($this->referencia != '')
-                {
-                    try {
-
-                        $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
-                            ->update([
-                                'metodo_pago' => $this->descripcion,
-                                'referencia' => $this->referencia,
-                                'total_USD' => $total_vista,
-                                'pago_bsd' => $total_vista * $tasa_bcv,
-                                'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                                'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                                'comision_bolivares' => UtilsController::cal_comision_empleado($total_vista * $tasa_bcv),
-                                'responsable'   => Auth::user()->name,
-                            ]);
-
-                        DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
-                            ->update([
-                                'status' => '2',
-                            ]);
-
-                        Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
-                            ->update([
-                                'status' => 'facturado'
-                            ]);
-
-                        Notification::make()
-                            ->title('La factura fue cerrada con exito')
-                            ->success()
-                            ->send();
-
-                        $this->redirect('/cabinas');
-
-                    } catch (\Throwable $th) {
-                        //throw $th;
-                    }
-
-                }else{
-                    $this->dialog()->error(
-                        $title = 'Error !!!',
-                        $description = 'Debe cargar el número de referencia, de lo contrario no podra realizar la facturación'
-                    );
-                }
-            }
-
-            /**
              * Pago total en ZELLE
              */
-            if($this->descripcion == 'Zelle')
-            {
-                if($this->referencia == ''){
-                    $this->dialog()->error(
-                        $title = 'Error !!!',
-                        $description = 'Debe cargar el número de referencia, de lo contrario no podra realizar la facturación'
-                    );
+            if ($this->descripcion == 'Multiple') {
+                try {
 
-                }else{
-
-                    try {
-
-                        $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
-                            ->update([
-                                'metodo_pago' => $this->descripcion,
-                                'referencia' => $this->referencia,
-                                'total_USD' => $total_vista,
-                                'pago_usd' => $total_vista,
-                                'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                                'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                                'comision_dolares' => UtilsController::cal_comision_empleado($total_vista),
-                                'responsable'   => Auth::user()->name,
-                            ]);
-
-                        DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
-                            ->update([
-                                'status' => '2',
-                            ]);
-
-                        Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
-                            ->update([
-                                'status' => 'facturado'
-                            ]);
-
-                        Notification::make()
-                            ->title('La factura fue cerrada con exito')
-                            ->success()
-                            ->send();
-
-                        $this->redirect('/cabinas');
-                        //code...
-                    } catch (\Throwable $th) {
-                        //throw $th;
-                    }
-
-                }
-            }
-
-            /**
-             * Pago total en ZELLE
-             */
-            if($this->descripcion == 'Multiple')
-            {
-
-                /**
-                 * CASO 1 DOLARES -> BOLIVARES
-                 */
-                if ($this->op1 == 'Efectivo Usd' || $this->op1 == 'Zelle')
-                {
-                    if ($this->op2 == 'Efectivo Bsd' || $this->op2 == 'Pago movil' || $this->op2 == 'Transferencia' || $this->op2 == 'Punto de venta')
-                    {
-                        if($this->valor_uno == '' and $this->valor_dos == '')
-                        {
-                            $this->dialog()->error(
-                                $title = 'Error !!!',
-                                $description = 'Debe llenar el monto en dolares para realizar el calculo.'
-                            );
-
-                        }elseif($this->valor_uno == 0)
-                        {
-
-                            $this->dialog()->error(
-                                $title = 'Error !!!',
-                                $description = 'Los monto deben ser mayores a cero.'
-                            );
-
-                        }else{
-
-                            // dd($this->referencia);
-                            // $this->referencia = 'pago multiple';
-
-                                try {
-
-                                    $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
-                                        ->update([
-                                            'metodo_pago' => $this->descripcion,
-                                            'referencia' => $this->referencia,
-                                            'total_USD' => $total_vista,
-                                            'pago_usd' => floatval($this->valor_uno),
-                                            'pago_bsd' => Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
-                                            'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                                            'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                                            'comision_dolares'   => UtilsController::cal_comision_empleado(floatval($this->valor_uno)),
-                                            'comision_bolivares' => UtilsController::cal_comision_empleado(Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos)))),
-                                            'responsable'   => Auth::user()->name,
-                                        ]);
-
-                                    DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
-                                        ->update([
-                                            'status' => '2',
-                                        ]);
-
-                                    Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
-                                        ->update([
-                                            'status' => 'facturado'
-                                        ]);
-
-                                    Notification::make()
-                                        ->title('La factura fue cerrada con exito')
-                                        ->success()
-                                        ->send();
-
-                                    $this->redirect('/cabinas');
-
-                                } catch (\Throwable $th) {
-                                    //throw $th;
-                                }
-
+                        if ($this->ref_usd == '' && $this->ref_bsd == '') {
+                            $this->referencia = '';
                         }
 
-                    }
-                }
+                        if ($this->ref_usd != '' && $this->ref_bsd == '') {
+                            $this->referencia = $this->ref_usd;
+                        }
 
-                /**
-                 * CASO 2 DOLARES -> DOLARES
-                 */
-                if ($this->op1 == 'Efectivo Usd')
-                {
-                    if ($this->op2 == 'Zelle')
-                    {
-                        if($this->valor_uno == '' and $this->valor_dos == '')
-                        {
-                            $this->dialog()->error(
-                                $title = 'Error !!!',
-                                $description = 'Los monto deben ser myor a 0.'
-                            );
-                        }else{
+                        if ($this->ref_usd == '' && $this->ref_bsd != '') {
+                            $this->referencia = $this->ref_bsd;
+                        }
 
-                            // $this->referencia = 'pago multiple';
+                        if ($this->ref_usd != '' && $this->ref_bsd != '') {
+                            $this->referencia = $this->ref_usd . '-' . $this->ref_bsd;
+                        }
 
-                            try {
+                        /**Obtengo el codigo del servicio a facturar */
+                        $srv_vip = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
+                            ->where('status', '1')
+                            ->first()
+                            ->cod_servicio;
 
-                                $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
-                                    ->update([
-                                        'metodo_pago' => $this->descripcion,
-                                        'referencia' => $this->referencia,
-                                        'total_USD' => $total_vista,
-                                        'pago_usd' => $total_vista,
-                                        'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                                        'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                                        'comision_dolares' => UtilsController::cal_comision_empleado($total_vista),
-                                        'responsable'   => Auth::user()->name,
-                                    ]);
+                        /**Pregunto? si la asignacion del servicio en VIP */
+                        $tipoSrv = Servicio::where('cod_servicio', $srv_vip)->first()->asignacion;
 
-                                DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
-                                    ->update([
-                                        'status' => '2',
-                                    ]);
+                        /**CASO DE USO 1
+                         * METODO DE PAGO: SOLO CON GIFTCARD
+                         */
+                        if ($this->monto_giftcard != '') {
 
-                                Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
-                                    ->update([
-                                        'status' => 'facturado'
-                                    ]);
+                            /**Tomo la informacion de giftCard segun el codigo de 4 digitos asignado */
+                            $valida_cod = GiftCard::where('pgc', $this->codigo)->first();
 
-                                Notification::make()
-                                    ->title('La factura fue cerrada con exito')
-                                    ->success()
-                                    ->send();
+                            /**Valido que el monto de la giftcard no puede ser mayor al monto total a pagar*/
+                            if ($this->monto_giftcard > $total_vista) {
+                                throw new Exception("El monto de Giftcard es mayor al monto del servicio total. Favor intente con otra", 401);
+                            } else {
+                                /**Calculo el nuevo valor del servicio restando el valor de la giftcard */
+                                $total_vista_actualizado = $total_vista - $this->monto_giftcard;
 
-                                $this->redirect('/cabinas');
+                                /**Si el total a pagar es igual a cero(0), implica que el cliente va a cancelar el total de la cuenta con la giftcard */
+                                if($total_vista_actualizado == 0){
+                                    /**Controlador para calcular las comisiones */
+                                    $res = UtilsController::cal_comision_giftCard($this->monto_giftcard, $tipoSrv);
 
-                            } catch (\Throwable $th) {
-                                //throw $th;
+                                    /**
+                                     * Actualizamos la tabla de ventas, Detalles de asignacion y Disponible
+                                     */
+                                    $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
+                                        ->update([
+                                            'metodo_pago'           => ($this->op1 != '') ? $this->op1 : 'N/A',
+                                            'metodo_pago_dos'       => ($this->op2 != '') ? $this->op2 : 'N/A',
+                                            'metodo_pago_prepagado' => ($this->metodo_pago_pre != '') ? $this->metodo_pago_pre : 'N/A',
+                                            'referencia'            => $this->referencia,
+                                            'total_USD'             => $total_vista,
+                                            'pago_usd'              => $this->monto_giftcard,
+                                            'pago_bsd'              => ($this->valor_dos == '') ? 0.00 : Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
+                                            'propina_usd'           => ($this->propina_usd != '') ? $this->propina_usd : 0.00,
+                                            'propina_bsd'           => ($this->propina_bsd != '') ? $this->propina_bsd : 0.00,
+                                            'referencia_propina'    => $this->ref_propina,
+                                            'comision_dolares'      => $res['comision_usd_emp_valorUno'],
+                                            'comision_bolivares'    => $res['comision_bs_emp_valorDos'],
+                                            'comision_gerente'      => $res['comision_usd_gte'],
+                                            'responsable'           => Auth::user()->name,
+                                        ]);
+
+                                    /**Valido el estatus de la giftcard se encuentre activa(1) y que pertenesca al cliente */
+                                    if ($valida_cod->status == '1' && $valida_cod->cliente_id == $item->cliente_id) {
+                                        $movimiento = new MovimientoGiftCard();
+                                        $movimiento->gift_card_id = $valida_cod->id;
+                                        $movimiento->codigo_seguridad = $valida_cod->codigo_seguridad;
+                                        $movimiento->cliente_id = $item->cliente_id;
+                                        $movimiento->monto_pagado = floatval($total_vista_actualizado);
+                                        $movimiento->fecha_debito = date('d-m-Y');
+                                        $movimiento->responsable = Auth::user()->name;
+                                        $movimiento->save();
+
+                                        /**Actualizo el status de la giftCard a 2, que significa que ya fue utilizada */
+                                        GiftCard::where('pgc', $this->codigo)
+                                        ->update([
+                                            /**Giftcard usada */
+                                            'status' => '2'
+                                        ]);
+
+                                    } else {
+                                        throw new Exception("La tarjeta GiftCard ya fue consumida en su totalidad, ó no pertenece al cliente. Favor intente con otra", 401);
+                                    }
+
+                                }else{
+                                    /**Al entrean aqui, quiere decir que el cliente va a cancelar de forma parcial, una parte con la giftcard y el resto seleccionando uno
+                                     * o ambos metodos de pago que serian en Dolares y/o Bolivares
+                                     */
+
+                                     /**Restriccion para que el cliente seleccione otro metodo de pago para completar la cuenta
+                                      * ya que la giftcard debe usarce completa y NO DE FORMA PARCIAL
+                                      */
+                                    if($this->valor_uno == '' || $this->valor_dos == '')
+                                    {
+                                        throw new Exception("Debe seleccionar un metodo de pago en Dolares o en Bolivares", 401);
+                                    }
+
+                                    /**Controlador para calcular las comisiones */
+                                    $res = UtilsController::cal_comision_empleado($this->valor_uno, $this->valor_dos, $tipoSrv, $total_vista, $this->monto_giftcard);
+
+                                    /**
+                                     * Actualizamos la tabla de ventas, Detalles de asignacion y Disponible
+                                     */
+                                    $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
+                                        ->update([
+                                            'metodo_pago'           => ($this->op1 != '') ? $this->op1 : 'N/A',
+                                            'metodo_pago_dos'       => ($this->op2 != '') ? $this->op2 : 'N/A',
+                                            'metodo_pago_prepagado' => ($this->metodo_pago_pre != '') ? $this->metodo_pago_pre : 'N/A',
+                                            'referencia'            => $this->referencia,
+                                            'total_USD'             => $total_vista,
+                                            'pago_usd'              => ($this->valor_uno == '') ? 0.00 : floatval($this->valor_uno),
+                                            'pago_bsd'              => ($this->valor_dos == '') ? 0.00 : Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
+                                            'propina_usd'           => ($this->propina_usd != '') ? $this->propina_usd : 0.00,
+                                            'propina_bsd'           => ($this->propina_bsd != '') ? $this->propina_bsd : 0.00,
+                                            'referencia_propina'    => $this->ref_propina,
+                                            'comision_dolares'      => $res['comision_usd_emp_valorUno'],
+                                            'comision_bolivares'    => $res['comision_bs_emp_valorDos'],
+                                            'comision_gerente'      => $res['comision_usd_gte'],
+                                            'responsable'           => Auth::user()->name,
+                                        ]);
+
+                                    /**Valido el estatus de la giftcard se encuentre activa(1) y que pertenesca al cliente */
+                                    if ($valida_cod->status == '1' && $valida_cod->cliente_id == $item->cliente_id) {
+                                        $movimiento = new MovimientoGiftCard();
+                                        $movimiento->gift_card_id = $valida_cod->id;
+                                        $movimiento->codigo_seguridad = $valida_cod->codigo_seguridad;
+                                        $movimiento->cliente_id = $item->cliente_id;
+                                        $movimiento->monto_pagado = $valida_cod->monto;
+                                        $movimiento->fecha_debito = date('d-m-Y');
+                                        $movimiento->responsable = Auth::user()->name;
+                                        $movimiento->save();
+
+                                        /**Actualizo el status de la giftCard a 2, que significa que ya fue utilizada */
+                                        GiftCard::where('pgc', $this->codigo)
+                                        ->update([
+                                            /**giftcard usada */
+                                            'status' => '2'
+                                        ]);
+
+                                    } else {
+                                        throw new Exception("La tarjeta GiftCard ya fue consumida en su totalidad, ó no pertenece al cliente. Favor intente con otra", 401);
+                                    }
+
+                                }
                             }
 
                         }
 
-                    }
+                        if ($this->metodo_pago_pre == '') {
+
+                            /**Controlador para calcular las comisiones */
+                            $res = UtilsController::cal_comision_empleado($this->valor_uno, $this->valor_dos, $tipoSrv, $total_vista, $this->monto_giftcard);
+
+                            /**
+                             * Actualizamos la tabla de ventas, Detalles de asignacion y Disponible
+                             */
+                            $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
+                                ->update([
+                                    'metodo_pago'           => ($this->op1 != '') ? $this->op1 : 'N/A',
+                                    'metodo_pago_dos'       => ($this->op2 != '') ? $this->op2 : 'N/A',
+                                    'metodo_pago_prepagado' => ($this->metodo_pago_pre != '') ? $this->metodo_pago_pre : 'N/A',
+                                    'referencia'            => $this->referencia,
+                                    'total_USD'             => $total_vista,
+                                    'pago_usd'              => ($this->valor_uno == '') ? 0.00 : floatval($this->valor_uno),
+                                    'pago_bsd'              => ($this->valor_dos == '') ? 0.00 : Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
+                                    'propina_usd'           => ($this->propina_usd != '') ? $this->propina_usd : 0.00,
+                                    'propina_bsd'           => ($this->propina_bsd != '') ? $this->propina_bsd : 0.00,
+                                    'referencia_propina'    => $this->ref_propina,
+                                    'comision_dolares'      => $res['comision_usd_emp_valorUno'],
+                                    'comision_bolivares'    => $res['comision_bs_emp_valorDos'],
+                                    'comision_gerente'      => $res['comision_usd_gte'],
+                                    'responsable'           => Auth::user()->name,
+                                ]);
+                        }
+
+                        DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
+                            ->update([
+                                'status' => '2',
+                            ]);
+
+                        Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
+                            ->update([
+                                'status' => 'facturado'
+                            ]);
+
+                        Notification::make()
+                            ->title('La factura fue cerrada con exito')
+                            ->success()
+                            ->send();
+
+                        $this->redirect('/cabinas');
+
+                } catch (\Throwable $th) {
+                    dd($th);
+                    Notification::make()
+                        ->title('NOTIFICACIÓN')
+                        ->icon('heroicon-o-shield-check')
+                        ->color('danger')
+                        ->body($th->getMessage())
+                        ->send();
                 }
-
             }
-
         }
-
     }
 
     public function cliente_especial()
@@ -626,7 +463,6 @@ class Caja extends Component
                 'method' => 'cancelar',
             ],
         ]);
-
     }
 
     /** Ejecutar el cliente especial */
@@ -644,8 +480,8 @@ class Caja extends Component
         Debugbar::info($item);
 
         $total = DB::table('detalle_asignacions')
-        ->select(DB::raw('SUM(costo) as total'))
-        ->where('cod_asignacion', $item->cod_asignacion)
+            ->select(DB::raw('SUM(costo) as total'))
+            ->where('cod_asignacion', $item->cod_asignacion)
             ->where('status', '1')
             ->first();
 
@@ -672,9 +508,9 @@ class Caja extends Component
                 ]);
 
             Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
-            ->update([
-                'status' => 'facturado'
-            ]);
+                ->update([
+                    'status' => 'facturado'
+                ]);
 
             Notification::make()
                 ->title('La factura fue cerrada con exito')
@@ -685,7 +521,6 @@ class Caja extends Component
         } catch (\Throwable $th) {
             //throw $th;
         }
-
     }
 
     public function cancelar()
@@ -708,8 +543,8 @@ class Caja extends Component
         $data = VentaServicio::where('cod_asignacion', $codigo['cod_asignacion'])->first();
 
         $detalle = DetalleAsignacion::where('cod_asignacion', $data->cod_asignacion)
-        ->where('status', '1')
-        ->get();
+            ->where('status', '1')
+            ->get();
 
         $total = DB::table('detalle_asignacions')
             ->select(DB::raw('SUM(costo) as total'))
@@ -717,10 +552,16 @@ class Caja extends Component
             ->where('status', '1')
             ->first();
 
-        $total_vista = $total->total;
-
         $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
-        $total_vista_bsd = $total_vista * $tasa_bcv;
+
+        if ($this->monto_giftcard != '') {
+            $total_vista = $total->total - $this->monto_giftcard;
+            $total_vista_bsd = $total_vista * $tasa_bcv;
+        } else {
+            $total_vista = $total->total;
+            $total_vista_bsd = $total_vista * $tasa_bcv;
+        }
+
 
         return view('livewire.caja', compact('data', 'detalle', 'total_vista', 'total_vista_bsd'));
     }

@@ -21,6 +21,11 @@
                 Hora: {{ $mailData['hora_cita'] }}
             </h3>
         </p>
+        <p style="text-align: justify; margin-left: 20px; font-weight: bold;">
+            Con el fin de respetar el tiempo de nuestros clientes y empleados,
+            le sugerimos debe llegar puntual a su cita.
+            De no ser asi deberá esperar su nuevo turno o debe reagendar su cita.
+        </p>
         <p style="text-align: justify; margin-left: 20px;">
             Para cualquier consulta o asistencia adicional que necesite, puede comunicarse las 24
             horas del dia con nuestro equipo a traves de piedyccs@gmail.com

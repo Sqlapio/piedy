@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Categoria;
 use App\Models\Cliente;
+use App\Models\DetalleAsignacion;
+use App\Models\Disponible;
 use App\Models\Empleado;
 use App\Models\Mes;
 use App\Models\MetodoPago;
@@ -67,7 +69,7 @@ class ApiClientesController extends Controller
     public function lista_servicios(Request $request): Collection
     {
         return Servicio::query()
-            ->select('id', 'descripcion')
+            ->select('id', 'descripcion', 'costo')
             ->where('categoria', 'principal')
             ->where('status', 'activo')
             ->orderBy('descripcion')
@@ -151,7 +153,6 @@ class ApiClientesController extends Controller
                 return $metodo_pago;
             });
     }
-
 
     public function categoria_producto(Request $request): Collection
     {
@@ -238,4 +239,51 @@ class ApiClientesController extends Controller
                 return $mes;
             });
     }
+
+    public function servicios_por_facturar(Request $request): Collection
+    {
+        return DetalleAsignacion::query()
+            ->select('id', 'cod_asignacion')
+            ->where('status', '1')
+            // ->where('servicio', 'like', '%Membresia%')
+            ->orderBy('id', 'asc')
+            ->when(
+                $request->search,
+                fn (Builder $query) => $query
+                    ->where('cod_asignacion', 'like', "%{$request->search}%")
+            )
+            ->when(
+                $request->exists('selected'),
+                fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
+                fn (Builder $query) => $query->limit(5)
+            )
+            ->get()
+            ->map(function (DetalleAsignacion $detalle_asignacion) {
+                $detalle_asignacion->cod_asignacion;
+                return $detalle_asignacion;
+            });
+    }
+
+    public function metodo_pago_multiple(Request $request): Collection
+    {
+        return MetodoPago::query()
+            ->select('id', 'descripcion')
+            ->where('moneda', 'multiple')
+            ->orderBy('descripcion')
+            ->when(
+                $request->search,
+                fn (Builder $query) => $query
+                    ->where('descripcion', 'like', "%{$request->search}%")
+            )
+            ->when(
+                $request->exists('selected'),
+                fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
+                fn (Builder $query) => $query->limit(5)
+            )
+            ->get()
+            ->map(function (MetodoPago $metodo_pago) {
+                return $metodo_pago;
+            });
+    }
+
 }

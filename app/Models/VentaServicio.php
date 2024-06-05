@@ -28,13 +28,18 @@ class VentaServicio extends Model
         'empleado_id',
         'fecha_venta',
         'metodo_pago',
+        'metodo_pago_dos',
         'referencia',
         'comision_empleado',
         'comision_gerente',
         'comision_dolares',
         'comision_bolivares',
         'total_USD',
-        'total_BSD',
+        'pago_usd',
+        'pago_bsd',
+        'propina_usd',
+        'propina_bsd',
+        'referencia_propina',
         'responsable'
     ];
 

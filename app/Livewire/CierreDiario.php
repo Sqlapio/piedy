@@ -26,6 +26,7 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 use PHPUnit\Event\Code\Throwable;
+use Livewire\Attributes\Validate;
 use WireUi\Traits\Actions;
 
 class CierreDiario extends Component implements HasForms, HasTable
@@ -36,8 +37,13 @@ class CierreDiario extends Component implements HasForms, HasTable
 
     public $observaciones;
 
+    public $ref_debito;
+    public $ref_credito;
+    public $ref_visaMaster;
+
     public function notificacion_cierre()
     {
+
         $this->dialog()->confirm([
 
                 'title'       => 'Notificación de sistema',
@@ -119,6 +125,9 @@ class CierreDiario extends Component implements HasForms, HasTable
                 $cierre->total_dolares_efectivo  = $total_efectivo_usd;
                 $cierre->total_dolares_zelle     = $total_zelle;
                 $cierre->total_bolivares         = $total_bs;
+                $cierre->ref_debito              = $this->ref_debito;
+                $cierre->ref_credito             = $this->ref_credito;
+                $cierre->ref_visaMaster          = $this->ref_visaMaster;
                 $cierre->total_gastos            = $total_gastos_usd;
                 $cierre->saldo_caja_chica        = (isset($efectivo_caja_usd->saldo)) ? $efectivo_caja_usd->saldo : 0;
                 $cierre->fecha                   = date('d-m-Y');
@@ -138,6 +147,9 @@ class CierreDiario extends Component implements HasForms, HasTable
                         'total_dolares' => VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_usd'),
                         'zelle' => $cierre->total_dolares_zelle,
                         'total_bolivares' => $cierre->total_bolivares,
+                        'ref_debito' => $cierre->ref_debito,
+                        'ref_credito' => $cierre->ref_credito,
+                        'ref_visaMaster' => $cierre->ref_visaMaster,
                         'conversion' => $cierre->total_bolivares / $tasa,
                         'efectivo_caja_usd' => $cierre->total_dolares_efectivo,
                         'gastos' => $cierre->total_gastos,
@@ -191,10 +203,23 @@ class CierreDiario extends Component implements HasForms, HasTable
                 ->searchable(),
                 TextColumn::make('total_bolivares')
                 ->label('Bolivares(Bs)')
-                ->numeric()
-                ->money('VES',2, ",", ".")
+                ->money('VES')
                 ->sortable()
                 ->searchable(),
+
+                TextColumn::make('ref_debito')
+                ->label('Ref. Débito')
+                ->sortable()
+                ->searchable(),
+                TextColumn::make('ref_credito')
+                ->label('Ref. Credito')
+                ->sortable()
+                ->searchable(),
+                TextColumn::make('ref_visaMaster')
+                ->label('Ref. Visa/Master')
+                ->sortable()
+                ->searchable(),
+
                 TextColumn::make('total_gastos')
                 ->money('USD')
                 ->label('Gastos($)')

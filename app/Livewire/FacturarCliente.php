@@ -309,7 +309,7 @@ class FacturarCliente extends Component
                                     $factura->pago_bsd          = str_replace(',', '.', str_replace('.', '', $this->valor_dos));
                                     $factura->total_usd         = $this->total_vista;
                                     $factura->responsable       = $user->name;
-                                    // $factura->save();
+                                    $factura->save();
 
                                     /** Calculo del 40% del total de la vista
                                      * Este valor sera el asignado a los empleados

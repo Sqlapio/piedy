@@ -34,6 +34,9 @@ class ModalAgenda extends ModalComponent
     public $correo;
 
     #[Validate('required')]
+    public $telefono;
+
+    #[Validate('required')]
     public $hora;
 
     public $cliente;
@@ -73,11 +76,13 @@ class ModalAgenda extends ModalComponent
                 $cliente = Cliente::find($this->cliente_id);
                 $citas->cliente_id = $cliente->id;
                 $citas->correo = $cliente->email;
+                $citas->telefono = $cliente->telefono;
                 $citas->cliente = $cliente->nombre.' '.$cliente->apellido;
 
             }else{
                 $citas->correo = $this->correo;
                 $citas->cliente = $this->cliente;
+                $citas->telefono = $this->telefono;
             }
 
             if($this->hora > '22:00' || $this->hora < '10:00'){

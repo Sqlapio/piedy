@@ -35,6 +35,11 @@ class AppointmentReminder extends Command
         foreach ($citas as $cita) {
 
             $cliente = Cliente::where('id', $cita->cliente_id)->first();
+            if(isset($cliente)){
+                $tel = $cliente->telefono;
+            }else{
+                $tel = $cita->telefono;
+            }
             $ubication = 'https://maps.google.com/maps?q=Piedy%20Sambil%20Chacao,%20Distrito%20Capital&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=&amp;output=embed';
 
             $body = <<<HTML
@@ -53,7 +58,7 @@ class AppointmentReminder extends Command
 
             $params = array(
                 'token' => env('TOKEN_API_WHATSAPP'),
-                'to' => $cliente->telefono,
+                'to' => $tel,
                 'image' => env('IMAGE'),
                 'caption' => $body
             );

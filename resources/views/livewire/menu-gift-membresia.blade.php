@@ -11,7 +11,7 @@
                         </svg>
                     </div> --}}
                         <div class="text-left">
-                            <div class="mt-16 text-2xl text-black leading-7 font-bold">
+                            <div class="mt-20 text-2xl text-black leading-7 font-bold">
                                 GIFTCARD
                             </div>
                             <div class="mt-3 text-right text-md font-semibold text-black">
@@ -31,7 +31,7 @@
                         </svg>
                     </div> --}}
                     <div class="text-left">
-                        <div class="mt-16 text-2xl text-black leading-7 font-bold">
+                        <div class="mt-20 text-2xl text-black leading-7 font-bold">
                             MEMBRESIA
                         </div>
                         <div class="mt-3 text-right text-md font-semibold text-black">

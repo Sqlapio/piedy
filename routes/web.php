@@ -209,6 +209,6 @@ Route::get('/pp', function () {
     // NotificacionesController::notification($mailData, $type);
 
     // return 'listo';
-    $products = DB::select('call nomina_quincenal(?, ?)', array('2024-05-16', '2024-05-30'));
+    $products = DB::select('call nomina_quincenal(?, ?)', array('2024-06-01', '2024-06-05'));
     dd($products);
 });

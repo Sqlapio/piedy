@@ -183,23 +183,6 @@ class DetalleAsignacion extends ModalComponent
                 $this->forceClose()->closeModal();
 
                 /**
-                 * Guardamos la asignacion directa en la
-                 * tabla de citas para llevar el control
-                 * de la entrada de los clientes
-                 */
-                $user = Auth::user();
-
-                $cita = new Cita();
-                $cita->cod_cita = 'Pci-'.random_int(11111, 99999);
-                $cita->fecha = date('d-m-Y');
-                $cita->hora = date('HH:i');
-                $cita->cliente_id = $data->cliente_id;
-                $cita->servicio_id = $this->servicio_id;
-                $cita->status = 2;
-                $cita->responsable = $user->id;
-                $cita->save();
-
-                /**
                  * Cargamos el servicio principal asigando
                  * en la tabla de detalle de asignacion
                  */

@@ -50,12 +50,32 @@ class Venta extends Component implements HasForms, HasTable
                         'Multiple'              => 'warning',
                         'Efectivo Usd'          => 'success',
                         'Zelle'                 => 'success',
+                        'giftCard'              => 'success',
                         'Efectivo Bsd'          => 'info',
                         'Pago movil'            => 'info',
                         'transferencia'         => 'info',
                         'Punto de venta'        => 'info',
                         'Anulado'               => 'danger',
-                        'cliente especial'  => 'success',
+                        'cliente especial'      => 'success',
+                        'giftcard'              => 'success',
+                        'N/A'                   => 'gray',
+                    }),
+                TextColumn::make('metodo_pago_dos')
+                    ->searchable()
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Facturación multiple'  => 'warning',
+                        'Multiple'              => 'warning',
+                        'Efectivo Usd'          => 'success',
+                        'Zelle'                 => 'success',
+                        'Efectivo Bsd'          => 'info',
+                        'Pago movil'            => 'info',
+                        'transferencia'         => 'info',
+                        'Punto de venta'        => 'info',
+                        'Anulado'               => 'danger',
+                        'cliente especial'      => 'success',
+                        'Membresia'             => 'success',
+                        'N/A'                   => 'gray',
                     }),
                 TextColumn::make('referencia')
                 ->toggleable(isToggledHiddenByDefault: true)

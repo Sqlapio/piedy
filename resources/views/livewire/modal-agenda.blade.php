@@ -27,6 +27,10 @@
         <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Correo Electrónico</label>
         <x-input right-icon="user" wire:model="correo" type="email" />
     </div>
+    <div class="{{ $nuevo }} p-2">
+        <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Teléfono</label>
+        <x-input right-icon="user" wire:model="telefono" type="email" />
+    </div>
     <div class="p-2">
         <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Hora</label>
         <x-time-picker placeholder="hora" format="12" interval="30" wire:model="hora" />

@@ -245,7 +245,7 @@ class ApiClientesController extends Controller
         return DetalleAsignacion::query()
             ->select('id', 'cod_asignacion')
             ->where('status', '1')
-            // ->where('servicio', 'like', '%Membresia%')
+            ->where('cod_servicio', 'Sco-92146')
             ->orderBy('id', 'asc')
             ->when(
                 $request->search,

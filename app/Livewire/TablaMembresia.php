@@ -6,6 +6,7 @@ use App\Models\Membresia;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -49,15 +50,12 @@ class TablaMembresia extends Component implements HasForms, HasTable
                     ->label('Monto')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('status')
+                IconColumn::make('status')
                     ->label('Estatus')
-                    ->sortable()
-                    ->searchable()
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        '2'  => 'warning',
-                        '1'  => 'success',
-                    }),
+                        ->options([
+                            'heroicon-o-check-circle' => fn ($state, $record): bool => $record->status === 1,
+                            'heroicon-s-x-mark'       => fn ($state, $record): bool => $record->status === 2,
+                        ])
             ])
             ->filters([
                 //

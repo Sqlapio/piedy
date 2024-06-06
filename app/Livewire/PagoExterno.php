@@ -222,6 +222,7 @@ class PagoExterno extends Component
                             /**Me traigo de la base de datos toda la informacion de dicha membresia */
                             $_membresia = Membresia::where('cod_membresia', $this->barcode)->orWhere('pm', $this->pcs)->first();
 
+
                             DB::table('venta_servicios')->where('cod_asignacion', $this->cod_asignacion)
                                 ->update([
                                     'metodo_pago_prepagado'   => 'Membresia',
@@ -233,14 +234,15 @@ class PagoExterno extends Component
                                     'propina_bsd'   => 0.00,
                                     'responsable'   => $user->name,
                                 ]);
-                        
+
                             $mov_membresia = new MovimientoMembresia();
                             $mov_membresia->membresia_id        = $_membresia->id;
                             $mov_membresia->descripcion         = 'consumo en tienda';
                             $mov_membresia->cliente_id          = $_membresia->cliente_id;
                             $mov_membresia->cliente             = $_membresia->cliente->nombre.' '.$_membresia->cliente->apellido;
+                            $mov_membresia->cedula              = $_membresia->cliente->cedula;
                             $mov_membresia->save();
-                            
+
 
                             DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)->where('status', '1')
                                 ->update([
@@ -261,7 +263,7 @@ class PagoExterno extends Component
 
                             /** Notificacion para el administrador de sistemas al asignar una nueva giftcard */
                             $type = 'membresia-usada';
-                            $correo = env('GIFTCARD_EMAIL');
+                            $correo = env('CEO');
                             $mailData = [
                                 'codigo_asignacion' => $this->cod_asignacion,
                                 'cod_membresia'     => $membresia->cod_membresia,
@@ -270,13 +272,13 @@ class PagoExterno extends Component
                                 'fecha_venta'       => $servicio->fecha_venta,
                                 'servicio'          => Disponible::where('cod_asignacion', $this->cod_asignacion)->where('status', 'facturado')->first()->servicio,
                                 'responsable'       => $servicio->responsable,
-                                'tasa'              => $tasa,
                                 'user_email'        => 'gusta.acp@gmail.com',
                             ];
-                            NotificacionesController::notification($mailData, $type, $servicio->fecha_venta);
-                            /**Fin del envio de notificacion al administrador */
 
-                            $this->redirect('/pay/ex');
+                            /**Fin del envio de notificacion al administrador */
+                            NotificacionesController::notification($mailData, $type, $servicio->fecha_venta);
+
+                            return redirect('/pay/ex');
 
                         }else{
                             $error = ValidationException::withMessages(['gift' => 'La monto de la  GiftCard debe ser igual al monto total a pagar.']);
@@ -325,6 +327,7 @@ class PagoExterno extends Component
             }
 
         } catch (\Throwable $th) {
+            dd($th);
             Notification::make()
                     ->title('NOTIFICACIÓN')
                     ->icon('heroicon-o-shield-check')

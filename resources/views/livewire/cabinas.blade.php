@@ -35,7 +35,10 @@
                                 <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/vip.png') }}" alt="">
                             @endif
                             @if($item->servicio_asignacion != 'vip')
-                                <img class="w-14 h-auto rounded-full ml-4" src="{{ asset('images/open-lock.png') }}" alt="">
+                                <img class="w-16 h-auto rounded-full ml-4" src="{{ asset('images/open-lock.png') }}" alt="">
+                            @endif
+                            @if($item->servicio_asignacion != 'vip' && $item->servicio == 'Membresia')
+                                <img class="w-16 h-auto rounded-full ml-4" src="{{ asset('images/m.png') }}" alt="">
                             @endif
                         </div>
                     </div>
@@ -69,7 +72,10 @@
                                 <img class="w-20 h-20 rounded-full ml-4" src="{{ asset('images/vip.png') }}" alt="">
                             @endif
                             @if($item->servicio_asignacion != 'vip')
-                            <img class="w-14 h-auto rounded-full ml-4" src="{{ asset('images/padlock.png') }}" alt="">
+                            <img class="w-16 h-auto rounded-full ml-4" src="{{ asset('images/padlock.png') }}" alt="">
+                            @endif
+                            @if($item->servicio_asignacion != 'vip' && $item->servicio == 'Membresia')
+                                <img class="w-16 h-auto rounded-full ml-4" src="{{ asset('images/m.png') }}" alt="">
                             @endif
                         </div>
                     </div>

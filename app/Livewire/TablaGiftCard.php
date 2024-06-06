@@ -5,7 +5,9 @@ namespace App\Livewire;
 use App\Models\GiftCard;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Support\Colors\Color;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -48,10 +50,12 @@ class TablaGiftCard extends Component implements HasForms, HasTable
                     ->label('Monto($)')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('status')
-                    ->label('Estatus')
-                    ->sortable()
-                    ->searchable(),
+                IconColumn::make('status')
+                ->label('Estatus')
+                    ->options([
+                        'heroicon-o-check-circle' => fn ($state, $record): bool => $record->status === '1',
+                        'heroicon-s-x-mark' => fn ($state, $record): bool => $record->status === '2',
+                    ])
                 //
             ])
             ->filters([

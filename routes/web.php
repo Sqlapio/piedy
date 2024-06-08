@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificacionesEmail;
 use App\Models\Cita;
 use App\Models\Membresia;
+use App\Models\MovimientoMembresia;
 use Illuminate\Console\Scheduling\Schedule;
 
 
@@ -211,12 +212,21 @@ Route::get('/pp', function () {
     // NotificacionesController::notification($mailData, $type);
 
     // return 'listo';
-    $products = DB::select('call nomina_quincenal(?, ?)', array('2024-06-01', '2024-06-15'));
+    //Total de ventas por empleado
+    $products = DB::select('call nomina_quincenal(?, ?)', array('2024-06-01', '2024-06-14'));
 
-
+    //Total de membresias atendidas por empleado
     $user_info = DB::table('movimiento_membresias')
                  ->select('empleado', DB::raw('count(*) as total'))
+                 ->where('descripcion', '=', 'consumo en tienda')
                  ->groupBy('empleado')
                  ->get();
-    dd($products, $user_info);
+
+    //Total de membresias vendidas
+    $membresias = Membresia::all()->SUM('monto');
+
+    //Suma total de membresias atendias por los empleados
+    $sum_membresia = MovimientoMembresia::where('descripcion', '=', 'consumo en tienda')->count();
+
+    dd($products, $user_info, $membresias, $sum_membresia);
 });

@@ -18,7 +18,6 @@ class Kernel extends ConsoleKernel
         // ->emailOutputTo('gusta.acp@gmail.com');
 
         $schedule->command('app:appointment-reminder')
-        ->weekdays()
         ->dailyAt('9:00')
         ->emailOutputTo('gusta.acp@gmail.com');
 

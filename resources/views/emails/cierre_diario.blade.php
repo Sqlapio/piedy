@@ -81,12 +81,24 @@
                     <td>{{ round($mailData['ref_debito']) }}</td>
                 </tr>
                 <tr>
+                    <td>Monto Debito</td>
+                    <td>{{ $mailData['monto_ref_debito'] }}</td>
+                </tr>
+                <tr>
                     <td>Nro. Referencia Credito</td>
                     <td>{{ round($mailData['ref_credito']) }}</td>
                 </tr>
                 <tr>
+                    <td>Monto Credito</td>
+                    <td>{{ $mailData['monto_ref_credito'] }}</td>
+                </tr>
+                <tr>
                     <td>Nro. Referencia Visa/Master</td>
                     <td>{{ round($mailData['ref_visaMaster']) }}</td>
+                </tr>
+                <tr>
+                    <td>Monto Visa/Master</td>
+                    <td>{{ $mailData['monto_ref_visaMaster'] }}</td>
                 </tr>
                 <tr>
                     <td>Conversión (Bs.) -> ($)</td>

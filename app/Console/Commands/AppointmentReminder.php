@@ -85,7 +85,8 @@ class AppointmentReminder extends Command
             curl_close($curl);
 
         }
-
+    
         $this->info($response);
+
     }
 }

@@ -84,7 +84,8 @@ class AppointmentReminder extends Command
 
             curl_close($curl);
         }
+    
+        $this->info($response);
 
-        $this->info('La notificacion fue enviada con exito');
     }
 }

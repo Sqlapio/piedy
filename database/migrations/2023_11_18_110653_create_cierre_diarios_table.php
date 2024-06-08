@@ -20,6 +20,9 @@ return new class extends Migration
             $table->string('ref_debito')->nullable();
             $table->string('ref_credito')->nullable();
             $table->string('ref_visaMaster')->nullable();
+            $table->decimal('monto_ref_debito',8 ,2)->nullable()->default(0.00);
+            $table->decimal('monto_ref_credito',8 ,2)->nullable()->default(0.00);
+            $table->decimal('monto_ref_visaMaster',8 ,2)->nullable()->default(0.00);
             $table->decimal('saldo_caja_chica',8 ,2)->nullable()->default(0.00);
             $table->string('fecha');
             $table->string('responsable');

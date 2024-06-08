@@ -41,6 +41,10 @@ class CierreDiario extends Component implements HasForms, HasTable
     public $ref_credito;
     public $ref_visaMaster;
 
+    public $monto_ref_debito;
+    public $monto_ref_credito;
+    public $monto_ref_visaMaster;
+
     public function notificacion_cierre()
     {
 
@@ -61,6 +65,21 @@ class CierreDiario extends Component implements HasForms, HasTable
                 ],
 
             ]);
+    }
+
+    public function conver_ref_debito()
+    {
+        $this->monto_ref_debito = number_format(floatval(($this->monto_ref_debito) / 100), 2, ',', '.');
+    }
+
+    public function conver_ref_credito()
+    {
+        $this->monto_ref_credito = number_format(floatval(($this->monto_ref_credito) / 100), 2, ',', '.');
+    }
+
+    public function conver_ref_visaMaster()
+    {
+        $this->monto_ref_visaMaster = number_format(floatval(($this->monto_ref_visaMaster) / 100), 2, ',', '.');
     }
 
     public function cancelar()
@@ -126,13 +145,16 @@ class CierreDiario extends Component implements HasForms, HasTable
                 $cierre->total_dolares_zelle     = $total_zelle;
                 $cierre->total_bolivares         = $total_bs;
                 $cierre->ref_debito              = $this->ref_debito;
+                $cierre->monto_ref_debito        = str_replace(',', '.', str_replace('.', '', $this->monto_ref_debito));
                 $cierre->ref_credito             = $this->ref_credito;
+                $cierre->monto_ref_credito       = str_replace(',', '.', str_replace('.', '', $this->monto_ref_credito));
                 $cierre->ref_visaMaster          = $this->ref_visaMaster;
+                $cierre->monto_ref_visaMaster        = str_replace(',', '.', str_replace('.', '', $this->monto_ref_visaMaster));
                 $cierre->total_gastos            = $total_gastos_usd;
                 $cierre->saldo_caja_chica        = (isset($efectivo_caja_usd->saldo)) ? $efectivo_caja_usd->saldo : 0;
                 $cierre->fecha                   = date('d-m-Y');
                 $cierre->responsable             = $user->name;
-                $cierre->save();
+                // $cierre->save();
 
                 /** Notificacion para el usuario cuando su servicio fue anulado */
                 $type = 'cierre_diario';
@@ -150,12 +172,15 @@ class CierreDiario extends Component implements HasForms, HasTable
                         'ref_debito' => $cierre->ref_debito,
                         'ref_credito' => $cierre->ref_credito,
                         'ref_visaMaster' => $cierre->ref_visaMaster,
+                        'monto_ref_debito' => $this->monto_ref_debito,
+                        'monto_ref_credito' => $this->monto_ref_credito,
+                        'monto_ref_visaMaster' => $this->monto_ref_visaMaster,
                         'conversion' => $cierre->total_bolivares / $tasa,
                         'efectivo_caja_usd' => $cierre->total_dolares_efectivo,
                         'gastos' => $cierre->total_gastos,
                         'efectivo_caja_chica' => $cierre->saldo_caja_chica,
                         'fecha' => $cierre->created_at,
-                        'user_email' => $correo,
+                        'user_email' => 'gusta.acp@gmail.com',
                         'responsable' => $cierre->responsable,
                     ];
 

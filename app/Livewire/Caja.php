@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Http\Controllers\UtilsController;
 use App\Http\Controllers\NotificacionesController;
+use App\Models\Comision;
 use App\Models\DetalleAsignacion;
 use App\Models\Disponible;
 use App\Models\GiftCard;
@@ -63,6 +64,10 @@ class Caja extends Component
     public $codigo_mem;
     public $atr_mem = 'hidden';
 
+    public $img_dr_encasa = 'dr-encasa-gris.png';
+    public $pixeles = '90px';
+    public $seguro;
+
     protected $messages = [
         'dolares'     => 'Campo requerido',
     ];
@@ -91,7 +96,7 @@ class Caja extends Component
             $this->op2_hidden = 'hidden';
         }
 
-        if ($this->metodo_pago_pre == 'GiftCard') {
+        if ($this->metodo_pago_pre == 1 || $this->metodo_pago_pre == 2) {
             $this->atr_giftCard = '';
         }
 
@@ -121,7 +126,11 @@ class Caja extends Component
         if ($this->monto_giftcard != '') {
             $total_vista = $total->total - $this->monto_giftcard;
             $total_vista_bsd = $total_vista * $tasa_bcv;
-        } else {
+        } elseif($this->metodo_pago_pre == 2) {
+            $comision = Comision::where('aplicacion', 'seguro')->first()->porcentaje;
+            $total_vista = $total->total - (($total->total * 10) / 100);
+            $total_vista_bsd = $total_vista * $tasa_bcv;
+        }else{
             $total_vista = $total->total;
             $total_vista_bsd = $total_vista * $tasa_bcv;
         }
@@ -158,7 +167,7 @@ class Caja extends Component
         $valida_cod = GiftCard::where('pgc', $this->codigo)->first();
 
         if (isset($valida_cod)) {
-            
+
             if ($valida_cod->status == '1' && $valida_cod->cliente_id == $item->cliente_id) {
                 session()->flash('activa', 'TARJETA GIFTCARD ACTIVA!');
                 $this->monto_giftcard = $valida_cod->monto;
@@ -557,7 +566,11 @@ class Caja extends Component
         if ($this->monto_giftcard != '') {
             $total_vista = $total->total - $this->monto_giftcard;
             $total_vista_bsd = $total_vista * $tasa_bcv;
-        } else {
+        } elseif($this->metodo_pago_pre == 2) {
+            $comision = Comision::where('aplicacion', 'seguro')->first()->porcentaje;
+            $total_vista = $total->total - (($total->total * 10) / 100);
+            $total_vista_bsd = $total_vista * $tasa_bcv;
+        }else{
             $total_vista = $total->total;
             $total_vista_bsd = $total_vista * $tasa_bcv;
         }

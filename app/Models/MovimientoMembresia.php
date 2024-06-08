@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MovimientoMembresia extends Model
 {
@@ -21,18 +22,24 @@ class MovimientoMembresia extends Model
      */
     protected $fillable = [
         'membresia_id',
-        'cod_membresia',
+        'user_id',
+        'empleado',
         'descripcion',
         'cliente_id',
-        'fecha_inicio',
-        'fecha_fin',
-        'monto',
-        'metodo_pago',
-        'pago_usd',
-        'pago_bsd',
-        'referencia',
+        'cliente',
+        'cedula',
         'responsable',
     ];
+
+    /**
+     * Get the user that owns the MovimientoMembresia
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 
 
 

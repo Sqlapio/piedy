@@ -211,6 +211,12 @@ Route::get('/pp', function () {
     // NotificacionesController::notification($mailData, $type);
 
     // return 'listo';
-    $products = DB::select('call nomina_quincenal(?, ?)', array('2024-05-16', '2024-05-30'));
-    dd($products);
+    $products = DB::select('call nomina_quincenal(?, ?)', array('2024-06-01', '2024-06-15'));
+
+
+    $user_info = DB::table('movimiento_membresias')
+                 ->select('empleado', DB::raw('count(*) as total'))
+                 ->groupBy('empleado')
+                 ->get();
+    dd($products, $user_info);
 });

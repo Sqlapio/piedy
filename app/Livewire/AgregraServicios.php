@@ -115,7 +115,7 @@ class AgregraServicios extends Component
             $this->redirect('/cabinas');
 
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
 
     }
@@ -152,11 +152,11 @@ class AgregraServicios extends Component
                     $detalle_asignacion->servicio           = $data_servicios->descripcion;
                     $detalle_asignacion->servicio_categoria = $data_servicios->categoria;
 
-                    if($data_servicios->cod_servicio       == 'Sco-63600'){
+                    if($data_servicios->cod_servicio       == 'Sco-34410'){
                         $detalle_asignacion->costo          = $data_servicios->costo * $this->total_u_h;
-                    }elseif($data_servicios->cod_servicio  == 'Sco-55291'){
+                    }elseif($data_servicios->cod_servicio  == 'Sco-33952'){
                         $detalle_asignacion->costo          = $data_servicios->costo * $this->total_u_e;
-                    }elseif($data_servicios->cod_servicio  == 'Sco-46870'){
+                    }elseif($data_servicios->cod_servicio  == 'Sco-18089'){
                         $detalle_asignacion->costo          = $data_servicios->costo * $this->total_berrugas;
                     }else{
                         $detalle_asignacion->costo          = $data_servicios->costo;
@@ -186,11 +186,11 @@ class AgregraServicios extends Component
 
             } catch (\Throwable $th) {
                 Notification::make()
-                ->title('NOTIFICACIÓN')
-                ->icon('heroicon-o-shield-check')
-                ->iconColor('danger')
-                ->body($th->getMessage())
-                ->send();
+                    ->title('NOTIFICACIÓN')
+                    ->icon('heroicon-o-shield-check')
+                    ->iconColor('danger')
+                    ->body($th->getMessage())
+                    ->send();
             }
 
         }
@@ -227,17 +227,16 @@ class AgregraServicios extends Component
         if(count($this->servicios) > 0){
             for ($i = 0; $i < count($this->servicios); $i++) {
                 $_servicio = Servicio::where('id', $this->servicios[$i])->first();
-                    if($_servicio->cod_servicio == 'Sco-63600'){
+                    if($_servicio->cod_servicio == 'Sco-34410'){
                         $this->atr_u_h = '';
                     }
-                    if($_servicio->cod_servicio == 'Sco-55291'){
+                    if($_servicio->cod_servicio == 'Sco-33952'){
                         $this->atr_u_e = '';
                     }
-                    if($_servicio->cod_servicio == 'Sco-46870'){
+                    if($_servicio->cod_servicio == 'Sco-18089'){
                         $this->atr_berrugas = '';
                     }
             }
-
         }else{
             $this->reset(['atr_u_h', 'atr_u_e', 'atr_berrugas']);
         }

@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificacionesEmail;
 use App\Models\Cita;
 use App\Models\Membresia;
+use App\Models\MovimientoMembresia;
+use App\Models\User;
 use Illuminate\Console\Scheduling\Schedule;
 
 
@@ -31,7 +33,7 @@ use Illuminate\Console\Scheduling\Schedule;
 |
 */
 
-Route::get('/', function () {
+Route::get('/   ', function () {
     return view('welcome');
 })->name('welcome');
 
@@ -211,6 +213,39 @@ Route::get('/pp', function () {
     // NotificacionesController::notification($mailData, $type);
 
     // return 'listo';
-    $products = DB::select('call nomina_quincenal(?, ?)', array('2024-06-01', '2024-06-05'));
-    dd($products);
+    //Total de ventas por empleado
+    // $products = DB::select('call nomina_quincenal(?, ?)', array('2024-06-01', '2024-06-14'));
+
+    $gerente = User::where('status', '1')->where('tipo_servicio_id', '3')->get(['name']);
+
+    foreach($gerente as $value){
+        $_comision_gte = VentaServicio::where('responsable', 'Supergerente')->SUM('comision_gerente');
+    }
+
+    //Total de membresias atendidas por empleado
+    $user_info = DB::table('movimiento_membresias')
+                 ->select('empleado', DB::raw('count(*) as total'))
+                 ->where('descripcion', '=', 'consumo en tienda')
+                 ->groupBy('empleado')
+                 ->get();
+
+    //Total de membresias vendidas
+    $membresias = Membresia::all()->SUM('monto');
+
+    //Suma total de membresias atendias por los empleados
+    $sum_membresia = MovimientoMembresia::where('descripcion', '=', 'consumo en tienda')->count();
+
+    $empleados = User::whereBetween('tipo_servicio_id',['1', '2'])->where('status', '1')->get();
+    $user_quiro = DB::table('venta_servicios')
+                 ->select(
+                    'empleado', DB::raw('count(*) as total'),
+                    DB::raw('SUM(comision_dolares) as Dolares'),
+                    DB::raw('SUM(comision_bolivares) as Bolivares')
+                    )
+                 ->whereBetween('created_at',['2024-06-01 00:00:00', '2024-06-14 23:59:59'])
+                 ->groupBy('empleado')
+                 ->get();
+    dd($empleados, $user_quiro);
+    dd($_comision_gte, $gerente, $products, $user_info, 'Monto total de Membresias activas-> '.$membresias, 'Monto total de Membresias atendidas por los empleados-> '.$sum_membresia);
+
 });

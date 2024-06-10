@@ -154,7 +154,7 @@ class CierreDiario extends Component implements HasForms, HasTable
                 $cierre->saldo_caja_chica        = (isset($efectivo_caja_usd->saldo)) ? $efectivo_caja_usd->saldo : 0;
                 $cierre->fecha                   = date('d-m-Y');
                 $cierre->responsable             = $user->name;
-                // $cierre->save();
+                $cierre->save();
 
                 /** Notificacion para el usuario cuando su servicio fue anulado */
                 $type = 'cierre_diario';

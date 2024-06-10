@@ -109,109 +109,21 @@ class PagoExterno extends Component
             $servicio = VentaServicio::where('cod_asignacion', $this->cod_asignacion)->first();
 
             /**Obtengo el codigo del servicio a facturar */
-            $srv_vip = DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)
+            $srv = DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)
             ->where('status', '1')
-            ->first()
-            ->cod_servicio;
+            ->first();
 
             /**Pregunto? si la asignacion del servicio en VIP */
-            $tipoSrv = Servicio::where('cod_servicio', $srv_vip)->first()->asignacion;
+            $tipoSrv = Servicio::where('cod_servicio', $srv->cod_servicio)->first()->asignacion;
 
             if(isset($servicio) && $servicio->fecha_venta == date('d-m-Y')){
-
-                /**2. pregunto por la giftCard y me traigo toda la informacion */
-                $giftCard = GiftCard::orWhere('codigo_seguridad', $this->barcode)
-                ->orWhere('pgc', $this->pcs)
-                ->first();
 
                 /**3. pregunto por la membresia y me traigo toda la informacion */
                 $membresia = Membresia::orWhere('cod_membresia', $this->barcode)
                 ->orWhere('pm', $this->pcs)
                 ->first();
 
-                /**Si existe la giftcard realizo el pago */
-                if(isset($giftCard)){
-
-                    /**Restricciones */
-                    /**1.- Debe pertenecer al mismo cliente que fue asignado en el servicio  */
-                    if($giftCard->cliente_id == $servicio->cliente_id){
-
-                        /**2.- El monto de la giftcard debe ser igual al total del servicio a facturar */
-                        if($giftCard->monto >= $servicio->total_USD){
-
-                            $res = UtilsController::cal_comision_giftCard($giftCard->monto, $tipoSrv);
-
-                            DB::table('venta_servicios')->where('cod_asignacion', $this->cod_asignacion)
-                                ->update([
-                                    'metodo_pago'   => 'giftCard',
-                                    'referencia'    => $giftCard->referencia,
-                                    'pago_usd'      => 0.00,
-                                    'pago_bsd'      => 0.00,
-                                    'propina_usd'   => 0.00,
-                                    'propina_bsd'   => 0.00,
-                                    'comision_dolares' => $res['comision_usd_emp'],
-                                    'comision_gerente' => $res['comision_usd_gte'],
-                                    'responsable'   => $user->name,
-                                ]);
-
-                            DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)->where('status', '1')
-                                ->update([
-                                    'status' => '2',
-                                ]);
-
-                            Disponible::where('cod_asignacion', $this->cod_asignacion)->where('status', 'por facturar')
-                                ->update([
-                                    'status' => 'facturado'
-                                ]);
-
-                            /**4. Actualizo la giftcard a status 2 (Ya utilizada) */
-                            GiftCard::where('cliente_id', $servicio->cliente_id)
-                                ->orWhere('codigo_seguridad', $this->barcode)
-                                ->orWhere('pgc', $this->pcs)
-                                ->update([
-                                    'status' => '2',
-                                ]);
-
-                            /** Notificacion para el administrador de sistemas al asignar una nueva giftcard */
-                            $type = 'gift-card-usada';
-                            $correo = env('GIFTCARD_EMAIL');
-                            $mailData = [
-                                'codigo_asignacion' => $this->cod_asignacion,
-                                'codigo_seguridad'  => $giftCard->codigo_seguridad,
-                                'cliente'           => $servicio->cliente,
-                                'tecnico'           => $servicio->empleado,
-                                'fecha_venta'       => $servicio->fecha_venta,
-                                'servicio'          => Disponible::where('cod_asignacion', $this->cod_asignacion)->where('status', 'facturado')->first()->servicio,
-                                'responsable'       => $servicio->responsable,
-                                'tasa'              => $tasa,
-                                'user_email'        => 'gusta.acp@gmail.com',
-                            ];
-                            NotificacionesController::notification($mailData, $type, $servicio->fecha_venta);
-                            /**Fin del envio de notificacion al administrador */
-
-                            $this->redirect('/pay/ex');
-                        }else{
-                            $error = ValidationException::withMessages(['gift' => 'La monto de la  GiftCard debe ser igual al monto total a pagar.']);
-
-                            Notification::make()
-                                ->title('NOTIFICACIÓN')
-                                ->icon('heroicon-o-shield-check')
-                                ->color('danger')
-                                ->body($error->getMessage())
-                                ->send();
-                        }
-
-                    }else{
-                        $error = ValidationException::withMessages(['gift' => 'La tarjeta GiftCard no pertenece al cliente registrado en el servicio']);
-                        Notification::make()
-                            ->title('NOTIFICACIÓN')
-                            ->icon('heroicon-o-shield-check')
-                            ->color('danger')
-                            ->body($error->getMessage())
-                            ->send();
-                    }
-
-                }elseif(isset($membresia)){
+                if(isset($membresia)){
 
                     if($membresia->cliente_id == $servicio->cliente_id){
 
@@ -222,12 +134,12 @@ class PagoExterno extends Component
                             /**Me traigo de la base de datos toda la informacion de dicha membresia */
                             $_membresia = Membresia::where('cod_membresia', $this->barcode)->orWhere('pm', $this->pcs)->first();
 
-
                             DB::table('venta_servicios')->where('cod_asignacion', $this->cod_asignacion)
                                 ->update([
                                     'metodo_pago_prepagado'   => 'Membresia',
                                     'referencia'    => $_membresia->referencia,
                                     'membresia_exp' => date("m/y", strtotime($_membresia->fecha_exp )),
+                                    'total_USD'     => 0.00,
                                     'pago_usd'      => 0.00,
                                     'pago_bsd'      => 0.00,
                                     'propina_usd'   => 0.00,
@@ -235,12 +147,17 @@ class PagoExterno extends Component
                                     'responsable'   => $user->name,
                                 ]);
 
+                            $data_empleado = Disponible::where('cod_asignacion', $this->cod_asignacion)->first();
+
                             $mov_membresia = new MovimientoMembresia();
                             $mov_membresia->membresia_id        = $_membresia->id;
                             $mov_membresia->descripcion         = 'consumo en tienda';
+                            $mov_membresia->user_id             = $data_empleado->empleado_id;
+                            $mov_membresia->empleado            = $data_empleado->empleado;
                             $mov_membresia->cliente_id          = $_membresia->cliente_id;
                             $mov_membresia->cliente             = $_membresia->cliente->nombre.' '.$_membresia->cliente->apellido;
                             $mov_membresia->cedula              = $_membresia->cliente->cedula;
+                            $mov_membresia->responsable         = $user->name;
                             $mov_membresia->save();
 
 
@@ -281,7 +198,7 @@ class PagoExterno extends Component
                             return redirect('/pay/ex');
 
                         }else{
-                            $error = ValidationException::withMessages(['gift' => 'La monto de la  GiftCard debe ser igual al monto total a pagar.']);
+                            $error = ValidationException::withMessages(['gift' => 'Las membresias solo pueden ser usadas entre los dias Domingo y Jueves. Los dias Viernes y sabado no se puede facturar membresias']);
                             Notification::make()
                                 ->title('NOTIFICACIÓN')
                                 ->icon('heroicon-o-shield-check')

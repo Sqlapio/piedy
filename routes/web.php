@@ -18,7 +18,10 @@ use App\Mail\NotificacionesEmail;
 use App\Models\Cita;
 use App\Models\Membresia;
 use App\Models\MovimientoMembresia;
+<<<<<<< HEAD
 use App\Models\User;
+=======
+>>>>>>> 62bc01e4e2069e116286ff4caf7154ed711b0bbf
 use Illuminate\Console\Scheduling\Schedule;
 
 

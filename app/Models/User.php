@@ -93,4 +93,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(AsignarProducto::class, 'id', 'user_id');
     }
+
+    /**
+     * Get all of the membresias for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function membresias(): HasMany
+    {
+        return $this->hasMany(MovimientoMembresia::class, 'id', 'user_id');
+    }
 }

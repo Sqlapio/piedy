@@ -36,7 +36,17 @@ use App\Models\TasaBcv as ModelsTasaBcv;
 
             <!-- Lista de Servicios cargado al cliente -->
             <ul class="my-4 space-y-3 mt-8">
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Servicio cargados:</p>
+                <div class="flex justify-between">
+                    <div class="mt-auto">
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Servicio cargados:</p>
+                    </div>
+                    {{-- <div>
+                        <input type="checkbox" wire:model.live="seguro" wire:click="selected_tudrencasa()" id="react-option" value="" class="hidden peer" required="">
+                        <label for="react-option" class="inline-flex items-center justify-between w-full text-gray-500 bg-white cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">                           
+                            <img class="w-[{{ $pixeles }}] h-auto" src="{{ asset('images/'.$img_dr_encasa) }}" alt="">
+                        </label>
+                    </div> --}}
+                </div>
                 @if(count($detalle) > 0)
                 @foreach ($detalle as $item)
                 <li>
@@ -93,7 +103,16 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 <div class="grid grid-cols-1 gap-2">
                     <div class="px-2">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Metodo de pago Prepagado:</p>
-                        <x-select class="{{ ($metodo_pago_pre == 'GiftCard') ? 'border rounded-md border-green-400' : '' }}" placeholder="Select one status" :options="['GiftCard']" wire:model.live="metodo_pago_pre"/>
+                        <x-select   class="{{ ($metodo_pago_pre == 1) ? 'border rounded-md border-green-400' : '' }}" 
+                                    placeholder="Select one status" 
+                                    :options="[
+                                        ['name' => 'Giftcard',  'id' => 1],
+                                        ['name' => 'Seguro - TuDr.EnCasa', 'id' => 2],
+                                        ]"
+                                    option-label="name"
+                                    option-value="id"
+                                    wire:model.live="metodo_pago_pre"
+                                    />
                     </div>
                 </div>
 
@@ -125,7 +144,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 {{-- Nro. de GiftCard y Monto --}}
                 <div class="grid grid-cols-2 gap-2 {{ $atr_giftCard }}">
                     <div class="px-2">
-                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Codigo de GiftCard</p>
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">CVC</p>
                         <x-inputs.maskable wire:model.live="codigo" wire:keydown.enter="valida_giftcard($event.target.value)" mask="####" placeholder="4563"/>
                         @if (session('activa'))
                             <div class="flex justify-start alert alert-success text-xs text-green-800 font-bold text-left px-2">

@@ -44,12 +44,14 @@ class ComisionResource extends Resource
                         'servicio' => 'Servicio',
                         'vip'      => 'VIP',
                         'cupones'  => 'Cupones',
+                        'seguro'  => 'Seguro',
                     ]),
                 Select::make('beneficiario')
                     ->options([
                         'gerente' => 'Gerente',
                         'empleado' => 'Empleado',
                         'cupones' => 'Cupones',
+                        'tudrencasa' => 'TuDrEnCasa',
                     ]),
                 Select::make('status')
                     ->options([

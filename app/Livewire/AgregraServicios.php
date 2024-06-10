@@ -30,6 +30,17 @@ class AgregraServicios extends Component
     public $buscar;
     public $servicios = [];
 
+    /**Propiedades para la quiropedia medica */
+    public $total_u_h = 0;
+    public $atr_u_h = 'hidden';
+
+    public $total_u_e = 0;
+    public $atr_u_e = 'hidden';
+
+    public $total_berrugas = 0;
+    public $atr_berrugas = 'hidden';
+
+
     public function cerrar_servicio(Request $request)
     {
 
@@ -104,7 +115,7 @@ class AgregraServicios extends Component
             $this->redirect('/cabinas');
 
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
 
     }
@@ -125,10 +136,6 @@ class AgregraServicios extends Component
                 $codigo = $request->session()->all();
 
                 $data = Disponible::where('cod_asignacion', $codigo['cod_asignacion'])->first();
-                if(Servicio::where('cod_servicio', $data->cod_servicio)->first()->asignacion == 'vip'){
-                    throw new Exception("No puede agregar servicios adicionales, Los servicios VIP deben ser facturados de forma única.");
-                }
-
 
                 $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
 
@@ -144,7 +151,17 @@ class AgregraServicios extends Component
                     $detalle_asignacion->servicio_id        = $data_servicios->id;
                     $detalle_asignacion->servicio           = $data_servicios->descripcion;
                     $detalle_asignacion->servicio_categoria = $data_servicios->categoria;
-                    $detalle_asignacion->costo              = $data_servicios->costo;
+
+                    if($data_servicios->cod_servicio       == 'Sco-34410'){
+                        $detalle_asignacion->costo          = $data_servicios->costo * $this->total_u_h;
+                    }elseif($data_servicios->cod_servicio  == 'Sco-33952'){
+                        $detalle_asignacion->costo          = $data_servicios->costo * $this->total_u_e;
+                    }elseif($data_servicios->cod_servicio  == 'Sco-18089'){
+                        $detalle_asignacion->costo          = $data_servicios->costo * $this->total_berrugas;
+                    }else{
+                        $detalle_asignacion->costo          = $data_servicios->costo;
+                    }
+
                     $detalle_asignacion->fecha              = date('d-m-Y');
 
                     $srv = DetalleAsignacion::where('cod_asignacion', $codigo['cod_asignacion'])
@@ -165,14 +182,15 @@ class AgregraServicios extends Component
                 }
 
                 $this->servicios = [];
+                $this->reset(['atr_u_h', 'atr_u_e', 'atr_berrugas', 'total_u_h', 'total_u_e', 'total_berrugas']);
 
             } catch (\Throwable $th) {
                 Notification::make()
-                ->title('NOTIFICACIÓN')
-                ->icon('heroicon-o-shield-check')
-                ->iconColor('danger')
-                ->body($th->getMessage())
-                ->send();
+                    ->title('NOTIFICACIÓN')
+                    ->icon('heroicon-o-shield-check')
+                    ->iconColor('danger')
+                    ->body($th->getMessage())
+                    ->send();
             }
 
         }
@@ -204,6 +222,27 @@ class AgregraServicios extends Component
 
     }
 
+    public function select_servicios($id)
+    {
+        if(count($this->servicios) > 0){
+            for ($i = 0; $i < count($this->servicios); $i++) {
+                $_servicio = Servicio::where('id', $this->servicios[$i])->first();
+                    if($_servicio->cod_servicio == 'Sco-34410'){
+                        $this->atr_u_h = '';
+                    }
+                    if($_servicio->cod_servicio == 'Sco-33952'){
+                        $this->atr_u_e = '';
+                    }
+                    if($_servicio->cod_servicio == 'Sco-18089'){
+                        $this->atr_berrugas = '';
+                    }
+            }
+        }else{
+            $this->reset(['atr_u_h', 'atr_u_e', 'atr_berrugas']);
+        }
+
+    }
+
     public function render(Request $request)
     {
         /**
@@ -221,6 +260,11 @@ class AgregraServicios extends Component
             ->where('servicio_categoria', 'principal')
             ->get();
 
+        $detalle_adicional = DetalleAsignacion::where('cod_asignacion', $codigo['cod_asignacion'])
+            ->where('status', '1')
+            ->where('servicio_categoria', 'adicional')
+            ->get();
+
         $total = DB::table('detalle_asignacions')
             ->select(DB::raw('SUM(costo) as total'))
             ->where('cod_asignacion', $codigo['cod_asignacion'])
@@ -231,10 +275,23 @@ class AgregraServicios extends Component
 
         /** Logica para traer los servicios segun el tecnico */
         $tecnico = User::where('id', $data->empleado_id)->first();
-        $servicios_adicionales = Servicio::where('tipo_servicio_id', $tecnico->tipo_servicio_id)
-        ->Where('descripcion', 'like', "%{$this->buscar}%")
-        ->simplePaginate(5);
 
-        return view('livewire.agregra-servicios', compact('data', 'detalle', 'total_vista', 'servicios_adicionales'));
+        $tecnicoId = $tecnico->tipo_servicio_id;
+
+        /**Logica para seleccionar los servicios de acuerdo con el tipo de tecnico */
+        if($tecnicoId == '1'){
+            $servicios_adicionales = Servicio::where('tipo_servicio_id', $tecnicoId)
+            ->Where('descripcion', 'like', "%{$this->buscar}%")
+            ->simplePaginate(5);
+        }
+
+        if($tecnicoId == '2'){
+            $servicios_adicionales = Servicio::where('tipo_servicio_id', $tecnicoId)
+            ->Where('categoria', 'adicional')
+            ->Where('descripcion', 'like', "%{$this->buscar}%")
+            ->simplePaginate(5);
+        }
+
+        return view('livewire.agregra-servicios', compact('data', 'detalle', 'total_vista', 'servicios_adicionales', 'detalle_adicional', 'tecnicoId'));
     }
 }

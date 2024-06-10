@@ -20,29 +20,42 @@
             <p class="text-sm mt-8 font-normal text-gray-500 dark:text-gray-400">Servicio realizados</p>
             <ul class="my-4 space-y-3">
                 @if(count($detalle) > 0)
-                @foreach ($detalle as $item)
-                <li>
-                    <a href="#" class="flex items-center p-2 px-2 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
-                        <span class="flex-1 ml-3 text-sm whitespace-nowrap">{{ $item->servicio }}</span>
-                        <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-md font-extrabold text-white ">${{ $item->costo }}</span>
-                        @if($data->status == 'activo')
-                        <svg wire:click="delete({{ $item->id }})" class="w-4 h-4 mr-2 text-red-600 cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
-                        </svg>
-                        @endif
-                    </a>
-                </li>
-                @endforeach
+                    @foreach ($detalle as $item)
+                        <li>
+                            <a href="#" class="flex items-center p-2 px-2 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
+                                <span class="flex-1 ml-3 text-sm whitespace-nowrap">{{ $item->servicio }}</span>
+                                <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-md font-extrabold text-white ">${{ $item->costo }}</span>
+                            </a>
+                        </li>
+                    @endforeach
+                @endif
+            </ul>
+            <p class="text-sm mt-8 font-normal text-gray-500 dark:text-gray-400">Servicio Adicionales</p>
+            <ul class="my-4 space-y-3">
+                @if(count($detalle_adicional) > 0)
+                    @foreach ($detalle_adicional as $item_adicional)
+                        <li>
+                            <a href="#" class="flex items-center p-2 px-2 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
+                                <span class="flex-1 ml-3 text-sm whitespace-nowrap">{{ $item_adicional->servicio }}</span>
+                                <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-md font-extrabold text-white ">${{ $item_adicional->costo }}</span>
+                                @if($data->status == 'activo')
+                                <svg wire:click="delete({{ $item_adicional->id }})" class="w-4 h-4 mr-2 text-red-600 cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
+                                </svg>
+                                @endif
+                            </a>
+                        </li>
+                    @endforeach
                 @else
-                <li>
-                    <a href="#" class="flex items-center p-2 px-5 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75A2.25 2.25 0 0116.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904M14.25 9h2.25M5.904 18.75c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 01-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 10.203 4.167 9.75 5 9.75h1.053c.472 0 .745.556.5.96a8.958 8.958 0 00-1.302 4.665c0 1.194.232 2.333.654 3.375z" />
-                        </svg>
-                        <span class="flex-1 ml-3 text-xs whitespace-nowrap">No posee servicios adicionales</span>
-                        <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-lg font-extrabold text-white ">$0.00</span>
-                    </a>
-                </li>
+                    <li>
+                        <a href="#" class="flex items-center p-2 px-5 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75A2.25 2.25 0 0116.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904M14.25 9h2.25M5.904 18.75c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 01-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 10.203 4.167 9.75 5 9.75h1.053c.472 0 .745.556.5.96a8.958 8.958 0 00-1.302 4.665c0 1.194.232 2.333.654 3.375z" />
+                            </svg>
+                            <span class="flex-1 ml-3 text-xs whitespace-nowrap">No posee servicios adicionales</span>
+                            <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-lg font-extrabold text-white ">$0.00</span>
+                        </a>
+                    </li>
                 @endif
                 <li>
                     <a href="#" class="flex items-center p-2 px-5 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
@@ -65,7 +78,7 @@
             <ul class="space-y-3">
                 @foreach ($servicios_adicionales as $item)
                 <div class="">
-                    <input type="checkbox" id="{{ $item->id }}" wire:model.live="servicios" value="{{ $item->id }}" class="hidden peer">
+                    <input type="checkbox" id="{{ $item->id }}" wire:model.live="servicios" value="{{ $item->id }}" class="hidden peer" wire:click="select_servicios({{ $item->id }})">
                     <label for="{{ $item->id }}" class="inline-flex items-center justify-between w-full p-3 text-black bg-gray-400 border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-green-600 peer-checked:bg-green-600 peer-checked:text-white shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]">
                         <div class="flex items-center space-x-4 w-full">
                             <div class="flex-1 min-w-0">
@@ -82,6 +95,19 @@
                     </label>
                 </div>
                 @endforeach
+                @if($tecnicoId == '2')
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="w-full {{ $atr_u_h }}">
+                        <x-inputs.maskable wire:model="total_u_h" mask="##" right-icon="user" label="Uñas con Hongo" placeholder="Nro. del 1 al 10" />
+                    </div>
+                    <div class="w-full {{ $atr_u_e }}">
+                        <x-inputs.maskable wire:model="total_u_e" mask="##" right-icon="user" label="Uñas Encarnadas" placeholder="Nro. del 1 al 10" />
+                    </div>
+                    <div class="w-full {{ $atr_berrugas }}">
+                        <x-inputs.maskable wire:model="total_berrugas" mask="#" right-icon="user" label="Uñas con Berrugas" placeholder="Nro. del 1 al 3" />
+                    </div>
+                </div>
+                @endif
                 <div class="bg-white px-4 py-3 items-center justify-between border-t border-gray-200 sm:px-6">
                     {{-- Paginacion --}}
                     {{ $servicios_adicionales->links() }}

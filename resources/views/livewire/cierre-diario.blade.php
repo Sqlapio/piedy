@@ -3,15 +3,31 @@
         @livewire('notifications')
         <h1 class="text-xl mb-6 font-bold text-[#bd9c95]">Modulo de cierre por turno</h1>
         <div class="flex justify-between mt-auto">
-            <div class="grid md:grid-cols-3 md:gap-6">
-                <div class="w-full">
-                    <x-inputs.maskable wire:model="ref_debito" mask="########" right-icon="user" label="Cierre Debito Aprobado" placeholder="Nro. Lote" />
+            <div class="flex-col">
+                {{-- Referencia --}}
+                <div class="grid md:grid-cols-3 md:gap-6">
+                    <div class="w-full">
+                        <x-inputs.maskable wire:model="ref_debito" mask="######" right-icon="hashtag" label="Cierre Debito Aprobado" placeholder="Nro. Lote 000456" />
+                    </div>
+                    <div class="w-full">
+                        <x-inputs.maskable wire:model="ref_credito" mask="######" right-icon="hashtag" label="Cierre Credito Aprobado" placeholder="Nro. Lote 000324" />
+                    </div>
+                    <div class="w-full">
+                        <x-inputs.maskable wire:model="ref_visaMaster" mask="######" right-icon="hashtag" label="Cierre Visa/Master Debito Aprobado" placeholder="Nro. Lote 000235" />
+                    </div>
                 </div>
-                <div class="w-full">
-                    <x-inputs.maskable wire:model="ref_credito" mask="########" right-icon="user" label="Cierre Credito Aprobado" placeholder="Nro. Lote" />
-                </div>
-                <div class="w-full">
-                    <x-inputs.maskable wire:model="ref_visaMaster" mask="########" right-icon="user" label="Cierre Visa/Master Debito Aprobado" placeholder="Nro. Lote" />
+                {{-- montos --}}
+                <div class="grid md:grid-cols-3 md:gap-6 mt-5">
+                    <div class="w-full">
+                        <x-input wire:model="monto_ref_debito" wire:change="conver_ref_debito" right-icon="calculator" label="Monto Debito Aprobado" placeholder="Ejemplo: 1.2345,89" />
+                    </div>
+                    
+                    <div class="w-full">
+                        <x-input wire:model="monto_ref_credito" wire:change="conver_ref_credito" right-icon="calculator" label="Monto Credito Aprobado" placeholder="Ejemplo: 456,90" />
+                    </div>
+                    <div class="w-full">
+                        <x-input wire:model="monto_ref_visaMaster" wire:change="conver_ref_visaMaster" right-icon="calculator" label="Monto Visa/Master Debito Aprobado" placeholder="Ejemplo: 1.456,00" />
+                    </div>
                 </div>
             </div>
             <button type="submit" wire:click.prevent="notificacion_cierre()" class="justify-end rounded-md border border-transparent bg-[#7898a5] py-4 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">

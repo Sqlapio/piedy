@@ -103,7 +103,7 @@ class UtilsController extends Controller
 
     static function cal_comision_empleado($valorUno, $valorDos, $tipoSrv, $total_vista = null, $monto_giftcard = 0)
     {
-        dd($valorUno, $valorDos, $tipoSrv, $total_vista);
+
         try {
 
             $porcentaje = Comision::where('aplicacion', 'servicio')

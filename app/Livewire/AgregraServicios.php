@@ -152,11 +152,11 @@ class AgregraServicios extends Component
                     $detalle_asignacion->servicio           = $data_servicios->descripcion;
                     $detalle_asignacion->servicio_categoria = $data_servicios->categoria;
 
-                    if($data_servicios->cod_servicio       == 'Sco-34410'){
+                    if($data_servicios->cod_servicio       == env('SRVUH')){
                         $detalle_asignacion->costo          = $data_servicios->costo * $this->total_u_h;
-                    }elseif($data_servicios->cod_servicio  == 'Sco-33952'){
+                    }elseif($data_servicios->cod_servicio  == env('SRVUE')){
                         $detalle_asignacion->costo          = $data_servicios->costo * $this->total_u_e;
-                    }elseif($data_servicios->cod_servicio  == 'Sco-18089'){
+                    }elseif($data_servicios->cod_servicio  == env('SRVUV')){
                         $detalle_asignacion->costo          = $data_servicios->costo * $this->total_berrugas;
                     }else{
                         $detalle_asignacion->costo          = $data_servicios->costo;
@@ -227,13 +227,13 @@ class AgregraServicios extends Component
         if(count($this->servicios) > 0){
             for ($i = 0; $i < count($this->servicios); $i++) {
                 $_servicio = Servicio::where('id', $this->servicios[$i])->first();
-                    if($_servicio->cod_servicio == 'Sco-34410'){
+                    if($_servicio->cod_servicio == env('SRVUH')){
                         $this->atr_u_h = '';
                     }
-                    if($_servicio->cod_servicio == 'Sco-33952'){
+                    if($_servicio->cod_servicio == env('SRVUE')){
                         $this->atr_u_e = '';
                     }
-                    if($_servicio->cod_servicio == 'Sco-18089'){
+                    if($_servicio->cod_servicio == env('SRVUV')){
                         $this->atr_berrugas = '';
                     }
             }

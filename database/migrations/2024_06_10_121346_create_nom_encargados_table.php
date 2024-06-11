@@ -22,6 +22,7 @@ return new class extends Migration
             $table->decimal('deducciones_bolivares', 8, 2)->default(0.00);
             $table->string('fecha_ini');
             $table->string('fecha_fin');
+            $table->decimal('total_nomina', 8, 2)->default(0.00);
             $table->timestamps();
         });
     }

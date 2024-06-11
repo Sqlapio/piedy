@@ -18,11 +18,7 @@ use App\Mail\NotificacionesEmail;
 use App\Models\Cita;
 use App\Models\Membresia;
 use App\Models\MovimientoMembresia;
-<<<<<<< HEAD
 use App\Models\User;
-=======
->>>>>>> 62bc01e4e2069e116286ff4caf7154ed711b0bbf
-use Illuminate\Console\Scheduling\Schedule;
 
 
 /*
@@ -112,6 +108,24 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     });
 
     /**
+     * Ruta creadas para el modulo de nomina
+     */
+    Route::prefix('n')->group(function () {
+
+        Route::get('/q', function () {
+            return view('nom-quiropedista');
+        })->name('nom-quiropedista');
+
+        Route::get('/m', function () {
+            return view('nom-manicurista');
+        })->name('nom-manicurista');
+
+        Route::get('/e', function () {
+            return view('nom-encargado');
+        })->name('nom-encargado');
+    });
+
+    /**
      * Rutas para cierres parciales
      */
     Route::get('/cierre/diario', function () {
@@ -182,6 +196,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('membresia');
     })->name('membresia');
 
+    Route::get('/nomina', function () {
+        return view('nomina');
+    })->name('nomina');
+
 
     Route::get('/lista/clientes', [ApiClientesController::class, 'lista_clientes'])->name('api.clientes');
     Route::get('/lista/empleados', [ApiClientesController::class, 'lista_empleados'])->name('api.empleados');
@@ -249,6 +267,6 @@ Route::get('/pp', function () {
                  ->groupBy('empleado')
                  ->get();
     dd($empleados, $user_quiro);
-    dd($_comision_gte, $gerente, $products, $user_info, 'Monto total de Membresias activas-> '.$membresias, 'Monto total de Membresias atendidas por los empleados-> '.$sum_membresia);
+    dd($_comision_gte, $gerente, $user_info, 'Monto total de Membresias activas-> '.$membresias, 'Monto total de Membresias atendidas por los empleados-> '.$sum_membresia);
 
 });

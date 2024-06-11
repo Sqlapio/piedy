@@ -12,22 +12,25 @@ class NomQuiropedista extends Component
     public array $deduccion_dolares;
     public array $deduccion_bolivares;
 
-    public function conver_asignacion_dolares($id) 
+    public $desde;
+    public $hasta;
+
+    public function conver_asignacion_dolares($id)
     {
         $this->asignacion_dolares[$id] = number_format(floatval(($this->asignacion_dolares[$id]) / 100), 2, ',', '.');
     }
 
-    public function conver_asignacion_bolivares($id) 
+    public function conver_asignacion_bolivares($id)
     {
         $this->asignacion_bolivares[$id] = number_format(floatval(($this->asignacion_bolivares[$id]) / 100), 2, ',', '.');
     }
 
-    public function conver_deduccion_dolares($id) 
+    public function conver_deduccion_dolares($id)
     {
         $this->deduccion_dolares[$id] = number_format(floatval(($this->deduccion_dolares[$id]) / 100), 2, ',', '.');
     }
 
-    public function conver_deduccion_bolivares($id) 
+    public function conver_deduccion_bolivares($id)
     {
         $this->deduccion_bolivares[$id] = number_format(floatval(($this->deduccion_bolivares[$id]) / 100), 2, ',', '.');
     }

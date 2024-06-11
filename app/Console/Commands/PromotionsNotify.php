@@ -29,13 +29,13 @@ class PromotionsNotify extends Command
     {
         $user_phone = Cliente::all();
 
-        // foreach ($user_phone as $value) {
+        foreach ($user_phone as $value) {
 
             $params = array(
                 'token' => env('TOKEN_API_WHATSAPP'),
-                'to' => '04147365309',
+                'to' => $value->telefono,
                 'image' => env('IMAGE_PROMOCION'),
-                'caption' => 'Te Invitamos a:'
+                'caption' => 'Ven y disfruta la experiencia Piedy:'
             );
             $curl = curl_init();
             curl_setopt_array($curl, array(
@@ -58,7 +58,7 @@ class PromotionsNotify extends Command
             $err = curl_error($curl);
 
             curl_close($curl);
-        // }
+        }
     
         $this->info($response);
     }

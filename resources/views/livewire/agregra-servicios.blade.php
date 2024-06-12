@@ -17,7 +17,7 @@
                     <div class="text-md text-green-500 font-extrabold dark:text-gray-400">Código: {{ $data->cod_asignacion }}</div>
                 </div>
             </div>
-            <p class="text-sm mt-8 font-normal text-gray-500 dark:text-gray-400">Servicio realizados</p>
+            <p class="text-sm mt-8 font-normal text-gray-500 dark:text-gray-400">Servicio Principales realizados</p>
             <ul class="my-4 space-y-3">
                 @if(count($detalle) > 0)
                     @foreach ($detalle as $item)
@@ -25,12 +25,15 @@
                             <a href="#" class="flex items-center p-2 px-2 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
                                 <span class="flex-1 ml-3 text-sm whitespace-nowrap">{{ $item->servicio }}</span>
                                 <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-md font-extrabold text-white ">${{ $item->costo }}</span>
+                                <svg wire:click="delete({{ $item->id }})" class="w-4 h-4 mr-2 text-red-600 cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
+                                </svg>
                             </a>
                         </li>
                     @endforeach
                 @endif
             </ul>
-            <p class="text-sm mt-8 font-normal text-gray-500 dark:text-gray-400">Servicio Adicionales</p>
+            <p class="text-sm mt-8 font-normal text-gray-500 dark:text-gray-400">Servicio Adicionales realizados</p>
             <ul class="my-4 space-y-3">
                 @if(count($detalle_adicional) > 0)
                     @foreach ($detalle_adicional as $item_adicional)

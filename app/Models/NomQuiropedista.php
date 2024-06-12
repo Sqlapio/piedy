@@ -30,5 +30,7 @@ class NomQuiropedista extends Model
         'deducciones_bolivares',
         'fecha_ini',
         'fecha_fin',
+        'total_dolares',
+        'total_bolivares',
     ];
 }

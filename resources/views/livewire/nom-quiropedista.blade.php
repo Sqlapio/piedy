@@ -6,10 +6,10 @@
             </div>
             <div class="grid md:grid-cols-4 sm:gap-4 md:gap-4">
                 <div>
-                    <x-datetime-picker id="min-max-times-input" without-timezone label="Desde:" placeholder="desde" wire:model.defer="desde" min-time="08:00" max-time="23:00" />
+                    <x-datetime-picker id="min-max-times-input" without-timezone label="Desde:" placeholder="desde" wire:model.defer="desde" min-time="08:00" max-time="23:00" parse-format="YYYY-MM-DD HH:mm:ss" />
                 </div>
                 <div>
-                    <x-datetime-picker id="min-max-times-input" without-timezone label="Hasta:" placeholder="hasta" wire:model.defer="hasta" min-time="08:00" max-time="23:00" />
+                    <x-datetime-picker id="min-max-times-input" without-timezone label="Hasta:" placeholder="hasta" wire:model.defer="hasta" min-time="08:00" max-time="23:00" parse-format="YYYY-MM-DD HH:mm:ss" />
                 </div>
             </div>
         </div>
@@ -23,7 +23,7 @@
                     <x-button icon="check" positive label="cargar nomina" wire:click="store" class="uppercase text-xs font-bold" />
                 </div>
             </div>
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <div class="relative overflow-x-auto shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] sm:rounded-lg">
                 <table class="w-full text-sm text-center">
                     <thead class="text-xs text-black font-bold uppercase bg-[#bc9b94]">
                         <tr>
@@ -53,22 +53,22 @@
                             </th>
                             <td class="px-6 py-4">
                                 <div class="">
-                                    <x-input right-icon="user" wire:change="conver_asignacion_dolares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="asignacion_dolares.{{ $data[$i]->id }}" type="email" />
+                                    <x-input right-icon="calculator" wire:change="conver_asignacion_dolares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="asignacion_dolares.{{ $data[$i]->id }}" type="email" />
                                 </div>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="">
-                                    <x-input right-icon="user" wire:change="conver_asignacion_bolivares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="asignacion_bolivares.{{ $data[$i]->id }}" type="email" />
+                                    <x-input right-icon="calculator" wire:change="conver_asignacion_bolivares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="asignacion_bolivares.{{ $data[$i]->id }}" type="email" />
                                 </div>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="">
-                                    <x-input right-icon="user" wire:change="conver_deduccion_dolares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="deduccion_dolares.{{ $data[$i]->id }}" type="email" />
+                                    <x-input right-icon="calculator" wire:change="conver_deduccion_dolares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="deduccion_dolares.{{ $data[$i]->id }}" type="email" />
                                 </div>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="">
-                                    <x-input right-icon="user" wire:change="conver_deduccion_bolivares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="deduccion_bolivares.{{ $data[$i]->id }}" type="email" />
+                                    <x-input right-icon="calculator" wire:change="conver_deduccion_bolivares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="deduccion_bolivares.{{ $data[$i]->id }}" type="email" />
                                 </div>
                             </td>
                             </tr>
@@ -78,7 +78,10 @@
             </div>
         </div>
     </div>
-    <div class="px-10 py-4 border">
+    <div class="px-10 py-4 mt-4">
+        <div class="flex">
+            <h1 class="text-md mb-4 font-bold text-[#bd9c95] uppercase">tabla de nomina</h1>
+        </div>
         @livewire('table-nom-quiropedista')
     </div>
 </div>

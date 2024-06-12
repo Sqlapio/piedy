@@ -19,7 +19,7 @@ use App\Models\Cita;
 use App\Models\Membresia;
 use App\Models\MovimientoMembresia;
 use App\Models\User;
-
+use Spatie\Browsershot\Browsershot;
 
 /*
 |--------------------------------------------------------------------------
@@ -268,5 +268,20 @@ Route::get('/pp', function () {
                  ->get();
     dd($empleados, $user_quiro);
     dd($_comision_gte, $gerente, $user_info, 'Monto total de Membresias activas-> '.$membresias, 'Monto total de Membresias atendidas por los empleados-> '.$sum_membresia);
+
+});
+
+Route::get('/ex', function () {
+    // $html = view()->make('prueba')->render();
+    // $pdf = new TCPDF;
+    // $pdf::AddPage();
+    // $pdf::writeHTML($html, true, false, true, false, '');
+    // $pdf::Output(public_path(uniqid().'_p.pdf'), 'f');
+
+    Browsershot::url('http://piedy.test/pay/ex')
+    ->setNodeBinary('/usr/local/bin/node')
+    ->setNpmBinary('/usr/local/bin/npm')
+        ->landscape()
+        ->save('invoice.pdf');
 
 });

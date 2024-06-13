@@ -79,6 +79,7 @@
             </div>
             <p class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-1 p-1">Selección de servícios</p>
             <ul class="space-y-3">
+                {{-- {{ var_export($servicios_adicionales) }} --}}
                 @foreach ($servicios_adicionales as $item)
                 <div class="">
                     <input type="checkbox" id="{{ $item->id }}" wire:model.live="servicios" value="{{ $item->id }}" class="hidden peer" wire:click="select_servicios({{ $item->id }})">

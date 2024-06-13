@@ -30,37 +30,37 @@ class TableNomQuiropedista extends Component implements HasForms, HasTable
                     ->label('Empleado')
                     ->sortable()
                     ->searchable(),
+
                 TextColumn::make('total_servicios')
                     ->label('Servicios')
                     ->alignCenter()
                     ->sortable()
                     ->searchable(),
+
                 TextColumn::make('promedio_duracion_servicios')
                     ->label('Promedio de Duración(Min)')
                     ->alignCenter()
                     ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                    
                 TextColumn::make('total_comision_dolares')
                     ->label('Comision($)')
-                    ->money('USD')
                     ->sortable()
                     ->searchable(),
+
                 TextColumn::make('total_comision_bolivares')
                     ->label('Comision(Bs)')
-                    ->money('VES')
                     ->sortable()
                     ->searchable(),
 
                 TextColumn::make('asignaciones_bolivares')
                     ->label('Bono(Bs.)')
-                    ->money('VES')
                     ->sortable()
                     ->searchable(),
 
                 TextColumn::make('deducciones_dolares')
                     ->label('Deduccion($)')
-                    ->money('USD')
                     ->sortable()
                     ->searchable(),
 
@@ -68,14 +68,13 @@ class TableNomQuiropedista extends Component implements HasForms, HasTable
                 TextColumn::make('total_dolares')
                 ->label('Nomina($)')
                     ->summarize(Sum::make()
-                        ->money('USD')
                         ->label('Total Nomina($)'))
                     ->sortable()
                     ->searchable(),
+
                 TextColumn::make('total_bolivares')
                 ->label('Nomina(Bs.)')
                     ->summarize(Sum::make()
-                        ->money('VES')
                         ->label('Total Nomina(Bs.)'))
                     ->sortable()
                     ->searchable(),

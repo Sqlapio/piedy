@@ -30,66 +30,40 @@ class TableNomManicurista extends Component implements HasForms, HasTable
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('total_servicios')
-                    ->label('Total Servicios')
+                    ->label('Servicios')
                     ->alignCenter()
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('promedio_duracion_servicios')
-                    ->label('Promedio de Duración(min)')
-                    ->alignCenter()
-                    ->sortable()
-                    ->searchable(),
+
                 TextColumn::make('total_comision_dolares')
                     ->label('Comision($)')
-                    ->money('USD')
                     ->sortable()
                     ->searchable(),
+
                 TextColumn::make('total_comision_bolivares')
-                    ->label('Comision(Bs)')
-                    ->money('VES')
+                    ->label('Comision(Bs.)')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('asignaciones_dolares')
-                    ->label('Asignacion($)')
-                    ->money('USD')
-                    ->sortable()
-                    ->searchable(),
+
                 TextColumn::make('asignaciones_bolivares')
-                    ->label('Asignacion(Bs.)')
-                    ->money('VES')
+                    ->label('Bono(Bs.)')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('deducciones_dolares')
                     ->label('Deduccion($)')
-                    ->money('USD')
                     ->sortable()
-                    ->searchable(),
-                TextColumn::make('deducciones_bolivares')
-                    ->label('Deduccion(Bs.)')
-                    ->money('VES')
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('porcentaje_membresias')
-                    ->label('Membresia(%)')
-                    ->money('USD')
-                    ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                
                 TextColumn::make('comision_membresias')
-                    ->label('Comision Membresia($)')
-                    ->money('VES')
+                    ->label('Membresia(Bs.)')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('fecha_ini')
-                    ->alignCenter()
-                    ->label('Desde')
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('fecha_fin')
-                ->alignCenter()
-                    ->label('Hasta')
-                    ->sortable()
-                    ->searchable(),
+                
                 TextColumn::make('total_dolares')
+                ->label('Nomina($)')
                     ->money('USD')
                     ->summarize(Sum::make()
                         ->money('USD')
@@ -97,6 +71,7 @@ class TableNomManicurista extends Component implements HasForms, HasTable
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('total_bolivares')
+                ->label('Nomina(Bs.)')
                     ->money('VES')
                     ->summarize(Sum::make()
                         ->money('VES')

@@ -29,19 +29,13 @@
                         <tr>
                         <tr>
                             <th scope="col" class="px-6 py-3">
-                                Quiropedista
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Asignaciones($)
+                                Manicurista
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Asignaciones(Bs.)
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Deducciones($)
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Deducciones(Bs.)
                             </th>
                         </tr>
                         </tr>
@@ -51,24 +45,16 @@
                             <th scope="row" class="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-white">
                                 {{ $data[$i]->name }}
                             </th>
+                            
                             <td class="px-6 py-4">
                                 <div class="">
-                                    <x-input right-icon="claculator" wire:change="conver_asignacion_dolares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="asignacion_dolares.{{ $data[$i]->id }}" type="email" />
+                                    <x-input right-icon="calculator" wire:change="conver_asignacion_bolivares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="asignacion_bolivares.{{ $data[$i]->id }}" type="email" />
                                 </div>
                             </td>
+                            
                             <td class="px-6 py-4">
                                 <div class="">
-                                    <x-input right-icon="claculator" wire:change="conver_asignacion_bolivares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="asignacion_bolivares.{{ $data[$i]->id }}" type="email" />
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="">
-                                    <x-input right-icon="claculator" wire:change="conver_deduccion_dolares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="deduccion_dolares.{{ $data[$i]->id }}" type="email" />
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="">
-                                    <x-input right-icon="claculator" wire:change="conver_deduccion_bolivares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="deduccion_bolivares.{{ $data[$i]->id }}" type="email" />
+                                    <x-input right-icon="calculator" wire:change="conver_deduccion_dolares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="deduccion_dolares.{{ $data[$i]->id }}" type="email" />
                                 </div>
                             </td>
                             </tr>

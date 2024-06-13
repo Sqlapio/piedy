@@ -272,15 +272,8 @@ Route::get('/pp', function () {
 });
 
 Route::get('/ex', function () {
-    // $html = view()->make('prueba')->render();
-    // $pdf = new TCPDF;
-    // $pdf::AddPage();
-    // $pdf::writeHTML($html, true, false, true, false, '');
-    // $pdf::Output(public_path(uniqid().'_p.pdf'), 'f');
-
     Browsershot::url('http://piedy.test/pay/ex')
-    ->setNodeBinary('/usr/local/bin/node')
-    ->setNpmBinary('/usr/local/bin/npm')
+        
         ->landscape()
         ->save('invoice.pdf');
 

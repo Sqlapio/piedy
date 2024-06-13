@@ -113,9 +113,6 @@ class PagoExterno extends Component
             ->where('status', '1')
             ->first();
 
-            /**Pregunto? si la asignacion del servicio en VIP */
-            $tipoSrv = Servicio::where('cod_servicio', $srv->cod_servicio)->first()->asignacion;
-
             if(isset($servicio) && $servicio->fecha_venta == date('d-m-Y')){
 
                 /**3. pregunto por la membresia y me traigo toda la informacion */
@@ -152,7 +149,7 @@ class PagoExterno extends Component
                             $mov_membresia = new MovimientoMembresia();
                             $mov_membresia->membresia_id        = $_membresia->id;
                             $mov_membresia->descripcion         = 'consumo en tienda';
-                            $mov_membresia->user_id             = $data_empleado->empleado_id;
+                            $mov_membresia->empleado_id         = $data_empleado->empleado_id;
                             $mov_membresia->empleado            = $data_empleado->empleado;
                             $mov_membresia->cliente_id          = $_membresia->cliente_id;
                             $mov_membresia->cliente             = $_membresia->cliente->nombre.' '.$_membresia->cliente->apellido;

@@ -156,7 +156,7 @@ class GiftCard extends Component
                     'cliente'           => $asignar_giftCard->cliente,
                     'barcode'           => $asignar_giftCard->barcode,
                     'image'             => $image,
-                    'user_email'        => 'gusta.acp@gmail.com',
+                    'user_email'        => $correo,
                 ];
 
             NotificacionesController::notification($mailData, $type);
@@ -174,7 +174,7 @@ class GiftCard extends Component
                 'monto_pagado'      => ($asignar_giftCard->pago_usd != 0) ? $asignar_giftCard->pago_usd : $asignar_giftCard->pago_bsd,
                 'referencia'        => $asignar_giftCard->referencia,
                 'tasa'              => $tasa,
-                'user_email'        => 'gusta.acp@gmail.com',
+                'user_email'        => $correo_administracion,
             ];
             NotificacionesController::notification($mailData, $type, $asignar_giftCard->pgc);
             /**Fin del envio de notificacion al administrador */

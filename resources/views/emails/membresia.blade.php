@@ -65,7 +65,7 @@
                         margin-right: auto;
                         width: 350px;
                         height: auto;
-                        " src="https://piedy.sqlapio.net/storage/barcodes/membresias/'.{{ $mailData['barcode'] }}">
+                        " src="{{ url('storage'.$mailData['barcode']) }}">
                 </div>
             </div>
         <p style="text-align: justify; margin-left: 20px;">

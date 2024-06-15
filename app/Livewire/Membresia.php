@@ -97,6 +97,10 @@ class Membresia extends Component
         }
     }
 
+    public function regresar(){
+        $this->redirect('/g/m');
+    }
+
     public function store()
     {
         $this->validate();

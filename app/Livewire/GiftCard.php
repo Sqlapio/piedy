@@ -104,7 +104,7 @@ class GiftCard extends Component
     }
 
     public function regresar(){
-        $this->back();
+        $this->redirect('/g/m');
     }
 
     public function store()

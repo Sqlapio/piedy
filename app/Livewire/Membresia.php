@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Http\Controllers\NotificacionesController;
 use App\Models\Cliente;
+use App\Models\Frecuencia;
 use App\Models\Membresia as ModelsMembresia;
 use App\Models\MovimientoMembresia;
 use App\Models\TasaBcv;
@@ -29,11 +30,72 @@ class Membresia extends Component
     #[Validate('required', message: 'Campo requerido')]
     public $cliente_id;
 
+    /**Propiedades para agregar a un nuevo cliente */
+    /***************************************************************** */
+    public $nombre;
+    public $apellido;
+    public $cedula;
+    public $email;
+    public $telefono;
+    /***************************************************************** */
+
     public $tasa;
     public $cliente;
     public $codigo_seguridad;
     public $code;
 
+    public $atr_nuevo_cliente = 'hidden';
+    public $atr_hidden = 'block';
+
+    public function nuevo_cliente()
+    {
+        $this->atr_nuevo_cliente = 'block';
+        $this->atr_hidden = 'hidden';
+    }
+
+    public function store_nuevo_cliente()
+    {
+
+        try {
+
+            $user = Auth::user();
+
+            $cliente = new Cliente();
+            $cliente->nombre      = strtoupper($this->nombre);
+            $cliente->apellido    = strtoupper($this->apellido);
+            $cliente->cedula      = $this->cedula;
+            $cliente->email       = $this->email;
+            $cliente->telefono    = $this->telefono;
+            $cliente->user_id     = $user->id;
+            $cliente->responsable = $user->name;
+            $cliente->save();
+
+            /** El nuevo cliente es cargado en la tabla de frecuencias
+             * para fines estadisticos
+             */
+            $cliente_nuevo = new Frecuencia();
+            $cliente_nuevo->cliente_id  = $cliente->id;
+            $cliente_nuevo->nombre      = strtoupper($cliente->nombre.' '.$cliente->apellido);
+            $cliente_nuevo->save();
+
+            Notification::make()
+                ->title('Cliente creado con éxito')
+                ->success()
+                ->send();
+
+            $this->reset();
+
+            $this->redirect('/m');
+
+        } catch (\Throwable $th) {
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-shield-check')
+            ->color('primary')
+            ->body($th->getMessage())
+            ->send();
+        }
+    }
 
     public function store()
     {
@@ -145,7 +207,7 @@ class Membresia extends Component
 
     public function render()
     {
-        $this->codigo_seguridad = random_int(11111111, 99999999);
+        $this->codigo_seguridad = random_int(1111111111111111, 9999999999999999);
         $generator = new \Picqer\Barcode\BarcodeGeneratorHTML();
         $barcode = $generator->getBarcode($this->codigo_seguridad, $generator::TYPE_CODE_128);
 
@@ -153,6 +215,8 @@ class Membresia extends Component
         if(isset($cliente)){
             $nom_ape = $cliente->nombre.' '.$cliente->apellido;
             $this->cliente = $nom_ape;
+        }else{
+            $this->cliente = '---- ----';
         }
         /**Tasa BCV del dia */
         $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;

@@ -1,114 +1,162 @@
 <div>
     @livewire('notifications')
     @if(Auth::user()->tipo_usuario == 'gerente')
-    <div class="p-4 bg-[#e9d4cf] rounded-xl mb-5">
-        <h1 class="text-xl mb-6 font-bold text-black">Asignación de GiftCard</h1>
-        <!-- Formulario para la Gifcar -->
-        <div class="md:flex justify-between items-center gap-x-8">
-            <div class="w-full">
-                <div class="w-full h-auto m-auto bg-red-100 rounded-xl relative text-white shadow-2xl transition-transform transform hover:scale-110 ">
 
-                    <img class="object-cover w-full h-full rounded-xl" src="{{ asset('images/TARJETA-ROSA3.png') }}"/>
+        {{-- Formulario de Giftcard --}}
+        <div class="p-4 bg-[#e9d4cf] rounded-xl mb-5 {{ $atr_hidden }}">
+            <h1 class="text-xl mb-6 font-bold text-black">Asignación de GiftCard</h1>
+            <!-- Formulario para la Gifcar -->
+            <div class="md:flex justify-between items-center gap-x-8">
+                <div class="w-full">
+                    <div class="w-full h-auto m-auto bg-red-100 rounded-xl relative text-white shadow-2xl transition-transform transform hover:scale-110 ">
 
-                    <div class="w-full px-8 absolute top-12">
-                        <div class="flex justify-between">
-                            <div class="">
-                                <p class="font-light text-black text-xs">
-                                    Nombre
-                                </p>
-                                <p class="font-bold text-black">
-                                    {{ $cliente }}
-                                </p>
-                            </div>
-                            {{-- <img class="w-1/4 h-auto" src="{{ asset('images/logo.png') }}"/> --}}
+                        <img class="object-cover w-full h-full rounded-xl" src="{{ asset('images/TARJETA-ROSA3.png') }}"/>
 
-                        </div>
-                        <div class="pt-1">
+                        <div class="w-full px-8 absolute top-12">
                             <div class="flex justify-between">
-                                <div class="text-xs fond-bold text-black">
-                                    Código de Tarjeta
+                                <div class="">
+                                    <p class="font-light text-black text-xs">
+                                        Nombre
+                                    </p>
+                                    <p class="font-bold text-black">
+                                        {{ $cliente }}
+                                    </p>
                                 </div>
-                                <div class="text-xs fond-bold tracking-widest text-black">
-                                    EXP:{{ date("m/y",strtotime(date('m/y')."+ 6 month")) }}
-                                </div>
+                                {{-- <img class="w-1/4 h-auto" src="{{ asset('images/logo.png') }}"/> --}}
+
                             </div>
-                            <p class="font-medium tracking-more-wider text-black">
-                                {!! $barcode !!}
-                            </p>
+                            <div class="pt-1">
+                                <div class="flex justify-between">
+                                    <div class="text-xs fond-bold text-black">
+                                        Código de Tarjeta
+                                    </div>
+                                    <div class="text-xs fond-bold tracking-widest text-black">
+                                        EXP:{{ date("m/y",strtotime(date('m/y')."+ 6 month")) }}
+                                    </div>
+                                </div>
+                                <p class="font-medium tracking-more-wider text-black">
+                                    {!! $barcode !!}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full p-4 mt-5">
+                    {{-- linea 1 --}}
+                    <div class="grid sm:grid-cols-1 md:grid-cols-2 sm:gap-6">
+                        {{-- Codigo GIFTCARD --}}
+                        <div class="w-full group mb-4">
+                            <label class="mb-1 block text-md text-black text-left">Código GiftCard</label>
+                            <x-input wire:model.live="cod_gift_card" right-icon="qrcode" disabled/>
+                        </div>
+
+                        <div class="w-full group mb-4">
+                            <label class="mb-1 block text-md text-black text-left">Cliente</label>
+                            <x-select wire:model.live="cliente_id" placeholder="Seleccion" :async-data="route('api.clientes')" option-label="nombre" option-value="id" />
+                            <div class="py-2">
+                                <x-badge wire:click='nuevo_cliente()' rounded positive label="+ NUEVO CLIENTE" class="py-1 cursor-pointer"/>
+                            </div>
+                        </div>
+                        {{-- Monto --}}
+                        <div class="w-full group mb-4">
+                            <label class="mb-1 block text-md text-black text-left">Monto: {{ $monto }}$ - Bs.{{ round($monto * $tasa, 2) }}</label>
+                            <x-select wire:model.live="monto" placeholder="seleccione el monto" :options="['20', '40']" right-icon="currency-dollar"/>
+                            {{-- <label class="mb-1 block text-sm text-gray-500 text-left">{{ $monto }}$ - Bs.{{ round($monto * $tasa, 2) }}</label> --}}
+                        </div>
+
+                        {{-- Metodo de pago --}}
+                        <div class="w-full group mb-4">
+                            <label class="mb-1 block text-md text-black text-left">Metodo de Pago</label>
+                            <x-select placeholder="Método de pago" :options="['Transferencia', 'Pago Movil', 'Zelle']" wire:model.live="metodo_pago"/>
+                        </div>
+
+                        {{-- Referencia --}}
+                        <div class="w-full group mb-4">
+                            <label class="mb-1 block text-md text-black text-left">Referencia</label>
+                            <x-inputs.maskable wire:model="referencia" right-icon="color-swatch" mask="########"/>
+                        </div>
+
+                        {{-- Campos Ocultos --}}
+                        <div class="w-full group hidden">
+                            <label class="mb-1 block text-md text-black text-left">Fecha de emición</label>
+                            <x-input wire:model.live="fecha_emicion" right-icon="user" disabled/>
+                        </div>
+                        <div class="w-full group hidden">
+                            <label class="mb-1 block text-md text-black text-left">Vence</label>
+                            <x-input wire:model.live="fecha_vence" right-icon="user" disabled/>
+                        </div>
+
+                        <div class="w-full mt-5">
+                            <button type="submit" wire:click.prevent="store()" class="w-full rounded-md border border-transparent bg-[#7898a5] py-2 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">
+                                <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="store" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                </svg>
+                                <span>Asignar Giftcard</span>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="w-full p-4">
-                {{-- linea 1 --}}
-                <div class="grid sm:grid-cols-1 md:grid-cols-2 md:gap-6">
-                    <div class="w-full mb-6 group">
-                        <label class="mb-1 block text-md text-black text-left">Código GiftCard</label>
-                        <x-input wire:model.live="cod_gift_card" right-icon="user" disabled/>
+
+        </div>
+
+        {{-- Formulario Nuevo Cliente --}}
+        <div  class="{{ $atr_nuevo_cliente }}">
+            <h1 class="text-xl mb-6 font-bold text-[#bd9c95]">FICHA DEL CLIENTE</h1>
+            {{-- tabla y boton del formulario de clientes --}}
+            <div class="p-5 bg-[#e9d4cf] rounded-xl mb-6">
+                <h1 class="text-xl mb-6 font-bold text-black">Datos Personales</h1>
+                <div class="grid md:grid-cols-3 md:gap-6">
+                    <div class="relative z-0 w-full mb-6 group">
+                        <x-input wire:model="nombre" right-icon="user" label="Nombre" placeholder="Nombre del cliente" />
+                    </div>
+                    <div class="relative z-0 w-full mb-6 group">
+                        <x-input wire:model="apellido" right-icon="user" label="Apellido" placeholder="Apellido del cliente" />
+                    </div>
+                    <div class="relative z-0 w-full mb-6 group">
+                        <x-inputs.maskable wire:model="cedula" right-icon="user" label="Cédula de Identidad" placeholder="Ejemplo: 16543678" mask="########" />
+                    </div>
+                    <div class="relative z-0 w-full mb-6 group">
+                        <x-input wire:model="email" right-icon="user" label="Email" placeholder="Email del cliente" />
+                        {{-- <label for="floating_phone" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email</label> --}}
+                    </div>
+                    <div class="relative z-0 w-full mb-6 group">
+                        <x-inputs.maskable wire:model="telefono" label="Número Telefónico" mask="#### #######" placeholder="Número telefónico" />
+                        {{-- <label for="floating_company" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono</label> --}}
                     </div>
                 </div>
-                <div class="grid sm:grid-cols-1 md:grid-cols-2 md:gap-6">
-                    <div class="w-full mb-6 group">
-                        <label class="mb-1 block text-md text-black text-left">Cliente</label>
-                        <x-select wire:model.live="cliente_id" placeholder="Seleccion" :async-data="route('api.clientes')" option-label="nombre" option-value="id" />
-                        <div class="py-2">
-                            <x-badge wire:click='nuevo_cliente()' rounded positive label="+ NUEVO CLIENTE" class="py-1 cursor-pointer"/>
-                        </div>
-                    </div>
-                    <div class="w-full mb-6 group">
-                        <label class="mb-1 block text-md text-black text-left">Servicios</label>
-                        <x-select wire:model.live="servicios" multiselect placeholder="Seleccion" :async-data="route('api.servicios')" option-label="descripcion" option-value="costo" />
 
+                {{-- Boton agregar nuevo cliente --}}
+                <div class="flex justify-between p-2 mt-auto">
+                    <div>
+                        <button type="submit" wire:click.prevent="store_nuevo_cliente()" class="justify-end rounded-md border border-transparent bg-[#7898a5] py-2 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">
+                            <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="store_nuevo_cliente" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                            </svg>
+                            <span>Registrar Cliente</span>
+                        </button>
                     </div>
-                </div>
-
-                {{-- linea 2 --}}
-                <div class="grid sm:grid-cols-1 md:grid-cols-3 md:gap-6 mt-5">
-                    {{-- Campos Ocultos --}}
-                    <div class="w-full mb-6 group hidden">
-                        <label class="mb-1 block text-md text-black text-left">Fecha de emición</label>
-                        <x-input wire:model.live="fecha_emicion" right-icon="user" disabled/>
-                    </div>
-                    <div class="w-full mb-6 group hidden">
-                        <label class="mb-1 block text-md text-black text-left">Vence</label>
-                        <x-input wire:model.live="fecha_vence" right-icon="user" disabled/>
-                    </div>
-                    {{-- Monto --}}
-                    <div class="w-full mb-6 group">
-                        <label class="mb-1 block text-md text-black text-left">Monto ($)</label>
-                        <x-input wire:model="monto" right-icon="user" disabled/>
-                        <label class="mb-1 block text-sm text-gray-500 text-left">{{ $srv }}$ - Bs.{{ round($srv * $tasa, 2) }}</label>
-                    </div>
-                    {{-- Metodo de pago --}}
-                    <div class="w-full mb-6 group">
-                        <label class="mb-1 block text-md text-black text-left">Metodo de Pago</label>
-                        <x-select placeholder="Método de pago" :options="['Transferencia', 'Pago Movil', 'Zelle']" wire:model.live="metodo_pago"/>
-                    </div>
-                    {{-- Referencia --}}
-                    <div class="w-full mb-6 group">
-                        <label class="mb-1 block text-md text-black text-left">Referencia</label>
-                        <x-inputs.maskable wire:model="referencia" right-icon="user" mask="########"/>
+                    <div>
+                    <button type="submit" wire:click.prevent="regresar      ()" class="rounded-md border border-transparent bg-[#7898a5] py-2 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">
+                        <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="regresar      " fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                            </svg>
+                            <span>Regresar Giftcard</span>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="flex md:justify-end p-2 mt-auto">
-            <button type="submit" wire:click.prevent="store()" class="justify-end rounded-md border border-transparent bg-[#7898a5] py-2 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">
-                <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="store" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                </svg>
-                <span>Asignar GiftCard</span>
-            </button>
+
+    @else
+
+        {{-- Tabla de membrtesias --}}
+        <div class="border rounded-lg mb-5 {{ $atr_tabla }}">
+            <p class="p-4 text-xl font-bold text-[#bc9c95]">GIFTCARD REGISTRADAS</p>
+            @livewire('tabla-gift-card')
         </div>
-    </div>
+
     @endif
-
-    {{-- Tabla de membrtesias --}}
-    <div class="border rounded-lg mb-5">
-        <p class="p-4 text-xl font-bold text-[#bc9c95]">GIFTCARD REGISTRADAS</p>
-        @livewire('tabla-gift-card')
-    </div>
-
 
     {{-- div para separacion --}}
     <div class="w-full h-28"></div>
@@ -147,7 +195,7 @@
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
             <div class="flex items-center justify-center ">
-                <button data-tooltip-target="tooltip-new" type="button" wire:click.prevent="atras" class="inline-flex items-center justify-center w-10 h-10 font-medium bg-[#7898a5] rounded-full hover:bg-[#5390a7] group focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800 shadow-[0_2.8px_2.2px_rgba(0,_0,_0,_0.034),_0_6.7px_5.3px_rgba(0,_0,_0,_0.048),_0_12.5px_10px_rgba(0,_0,_0,_0.06),_0_22.3px_17.9px_rgba(0,_0,_0,_0.072),_0_41.8px_33.4px_rgba(0,_0,_0,_0.086),_0_100px_80px_rgba(0,_0,_0,_0.12)]">
+                <button data-tooltip-target="tooltip-new" type="button" wire:click.prevent="regresar" class="inline-flex items-center justify-center w-10 h-10 font-medium bg-[#7898a5] rounded-full hover:bg-[#5390a7] group focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800 shadow-[0_2.8px_2.2px_rgba(0,_0,_0,_0.034),_0_6.7px_5.3px_rgba(0,_0,_0,_0.048),_0_12.5px_10px_rgba(0,_0,_0,_0.06),_0_22.3px_17.9px_rgba(0,_0,_0,_0.072),_0_41.8px_33.4px_rgba(0,_0,_0,_0.086),_0_100px_80px_rgba(0,_0,_0,_0.12)]">
                     <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19 16">
                         <path d="M12.5 3.046H10v-.928A2.12 2.12 0 0 0 8.8.164a1.828 1.828 0 0 0-1.985.311l-5.109 4.49a2.2 2.2 0 0 0 0 3.24L6.815 12.7a1.83 1.83 0 0 0 1.986.31A2.122 2.122 0 0 0 10 11.051v-.928h1a2.026 2.026 0 0 1 2 2.047V15a.999.999 0 0 0 1.276.961A6.593 6.593 0 0 0 12.5 3.046Z"/>
                     </svg>

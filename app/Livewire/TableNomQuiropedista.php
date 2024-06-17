@@ -15,11 +15,18 @@ use Filament\Tables\Table;
 use Livewire\Component;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\On;
 
 class TableNomQuiropedista extends Component implements HasForms, HasTable
 {
     use InteractsWithForms;
     use InteractsWithTable;
+
+    #[On('nomina-calculada-quiropedista')]
+    public function updateNominaCreada()
+    {
+        $this->reset();
+    }
 
     public function table(Table $table): Table
     {
@@ -43,7 +50,7 @@ class TableNomQuiropedista extends Component implements HasForms, HasTable
                     ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                    
+
                 TextColumn::make('total_comision_dolares')
                     ->label('Comision($)')
                     ->sortable()

@@ -14,11 +14,18 @@ use Filament\Tables\Table;
 use Livewire\Component;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\On;
 
 class TableNomManicurista extends Component implements HasForms, HasTable
 {
     use InteractsWithForms;
     use InteractsWithTable;
+
+    #[On('nomina-calculada-manicurista')]
+    public function updateNominaCreada()
+    {
+        $this->reset();
+    }
 
     public function table(Table $table): Table
     {
@@ -56,12 +63,12 @@ class TableNomManicurista extends Component implements HasForms, HasTable
                     ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                
+
                 TextColumn::make('comision_membresias')
                     ->label('Membresia(Bs.)')
                     ->sortable()
                     ->searchable(),
-                
+
                 TextColumn::make('total_dolares')
                 ->label('Nomina($)')
                     ->money('USD')

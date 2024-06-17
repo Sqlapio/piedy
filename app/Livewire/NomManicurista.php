@@ -88,7 +88,8 @@ class NomManicurista extends Component
 
                 $nomina->total_comision_dolares         = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_dolares');
                 $nomina->total_comision_bolivares       = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_bolivares');
-
+                $nomina->total_propina_bsd              = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('propina_bsd');
+                
                 //Recorro el array de las asignaciones en bolivares
                 for ($i=0; $i < count($this->asignacion_bolivares); $i++) {
                     # code...
@@ -108,7 +109,11 @@ class NomManicurista extends Component
                 ->where('empleado_id', $item->id)
                 ->count();
 
-                $_porcen_representacion = ($emp_membresia * 100) / $sum_membresia;
+                if($sum_membresia == 0){
+                    $_porcen_representacion = 0;
+                }else{
+                    $_porcen_representacion = ($emp_membresia * 100) / $sum_membresia;
+                }
                 $total_comision = ($_porcen_representacion * $_40porcen) / 100;
 
                 $nomina->comision_membresias = $total_comision * $tasa_bcv;
@@ -119,6 +124,10 @@ class NomManicurista extends Component
                 $nomina->save();
 
             }
+
+            $this->reset();
+
+            $this->dispatch('nomina-calculada-manicurista');
 
         } catch (\Throwable $th) {
             throw $th;

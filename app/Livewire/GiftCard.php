@@ -6,6 +6,8 @@ use App\Http\Controllers\NotificacionesController;
 use App\Models\Cliente;
 use App\Models\GiftCard as ModelsGiftCard;
 use App\Models\TasaBcv;
+use App\Models\Frecuencia;
+use Exception;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -27,6 +29,16 @@ class GiftCard extends Component
     #[Validate('required', message: 'Campo requerido')]
     public $cliente_id;
 
+    /**Propiedades para agregar a un nuevo cliente */
+    /***************************************************************** */
+    public $nombre;
+    public $apellido;
+    public $cedula;
+    public $email;
+    public $telefono;
+    /***************************************************************** */
+
+
     public $pago_bsd;
     public $cliente;
     public $cod_gift_card;
@@ -35,7 +47,76 @@ class GiftCard extends Component
     public $pgc;
     public $codigo_seguridad;
 
+    public $atr_nuevo_cliente = 'hidden';
+    public $atr_hidden = 'block';
+    public $atr_tabla = 'block';
+
     public $servicios = [];
+
+    public function nuevo_cliente()
+    {
+        $this->atr_nuevo_cliente = 'block';
+        $this->atr_hidden = 'hidden';
+        $this->atr_tabla = 'hidden';
+    }
+
+    public function store_nuevo_cliente()
+    {
+
+        try {
+
+            $user = Auth::user();
+
+            $cliente = new Cliente();
+            $cliente->nombre      = strtoupper($this->nombre);
+            $cliente->apellido    = strtoupper($this->apellido);
+
+            /**Restriccion para cliente ya existentes */
+            /*****************************************/
+            $email_existe = Cliente::where('email', $this->email)->orWhere('cedula', $this->cedula)->first();
+            if(isset($email_existe) and $email_existe->email == $this->email || $email_existe->cedula == $this->cedula){
+                throw new Exception("El cliente ya existe, el email o la cedula ya se encuentran registrados. Por favor intente con otro", 401);
+            }else{
+                $cliente->email       = $this->email;
+                $cliente->cedula      = $this->cedula;
+            }
+            /*****************************************/
+
+            $cliente->telefono    = $this->telefono;
+            $cliente->user_id     = $user->id;
+            $cliente->responsable = $user->name;
+            $cliente->save();
+
+            /** El nuevo cliente es cargado en la tabla de frecuencias
+             * para fines estadisticos
+             */
+            $cliente_nuevo = new Frecuencia();
+            $cliente_nuevo->cliente_id  = $cliente->id;
+            $cliente_nuevo->nombre      = strtoupper($cliente->nombre.' '.$cliente->apellido);
+            $cliente_nuevo->save();
+
+            Notification::make()
+                ->title('Cliente creado con éxito')
+                ->success()
+                ->send();
+
+            $this->reset();
+
+            $this->redirect('/g/c');
+
+        } catch (\Throwable $th) {
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-shield-check')
+            ->color('primary')
+            ->body($th->getMessage())
+            ->send();
+        }
+    }
+
+    public function regresar(){
+        $this->redirect('/g/m');
+    }
 
     public function store()
     {
@@ -73,9 +154,10 @@ class GiftCard extends Component
 
             $correo = Cliente::where('id',  $asignar_giftCard->cliente_id)->first()->email;
 
-            if($asignar_giftCard->monto == 20){
+            if($asignar_giftCard->monto == '20'){
                 $image = 'gift20.png';
-            }else{
+            }
+            if($asignar_giftCard->monto == '40'){
                 $image = 'gift40.png';
             }
 
@@ -116,6 +198,10 @@ class GiftCard extends Component
                 ->body("La GiftCard fue asignada de forma exitosa")
                 ->send();
 
+            $this->reset();
+
+            $this->render();
+
         } catch (\Throwable $th) {
             Notification::make()
             ->title('NOTIFICACIÓN DE ERROR')
@@ -135,7 +221,7 @@ class GiftCard extends Component
             $srv = 0;
         }
 
-        $this->codigo_seguridad = random_int(111111111111111, 999999999999999);
+        $this->codigo_seguridad = random_int(1111111111111111, 9999999999999999);
         $generator = new \Picqer\Barcode\BarcodeGeneratorHTML();
         $barcode = $generator->getBarcode($this->codigo_seguridad, $generator::TYPE_CODE_128);
 
@@ -150,7 +236,10 @@ class GiftCard extends Component
         if(isset($cliente)){
             $nom_ape = $cliente->nombre.' '.$cliente->apellido;
             $this->cliente = $nom_ape;
+        }else{
+            $this->cliente = '---- ----';
         }
+
 
         $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
 

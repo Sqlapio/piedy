@@ -47,7 +47,7 @@
                     padding: 13px;
                 ">
                     <div class="credit-card-last4" style="font-size: 13px; padding-top: 95px; padding-left: 25px; color: black;">
-                        <div>EXP: 05/24</div>
+                        <div>EXP: {{ date("m/y",strtotime(date('m/y')."+ 6 month")) }}</div>
                     </div>
                 <div class="credit-card-last4" style="font-size: 18px; padding-left: 25px; color: black;">
                     {{ $mailData['cliente'] }} <span style="margin-left: 85px; font-size: 13px;">PGC: {{ $mailData['pgc'] }}</span>
@@ -59,7 +59,7 @@
                         margin-right: auto;
                         width: 350px;
                         height: auto;
-                        " src="https://piedy.sqlapio.net/storage/barcodes/'.{{ $mailData['barcode'] }}">
+                        " src="{{ url('storage'.$mailData['barcode']) }}">
                 </div>
             </div>
         <p style="text-align: justify; margin-left: 20px;">

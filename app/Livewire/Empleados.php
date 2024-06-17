@@ -106,6 +106,28 @@ class Empleados extends Component
         ]);
     }
 
+    /**ACCIONES PARA USO DEL MENU EN EL MODULO DE NOMINA */
+    /************************************************** */
+    public function accion($value)
+    {
+        if($value == 1){
+            $this->redirect('/n/q');
+        }
+        if($value == 2){
+            $this->redirect('/n/m');
+        }
+        if($value == 3){
+            $this->redirect('/n/q');
+        }
+        if($value == 4){
+            $this->redirect('/n/e');
+        }
+        if($value == 5){
+            $this->redirect('/empleados');
+        }
+    }
+    /************************************************** */
+
     public function cancelar()
     {
         $this->reset();

@@ -33,6 +33,25 @@ class NomManicurista extends Component
         $this->deduccion_dolares[$id] = number_format(floatval(($this->deduccion_dolares[$id]) / 100), 2, ',', '.');
     }
 
+    public function accion($value)
+    {
+        if($value == 1){
+            $this->redirect('/n/q');
+        }
+        if($value == 2){
+            $this->redirect('/n/m');
+        }
+        if($value == 3){
+            $this->redirect('/n/q');
+        }
+        if($value == 4){
+            $this->redirect('/n/e');
+        }
+        if($value == 5){
+            $this->redirect('/empleados');
+        }
+    }
+
     public function store()
     {
         $this->validate();

@@ -63,8 +63,18 @@ class Membresia extends Component
             $cliente = new Cliente();
             $cliente->nombre      = strtoupper($this->nombre);
             $cliente->apellido    = strtoupper($this->apellido);
-            $cliente->cedula      = $this->cedula;
-            $cliente->email       = $this->email;
+
+            /**Restriccion para cliente ya existentes */
+            /*****************************************/
+            $email_existe = Cliente::where('email', $this->email)->orWhere('cedula', $this->cedula)->first();
+            if(isset($email_existe) and $email_existe->email == $this->email || $email_existe->cedula == $this->cedula){
+                throw new Exception("El cliente ya existe, el email o la cedula ya se encuentran registrados. Por favor intente con otro", 401);
+            }else{
+                $cliente->email       = $this->email;
+                $cliente->cedula      = $this->cedula;
+            }
+            /*****************************************/
+
             $cliente->telefono    = $this->telefono;
             $cliente->user_id     = $user->id;
             $cliente->responsable = $user->name;

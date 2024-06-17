@@ -270,7 +270,7 @@ class Caja extends Component
                             ->cod_servicio;
 
                         /**Pregunto? si la asignacion del servicio en VIP */
-                        $tipoSrv = Servicio::where('cod_servicio', $srv_vip)->first()->asignacion;
+                        $tipoSrv = Servicio::where('cod_servicio', $srv_vip)->first();
 
                         /**CASO DE USO 1
                          * METODO DE PAGO: SOLO CON GIFTCARD
@@ -402,7 +402,7 @@ class Caja extends Component
                         if ($this->metodo_pago_pre == '') {
 
                             /**Controlador para calcular las comisiones */
-                            $res = UtilsController::cal_comision_empleado($this->valor_uno, $this->valor_dos, $tipoSrv, $total_vista, $this->monto_giftcard);
+                            $res = UtilsController::cal_comision_empleado($this->valor_uno, $this->valor_dos, $tipoSrv->asignacion, $tipoSrv->tipo_servicio_id, $total_vista, $this->monto_giftcard);
 
                             /**
                              * Actualizamos la tabla de ventas, Detalles de asignacion y Disponible

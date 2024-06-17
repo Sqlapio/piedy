@@ -24,6 +24,7 @@
         "malzariey/filament-daterangepicker-filter": "^2.3",
         "mckenziearts/laravel-notify": "^2.4",
         "picqer/php-barcode-generator": "^2.4",
+        "spatie/laravel-pdf": "^1.5",
         "wire-elements/modal": "^2.0",
         "wireui/wireui": "^1.18"
     },

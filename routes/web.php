@@ -18,8 +18,8 @@ use App\Mail\NotificacionesEmail;
 use App\Models\Cita;
 use App\Models\Membresia;
 use App\Models\MovimientoMembresia;
-use Illuminate\Console\Scheduling\Schedule;
-
+use App\Models\User;
+use Spatie\Browsershot\Browsershot;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +32,7 @@ use Illuminate\Console\Scheduling\Schedule;
 |
 */
 
-Route::get('/', function () {
+Route::get('/   ', function () {
     return view('welcome');
 })->name('welcome');
 
@@ -108,6 +108,24 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     });
 
     /**
+     * Ruta creadas para el modulo de nomina
+     */
+    Route::prefix('n')->group(function () {
+
+        Route::get('/q', function () {
+            return view('nom-quiropedista');
+        })->name('nom-quiropedista');
+
+        Route::get('/m', function () {
+            return view('nom-manicurista');
+        })->name('nom-manicurista');
+
+        Route::get('/e', function () {
+            return view('nom-encargado');
+        })->name('nom-encargado');
+    });
+
+    /**
      * Rutas para cierres parciales
      */
     Route::get('/cierre/diario', function () {
@@ -178,6 +196,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('membresia');
     })->name('membresia');
 
+    Route::get('/nomina', function () {
+        return view('nomina');
+    })->name('nomina');
+
 
     Route::get('/lista/clientes', [ApiClientesController::class, 'lista_clientes'])->name('api.clientes');
     Route::get('/lista/empleados', [ApiClientesController::class, 'lista_empleados'])->name('api.empleados');
@@ -213,7 +235,13 @@ Route::get('/pp', function () {
 
     // return 'listo';
     //Total de ventas por empleado
-    $products = DB::select('call nomina_quincenal(?, ?)', array('2024-06-01', '2024-06-14'));
+    // $products = DB::select('call nomina_quincenal(?, ?)', array('2024-06-01', '2024-06-14'));
+
+    $gerente = User::where('status', '1')->where('tipo_servicio_id', '3')->get(['name']);
+
+    foreach($gerente as $value){
+        $_comision_gte = VentaServicio::where('responsable', 'Supergerente')->SUM('comision_gerente');
+    }
 
     //Total de membresias atendidas por empleado
     $user_info = DB::table('movimiento_membresias')
@@ -228,5 +256,25 @@ Route::get('/pp', function () {
     //Suma total de membresias atendias por los empleados
     $sum_membresia = MovimientoMembresia::where('descripcion', '=', 'consumo en tienda')->count();
 
-    dd($products, $user_info, $membresias, $sum_membresia);
+    $empleados = User::whereBetween('tipo_servicio_id',['1', '2'])->where('status', '1')->get();
+    $user_quiro = DB::table('venta_servicios')
+                 ->select(
+                    'empleado', DB::raw('count(*) as total'),
+                    DB::raw('SUM(comision_dolares) as Dolares'),
+                    DB::raw('SUM(comision_bolivares) as Bolivares')
+                    )
+                 ->whereBetween('created_at',['2024-06-01 00:00:00', '2024-06-14 23:59:59'])
+                 ->groupBy('empleado')
+                 ->get();
+    dd($empleados, $user_quiro);
+    dd($_comision_gte, $gerente, $user_info, 'Monto total de Membresias activas-> '.$membresias, 'Monto total de Membresias atendidas por los empleados-> '.$sum_membresia);
+
+});
+
+Route::get('/ex', function () {
+    Browsershot::url('http://piedy.test/pay/ex')
+        
+        ->landscape()
+        ->save('invoice.pdf');
+
 });

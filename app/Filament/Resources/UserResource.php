@@ -41,11 +41,13 @@ class UserResource extends Resource
                         'gerente' => 'Gerente',
                         'empleado' => 'Empleado',
                         'encargado' => 'Encargado',
+                        'nomina' => 'Nomina',
                     ]),
                 Select::make('area_trabajo')
                     ->options([
                         'Tienda' => 'Tienda',
                         'Administración' => 'Administración',
+                        'Nomina' => 'Nomina',
                     ])->searchable(),
                 Select::make('tipo_servicio_id')
                     ->relationship('tipo_servicio', 'descripcion')
@@ -77,6 +79,7 @@ class UserResource extends Resource
                     'gerente' => 'success',
                     'encargado' => 'info',
                     'empleado' => 'warning',
+                    'nomina' => 'gray',
                 })
                 ->searchable(),
                 TextColumn::make('tipo_servicio.descripcion')->label('Tipo de servício')->searchable(),

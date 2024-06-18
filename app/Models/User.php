@@ -31,7 +31,8 @@ class User extends Authenticatable
         'password',
         'tipo_usuario',
         'area_trabajo',
-        'tipo_servicio_id'
+        'tipo_servicio_id',
+        'salario'
     ];
 
     /**

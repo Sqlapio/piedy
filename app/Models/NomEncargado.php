@@ -19,13 +19,18 @@ class NomEncargado extends Model
      */
     protected $fillable = [
         'user_id',
-        'nombre',
+        'name',
+        'total_servicios',
         'total_comision_dolares',
-        'asignaciones_dolares',
         'asignaciones_bolivares',
         'deducciones_dolares',
-        'deducciones_bolivares',
+        'salario_quincenal',
         'fecha_ini',
         'fecha_fin',
+        'total_dolares',
+        'total_bolivares',
+        'quincena',
+        'cod_quincena',
+
     ];
 }

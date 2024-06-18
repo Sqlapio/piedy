@@ -363,6 +363,7 @@ class FacturarCliente extends Component
                                             'pago_bsd'              => $porcentaje_servicio_bsd,
                                             'comision_dolares'      => $total_comision_empleado_usd,
                                             'comision_bolivares'    => $total_comision_empleado_bsd,
+                                            'responsable_id'        => $user->id,
                                             'responsable'           => $user->name
                                         ]);
                                     }

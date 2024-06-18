@@ -2,8 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Models\NomQuiropedista;
-use Filament\Enums\ThemeMode;
+use App\Models\NomEncargado;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables;
@@ -17,12 +16,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\On;
 
-class TableNomQuiropedista extends Component implements HasForms, HasTable
+class TableNomEncargado extends Component implements HasForms, HasTable
 {
     use InteractsWithForms;
     use InteractsWithTable;
 
-    #[On('nomina-calculada-quiropedista')]
+    #[On('nomina-calculada-encargado')]
     public function updateNominaCreada()
     {
         $this->reset();
@@ -31,10 +30,10 @@ class TableNomQuiropedista extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(NomQuiropedista::query())
+            ->query(NomEncargado::query())
             ->columns([
                 TextColumn::make('name')
-                    ->label('Empleado')
+                    ->label('Encargado')
                     ->sortable()
                     ->searchable(),
 
@@ -44,20 +43,8 @@ class TableNomQuiropedista extends Component implements HasForms, HasTable
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('promedio_duracion_servicios')
-                    ->label('Duración(Min)')
-                    ->alignCenter()
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
                 TextColumn::make('total_comision_dolares')
-                    ->label('Comision($)')
-                    ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('total_comision_bolivares')
-                    ->label('Comision(Bs)')
+                    ->label('Comision(Bs.)')
                     ->sortable()
                     ->searchable(),
 
@@ -73,24 +60,31 @@ class TableNomQuiropedista extends Component implements HasForms, HasTable
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
+                TextColumn::make('salario_quincenal')
+                    ->label('Quincena(Bs.)')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('total_dolares')
                 ->label('Nomina($)')
+                    ->money('USD')
                     ->summarize(Sum::make()
+                        ->money('USD')
                         ->label('Total Nomina($)'))
                     ->sortable()
                     ->searchable(),
 
                 TextColumn::make('total_bolivares')
                 ->label('Nomina(Bs.)')
+                    ->money('VES')
                     ->summarize(Sum::make()
+                        ->money('VES')
                         ->label('Total Nomina(Bs.)'))
                     ->sortable()
                     ->searchable(),
                 //
             ])
-            ->striped()
-            ->defaultGroup('quincena')
             ->filters([
                 //
             ])
@@ -106,6 +100,6 @@ class TableNomQuiropedista extends Component implements HasForms, HasTable
 
     public function render(): View
     {
-        return view('livewire.table-nom-quiropedista');
+        return view('livewire.table-nom-encargado');
     }
 }

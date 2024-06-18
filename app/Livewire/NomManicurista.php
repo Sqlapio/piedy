@@ -163,7 +163,6 @@ class NomManicurista extends Component
             $this->dispatch('nomina-calculada-manicurista');
 
         } catch (\Throwable $th) {
-            dd($th);
             Notification::make()
                     ->title('NOTIFICACIÓN')
                     ->icon('heroicon-o-shield-check')

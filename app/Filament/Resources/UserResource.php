@@ -63,11 +63,16 @@ class UserResource extends Resource
                     ->prefix('$')
                     ->numeric()
                     ->inputMode('decimal'),
+                Select::make('status')
+                    ->options([
+                        '1' => 'Activo',
+                        '2' => 'Inactivo',
+                    ])->searchable(),
                 TextInput::make('password')
-                ->password()
-                ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-                ->hiddenOn('edit')
-                ->required(),
+                    ->password()
+                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                    ->hiddenOn('edit')
+                    ->required(),
             ]);
     }
 

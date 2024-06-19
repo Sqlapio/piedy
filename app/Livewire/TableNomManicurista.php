@@ -87,6 +87,7 @@ class TableNomManicurista extends Component implements HasForms, HasTable
                     ->searchable(),
                 //
             ])
+            ->defaultGroup('quincena')
             ->filters([
                 //
             ])

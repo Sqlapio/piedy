@@ -24,6 +24,7 @@ class NomQuiropedista extends Model
         'promedio_duracion_servicios',
         'total_comision_dolares',
         'total_comision_bolivares',
+        'total_propina_bsd',
         'asignaciones_dolares',
         'asignaciones_bolivares',
         'deducciones_dolares',
@@ -32,5 +33,7 @@ class NomQuiropedista extends Model
         'fecha_fin',
         'total_dolares',
         'total_bolivares',
+        'quincena',
+        'cod_quincena',
     ];
 }

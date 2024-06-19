@@ -58,11 +58,21 @@ class UserResource extends Resource
                             ->required(),
                     ])
                     ->required(),
+                TextInput::make('salario')
+                    ->label('Salario Mensual')
+                    ->prefix('$')
+                    ->numeric()
+                    ->inputMode('decimal'),
+                Select::make('status')
+                    ->options([
+                        '1' => 'Activo',
+                        '2' => 'Inactivo',
+                    ])->searchable(),
                 TextInput::make('password')
-                ->password()
-                ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-                ->hiddenOn('edit')
-                ->required(),
+                    ->password()
+                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                    ->hiddenOn('edit')
+                    ->required(),
             ]);
     }
 

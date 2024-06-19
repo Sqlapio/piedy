@@ -24,11 +24,14 @@ class NomManicurista extends Model
         'promedio_duracion_servicios',
         'total_comision_dolares',
         'total_comision_bolivares',
+        'total_propina_bsd',
         'asignaciones_dolares',
         'asignaciones_bolivares',
         'deducciones_dolares',
         'deducciones_bolivares',
         'fecha_ini',
         'fecha_fin',
+        'quincena',
+        'cod_quincena',
     ];
 }

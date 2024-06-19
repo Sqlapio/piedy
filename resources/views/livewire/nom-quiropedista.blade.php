@@ -1,4 +1,5 @@
 <div>
+    @livewire('notifications')
     <div class="px-10 py-4">
         <div class="mb-10">
             <div class="flex">
@@ -13,6 +14,17 @@
                 </div>
                 <div>
                     <x-datetime-picker id="min-max-times-input" without-timezone label="Hasta:" placeholder="hasta" wire:model.defer="hasta" min-time="08:00" max-time="23:00" parse-format="YYYY-MM-DD HH:mm:ss" />
+                </div>
+                <div>
+                    <x-select label="Select Status" placeholder="Selccione quincena" 
+                        :options="[
+                            ['descripcion' => '1era. Quincena',  'id' => 'primera'],
+                            ['descripcion' => '2da. Quincena', 'id' => 'segunda'],
+                        ]"
+                        option-label="descripcion"
+                        option-value="id"
+                        wire:model.defer="quincena"
+                    />
                 </div>
             </div>
         </div>

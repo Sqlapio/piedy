@@ -52,61 +52,10 @@
             </div>
         </div>
 
+        @livewire('table-user')
 
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg  {{ $ocultar_table_cliente }}">
-            <div class="flex justify-start mb-4">
-                <input wire:model.live="buscar" type="search" id="search" name="buscar" class="border-b border-gray-200 py-2 text-sm rounded-full shadow-lg focus:ring-check-blue focus:border-check-blue" placeholder="Buscar cliente" autocomplete="off">
-            </div>
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-[#7898a5] dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">
-                            Empleado
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Email
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Area de trabajo
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Acción
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($data as $item)
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            <x-avatar sm label="{{ preg_replace('/(?<=\w)./', '', $item->name) }}" />
-                            {{ $item->name }}
-                        </th>
-                        <td class="px-6 py-4">
-                            {{ $item->email }}
-                        </td>
-                        <td class="px-6 py-4">
-                            @if($item->area_trabajo == 'quiropedia')
-                            <x-badge outline info md label="Quiropedia" />
-                            @endif
-                            @if($item->area_trabajo == 'manicure')
-                            <x-badge outline pink md label="Manicure" />
-                            @endif
-                        </td>
-                        <td class="px-6 py-4">
-                            <x-badge rounded negative md label="Eliminar" wire:click='eliminar_empleado({{ $item->id }})' class="cursor-pointer"/>
-                        </td>
 
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
 
-        {{-- Paginacion --}}
-        <div class="bg-white px-4 py-3 mt-4 items-center justify-between border-t border-gray-200 sm:px-6 {{ $ocultar_table_cliente }}">
-            {{-- Paginacion --}}
-            {{ $data->links() }}
-        </div>
     </div>
 
     {{-- div para separacion --}}

@@ -29,6 +29,8 @@ return new class extends Migration
             $table->string('fecha_fin');
             $table->decimal('total_dolares', 8, 2)->default(0.00);
             $table->decimal('total_bolivares', 8, 2)->default(0.00);
+            $table->string('quincena', 8, 2);
+            $table->string('cod_quincena', 8, 2);
             $table->timestamps();
         });
     }

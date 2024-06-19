@@ -9,6 +9,8 @@ use App\Models\NomManicurista as ModelsNomManicurista;
 use App\Models\TasaBcv;
 use App\Models\User;
 use App\Models\VentaServicio;
+use Exception;
+use Filament\Notifications\Notification;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 
@@ -23,14 +25,37 @@ class NomManicurista extends Component
     #[Rule('required', message: 'Campo obligatorio')]
     public $hasta;
 
+    #[Rule('required', message: 'Campo obligatorio')]
+    public $quincena;
+
     public function conver_asignacion_bolivares($id)
     {
-        $this->asignacion_bolivares[$id] = number_format(floatval(($this->asignacion_bolivares[$id]) / 100), 2, ',', '.');
+        try {
+            $this->asignacion_bolivares[$id] = number_format(floatval(($this->asignacion_bolivares[$id]) / 100), 2, ',', '.');
+
+        } catch (\Throwable $th) {
+            Notification::make()
+                    ->title('NOTIFICACIÓN')
+                    ->icon('heroicon-o-shield-check')
+                    ->color('danger')
+                    ->body($th->getMessage())
+                    ->send();
+        }
     }
 
     public function conver_deduccion_dolares($id)
     {
-        $this->deduccion_dolares[$id] = number_format(floatval(($this->deduccion_dolares[$id]) / 100), 2, ',', '.');
+        try {
+            $this->deduccion_dolares[$id] = number_format(floatval(($this->deduccion_dolares[$id]) / 100), 2, ',', '.');
+
+        } catch (\Throwable $th) {
+            Notification::make()
+                    ->title('NOTIFICACIÓN')
+                    ->icon('heroicon-o-shield-check')
+                    ->color('danger')
+                    ->body($th->getMessage())
+                    ->send();
+        }
     }
 
     public function accion($value)
@@ -60,6 +85,7 @@ class NomManicurista extends Component
             $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
             //code...
             $data = User::where('tipo_servicio_id', '1')->where('status', '1')->get();
+            $nro_empleados = count($data);
 
             //Total de membresias vendidas
             $membresias = Membresia::all()->SUM('monto');
@@ -121,7 +147,14 @@ class NomManicurista extends Component
                 $nomina->fecha_fin = $this->hasta;
                 $nomina->total_dolares = $nomina->total_comision_dolares - $nomina->deducciones_dolares;
                 $nomina->total_bolivares = $nomina->total_comision_bolivares + $nomina->asignaciones_bolivares + $nomina->comision_membresias;
-                $nomina->save();
+                $nomina->quincena = $this->quincena;
+                $nomina->cod_quincena = ($this->quincena == 'primera') ? '1'.date('mY') : '2'.date('mY');
+                $q_duplicada = ModelsNomManicurista::where('cod_quincena', $nomina->cod_quincena)->get();
+                if(isset($q_duplicada) and count($q_duplicada) == $nro_empleados){
+                    throw new Exception("La quincena que estas calculando ya exite. Por favor verifica el perido que estas calculando", 401);
+                }else{
+                    $nomina->save();
+                }
 
             }
 
@@ -130,7 +163,12 @@ class NomManicurista extends Component
             $this->dispatch('nomina-calculada-manicurista');
 
         } catch (\Throwable $th) {
-            throw $th;
+            Notification::make()
+                    ->title('NOTIFICACIÓN')
+                    ->icon('heroicon-o-shield-check')
+                    ->color('danger')
+                    ->body($th->getMessage())
+                    ->send();
         }
 
     }

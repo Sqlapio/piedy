@@ -310,6 +310,7 @@ class Caja extends Component
                                             'comision_dolares'      => $res['comision_usd_emp_valorUno'],
                                             'comision_bolivares'    => $res['comision_bs_emp_valorDos'],
                                             'comision_gerente'      => $res['comision_usd_gte'],
+                                            'responsable_id'        => Auth::user()->id,
                                             'responsable'           => Auth::user()->name,
                                         ]);
 
@@ -369,6 +370,7 @@ class Caja extends Component
                                             'comision_dolares'      => $res['comision_usd_emp_valorUno'],
                                             'comision_bolivares'    => $res['comision_bs_emp_valorDos'],
                                             'comision_gerente'      => $res['comision_usd_gte'],
+                                            'responsable_id'        => Auth::user()->id,
                                             'responsable'           => Auth::user()->name,
                                         ]);
 
@@ -422,6 +424,7 @@ class Caja extends Component
                                     'comision_dolares'      => $res['comision_usd_emp_valorUno'],
                                     'comision_bolivares'    => $res['comision_bs_emp_valorDos'],
                                     'comision_gerente'      => $res['comision_usd_gte'],
+                                    'responsable_id'        => Auth::user()->id,
                                     'responsable'           => Auth::user()->name,
                                 ]);
                         }

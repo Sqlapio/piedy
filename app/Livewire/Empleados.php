@@ -98,6 +98,7 @@ class Empleados extends Component
 
     public function eliminar($id)
     {
+        dd('aqui');
         User::where('id', $id)->delete();
         $this->dialog([
             'title'       => 'Exito!',

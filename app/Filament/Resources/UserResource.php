@@ -31,10 +31,19 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
+                TextInput::make('name')
+                    ->required(),
+
+                TextInput::make('cedula')
+                    ->required(),
+
                 TextInput::make('email')
-                ->email()
-                ->required(),
+                    ->email()
+                    ->required(),
+
+                TextInput::make('telefono')
+                    ->required(),
+
                 Select::make('tipo_usuario')
                     ->options([
                         'administrador' => 'Administrador',
@@ -43,12 +52,16 @@ class UserResource extends Resource
                         'encargado' => 'Encargado',
                         'nomina' => 'Nomina',
                     ]),
+
                 Select::make('area_trabajo')
                     ->options([
+                        'quiropedia' => 'Quiropedia',
+                        'manicure' => 'Manicure',
                         'Tienda' => 'Tienda',
                         'Administración' => 'Administración',
                         'Nomina' => 'Nomina',
                     ])->searchable(),
+                    
                 Select::make('tipo_servicio_id')
                     ->relationship('tipo_servicio', 'descripcion')
                     ->searchable()
@@ -58,16 +71,19 @@ class UserResource extends Resource
                             ->required(),
                     ])
                     ->required(),
+                    
                 TextInput::make('salario')
                     ->label('Salario Mensual')
                     ->prefix('$')
                     ->numeric()
                     ->inputMode('decimal'),
+                    
                 Select::make('status')
                     ->options([
                         '1' => 'Activo',
                         '2' => 'Inactivo',
                     ])->searchable(),
+                    
                 TextInput::make('password')
                     ->password()
                     ->dehydrateStateUsing(fn ($state) => Hash::make($state))

@@ -50,7 +50,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 </div>
             @endif
         </div>
-        
+
         {{-- Primera linea --}}
         <div class="grid grid-cols-1 md:grid-cols-1 {{ $style }} gap-2 mb-2 px-3">
             {{-- Empleados --}}
@@ -214,14 +214,10 @@ use App\Models\TasaBcv as ModelsTasaBcv;
 
     @if(Auth::user()->tipo_usuario == 'nomina')
         {{-- tercera linea --}}
-        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-2 px-3">
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-2 px-3">
             {{-- Empleados --}}
-            <div wire:click="valida_tasa({{ 1 }})" class="p-6 rounded-lg" style="background-image: url('https://images.alphacoders.com/110/1105008.png'); background-size: cover;">
-                <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-20 text-white">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
-                    </svg>
-                </div>
+            <div wire:click="valida_tasa({{ 1 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg'); background-size: cover;">
+                <div class="flex items-center w-24 h-24"></div>
                 <div class="ml-12 text-right">
                     <div class="mt-2 text-4xl text-white leading-7 font-bold">
                         Empleados
@@ -232,20 +228,27 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 </div>
             </div>
             {{-- Nomina --}}
-            <div wire:click="valida_tasa({{ 10 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-morado-negro-formas-geometricas-generativas-ai_925897-5809.jpg');background-size: cover;">
-                <div class="flex items-center">
-                    <svg class="w-20 h-auto text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.6 16.733c.234.269.548.456.895.534a1.4 1.4 0 0 0 1.75-.762c.172-.615-.446-1.287-1.242-1.481-.796-.194-1.41-.861-1.241-1.481a1.4 1.4 0 0 1 1.75-.762c.343.077.654.26.888.524m-1.358 4.017v.617m0-5.939v.725M4 15v4m3-6v6M6 8.5 10.5 5 14 7.5 18 4m0 0h-3.5M18 4v3m2 8a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"/>
-                    </svg>
-
-                </div>
+            <div wire:click="valida_tasa({{ 10 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
+                <div class="flex items-center w-24 h-24"></div>
                 <div class="ml-12 text-right">
                     <div class="sm:hidden md:hidden lg:block mt-2 text-4xl text-white text- leading-7 font-bold">
-                        NOMINA
+                        Nomina
                     </div>
-                        <div class="mt-3 text-right text-xs font-semibold text-white">
-                            <div>Modulo para el calculo de nomina</div>
-                        </div>
+                    <div class="mt-3 text-right text-xs font-semibold text-white">
+                        <div>Modulo para el calculo de nomina</div>
+                    </div>
+                </div>
+            </div>
+            {{-- Reportes --}}
+            <div wire:click="valida_tasa({{ 11 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
+                <div class="flex items-center w-24 h-24"></div>
+                <div class="ml-12 text-right">
+                    <div class="sm:hidden md:hidden lg:block mt-2 text-4xl text-white text- leading-7 font-bold">
+                        Reportes
+                    </div>
+                    <div class="mt-3 text-right text-xs font-semibold text-white">
+                        <div>Modulo para gestion de reportes</div>
+                    </div>
                 </div>
             </div>
         </div>

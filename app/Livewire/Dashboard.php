@@ -154,6 +154,19 @@ class Dashboard extends Component
             }else{
                 $this->redirect('/nomina');
             }
+        }
+
+        if($valor == 11)
+        {
+            if($tasa->fecha != date('d-m-Y'))
+            {
+                $this->dialog()->error(
+                    $title = 'Error !!!',
+                    $description = 'Debe actualizar la tasa del BCV para poder utilizar el sistema. Por favor haga click en el simbolo del BCV.'
+                );
+            }else{
+                $this->redirect('/reportes');
+            }
 
         }
     }

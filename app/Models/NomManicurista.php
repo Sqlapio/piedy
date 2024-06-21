@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class NomManicurista extends Model
 {
+    use HasFactory;
     /**
      * Define table
      */

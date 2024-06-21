@@ -8,14 +8,13 @@ use App\Models\VentaServicio;
 use Exception;
 use Filament\Notifications\Notification;
 use Livewire\Attributes\Rule;
+use App\Models\PeriodoNomina;
 use Livewire\Component;
 
 class NomQuiropedista extends Component
 {
-    // public array $asignacion_dolares;
     public array $asignacion_bolivares;
     public array $deduccion_dolares;
-    // public array $deduccion_bolivares;
 
     #[Rule('required', message: 'Campo obligatorio')]
     public $desde;
@@ -75,7 +74,8 @@ class NomQuiropedista extends Component
         }
     }
 
-    public function store(){
+    public function store()
+    {
 
         $this->validate();
 
@@ -83,6 +83,13 @@ class NomQuiropedista extends Component
 
             $data = User::where('tipo_servicio_id', '2')->where('status', '1')->get();
             $nro_empleados = count($data);
+
+            $periodo_nomina = PeriodoNomina::where('status', '1')->first();
+            if(isset($periodo_nomina)){
+                $periodo = $periodo_nomina->cod_quincena;
+            }else{
+                throw new Exception("El periodo de nomina esta inactivo. Por favor contacte al administrador del sistema", 401);
+            }
 
             foreach($data as $item){
 
@@ -95,8 +102,18 @@ class NomQuiropedista extends Component
                 //Promedio de duracion de los servicios
                 $total_servicios = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->count();
                 $sum_servicios = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('duracion');
-                $promedio  = $sum_servicios / $total_servicios;
-                $nomina->promedio_duracion_servicios    = $promedio;
+
+                /**
+                 * Restriccion para validar el caso cuando el empleado no 
+                 * realizo ningun servicio o esta de vacaciones. 
+                 * ---------------------------------------------------------------- 
+                 */
+                if($total_servicios == 0){
+                    $nomina->promedio_duracion_servicios = 0;
+                }else{
+                    $promedio  = $sum_servicios / $total_servicios;
+                    $nomina->promedio_duracion_servicios    = $promedio;
+                }
 
                 $nomina->total_comision_dolares         = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_dolares');
                 $nomina->total_comision_bolivares       = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_bolivares');
@@ -122,30 +139,53 @@ class NomQuiropedista extends Component
                 $nomina->total_bolivares = ($nomina->total_comision_bolivares + $nomina->asignaciones_bolivares) - $nomina->deducciones_bolivares;
                 $nomina->quincena = $this->quincena;
                 $nomina->cod_quincena = ($this->quincena == 'primera') ? '1'.date('mY') : '2'.date('mY');
+
+                /**
+                 * Restriccion para validar el periodo de nomina correcto esto, 
+                 * evita que se calculen nominas en meses diferentes al actual
+                 * ---------------------------------------------------------------- 
+                 */
+                if($nomina->cod_quincena != $periodo){
+                    throw new Exception("El periodo de nomina no coincide con el periodo actual", 401);
+                }
+
+                /**
+                 * Restriccion para validar nomina duplicada.
+                 * ---------------------------------------------------------------- 
+                 */
                 $q_duplicada = ModelsNomQuiropedista::where('cod_quincena', $nomina->cod_quincena)->get();
                 if(isset($q_duplicada) and count($q_duplicada) == $nro_empleados){
                     throw new Exception("La quincena que estas calculando ya exite. Por favor verifica el perido que estas calculando", 401);
+
                 }else{
+
                     $nomina->save();
                 }
 
             }
 
-            $this->reset();
-
-            $this->dispatch('nomina-calculada-quiropedista');
-            //code...
-        } catch (\Throwable $th) {
             Notification::make()
-                    ->title('NOTIFICACIÓN')
-                    ->icon('heroicon-o-shield-check')
-                    ->color('danger')
-                    ->body($th->getMessage())
-                    ->send();
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-document-text')
+            ->iconColor('info')
+            ->color('info')
+            ->body('La nomina fue calculada de forma correcta.')
+            ->send();
+
+        } catch (\Throwable $th) {
+            // dd($th);
+            Notification::make()
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-o-document-text')
+                ->iconColor('danger')
+                ->color('danger')
+                ->body($th->getMessage())
+                ->send();
         }
 
 
     }
+
     public function render()
     {
         $data = User::where('tipo_servicio_id', '2')->where('status', '1')->get();

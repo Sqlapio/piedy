@@ -3,64 +3,29 @@
     <div class="px-10 py-4">
         <div class="mb-10">
             <div class="flex">
-                <h1 class="text-xl mb-6 font-extrabold text-[#7898a5] uppercase">MODULO DE REPORTE POR EMPLEADO</h1>
-            </div>
-
-
-            <!-- Grid Y BOTON PARA CIERRE DE NOMINA-->
-            <div class="mb-10 {{ $atr_botton_hidden }}">
-                <div class="grid md:grid-cols-4 lg:grid-cols-6 sm:gap-4 md:gap-4">
-                    <!-- Boton -->
-                    <div class="mt-auto">
-                        <button type="submit" wire:click.prevent="cierre_nomina()" class="w-full rounded-md border border-transparent bg-green-700 py-4 px-2 text-sm font-bold text-white shadow-sm hover:bg-check-green">
-                            <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="cierre_nomina" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                            </svg>
-                            <span class="text-md uppercase">Cierre de Nómina</span>
-                        </button>
-                    </div>
-                </div>
+                <h1 class="text-xl mb-6 font-extrabold text-[#7898a5] uppercase">MODULO DE REPORTE GENERAL</h1>
             </div>
 
             <!-- Contenedor 1 -->
             <div class="contenedor">
                 <!-- Titulo -->
                 <div class="flex">
-                    <h1 class="text-sm mb-4 font-extrabold text-[#bd9c95] uppercase">Informacion para generar los reportes</h1>
+                    <h1 class="text-sm mb-4 font-extrabold text-[#bd9c95] uppercase">Informacion para generar el reporte general de nomina</h1>
                 </div>
                 <!-- Grid -->
                 <div class="grid md:grid-cols-4 sm:gap-4 md:gap-4 mb-40">
-                    <!-- Empleado -->
-                    <div class="">
-                        <x-select wire:change="$emit('selected', $event.target.value)" label="Empleado" wire:model.defer="empleado" placeholder="Seleccion" :async-data="route('api.empleados.nomina')" option-label="name" option-value="id"/>
-                    </div>
                     <!-- Periodo de nomina -->
                     <div>
                         <x-select wire:change="$emit('selected', $event.target.value)" label="Periodo de Nomina" wire:model.defer="periodo" placeholder="Seleccion" :async-data="route('api.periodo.nomina')" option-label="cod_quincena" option-value="cod_quincena"/>
                     </div>
                     <!-- Boton -->
                     <div class="mt-auto">
-                        <button type="submit" wire:click.prevent="reportes()" class="w-full rounded-md border border-transparent bg-green-700 py-2 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">
-                            <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="reportes" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
+                        <button type="submit" wire:click.prevent="reporte_general()" class="w-full rounded-md border border-transparent bg-green-700 py-2 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">
+                            <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="reporte_general" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
                             </svg>
                             <span>Generar Reporte</span>
                         </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-5">
-                <div class="flex">
-                    <h1 class="text-xl mb-6 font-extrabold text-[#7898a5] uppercase">REPORTE GENERADOS</h1>
-                </div>
-                <div class="grid sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-6 sm:gap-4 md:gap-4">
-                    <!-- Boton -->
-                    <div class="flex flex-col justify-center">
-                        <img src="{{ asset('images/pdf-icon.png') }}" alt="">
-                        <div class="flex justify-center items-center">
-                            <a href="{{ url('/E33-206202424539.pdf') }}" target="_blank" rel="noopener noreferrer">aqui</a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -141,3 +106,4 @@
     </div>
     {{-- A good traveler has no fixed plans and is not intent upon arriving. --}}
 </div>
+

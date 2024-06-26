@@ -120,14 +120,14 @@ class NomEncargado extends Component
                 $nomina->fecha_ini = $this->desde;
                 $nomina->fecha_fin = $this->hasta;
                 $nomina->total_dolares = $nomina->salario_quincenal + $nomina->total_comision_dolares - $nomina->deducciones_dolares;
-                $nomina->total_bolivares = ($nomina->salario_quincenal * $tasa_bcv) + (($nomina->asignaciones_bolivares) ? $nomina->asignaciones_bolivares : 0.00);
+                $nomina->total_bolivares = ($nomina->total_dolares * $tasa_bcv) + (($nomina->asignaciones_bolivares) ? $nomina->asignaciones_bolivares : 0.00);
                 $nomina->quincena = $this->quincena;
                 $nomina->cod_quincena = ($this->quincena == 'primera') ? '1'.date('mY') : '2'.date('mY');
 
                 /**
-                 * Restriccion para validar el periodo de nomina correcto esto, 
+                 * Restriccion para validar el periodo de nomina correcto esto,
                  * evita que se calculen nominas en meses diferentes al actual
-                 * ---------------------------------------------------------------- 
+                 * ----------------------------------------------------------------
                  */
                 if($nomina->cod_quincena != $periodo){
                     throw new Exception("El periodo de nomina no coincide con el periodo actual", 401);
@@ -135,7 +135,7 @@ class NomEncargado extends Component
 
                 /**
                  * Restriccion para validar nomina duplicada.
-                 * ---------------------------------------------------------------- 
+                 * ----------------------------------------------------------------
                  */
                 $q_duplicada = ModelsNomEncargado::where('cod_quincena', $nomina->cod_quincena)->get();
 

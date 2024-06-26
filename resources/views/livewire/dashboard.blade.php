@@ -214,7 +214,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
 
     @if(Auth::user()->tipo_usuario == 'nomina')
         {{-- tercera linea --}}
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-2 px-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2 px-3">
             {{-- Empleados --}}
             <div wire:click="valida_tasa({{ 1 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg'); background-size: cover;">
                 <div class="flex items-center w-24 h-24"></div>
@@ -245,6 +245,18 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 <div class="ml-12 text-right">
                     <div class="sm:hidden md:hidden lg:block mt-2 text-4xl text-white text- leading-7 font-bold">
                         Reportes
+                    </div>
+                    <div class="mt-3 text-right text-xs font-semibold text-white">
+                        <div>Modulo para gestion de reportes</div>
+                    </div>
+                </div>
+            </div>
+            {{-- Reportes General --}}
+            <div wire:click="valida_tasa({{ 12 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
+                <div class="flex items-center w-24 h-24"></div>
+                <div class="ml-12 text-right">
+                    <div class="sm:hidden md:hidden lg:block mt-2 text-4xl text-white text- leading-7 font-bold">
+                        Reporte General
                     </div>
                     <div class="mt-3 text-right text-xs font-semibold text-white">
                         <div>Modulo para gestion de reportes</div>

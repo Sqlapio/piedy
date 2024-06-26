@@ -104,9 +104,9 @@ class NomQuiropedista extends Component
                 $sum_servicios = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('duracion');
 
                 /**
-                 * Restriccion para validar el caso cuando el empleado no 
-                 * realizo ningun servicio o esta de vacaciones. 
-                 * ---------------------------------------------------------------- 
+                 * Restriccion para validar el caso cuando el empleado no
+                 * realizo ningun servicio o esta de vacaciones.
+                 * ----------------------------------------------------------------
                  */
                 if($total_servicios == 0){
                     $nomina->promedio_duracion_servicios = 0;
@@ -141,9 +141,9 @@ class NomQuiropedista extends Component
                 $nomina->cod_quincena = ($this->quincena == 'primera') ? '1'.date('mY') : '2'.date('mY');
 
                 /**
-                 * Restriccion para validar el periodo de nomina correcto esto, 
+                 * Restriccion para validar el periodo de nomina correcto esto,
                  * evita que se calculen nominas en meses diferentes al actual
-                 * ---------------------------------------------------------------- 
+                 * ----------------------------------------------------------------
                  */
                 if($nomina->cod_quincena != $periodo){
                     throw new Exception("El periodo de nomina no coincide con el periodo actual", 401);
@@ -151,7 +151,7 @@ class NomQuiropedista extends Component
 
                 /**
                  * Restriccion para validar nomina duplicada.
-                 * ---------------------------------------------------------------- 
+                 * ----------------------------------------------------------------
                  */
                 $q_duplicada = ModelsNomQuiropedista::where('cod_quincena', $nomina->cod_quincena)->get();
                 if(isset($q_duplicada) and count($q_duplicada) == $nro_empleados){
@@ -163,6 +163,10 @@ class NomQuiropedista extends Component
                 }
 
             }
+
+            $this->reset();
+
+            $this->dispatch('nomina-calculada-quiropedista');
 
             Notification::make()
             ->title('NOTIFICACIÓN')

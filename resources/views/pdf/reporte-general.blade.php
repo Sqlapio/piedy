@@ -33,8 +33,8 @@
 
     </head>
     <body class="font-sans antialiased">
-        <div class="px-4 mx-auto">
-            <div class="px-4">
+        <div class="p-2 mx-auto">
+            <div class="p-2">
                 <!-- Banner -->
                 <div class="flex">
                     <img style="display: block; margin-left: auto; margin-right: auto;" src="{{ asset('images/piedy_pdf_2.jpg') }}">
@@ -43,24 +43,18 @@
                 <!-- Numero de reporte -->
                 <div class="flex justify-end">
                     <div class="flex flex-col justify-end mt-5">
-                        <p class="font-bold text-xs text-end text-black uppercase">Reporte Nro.362062024</p>
+                        <p class="font-bold text-xs text-end text-black uppercase">Reporte General Nro.2062024</p>
                         <p class="text-xs text-end text-black uppercase">01-06-2024 al 15-06-2024</p>
                     </div>
                 </div>
 
-                <!-- Empleado -->
-                <div class="flex flex-col">
-                    <p class="mt-5 text-xs font-bold text-black uppercase">Empleado: Gustavo Camacho</p>
-                    <p class="mb-4 text-xs font-bold text-black uppercase">C.I.: 16007868</p>
-                </div>
-
                 <!-- Indicadores -->
-                <div class="grid md:grid-cols-2 sm:gap-4 md:gap-4">
+                <div class="grid sm:grid-cols-4 md:grid-cols-4 gap-4 mt-5">
                     <!-- Total de servicios -->
                     <div>
                         <div class="flex justify-between items-center max-w-sm p-3 bg-white border border-[#349fda] rounded-lg shadow">
                             <div class="">
-                                <p class="text-xs font-normal text-black uppercase">Total de Servicios</p>
+                                <p class="text-xs font-normal text-black uppercase">Total Dolares</p>
                             </div>
                             <div>
                                 <span class="inline-flex items-center px-2 py-1 mr-auto font-bold text-center text-[#349fda] align-baseline rounded-lg border border-[#349fda]">
@@ -76,7 +70,7 @@
                     <div>
                         <div class="flex justify-between items-center max-w-sm p-3 bg-white border border-[#349fda] rounded-lg shadow">
                             <div class="">
-                                <p class="text-xs font-normal text-black uppercase">productos asignados</p>
+                                <p class="text-xs font-normal text-black uppercase">Total Bolivares</p>
                             </div>
                             <div>
                                 <span class="inline-flex items-center px-2 py-1 mr-auto font-bold text-center text-[#349fda] align-baseline rounded-lg border border-[#349fda]">
@@ -92,7 +86,7 @@
                     <div>
                         <div class="flex justify-between items-center max-w-sm p-3 bg-white border border-[#349fda] rounded-lg shadow">
                             <div class="">
-                                <p class="text-xs font-normal text-black uppercase">promedio duracion de servicios</p>
+                                <p class="text-xs font-normal text-black uppercase">Tasa BCV</p>
                             </div>
                             <div>
                                 <span class="inline-flex items-center px-2 py-1 mr-auto font-bold text-center text-[#349fda] align-baseline rounded-lg border border-[#349fda]">
@@ -109,7 +103,7 @@
                     <div>
                         <div class="flex justify-between items-center max-w-sm p-3 bg-white border border-[#349fda] rounded-lg shadow">
                             <div class="">
-                                <p class="text-xs font-normal text-black uppercase">dias trabajados</p>
+                                <p class="text-xs font-normal text-black uppercase">Total General($)</p>
                             </div>
                             <div>
                                 <span class="inline-flex items-center px-2 py-1 mr-auto font-bold text-center text-[#349fda] align-baseline rounded-lg border border-[#349fda]">
@@ -117,54 +111,16 @@
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16M8 14h8m-4-7V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z"/>
                                       </svg>
 
-                                    56
+                                   12345.90
                                 </span>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Totales a pagar -->
-                <div class="grid md:grid-cols-2 sm:gap-4 md:gap-4 mt-5">
-                    <!-- Dolares -->
-                    <div>
-                        <div class="flex justify-between items-center max-w-sm p-3 bg-white border border-green-500 rounded-lg shadow">
-                            <div class="">
-                                <p class="text-xs font-extrabold text-black uppercase">Total Dolares</p>
-                            </div>
-                            <div>
-                                <span class="inline-flex items-center px-2 py-1 mr-auto font-extrabold text-center text-green-500 align-baseline rounded-lg border border-green-500">
-                                    <svg class="w-4 h-4 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.6 16.733c.234.269.548.456.895.534a1.4 1.4 0 0 0 1.75-.762c.172-.615-.446-1.287-1.242-1.481-.796-.194-1.41-.861-1.241-1.481a1.4 1.4 0 0 1 1.75-.762c.343.077.654.26.888.524m-1.358 4.017v.617m0-5.939v.725M4 15v4m3-6v6M6 8.5 10.5 5 14 7.5 18 4m0 0h-3.5M18 4v3m2 8a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"/>
-                                      </svg>
-
-                                    $340
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Bolivares -->
-                    <div>
-                        <div class="flex justify-between items-center max-w-sm p-3 bg-white border border-green-500 rounded-lg shadow">
-                            <div class="">
-                                <p class="text-xs font-extrabold text-black uppercase">Total Bolivares</p>
-                            </div>
-                            <div>
-                                <span class="inline-flex items-center px-2 py-1 mr-auto font-extrabold text-center text-green-500 align-baseline rounded-lg border border-green-500">
-                                    <svg class="w-4 h-4 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.6 16.733c.234.269.548.456.895.534a1.4 1.4 0 0 0 1.75-.762c.172-.615-.446-1.287-1.242-1.481-.796-.194-1.41-.861-1.241-1.481a1.4 1.4 0 0 1 1.75-.762c.343.077.654.26.888.524m-1.358 4.017v.617m0-5.939v.725M4 15v4m3-6v6M6 8.5 10.5 5 14 7.5 18 4m0 0h-3.5M18 4v3m2 8a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"/>
-                                      </svg>
-                                    Bs. 14.567,90
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
 
                 <!-- Tabla de servicios -->
-                <div class="fex mt-10">
-                    <p class="mt-5 mb-4 text-xs font-bold text-black uppercase">Detalle de servicios</p>
+                <div class="fex mt-5">
+                    <p class="mt-5 mb-4 text-xs font-bold text-black uppercase">Detalle General de Nomina</p>
                 </div>
 
                 <div class="relative overflow-x-auto shadow-md rounded-lg border">
@@ -172,64 +128,33 @@
                         <thead class=" text-[12px] text-black uppercase bg-gray-300">
                             <tr>
                                 <th scope="col" class="px-6 py-3 w-[100px]">
-                                    cliente
+                                    Empleado
                                 </th>
                                 <th scope="col" class="px-6 py-3 w-[80px]">
-                                    Metodo<br/>($|Bs.)
+                                    Servicios
                                 </th>
                                 <th scope="col" class="px-6 py-3 w-[80px]">
-                                    Ref.<br/>($|Bs.)
+                                    Total($)
                                 </th>
                                 <th scope="col" class="px-6 py-3 w-[80px]">
-                                    pagos.<br/>($|Bs.)
-                                </th>
-                                <th scope="col" class="px-6 py-3 w-[80px]">
-                                    Comision.<br/>($|Bs.)
+                                    Total(Bs.)
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($servicios as $servicio)
+                            @foreach($nomina as $item)
                             <tr class="odd:bg-white even:bg-gray-200">
                                 <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    {{ $servicio->cliente }}
+                                    {{ $item->name }}
                                 </th>
                                 <td class="px-6 py-2 w-[80px]">
-                                    <div class="flex flex-col">
-                                        <div>
-                                            {{ $servicio->metodo_pago }}
-                                        </div>
-                                        <div>
-                                            {{ $servicio->metodo_pago_dos }}
-                                        </div>
-                                    </div>
+                                    {{ $item->total_servicios }}
                                 </td>
                                 <td class="px-6 py-2 w-[80px]">
-                                    <div class="flex flex-col">
-                                        <div>
-                                            {{ $servicio->referencia }}
-                                        </div>
-                                    </div>
+                                    {{ $item->total_dolares }}
                                 </td>
                                 <td class="px-6 py-2 w-[80px]">
-                                    <div class="flex flex-col">
-                                        <div>
-                                            ${{ $servicio->pago_usd }}
-                                        </div>
-                                        <div>
-                                            Bs.{{ $servicio->pago_bsd }}
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-2 w-[80px]">
-                                    <div class="flex flex-col">
-                                        <div>
-                                            ${{ $servicio->comision_dolares }}
-                                        </div>
-                                        <div>
-                                            Bs.{{ $servicio->comision_bolivares }}
-                                        </div>
-                                    </div>
+                                    {{ $item->total_bolivares }}
                                 </td>
                             </tr>
                             @endforeach

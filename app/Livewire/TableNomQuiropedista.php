@@ -15,7 +15,10 @@ use Filament\Tables\Table;
 use Livewire\Component;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Blade;
 use Livewire\Attributes\On;
+use Spatie\LaravelPdf\Enums\Format;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class TableNomQuiropedista extends Component implements HasForms, HasTable
 {
@@ -95,7 +98,6 @@ class TableNomQuiropedista extends Component implements HasForms, HasTable
                 //
             ])
             ->actions([
-                //
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

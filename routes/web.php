@@ -48,6 +48,9 @@ Route::get('/p/e', function () {
 Route::get('/pay/ex', function () {
     return view('pago-exitoso');
 })->name('pago-exitoso');
+Route::get('/rg', function () {
+    return view('pdf.reporte-general');
+});
 
 Route::get('/lista/srv/x/facturar', [ApiClientesController::class, 'servicios_por_facturar'])->name('api.servicios_por_facturar');
 
@@ -211,6 +214,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/reporte', function () {
         return view('reporte');
     })->name('reporte');
+
+    Route::get('/reporte/general', function () {
+        return view('reporte-general');
+    })->name('reporte-general');
 
     Route::prefix('n')->group(function () {
 

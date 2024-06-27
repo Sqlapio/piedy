@@ -104,4 +104,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(MovimientoMembresia::class, 'id', 'user_id');
     }
+
+    /**
+     * Get all of the reportes for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reportes(): HasMany
+    {
+        return $this->hasMany(Reporte::class, 'id', 'user_id');
+    }
 }

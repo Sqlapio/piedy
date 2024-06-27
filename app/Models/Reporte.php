@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Reporte extends Model
 {
@@ -20,9 +21,20 @@ class Reporte extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'user_id',
         'cod_reporte',
         'tipo',
         'responsable',
         'fecha',
     ];
+
+    /**
+     * Get the user that owns the Reporte
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

@@ -43,15 +43,15 @@
                 <!-- Numero de reporte -->
                 <div class="flex justify-end">
                     <div class="flex flex-col justify-end mt-5">
-                        <p class="font-bold text-xs text-end text-black uppercase">Reporte Nro.362062024</p>
-                        <p class="text-xs text-end text-black uppercase">01-06-2024 al 15-06-2024</p>
+                        <p class="font-bold text-xs text-end text-black uppercase">Reporte Nro.{{ $nro_reporte }}</p>
+                        <p class="text-xs text-end text-black uppercase">{{ $rango }}</p>
                     </div>
                 </div>
 
                 <!-- Empleado -->
                 <div class="flex flex-col">
-                    <p class="mt-5 text-xs font-bold text-black uppercase">Empleado: Gustavo Camacho</p>
-                    <p class="mb-4 text-xs font-bold text-black uppercase">C.I.: 16007868</p>
+                    <p class="mt-5 text-xs font-bold text-black uppercase">Empleado: {{ $nombre }}</p>
+                    <p class="mb-4 text-xs font-bold text-black uppercase">C.I.: {{ $cedula }}</p>
                 </div>
 
                 <!-- Indicadores -->
@@ -67,7 +67,7 @@
                                     <svg class="w-4 h-4 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 6.5h2M11 18h2m-7-5v-2m12 2v-2M5 8h2a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1Zm0 12h2a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1Zm12 0h2a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1Zm0-12h2a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1Z"/>
                                       </svg>
-                                    56
+                                    {{ $total_servicios }}
                                 </span>
                             </div>
                         </div>
@@ -99,8 +99,7 @@
                                     <svg class="w-4 h-4 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m10.827 5.465-.435-2.324m.435 2.324a5.338 5.338 0 0 1 6.033 4.333l.331 1.769c.44 2.345 2.383 2.588 2.6 3.761.11.586.22 1.171-.31 1.271l-12.7 2.377c-.529.099-.639-.488-.749-1.074C5.813 16.73 7.538 15.8 7.1 13.455c-.219-1.169.218 1.162-.33-1.769a5.338 5.338 0 0 1 4.058-6.221Zm-7.046 4.41c.143-1.877.822-3.461 2.086-4.856m2.646 13.633a3.472 3.472 0 0 0 6.728-.777l.09-.5-6.818 1.277Z"/>
                                       </svg>
-
-                                    56
+                                    {{ $pro_dura_servicios }}
                                 </span>
                             </div>
                         </div>
@@ -137,8 +136,7 @@
                                     <svg class="w-4 h-4 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.6 16.733c.234.269.548.456.895.534a1.4 1.4 0 0 0 1.75-.762c.172-.615-.446-1.287-1.242-1.481-.796-.194-1.41-.861-1.241-1.481a1.4 1.4 0 0 1 1.75-.762c.343.077.654.26.888.524m-1.358 4.017v.617m0-5.939v.725M4 15v4m3-6v6M6 8.5 10.5 5 14 7.5 18 4m0 0h-3.5M18 4v3m2 8a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"/>
                                       </svg>
-
-                                    $340
+                                    ${{ $total_dolares }}
                                 </span>
                             </div>
                         </div>
@@ -154,7 +152,7 @@
                                     <svg class="w-4 h-4 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.6 16.733c.234.269.548.456.895.534a1.4 1.4 0 0 0 1.75-.762c.172-.615-.446-1.287-1.242-1.481-.796-.194-1.41-.861-1.241-1.481a1.4 1.4 0 0 1 1.75-.762c.343.077.654.26.888.524m-1.358 4.017v.617m0-5.939v.725M4 15v4m3-6v6M6 8.5 10.5 5 14 7.5 18 4m0 0h-3.5M18 4v3m2 8a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"/>
                                       </svg>
-                                    Bs. 14.567,90
+                                    Bs. {{ $total_bolivares }}
                                 </span>
                             </div>
                         </div>
@@ -168,22 +166,22 @@
                 </div>
 
                 <div class="relative overflow-x-auto shadow-md rounded-lg border">
-                    <table class="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <table class="table-fixed w-full text-xs text-left text-gray-500 dark:text-gray-400">
                         <thead class=" text-[12px] text-black uppercase bg-gray-300">
                             <tr>
-                                <th scope="col" class="px-6 py-3 w-[100px]">
+                                <th scope="col" class="px-6 py-3 ">
                                     cliente
                                 </th>
-                                <th scope="col" class="px-6 py-3 w-[80px]">
+                                <th scope="col" class="px-6 py-3">
                                     Metodo<br/>($|Bs.)
                                 </th>
-                                <th scope="col" class="px-6 py-3 w-[80px]">
+                                <th scope="col" class="px-6 py-3">
                                     Ref.<br/>($|Bs.)
                                 </th>
-                                <th scope="col" class="px-6 py-3 w-[80px]">
+                                <th scope="col" class="px-6 py-3">
                                     pagos.<br/>($|Bs.)
                                 </th>
-                                <th scope="col" class="px-6 py-3 w-[80px]">
+                                <th scope="col" class="px-6 py-3">
                                     Comision.<br/>($|Bs.)
                                 </th>
                             </tr>
@@ -191,10 +189,10 @@
                         <tbody>
                             @foreach($servicios as $servicio)
                             <tr class="odd:bg-white even:bg-gray-200">
-                                <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <th class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[100px] truncate">
                                     {{ $servicio->cliente }}
                                 </th>
-                                <td class="px-6 py-2 w-[80px]">
+                                <td class="px-6 py-2 ">
                                     <div class="flex flex-col">
                                         <div>
                                             {{ $servicio->metodo_pago }}
@@ -204,14 +202,14 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-2 w-[80px]">
+                                <td class="px-6 py-2 ">
                                     <div class="flex flex-col">
                                         <div>
                                             {{ $servicio->referencia }}
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-2 w-[80px]">
+                                <td class="px-6 py-2 ">
                                     <div class="flex flex-col">
                                         <div>
                                             ${{ $servicio->pago_usd }}
@@ -221,7 +219,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-2 w-[80px]">
+                                <td class="px-6 py-2 ">
                                     <div class="flex flex-col">
                                         <div>
                                             ${{ $servicio->comision_dolares }}

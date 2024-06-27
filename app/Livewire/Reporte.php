@@ -11,6 +11,7 @@ use App\Models\Reporte as ModelsReporte;
 use App\Models\TasaBcv;
 use App\Models\User;
 use App\Models\VentaServicio;
+use Carbon\Carbon;
 use Exception;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
@@ -135,13 +136,20 @@ class Reporte extends Component
                 $servicios = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->get();
             }
 
+            $rango_fechas = PeriodoNomina::where('cod_quincena', $this->periodo)->first();
+
             pdf::view('pdf.reporte',
                 [
-                    'id' => $this->empleado,
+                    'cedula' => User::where('id', $this->empleado)->first()->cedula,
+                    'rango' => Carbon::createFromFormat('Y-m-d', $rango_fechas->fecha_ini)->format('d-m-Y').' al '.Carbon::createFromFormat('Y-m-d', $rango_fechas->fecha_fin)->format('d-m-Y'),
                     'periodo' => $this->periodo,
                     'nombre' => $user->name,
+                    'total_servicios' => $nomina->total_servicios,
+                    'pro_dura_servicios' => $nomina->promedio_duracion_servicios,
+                    'total_dolares' => $nomina->total_dolares,
+                    'total_bolivares' => $nomina->total_bolivares,
                     'servicios' => $servicios,
-                    'nro_reporte' => $user->id.$this->periodo,
+                    'nro_reporte' => 'E'.$this->empleado.'-'.$this->periodo.''.$random,
                 ])
             ->format(Format::A4)
             ->margins(10, 0, 18, 0)
@@ -150,16 +158,13 @@ class Reporte extends Component
 
             /**Guardo el reporte en la tabla de reportes para tener el historico */
             $reporte = new ModelsReporte();
+            $reporte->user_id = $this->empleado;
             $reporte->cod_reporte = 'E'.$this->empleado.'-'.$this->periodo.''.$random;
             $reporte->descripcion = $pdf;
             $reporte->tipo = 'empleado';
             $reporte->fecha = date('d-m-Y');
             $reporte->responsable = Auth::user()->name;
             $reporte->save();
-
-            $this->reset();
-
-            $this->dispatch('reporte_empleado_save');
 
             Notification::make()
             ->title('NOTIFICACIÓN')
@@ -168,6 +173,8 @@ class Reporte extends Component
             ->color('info')
             ->body('El reporte fue generado con exito')
             ->send();
+
+            $this->reset();
 
         } catch (\Throwable $th) {
             Notification::make()
@@ -180,7 +187,6 @@ class Reporte extends Component
         }
     }
 
-
     public function render()
     {
         $periodo_nomina = PeriodoNomina::where('status', '1')->first();
@@ -188,6 +194,11 @@ class Reporte extends Component
             $this->atr_hidden = '';
             $this->atr_botton_hidden = 'hidden';
         }
-        return view('livewire.reporte');
+
+        return view('livewire.reporte', [
+            'data' => ModelsReporte::orderBy('created_at', 'desc')
+            ->where('tipo', 'empleado')
+            ->get()
+        ]);
     }
 }

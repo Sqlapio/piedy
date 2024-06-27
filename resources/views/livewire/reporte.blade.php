@@ -54,14 +54,23 @@
                 <div class="flex">
                     <h1 class="text-xl mb-6 font-extrabold text-[#7898a5] uppercase">REPORTE GENERADOS</h1>
                 </div>
-                <div class="grid sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-6 sm:gap-4 md:gap-4">
-                    <!-- Boton -->
-                    <div class="flex flex-col justify-center">
-                        <img src="{{ asset('images/pdf-icon.png') }}" alt="">
-                        <div class="flex justify-center items-center">
-                            <a href="{{ url('/E33-206202424539.pdf') }}" target="_blank" rel="noopener noreferrer">aqui</a>
+                <div class="grid sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-6 gap-4">
+                    <!-- data -->
+                    @foreach ($data as $item)
+                        <div class="flex flex-col justify-center items-center">
+                            <img class="w-2/3 h-auto" src="{{ asset('images/pdf-icon.png') }}" alt="">
+                            <a href="{{ url('/'.$item->descripcion) }}" class="px-2 text-sm font-extrabold hover:text-orange-500" target="_blank" rel="noopener noreferrer">
+                                <div class="flex flex-col justify-center items-center">
+                                    <div class="">
+                                        {{ $item->user->name }}
+                                    </div>
+                                    <div class="">
+                                        {{ $item->fecha }}
+                                    </div>
+                                </div>
+                            </a>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
 
@@ -139,5 +148,4 @@
 
         </div>
     </div>
-    {{-- A good traveler has no fixed plans and is not intent upon arriving. --}}
 </div>

@@ -47,7 +47,7 @@ class VentaServicioResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('cliente')
                     ->toggleable(isToggledHiddenByDefault: false)
-                    // ->searchable()
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('empleado')
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -119,7 +119,7 @@ class VentaServicioResource extends Resource
 
                 TextColumn::make('total_USD')
                 ->toggleable(isToggledHiddenByDefault: false)
-                    ->label(('Costo servicio($)'))
+                    ->label(('Servicio($)'))
                         ->summarize(Sum::make()
                         ->label(('Total'))
                         ->money('USD'))
@@ -133,19 +133,18 @@ class VentaServicioResource extends Resource
                         ->money('USD'))
                     ->searchable(),
 
-                TextColumn::make('pago_bsd')->money('VES')
+                TextColumn::make('pago_bsd')
                 ->toggleable(isToggledHiddenByDefault: false)
                     ->label(('Pagos(Bs.)'))
                     ->summarize(Sum::make()
-                        ->label(('Total'))
-                        ->money('VES'))
+                        ->label(('Total')))
                     ->searchable(),
 
                 TextColumn::make('comision_gerente')->money('USD')
-                    ->label(('Comision Gerente($)'))
+                    ->label(('Comision Gte.($)'))
                         ->summarize(Sum::make()
                             ->money('USD')
-                            ->label('Neto Comisiones Gerente($)'))
+                            ->label('Neto Gerente($)'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -159,10 +158,9 @@ class VentaServicioResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('comision_bolivares')->money('VES')
+                TextColumn::make('comision_bolivares')
                     ->label(('Comision(Bs.)'))
                         ->summarize(Sum::make()
-                            ->money('VES')
                             ->label('Neto Empleado(Bs.)'))
                     ->searchable()
                     ->sortable()
@@ -179,9 +177,7 @@ class VentaServicioResource extends Resource
 
                 TextColumn::make('propina_bsd')
                     ->label('Propina(Bs.)')
-                    ->money('VES')
                     ->summarize(Sum::make()
-                        ->money('VES')
                         ->label('Total(Bs.)'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -247,7 +243,8 @@ class VentaServicioResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->striped();
     }
 
     public static function getRelations(): array

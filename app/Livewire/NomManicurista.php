@@ -169,7 +169,7 @@ class NomManicurista extends Component
                 $nomina->fecha_ini = $this->desde;
                 $nomina->fecha_fin = $this->hasta;
                 $nomina->total_dolares = $nomina->total_comision_dolares - $nomina->deducciones_dolares;
-                $nomina->total_bolivares = $nomina->total_comision_bolivares + $nomina->asignaciones_bolivares + $nomina->comision_membresias;
+                $nomina->total_bolivares = $nomina->total_comision_bolivares + $nomina->asignaciones_bolivares + $nomina->comision_membresias + $nomina->total_propina_bsd;
                 $nomina->quincena = $this->quincena;
                 $nomina->cod_quincena = ($this->quincena == 'primera') ? '1'.date('mY') : '2'.date('mY');
 

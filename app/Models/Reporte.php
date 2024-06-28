@@ -23,6 +23,7 @@ class Reporte extends Model
     protected $fillable = [
         'user_id',
         'cod_reporte',
+        'cod_quincena',
         'tipo',
         'responsable',
         'fecha',

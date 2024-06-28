@@ -32,6 +32,31 @@ class Reporte extends Component
     public $atr_hidden = 'hidden';
     public $atr_botton_hidden;
 
+    public function accion($value)
+    {
+        if($value == 1){
+            $this->redirect('/n/q');
+        }
+        if($value == 2){
+            $this->redirect('/n/m');
+        }
+        if($value == 3){
+            $this->redirect('/n/q');
+        }
+        if($value == 4){
+            $this->redirect('/n/e');
+        }
+        if($value == 5){
+            $this->redirect('/empleados');
+        }
+        if($value == 6){
+            $this->redirect('/reporte');
+        }
+        if($value == 7){
+            $this->redirect('/reporte/general');
+        }
+    }
+
     public function cierre_nomina()
     {
         try {
@@ -101,8 +126,6 @@ class Reporte extends Component
 
             $this->dispatch('$refresh');
 
-            $this->dispatch('reporte_empleado_save');
-
         } catch (\Throwable $th) {
 
             Notification::make()
@@ -160,6 +183,7 @@ class Reporte extends Component
             $reporte = new ModelsReporte();
             $reporte->user_id = $this->empleado;
             $reporte->cod_reporte = 'E'.$this->empleado.'-'.$this->periodo.''.$random;
+            $reporte->cod_quincena = $this->periodo;
             $reporte->descripcion = $pdf;
             $reporte->tipo = 'empleado';
             $reporte->fecha = date('d-m-Y');

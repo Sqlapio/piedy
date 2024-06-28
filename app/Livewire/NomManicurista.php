@@ -76,6 +76,12 @@ class NomManicurista extends Component
         if($value == 5){
             $this->redirect('/empleados');
         }
+        if($value == 6){
+            $this->redirect('/reporte');
+        }
+        if($value == 7){
+            $this->redirect('/reporte/general');
+        }
     }
 
     public function store()
@@ -118,11 +124,11 @@ class NomManicurista extends Component
                 //Promedio de duracion de los servicios
                 $total_servicios = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->count();
                 $sum_servicios = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('duracion');
-                
+
                 /**
-                 * Restriccion para validar el caso cuando el empleado no 
-                 * realizo ningun servicio o esta de vacaciones. 
-                 * ---------------------------------------------------------------- 
+                 * Restriccion para validar el caso cuando el empleado no
+                 * realizo ningun servicio o esta de vacaciones.
+                 * ----------------------------------------------------------------
                  */
                 if($total_servicios == 0){
                     $nomina->promedio_duracion_servicios = 0;
@@ -168,9 +174,9 @@ class NomManicurista extends Component
                 $nomina->cod_quincena = ($this->quincena == 'primera') ? '1'.date('mY') : '2'.date('mY');
 
                 /**
-                 * Restriccion para validar el periodo de nomina correcto esto, 
+                 * Restriccion para validar el periodo de nomina correcto esto,
                  * evita que se calculen nominas en meses diferentes al actual
-                 * ---------------------------------------------------------------- 
+                 * ----------------------------------------------------------------
                  */
                 if($nomina->cod_quincena != $periodo){
                     throw new Exception("El periodo de nomina no coincide con el periodo actual", 401);
@@ -178,7 +184,7 @@ class NomManicurista extends Component
 
                 /**
                  * Restriccion para validar nomina duplicada.
-                 * ---------------------------------------------------------------- 
+                 * ----------------------------------------------------------------
                  */
                 $q_duplicada = ModelsNomManicurista::where('cod_quincena', $nomina->cod_quincena)->get();
                 if(isset($q_duplicada) and count($q_duplicada) == $nro_empleados){

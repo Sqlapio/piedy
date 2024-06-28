@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('reportes', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->integer('user_id')->nullable();
             $table->string('cod_reporte');
+            $table->string('cod_quincena');
             $table->string('descripcion');
             $table->string('tipo');
             $table->string('fecha');

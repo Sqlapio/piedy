@@ -6,7 +6,9 @@ use App\Models\NomEncargado;
 use App\Models\NominaGeneral;
 use App\Models\NomManicurista;
 use App\Models\NomQuiropedista;
+use App\Models\PeriodoNomina;
 use App\Models\Reporte;
+use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +21,31 @@ class ReporteGeneral extends Component
 {
     #[Rule('required', message: 'Campo obligatorio')]
     public $periodo;
+
+    public function accion($value)
+    {
+        if($value == 1){
+            $this->redirect('/n/q');
+        }
+        if($value == 2){
+            $this->redirect('/n/m');
+        }
+        if($value == 3){
+            $this->redirect('/n/q');
+        }
+        if($value == 4){
+            $this->redirect('/n/e');
+        }
+        if($value == 5){
+            $this->redirect('/empleados');
+        }
+        if($value == 6){
+            $this->redirect('/reporte');
+        }
+        if($value == 7){
+            $this->redirect('/reporte/general');
+        }
+    }
 
     public function reporte_general()
     {
@@ -48,12 +75,16 @@ class ReporteGeneral extends Component
 
             $totales = NominaGeneral::where('cod_quincena', $this->periodo)->first();
 
+            $rango_fechas = PeriodoNomina::where('cod_quincena', $this->periodo)->first();
+
             $random = rand('11111', '99999');
             $pdf = $this->periodo.'_'.$random.'.pdf';
 
             pdf::view('pdf.reporte-general',
                 [
                     'nomina' => $nominas,
+                    'periodo' => $this->periodo,
+                    'rango' => Carbon::createFromFormat('Y-m-d', $rango_fechas->fecha_ini)->format('d-m-Y').' al '.Carbon::createFromFormat('Y-m-d', $rango_fechas->fecha_fin)->format('d-m-Y'),
                     'total_general_dolares' => $totales->total_dolares,
                     'total_general_bolivares' => $totales->total_bolivares,
                     'total_general' => $totales->total_general,
@@ -69,15 +100,12 @@ class ReporteGeneral extends Component
             /**Guardo el reporte en la tabla de reportes para tener el historico */
             $reporte = new Reporte();
             $reporte->cod_reporte = $this->periodo.'_'.$random;
+            $reporte->cod_quincena = $this->periodo;
             $reporte->descripcion = $pdf;
             $reporte->tipo = 'general';
             $reporte->fecha = date('d-m-Y');
             $reporte->responsable = Auth::user()->name;
             $reporte->save();
-
-            $this->reset();
-
-            $this->dispatch('reporte_general_save');
 
             Notification::make()
             ->title('NOTIFICACIÓN')
@@ -87,6 +115,7 @@ class ReporteGeneral extends Component
             ->body('El reporte fue generado con exito')
             ->send();
 
+            $this->dispatch('$refresh');
 
         } catch (\Throwable $th) {
             Notification::make()
@@ -100,12 +129,12 @@ class ReporteGeneral extends Component
 
     }
 
-
     public function render()
     {
-        $nomina_quiropedistas = NomQuiropedista::where('cod_quincena', $this->periodo)->where('status', '2')->get();
-        $nomina_manicuristas = NomManicurista::where('cod_quincena', $this->periodo)->where('status', '2')->get();
-        $nomina_encargado = NomEncargado::where('cod_quincena', $this->periodo)->where('status', '2')->get();
-        return view('livewire.reporte-general', compact('nomina_quiropedistas', 'nomina_manicuristas', 'nomina_encargado'));
+        return view('livewire.reporte-general', [
+            'data' => Reporte::orderBy('created_at', 'desc')
+            ->where('tipo', 'general')
+            ->get()
+        ]);
     }
 }

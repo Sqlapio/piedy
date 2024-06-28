@@ -73,6 +73,12 @@ class NomEncargado extends Component
         if($value == 5){
             $this->redirect('/empleados');
         }
+        if($value == 6){
+            $this->redirect('/reporte');
+        }
+        if($value == 7){
+            $this->redirect('/reporte/general');
+        }
     }
 
     public function store()

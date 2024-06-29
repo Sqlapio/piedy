@@ -19,6 +19,7 @@ use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Spatie\LaravelPdf\Enums\Format;
+use Spatie\Browsershot\Browsershot;
 
 class Reporte extends Component
 {
@@ -174,9 +175,11 @@ class Reporte extends Component
                     'servicios' => $servicios,
                     'nro_reporte' => 'E'.$this->empleado.'-'.$this->periodo.''.$random,
                 ])
-            ->setNodeBinary('/usr/bin/node')
-            ->setNpmBinary('/usr/bin/npm')
-            ->setChromePath('/usr/bin/chromium')
+->withBrowsershot(function (Browsershot $browsershot) {
+                    $browsershot->setNodeBinary('/usr/bin/node'); //location of node
+                    $browsershot->setNpmBinary('/usr/bin/npm'); //location of npm
+		$browsershot->setChromePath('/usr/bin/chromium');
+                })
             ->format(Format::A4)
             ->margins(10, 0, 18, 0)
             ->footerView('pdf.footer')
@@ -204,6 +207,7 @@ class Reporte extends Component
             $this->reset();
 
         } catch (\Throwable $th) {
+dd($th);
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-document-text')

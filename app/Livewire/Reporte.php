@@ -174,6 +174,9 @@ class Reporte extends Component
                     'servicios' => $servicios,
                     'nro_reporte' => 'E'.$this->empleado.'-'.$this->periodo.''.$random,
                 ])
+            ->setNodeBinary('/usr/bin/node')
+            ->setNpmBinary('/usr/bin/npm')
+            ->setChromePath('/usr/bin/chromium')
             ->format(Format::A4)
             ->margins(10, 0, 18, 0)
             ->footerView('pdf.footer')

@@ -3,7 +3,7 @@ import preset from './vendor/filament/support/tailwind.config.preset'
 export default {
     presets: [
 
-        require('./vendor/wireui/wireui/tailwind.config.js')
+        require('./vendor/wireui/wireui/tailwind.config.js'), preset
 
     ],
     content: [

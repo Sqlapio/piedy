@@ -44,7 +44,7 @@ class TableNomEncargado extends Component implements HasForms, HasTable
                     ->searchable(),
 
                 TextColumn::make('total_comision_dolares')
-                    ->label('Comision(Bs.)')
+                    ->label('Comision($)')
                     ->sortable()
                     ->searchable(),
 
@@ -61,7 +61,7 @@ class TableNomEncargado extends Component implements HasForms, HasTable
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('salario_quincenal')
-                    ->label('Quincena(Bs.)')
+                    ->label('Quincena($)')
                     ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),

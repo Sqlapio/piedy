@@ -31,6 +31,7 @@ return new class extends Migration
             $table->decimal('total_bolivares', 8, 2)->default(0.00);
             $table->string('quincena', 8, 2);
             $table->string('cod_quincena', 8, 2);
+            $table->string('status')->default('1'); // 1:abierto , 2:ya calculado
             $table->timestamps();
         });
     }

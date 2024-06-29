@@ -9,6 +9,7 @@ use App\Models\Disponible;
 use App\Models\Empleado;
 use App\Models\Mes;
 use App\Models\MetodoPago;
+use App\Models\PeriodoNomina;
 use App\Models\Producto;
 use App\Models\Servicio;
 use App\Models\User;
@@ -283,6 +284,54 @@ class ApiClientesController extends Controller
             ->get()
             ->map(function (MetodoPago $metodo_pago) {
                 return $metodo_pago;
+            });
+    }
+
+    public function lista_empleados_nomina(Request $request): Collection
+    {
+        return User::query()
+            ->select('id', 'name', 'email')
+            ->where('tipo_usuario', 'empleado')
+            ->where('status', '1')
+            ->orderBy('name')
+            ->when(
+                $request->search,
+                fn (Builder $query) => $query
+                    ->where('name', 'like', "%{$request->search}%")
+                    ->orWhere('email', 'like', "%{$request->search}%")
+            )
+            ->when(
+                $request->exists('selected'),
+                fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
+                fn (Builder $query) => $query->limit(8)
+            )
+            ->get()
+            ->map(function (User $user) {
+                // $user->name = $empleado->nombre.' '.$empleado->apellido;
+                return $user;
+            });
+    }
+
+    public function lista_periodo_nomina(Request $request): Collection
+    {
+        return PeriodoNomina::query()
+            ->select('id', 'cod_quincena')
+            ->where('status', '2')
+            ->orderBy('id')
+            ->when(
+                $request->search,
+                fn (Builder $query) => $query
+                    ->where('cod_quincena', 'like', "%{$request->search}%")
+            )
+            ->when(
+                $request->exists('selected'),
+                fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
+                fn (Builder $query) => $query->limit(24)
+            )
+            ->get()
+            ->map(function (PeriodoNomina $periodo) {
+                // $user->name = $empleado->nombre.' '.$empleado->apellido;
+                return $periodo;
             });
     }
 

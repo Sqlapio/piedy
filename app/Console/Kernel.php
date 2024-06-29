@@ -13,21 +13,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('app:send-mail-command')
-        // ->everyMinute()
-        // ->emailOutputTo('gusta.acp@gmail.com');
-
         $schedule->command('app:appointment-reminder')
         ->dailyAt('9:00')
         ->emailOutputTo('gusta.acp@gmail.com');
 
-        // $schedule->call(function () {
-        //     DB::table('citas')->delete();
-        // })->everyFiveMinutes();
-
-        // $schedule->call(function () {
-        //     DB::table('disponibles')->delete();
-        // })->everyFiveMinutes();
+        $schedule->command('app:activa-periodo-nomina')
+        ->monthlyOn(1, '8:00')
+        ->emailOutputTo('gusta.acp@gmail.com');
     }
 
     /**
@@ -40,6 +32,3 @@ class Kernel extends ConsoleKernel
         require base_path('routes/console.php');
     }
 }
-// php artisan schedule:run
-// php artisan schedule:work
-// php artisan

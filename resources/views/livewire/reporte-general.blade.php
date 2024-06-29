@@ -3,101 +3,61 @@
     <div class="px-10 py-4">
         <div class="mb-10">
             <div class="flex">
-                <h1 class="text-xl mb-6 font-extrabold text-[#7898a5] uppercase">MODULO DE NOMINA QUIROPEDISTAS</h1>
+                <h1 class="text-xl mb-6 font-extrabold text-[#7898a5] uppercase">MODULO DE REPORTE GENERAL</h1>
             </div>
-            <div class="flex">
-                <h1 class="text-sm mb-4 font-extrabold text-[#bd9c95] uppercase">Rango de Fecha</h1>
-            </div>
-            <div class="grid md:grid-cols-4 sm:gap-4 md:gap-4">
-                <div>
-                    <x-datetime-picker id="min-max-times-input" without-timezone label="Desde:" placeholder="desde" wire:model.defer="desde" min-time="08:00" max-time="23:00" parse-format="YYYY-MM-DD HH:mm:ss" />
-                </div>
-                <div>
-                    <x-datetime-picker id="min-max-times-input" without-timezone label="Hasta:" placeholder="hasta" wire:model.defer="hasta" min-time="08:00" max-time="23:00" parse-format="YYYY-MM-DD HH:mm:ss" />
-                </div>
-                <div>
-                    <x-select label="Select Status" placeholder="Selccione quincena"
-                        :options="[
-                            ['descripcion' => '1era. Quincena',  'id' => 'primera'],
-                            ['descripcion' => '2da. Quincena', 'id' => 'segunda'],
-                        ]"
-                        option-label="descripcion"
-                        option-value="id"
-                        wire:model.defer="quincena"
-                    />
-                </div>
-            </div>
-        </div>
 
-        <div class="mt-8">
-            <div class="flex justify-between">
-                <div>
-                    <h1 class="text-sm mb-6 font-extrabold text-[#bd9c95] uppercase">Tabla de asignaciones y deducciones</h1>
+            <!-- Contenedor 1 -->
+            <div class="contenedor">
+                <!-- Titulo -->
+                <div class="flex">
+                    <h1 class="text-sm mb-4 font-extrabold text-[#bd9c95] uppercase">Informacion para generar el reporte general de nomina</h1>
                 </div>
-                <div>
-                    <x-button icon="check" positive label="cargar nomina" wire:click="store" class="uppercase text-xs font-extrabold" />
+                <!-- Grid -->
+                <div class="grid md:grid-cols-4 sm:gap-4 md:gap-4 mb-10">
+                    <!-- Periodo de nomina -->
+                    <div>
+                        <x-select wire:change="$emit('selected', $event.target.value)" label="Periodo de Nomina" wire:model.defer="periodo" placeholder="Seleccion" :async-data="route('api.periodo.nomina')" option-label="cod_quincena" option-value="cod_quincena"/>
+                    </div>
+                    <!-- Boton -->
+                    <div class="mt-auto">
+                        <button type="submit" wire:click.prevent="reporte_general()" class="w-full rounded-md border border-transparent bg-green-700 py-2 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">
+                            <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="reporte_general" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
+                            </svg>
+                            <span>Generar Reporte</span>
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="relative overflow-x-auto shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] sm:rounded-lg">
-                <table class="w-full text-sm text-center">
-                    <thead class="text-xs text-black font-extrabold uppercase bg-[#bc9b94]">
-                        <tr>
-                        <tr>
-                            <th scope="col" class="px-6 py-3">
-                                Quiropedista
-                            </th>
-                            {{-- <th scope="col" class="px-6 py-3">
-                                Asignaciones($)
-                            </th> --}}
-                            <th scope="col" class="px-6 py-3">
-                                Asignaciones(Bs.)
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Deducciones($)
-                            </th>
-                            {{-- <th scope="col" class="px-6 py-3">
-                                Deducciones(Bs.)
-                            </th> --}}
-                        </tr>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for($i = 0; $i < count($data); $i++) <tr class="bg-[#e4dcdc] border-b border-white">
-                            <th scope="row" class="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-white">
-                                {{ $data[$i]->name }}
-                            </th>
-                            {{-- <td class="px-6 py-4">
-                                <div class="">
-                                    <x-input right-icon="calculator" wire:change="conver_asignacion_dolares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="asignacion_dolares.{{ $data[$i]->id }}" type="email" />
+
+            <!-- Contenedor listar los reporte generados por fecha de creacion -->
+            <div class="mt-5">
+                <div class="flex">
+                    <h1 class="text-xl mb-6 font-extrabold text-[#7898a5] uppercase">REPORTE GENERADOS</h1>
+                </div>
+                <div class="grid sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-6 gap-4">
+                    <!-- data -->
+                    @foreach ($data as $item)
+                        <div class="flex flex-col justify-center items-center">
+                            <img class="w-2/3 h-auto" src="{{ asset('images/pdf-icon.png') }}" alt="">
+                            <a href="{{ url('/'.$item->descripcion) }}" class="px-2 text-sm font-extrabold hover:text-orange-500" target="_blank" rel="noopener noreferrer">
+                                <div class="flex flex-col justify-center items-center">
+                                    <div class="">
+                                        {{ ($item->user != null) ? $item->user->name : 'Nomina-'.$item->cod_quincena }}
+                                    </div>
+                                    <div class="">
+                                        {{ $item->fecha }}
+                                    </div>
                                 </div>
-                            </td> --}}
-                            <td class="px-6 py-4">
-                                <div class="">
-                                    <x-input right-icon="calculator" wire:change="conver_asignacion_bolivares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="asignacion_bolivares.{{ $data[$i]->id }}" type="email" />
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="">
-                                    <x-input right-icon="calculator" wire:change="conver_deduccion_dolares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="deduccion_dolares.{{ $data[$i]->id }}" type="email" />
-                                </div>
-                            </td>
-                            {{-- <td class="px-6 py-4">
-                                <div class="">
-                                    <x-input right-icon="calculator" wire:change="conver_deduccion_bolivares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="deduccion_bolivares.{{ $data[$i]->id }}" type="email" />
-                                </div>
-                            </td> --}}
-                            </tr>
-                            @endfor
-                    </tbody>
-                </table>
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
             </div>
+
+            <div class="w-full h-32"></div>
+
         </div>
-    </div>
-    <div class="px-10 py-4 mt-4">
-        <div class="flex">
-            <h1 class="text-sm mb-4 font-bold text-[#bd9c95] uppercase">tabla de nomina</h1>
-        </div>
-        @livewire('table-nom-quiropedista')
     </div>
 
     {{-- div para separacion --}}
@@ -191,5 +151,5 @@
 
         </div>
     </div>
-
 </div>
+

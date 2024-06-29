@@ -14,9 +14,6 @@ class Dashboard extends \Filament\Pages\Dashboard
 {
     use BaseDashboard\Concerns\HasFiltersForm;
 
-    public $value = true;
-    public $activar = false;
-
     public function filtersForm(Form $form): Form
     {
         return $form
@@ -28,15 +25,18 @@ class Dashboard extends \Filament\Pages\Dashboard
                         ->onColor('success')
                         ->onIcon('heroicon-c-check')
                         ->offColor('danger')
-                        ->offIcon('heroicon-c-x-mark'),
+                        ->offIcon('heroicon-c-x-mark')
+                        ->live()
+                        ->declined(),
                     ])
                     ->columns(2),
                 Section::make()
                     ->schema([
-                        DatePicker::make('startDate'),
-                        DatePicker::make('endDate'),
+                        DatePicker::make('startDate')->label('Inicio'),
+                        DatePicker::make('endDate')->label('Fin'),
                         ])
-                        ->columns(2),
+                        ->columns(2)
+                        ->visible(fn(Get $get):bool => $get('activar')),
             ]);
     }
 }

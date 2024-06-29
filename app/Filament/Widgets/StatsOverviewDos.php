@@ -23,10 +23,10 @@ class StatsOverviewDos extends BaseWidget
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('gray')
                 ->chart([7, 2, 10, 3, 15, 4, 17]),
-            Stat::make('Total Servicios', Disponible::count())
-                ->description('Total de servicios realizados')
+            Stat::make('Productos', Producto::count())
+                ->description('Total de Productos en inventario')
                 ->descriptionIcon('heroicon-s-users')
-                ->color('gray')
+                ->color('warning')
                 ->chart([7, 2, 10, 3, 15, 4, 17]),
         ];
     }

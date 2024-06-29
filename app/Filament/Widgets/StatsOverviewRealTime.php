@@ -13,7 +13,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StatsOverviewRealTime extends BaseWidget
 {
-    protected static ?string $pollingInterval = '10s';
+    // protected static ?string $pollingInterval = '10s';
 
     protected function getStats(): array
     {
@@ -22,26 +22,19 @@ class StatsOverviewRealTime extends BaseWidget
             Stat::make('Clientes Nuevos', Frecuencia::whereBetween('created_at', [date('Y-m-d').' 00:00:00.000', date('Y-m-d').' 23:59:59.000'])->count())
                 ->description('Hoy '.date('d-m-Y'))
                 ->descriptionIcon('heroicon-o-users')
-                ->color('warning')
+                ->color('info')
                 ->chart([7, 2, 10, 3, 15, 4, 17]),
             Stat::make('Servicios del día', VentaServicio::whereBetween('created_at', [date('Y-m-d').' 00:00:00.000', date('Y-m-d').' 23:59:59.000'])->count())
                 ->description('Hoy '.date('d-m-Y'))
                 ->description('Hoy '.date('d-m-Y'))
-                ->descriptionIcon('heroicon-s-users')
-                ->color('info')
-                ->chart([7, 2, 10, 3, 15, 4, 17]),
-            Stat::make('Cabinas Abiertas', Disponible::where('status', 'activo')
-                    ->whereBetween('created_at', [date('Y-m-d').' 00:00:00.000', date('Y-m-d').' 23:59:59.000'])
-                    ->count())
-                ->description('Total de Clientes siendo atendidos')
-                ->descriptionIcon('heroicon-s-users')
-                ->color('warning')
+                ->descriptionIcon('heroicon-c-share')
+                ->color('gray')
                 ->chart([7, 2, 10, 3, 15, 4, 17]),
         ];
     }
 
     public function getColumns(): int
     {
-        return 3;
+        return 2;
     }
 }

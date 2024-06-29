@@ -19,11 +19,11 @@ class Dashboard extends \Filament\Pages\Dashboard
     public function filtersForm(Form $form): Form
     {
 
-        if($this->filters['activar'] == false){
-            $this->value = true;
-        }else{
-            $this->value = false;
-        }
+        // if($this->filters['activar'] == false){
+        //     $this->value = true;
+        // }else{
+        //     $this->value = false;
+        // }
 
         return $form
             ->schema([
@@ -42,8 +42,8 @@ class Dashboard extends \Filament\Pages\Dashboard
                         DatePicker::make('startDate'),
                         DatePicker::make('endDate'),
                         ])
-                        ->columns(2)
-                        ->hidden($this->value),
+                        ->columns(2),
+                        // ->hidden(),
             ]);
     }
 }

@@ -18,11 +18,9 @@ class Dashboard extends \Filament\Pages\Dashboard
 
     public function filtersForm(Form $form): Form
     {
-        // dd($this->filters['activar']);
+
         if($this->filters['activar'] == false){
             $this->value = true;
-            $this->filters['startDate'] = '';
-            $this->filters['endDate'] = '';
         }else{
             $this->value = false;
         }

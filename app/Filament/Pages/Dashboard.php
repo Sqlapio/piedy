@@ -14,19 +14,11 @@ class Dashboard extends \Filament\Pages\Dashboard
 {
     use BaseDashboard\Concerns\HasFiltersForm;
 
-    public $value;
+    public $value = true;
     public $activar = false;
 
     public function filtersForm(Form $form): Form
     {
-        if($this->activar == false){
-            $this->value = true;
-            $this->filters['startDate'] = '';
-            $this->filters['endDate']= '';
-        }else{
-            $this->value = false;
-        }
-
         return $form
             ->schema([
                 Section::make()
@@ -44,8 +36,7 @@ class Dashboard extends \Filament\Pages\Dashboard
                         DatePicker::make('startDate'),
                         DatePicker::make('endDate'),
                         ])
-                        ->columns(2)
-                        ->hidden($this->value),
+                        ->columns(2),
             ]);
     }
 }

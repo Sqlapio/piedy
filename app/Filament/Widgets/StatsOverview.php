@@ -22,29 +22,32 @@ class StatsOverview extends BaseWidget
         {
             $rangeStartDate = now()->startOfYear();
             $rangeEndDate = now()->endOfYear();
+            $rango = date('d-m-Y', strtotime($rangeStartDate)).' al '.date('d-m-Y', strtotime($rangeEndDate));
+
         }else{
             $rangeStartDate = $this->filters['startDate'].' 00:00:00.000';
             $rangeEndDate = $this->filters['endDate'].'. 23:59:59.000';
+            $rango = date('d-m-Y', strtotime($rangeStartDate)).' al '.date('d-m-Y', strtotime($rangeEndDate));
         }
 
-        $ventas_usd = VentaServicio::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->sum('total_USD');
+        $ventas_usd = VentaServicio::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->sum('pago_usd');
         $ventas_bsd = VentaServicio::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
         $servicios = VentaServicio::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->count();
 
         return [
 
-            Stat::make('Ventas($)', '$ '.number_format($ventas_usd, 2, '.', ','))
-                ->description('Neto de ventas en Dolares')
+            Stat::make('Neto Ventas($)', '$ '.number_format($ventas_usd, 2, '.', ','))
+                ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success')
                 ->chart([7, 2, 10, 3, 15, 4, 17]),
-            Stat::make('Ventas(Bs.)', 'Bs. '.number_format($ventas_bsd, 2, ',', '.'))
-                ->description('Neto de ventas en Bolívares')
+            Stat::make('Neto Ventas(Bs.)', 'Bs. '.number_format($ventas_bsd, 2, ',', '.'))
+                ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('info')
                 ->chart([7, 2, 10, 3, 15, 4, 17]),
-            Stat::make('Total Servicios', $servicios)
-                ->description('Total de servicios realizados')
+            Stat::make('Total Servicios realizados', $servicios)
+                ->description($rango)
                 ->descriptionIcon('heroicon-s-users')
                 ->color('gray')
                 ->chart([7, 2, 10, 3, 15, 4, 17]),

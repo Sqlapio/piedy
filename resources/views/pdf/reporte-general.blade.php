@@ -53,24 +53,8 @@
                     <p class="mt-5 mb-1 text-xs font-bold text-black uppercase">Totales de Nomina</p>
                 </div>
                 <!-- Indicadores -->
-                <div class="grid sm:grid-cols-4 md:grid-cols-4 gap-4">
-                    <!-- Tasa Bcv -->
-                    <div>
-                        <div class="flex justify-between items-center max-w-sm p-3 bg-white border border-[#349fda] rounded-lg shadow">
-                            <div class="">
-                                <p class="text-xs font-normal text-black uppercase">Tasa BCV</p>
-                            </div>
-                            <div>
-                                <span class="inline-flex items-center px-2 py-1 mr-auto font-bold text-center text-[#349fda] align-baseline rounded-lg border border-[#349fda]">
-                                    <svg class="w-4 h-4 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m10.827 5.465-.435-2.324m.435 2.324a5.338 5.338 0 0 1 6.033 4.333l.331 1.769c.44 2.345 2.383 2.588 2.6 3.761.11.586.22 1.171-.31 1.271l-12.7 2.377c-.529.099-.639-.488-.749-1.074C5.813 16.73 7.538 15.8 7.1 13.455c-.219-1.169.218 1.162-.33-1.769a5.338 5.338 0 0 1 4.058-6.221Zm-7.046 4.41c.143-1.877.822-3.461 2.086-4.856m2.646 13.633a3.472 3.472 0 0 0 6.728-.777l.09-.5-6.818 1.277Z"/>
-                                      </svg>
-
-                                    Be. {{ $tasa_bcv }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="grid sm:grid-cols-3 md:grid-cols-3 gap-4">
+                    <!-- Total Dolares -->
                     <div>
                         <div class="flex justify-between items-center max-w-sm p-3 bg-white border border-[#349fda] rounded-lg shadow">
                             <div class="">
@@ -86,7 +70,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Total Dolares -->
+                    <!-- Total Bolibares -->
                     <div>
                         <div class="flex justify-between items-center max-w-sm p-3 bg-white border border-[#349fda] rounded-lg shadow">
                             <div class="">
@@ -122,8 +106,11 @@
                 </div>
 
                 <!-- Tabla de servicios -->
-                <div class="fex mt-5">
+                <div class="flex mt-5">
                     <p class="mt-5 mb-1 text-xs font-bold text-black uppercase">Detalle General de Nomina</p>
+                </div>
+                <div class="flex">
+                    <p class="mt-5 mb-1 text-xs font-bold text-black uppercase">Tasa BCV: Bs. {{ $tasa_bcv }}</p>
                 </div>
 
                 <div class="relative overflow-x-auto shadow-md rounded-lg border">

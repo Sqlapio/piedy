@@ -184,7 +184,7 @@ class Reporte extends Component
 		            $browsershot->setChromePath(env('CHROMIUM'));
                 })
             ->format(Format::Letter)
-            ->margins(10, 0, 18, 0)
+            ->margins(5, 0, 18, 0)
             ->footerView('pdf.footer')
             ->save($pdf);
 

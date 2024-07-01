@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Disponible;
 use App\Models\NomEncargado;
 use App\Models\NominaGeneral;
 use App\Models\NomManicurista;
@@ -153,15 +154,16 @@ class Reporte extends Component
             if($user->area_trabajo == 'quiropedia'){
                 $nomina = NomQuiropedista::where('cod_quincena', $this->periodo)->where('user_id', $user->id)->first();
                 $servicios = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->get();
+                $dias_trabajados = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->groupBy('fecha_venta')->count();
             }
 
             if($user->area_trabajo == 'manicure'){
                 $nomina = NomManicurista::where('cod_quincena', $this->periodo)->where('user_id', $user->id)->first();
                 $servicios = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->get();
+                $dias_trabajados = Disponible::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->groupBy('fecha_venta')->count();
             }
-
+            dd($dias_trabajados);
             $rango_fechas = PeriodoNomina::where('cod_quincena', $this->periodo)->first();
-
             pdf::view('pdf.reporte',
                 [
                     'cedula' => User::where('id', $this->empleado)->first()->cedula,
@@ -172,13 +174,15 @@ class Reporte extends Component
                     'pro_dura_servicios' => $nomina->promedio_duracion_servicios,
                     'total_dolares' => $nomina->total_dolares,
                     'total_bolivares' => $nomina->total_bolivares,
+                    'dias_trabajados' => $dias_trabajados,
                     'servicios' => $servicios,
                     'nro_reporte' => 'E'.$this->empleado.'-'.$this->periodo.''.$random,
                 ])
-->withBrowsershot(function (Browsershot $browsershot) {
-                    $browsershot->setNodeBinary('/usr/bin/node'); //location of node
-                    $browsershot->setNpmBinary('/usr/bin/npm'); //location of npm
-		$browsershot->setChromePath('/usr/bin/chromium');
+                ->withBrowsershot(function (Browsershot $browsershot)
+                {
+                    $browsershot->setNodeBinary('/usr/local/bin/node'); //location of node
+                    $browsershot->setNpmBinary('/usr/local/bin/npm'); //location of npm
+		            // $browsershot->setChromePath('/usr/bin/chromium');
                 })
             ->format(Format::A4)
             ->margins(10, 0, 18, 0)

@@ -154,12 +154,14 @@ class Reporte extends Component
                 $nomina = NomQuiropedista::where('cod_quincena', $this->periodo)->where('user_id', $user->id)->first();
                 $servicios = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->get();
                 $dias_trabajados = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->groupBy('fecha_venta')->count();
+                $rango = Carbon::createFromFormat('Y-m-d H:m:s', $nomina->fecha_ini)->format('d-m-Y').' al '.Carbon::createFromFormat('Y-m-d H:m:s', $nomina->fecha_fin)->format('d-m-Y');
             }
 
             if($user->area_trabajo == 'manicure'){
                 $nomina = NomManicurista::where('cod_quincena', $this->periodo)->where('user_id', $user->id)->first();
                 $servicios = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->get();
                 $dias_trabajados = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->groupBy('fecha_venta')->count();
+                $rango = Carbon::createFromFormat('Y-m-d H:m:s', $nomina->fecha_ini)->format('d-m-Y').' al '.Carbon::createFromFormat('Y-m-d H:m:s', $nomina->fecha_fin)->format('d-m-Y');
             }
 
             $rango_fechas = PeriodoNomina::where('cod_quincena', $this->periodo)->first();
@@ -167,7 +169,7 @@ class Reporte extends Component
             pdf::view('pdf.reporte',
                 [
                     'cedula' => User::where('id', $this->empleado)->first()->cedula,
-                    'rango' => Carbon::createFromFormat('Y-m-d', $rango_fechas->fecha_ini)->format('d-m-Y').' al '.Carbon::createFromFormat('Y-m-d', $rango_fechas->fecha_fin)->format('d-m-Y'),
+                    'rango' => $rango,
                     'periodo' => $this->periodo,
                     'nombre' => $user->name,
                     'total_servicios' => $nomina->total_servicios,
@@ -183,7 +185,7 @@ class Reporte extends Component
                     $browsershot->setNpmBinary('/usr/bin/npm'); //location of npm
 		            $browsershot->setChromePath('/usr/bin/chromium');
                 })
-            ->format(Format::A4)
+            ->format(Format::Letter)
             ->margins(10, 0, 18, 0)
             ->footerView('pdf.footer')
             ->save($pdf);

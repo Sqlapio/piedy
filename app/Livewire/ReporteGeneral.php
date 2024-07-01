@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Rule;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Spatie\LaravelPdf\Enums\Format;
+use Spatie\Browsershot\Browsershot;
 use Livewire\Component;
 
 class ReporteGeneral extends Component
@@ -92,6 +93,11 @@ class ReporteGeneral extends Component
 
 
                 ])
+            ->withBrowsershot(function (Browsershot $browsershot) {
+                    $browsershot->setNodeBinary('/usr/bin/node'); //location of node
+                    $browsershot->setNpmBinary('/usr/bin/npm'); //location of npm
+		            $browsershot->setChromePath('/usr/bin/chromium');
+                })
             ->landscape()
             ->margins(0, 0, 15, 0)
             ->footerView('pdf.footer')

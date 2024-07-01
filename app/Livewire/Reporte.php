@@ -153,11 +153,13 @@ class Reporte extends Component
             if($user->area_trabajo == 'quiropedia'){
                 $nomina = NomQuiropedista::where('cod_quincena', $this->periodo)->where('user_id', $user->id)->first();
                 $servicios = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->get();
+                $dias_trabajados = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->groupBy('fecha_venta')->count();
             }
 
             if($user->area_trabajo == 'manicure'){
                 $nomina = NomManicurista::where('cod_quincena', $this->periodo)->where('user_id', $user->id)->first();
                 $servicios = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->get();
+                $dias_trabajados = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->groupBy('fecha_venta')->count();
             }
 
             $rango_fechas = PeriodoNomina::where('cod_quincena', $this->periodo)->first();
@@ -171,14 +173,15 @@ class Reporte extends Component
                     'total_servicios' => $nomina->total_servicios,
                     'pro_dura_servicios' => $nomina->promedio_duracion_servicios,
                     'total_dolares' => $nomina->total_dolares,
+                    'dias_trabajados' => $dias_trabajados,
                     'total_bolivares' => $nomina->total_bolivares,
                     'servicios' => $servicios,
                     'nro_reporte' => 'E'.$this->empleado.'-'.$this->periodo.''.$random,
                 ])
-->withBrowsershot(function (Browsershot $browsershot) {
+            ->withBrowsershot(function (Browsershot $browsershot) {
                     $browsershot->setNodeBinary('/usr/bin/node'); //location of node
                     $browsershot->setNpmBinary('/usr/bin/npm'); //location of npm
-		$browsershot->setChromePath('/usr/bin/chromium');
+		            $browsershot->setChromePath('/usr/bin/chromium');
                 })
             ->format(Format::A4)
             ->margins(10, 0, 18, 0)
@@ -207,7 +210,7 @@ class Reporte extends Component
             $this->reset();
 
         } catch (\Throwable $th) {
-dd($th);
+            dd($th);
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-document-text')

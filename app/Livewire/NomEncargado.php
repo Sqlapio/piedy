@@ -128,7 +128,7 @@ class NomEncargado extends Component
                 $nomina->total_dolares = $nomina->salario_quincenal + $nomina->total_comision_dolares - $nomina->deducciones_dolares;
                 $nomina->total_bolivares = ($nomina->total_dolares * $tasa_bcv) + (($nomina->asignaciones_bolivares) ? $nomina->asignaciones_bolivares : 0.00);
                 $nomina->quincena = $this->quincena;
-                $nomina->cod_quincena = ($this->quincena == 'primera') ? '1'.date('mY') : '2'.date('mY');
+                $nomina->cod_quincena = $periodo;
 
                 /**
                  * Restriccion para validar el periodo de nomina correcto esto,

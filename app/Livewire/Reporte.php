@@ -154,16 +154,16 @@ class Reporte extends Component
                 $nomina = NomQuiropedista::where('cod_quincena', $this->periodo)->where('user_id', $user->id)->first();
                 $servicios = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->get();
                 $dias_trabajados = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->groupBy('fecha_venta')->count();
-                $rango = Carbon::createFromFormat('Y-m-d H:m:s', $nomina->fecha_ini)->format('d-m-Y').' al '.Carbon::createFromFormat('Y-m-d H:m:s', $nomina->fecha_fin)->format('d-m-Y');
+                $rango = date('d-m-Y', strtotime($nomina->fecha_ini)).' al '.date('d-m-Y', strtotime($nomina->fecha_fin));
             }
 
             if($user->area_trabajo == 'manicure'){
                 $nomina = NomManicurista::where('cod_quincena', $this->periodo)->where('user_id', $user->id)->first();
                 $servicios = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->get();
                 $dias_trabajados = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->groupBy('fecha_venta')->count();
-                $rango = Carbon::createFromFormat('Y-m-d H:m:s', $nomina->fecha_ini)->format('d-m-Y').' al '.Carbon::createFromFormat('Y-m-d H:m:s', $nomina->fecha_fin)->format('d-m-Y');
+                $rango = date('d-m-Y', strtotime($nomina->fecha_ini)).' al '.date('d-m-Y', strtotime($nomina->fecha_fin));
             }
-
+            dd($rango);
             $rango_fechas = PeriodoNomina::where('cod_quincena', $this->periodo)->first();
 
             pdf::view('pdf.reporte',

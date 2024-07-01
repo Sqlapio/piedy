@@ -3,7 +3,8 @@ use App\Models\Cita;
 use Carbon\Carbon;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
-    $data_citas = Cita::where('status', 1)->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->get();
+    $date = date('Y-m');
+    $data_citas = Cita::where('status', 1)->where('fecha_formateada', 'like', '%'.$date.'%')->get();
     $datas = Trend::model(Cita::class)
             ->between(
                 now()->startOfMonth()->month($mes),

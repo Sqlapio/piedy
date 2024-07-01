@@ -37,12 +37,12 @@
             <div class="px-4">
                 <!-- Banner -->
                 <div class="flex">
-                    <img style="display: block; margin-left: auto; margin-right: auto;" src="{{ asset('images/piedy_pdf_2.jpg') }}">
+                    <img style="display: block; margin-left: auto; margin-right: auto;" src="{{ asset('images/PDF-PIEDY-SOLO-BANNER.jpg') }}">
                 </div>
 
                 <!-- Numero de reporte -->
                 <div class="flex justify-end">
-                    <div class="flex flex-col justify-end mt-5">
+                    <div class="flex flex-col justify-end mt-2">
                         <p class="font-bold text-[8px] text-end text-black uppercase">Reporte Nro.{{ $nro_reporte }}</p>
                         <p class="text-[8px] text-end text-black uppercase">{{ $rango }}</p>
                     </div>
@@ -50,8 +50,8 @@
 
                 <!-- Empleado -->
                 <div class="flex flex-col">
-                    <p class="mt-5 text-[8px] font-bold text-black uppercase">Empleado: {{ $nombre }}</p>
-                    <p class="mb-4 text-[8px] font-bold text-black uppercase">C.I.: {{ $cedula }}</p>
+                    <p class="mt-2 text-[8px] font-bold text-black uppercase">Empleado: {{ $nombre }}</p>
+                    <p class="mb-2 text-[8px] font-bold text-black uppercase">C.I.: {{ $cedula }}</p>
                 </div>
 
                 <!-- Indicadores -->
@@ -160,8 +160,8 @@
                 </div>
 
                 <!-- Tabla de servicios -->
-                <div class="flex mt-5">
-                    <p class="mt-5 mb-4 text-[8px] font-bold text-black uppercase">Detalle de servicios</p>
+                <div class="flex mt-2">
+                    <p class="mt-2 mb-2 text-[8px] font-bold text-black uppercase">Detalle de servicios</p>
                 </div>
 
                 <div class="relative overflow-x-auto shadow-md rounded-lg border">

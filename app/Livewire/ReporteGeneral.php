@@ -94,9 +94,9 @@ class ReporteGeneral extends Component
 
                 ])
             ->withBrowsershot(function (Browsershot $browsershot) {
-                    $browsershot->setNodeBinary('/usr/bin/node'); //location of node
-                    $browsershot->setNpmBinary('/usr/bin/npm'); //location of npm
-		            $browsershot->setChromePath('/usr/bin/chromium');
+                    $browsershot->setNodeBinary(env('NODE')); //location of node
+                    $browsershot->setNpmBinary(env('NPM')); //location of npm
+                    $browsershot->setChromePath(env('CHROMIUM'));
                 })
             ->landscape()
             ->margins(0, 0, 15, 0)

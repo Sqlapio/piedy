@@ -179,9 +179,9 @@ class Reporte extends Component
                     'nro_reporte' => 'E'.$this->empleado.'-'.$this->periodo.''.$random,
                 ])
             ->withBrowsershot(function (Browsershot $browsershot) {
-                    $browsershot->setNodeBinary('/usr/bin/node'); //location of node
-                    $browsershot->setNpmBinary('/usr/bin/npm'); //location of npm
-		            $browsershot->setChromePath('/usr/bin/chromium');
+                    $browsershot->setNodeBinary(env('NODE')); //location of node
+                    $browsershot->setNpmBinary(env('NPM')); //location of npm
+		            $browsershot->setChromePath(env('CHROMIUM'));
                 })
             ->format(Format::Letter)
             ->margins(10, 0, 18, 0)

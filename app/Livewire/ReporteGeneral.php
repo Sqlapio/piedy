@@ -8,6 +8,7 @@ use App\Models\NomManicurista;
 use App\Models\NomQuiropedista;
 use App\Models\PeriodoNomina;
 use App\Models\Reporte;
+use App\Models\VentaServicio;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
@@ -78,6 +79,9 @@ class ReporteGeneral extends Component
 
             $rango_fechas = PeriodoNomina::where('cod_quincena', $this->periodo)->first();
 
+            $total_facturado_usd = VentaServicio::whereBetween('created_at', [$rango_fechas->fecha_ini.' 00:00:00.000', $rango_fechas->fecha_fin.' 23:59:59.000'])->sum('pago_usd');
+            $total_facturado_bsd = VentaServicio::whereBetween('created_at', [$rango_fechas->fecha_ini.' 00:00:00.000', $rango_fechas->fecha_fin.' 23:59:59.000'])->sum('pago_bsd');
+
             $random = rand('11111', '99999');
             $pdf = $this->periodo.'_'.$random.'.pdf';
 
@@ -90,13 +94,17 @@ class ReporteGeneral extends Component
                     'total_general_bolivares' => $totales->total_bolivares,
                     'total_general' => $totales->total_general,
                     'tasa_bcv' => $totales->tasa_bcv,
-
-
+                    'total_facturado_usd' => $total_facturado_usd,
+                    'total_facturado_bsd' => $total_facturado_bsd,
                 ])
             ->withBrowsershot(function (Browsershot $browsershot) {
                     $browsershot->setNodeBinary(env('NODE')); //location of node
                     $browsershot->setNpmBinary(env('NPM')); //location of npm
-                    $browsershot->setChromePath(env('CHROMIUM'));
+                    if(env('APP_ENV') == 'production')
+                    {
+                        $browsershot->setChromePath(env('CHROMIUM'));
+
+                    }
                 })
             ->landscape()
             ->margins(0, 0, 15, 0)

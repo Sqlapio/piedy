@@ -172,7 +172,7 @@
                                     cliente
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Tiempo Trabajo
+                                    Tiempo Trabajo(min)
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Comision($)

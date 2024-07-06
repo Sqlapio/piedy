@@ -199,6 +199,18 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
     /**-------------------------------------------------------*/
 
+    /**
+     * ---------------------------------------------------------
+     * RUTAS:
+     * Modulo del Empleado
+     * para visualizar el listado de servicios realizados
+     * ---------------------------------------------------------
+     */
+    Route::get('/l/srv', function () {
+        return view('lista-servicio-empleado');
+    })->name('lista-servicio-empleado');
+    /**-------------------------------------------------------*/
+
 
     /**
      * ---------------------------------------------------------

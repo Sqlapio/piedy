@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Filament\Http\Responses\Auth\Contracts\LogoutResponse;
 use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
@@ -88,7 +89,13 @@ class LoginController extends Controller
                                 'password' => Hash::make($request->password),
                             ]);
 
-                            notify()->success('La contraseña fue actualizada de forma exitosa');
+                            Notification::make()
+                                ->title('NOTIFICACIÓN')
+                                ->icon('heroicon-o-document-text')
+                                ->iconColor('info')
+                                ->color('info')
+                                ->body('La contraseña fue actualizada de forma exitosa')
+                                ->send();
 
                             $type = 'reseteo_password';
                             $mailData = [
@@ -96,24 +103,28 @@ class LoginController extends Controller
                                 'user_fullname' => $user->name,
                             ];
 
-                            NotificacionesController::notification($mailData, $type);
+                            // NotificacionesController::notification($mailData, $type);
 
                     } else {
-
-                        notify()->error('Las contraseñas no son iguales, por favor verifique y vuelva a intentar');
+                        throw new Exception("Las contraseñas no son iguales, por favor verifique y vuelva a intentar", 401);
                     }
                 } else {
-
-                    notify()->error('Correo invalido, por favor verifique y vuelva a intentar');
+                    throw new Exception("Correo invalido, por favor verifique y vuelva a intentar", 401);
 
                 }
 
-                return redirect()->route('welcome');
+                return redirect('/');
             }
 
 
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-document-text')
+            ->iconColor('danger')
+            ->color('danger')
+            ->body($th->getMessage())
+            ->send();
         }
     }
 

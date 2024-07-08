@@ -266,6 +266,26 @@ use App\Models\TasaBcv as ModelsTasaBcv;
         </div>
     @endif
 
+    <!-- Menu para los empleados -->
+    @if(Auth::user()->tipo_usuario == 'empleado')
+        {{-- tercera linea --}}
+        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-2 px-3">
+            {{-- Empleados --}}
+            <div wire:click="valida_tasa({{ 13 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg'); background-size: cover;">
+                <div class="flex items-center w-24 h-24"></div>
+                <div class="ml-12 text-right">
+                    <div class="mt-2 text-4xl text-white leading-7 font-bold">
+                        Tabla de Servicios
+                    </div>
+                    <div class="sm:hidden md:hidden lg:block mt-3 text-right text-xs font-semibold text-white">
+                        <div>LIstado de servicios</div>
+                        <div>Técnico: {{ Auth::user()->name }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
 </div>
 
 

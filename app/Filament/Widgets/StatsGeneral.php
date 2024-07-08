@@ -12,7 +12,7 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 
-class StatsOverview extends BaseWidget
+class StatsGeneral extends BaseWidget
 {
     use InteractsWithPageFilters;
 
@@ -30,32 +30,20 @@ class StatsOverview extends BaseWidget
             $rango = date('d-m-Y', strtotime($rangeStartDate)).' al '.date('d-m-Y', strtotime($rangeEndDate));
         }
 
-        $ventas_usd = VentaServicio::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->sum('pago_usd');
-        $ventas_bsd = VentaServicio::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
-        $servicios = VentaServicio::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->count();
+        $ventas_generales = VentaServicio::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->sum('total_USD');
 
         return [
 
-            Stat::make('Ingreso por Ventas en Divisas($)', '$ '.number_format($ventas_usd, 2, '.', ','))
+            Stat::make('Total General de Ventas($)', '$ '.number_format($ventas_generales, 2, '.', ','))
                 ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success')
-                ->chart([7, 2, 10, 3, 15, 4, 17]),
-            Stat::make('Ingreso por Ventas en Bolivares(Bs.)', 'Bs. '.number_format($ventas_bsd, 2, ',', '.'))
-                ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('info')
-                ->chart([7, 2, 10, 3, 15, 4, 17]),
-            Stat::make('Total Servicios realizados', $servicios)
-                ->description($rango)
-                ->descriptionIcon('heroicon-s-users')
-                ->color('gray')
                 ->chart([7, 2, 10, 3, 15, 4, 17]),
         ];
     }
 
     public function getColumns(): int
     {
-        return 3;
+        return 1;
     }
 }

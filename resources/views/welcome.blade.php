@@ -1,4 +1,5 @@
 <x-guest-layout>
+    @livewire('notifications')
     <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2">
         <div class="min-[250px]:hidden px-6 my-auto md:block lg:block">
             <video class="w-full" muted autoplay loop>

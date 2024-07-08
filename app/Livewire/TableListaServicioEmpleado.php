@@ -4,11 +4,13 @@ namespace App\Livewire;
 
 use App\Models\VentaServicio;
 use Carbon\Carbon;
+use Filament\Enums\ThemeMode;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -26,8 +28,7 @@ class TableListaServicioEmpleado extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
-        $start = Carbon::now()->startOfMonth();
-        $end = Carbon::now()->endOfMonth();
+
         return $table
             ->query(VentaServicio::query()->where('empleado_id', Auth::user()->id))
             ->columns([
@@ -43,21 +44,36 @@ class TableListaServicioEmpleado extends Component implements HasForms, HasTable
                 TextColumn::make('duracion')
                     ->label('Duracion del servicio')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('comision_dolares')
                     ->label('Comision($)')
+                        ->summarize(Sum::make()
+                        ->label('Total($)'))
                     ->sortable()
+                    ->alignCenter()
                     ->searchable(),
                 TextColumn::make('comision_bolivares')
                     ->label('Comision(Bs.)')
+                        ->summarize(Sum::make()
+                        ->label('Total(Bs.)'))
                     ->sortable()
+                    ->alignCenter()
                     ->searchable(),
+                TextColumn::make('propina_bsd')
+                    ->label('Propina(Bs.)')
+                    ->sortable()
+                        ->summarize(Sum::make()
+                        ->label('Total(Bs.)'))
+                    ->alignCenter()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Filter::make('created_at')
                 ->form([
-                    DatePicker::make('desde'),
-                    DatePicker::make('hasta'),
+                    DatePicker::make('desde')->default(now()),
+                    DatePicker::make('hasta')->default(now()),
                 ])
                 ->query(function (Builder $query, array $data): Builder {
                     return $query
@@ -94,7 +110,8 @@ class TableListaServicioEmpleado extends Component implements HasForms, HasTable
                 Tables\Actions\BulkActionGroup::make([
                     //
                 ]),
-            ]);
+            ])
+            ->striped();
     }
 
     public function render(): View

@@ -183,6 +183,12 @@ class Dashboard extends Component
             }
 
         }
+
+        if($valor == 13)
+        {
+            $this->redirect('/l/srv');
+
+        }
     }
 
     public function cierre_general()

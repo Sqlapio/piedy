@@ -167,23 +167,30 @@ class Reporte extends Component
                 $propinas_usd = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->sum('propina_usd');
             }
 
+            if($user->area_trabajo == 'Tienda'){
+                $nomina = NomEncargado::where('cod_quincena', $this->periodo)->where('user_id', $user->id)->first();
+                $servicios = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('responsable_id', $user->id)->where('comision_gerente', '!=', 0)->get();
+                $dias_trabajados = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('responsable_id', $user->id)->groupBy('fecha_venta')->count();
+                $rango = date('d-m-Y', strtotime($nomina->fecha_ini)).' al '.date('d-m-Y', strtotime($nomina->fecha_fin));
+            }
+
             pdf::view('pdf.reporte',
                 [
-                    'cedula' => User::where('id', $this->empleado)->first()->cedula,
-                    'rango' => $rango,
-                    'periodo' => $this->periodo,
-                    'nombre' => $user->name,
-                    'total_servicios' => $nomina->total_servicios,
-                    'propinas_bsd' => $nomina->total_propina_bsd,
-                    'propinas_usd' => $propinas_usd,
-                    'comision_bsd' => $nomina->total_comision_bolivares,
-                    'comision_usd' => $nomina->total_comision_dolares,
-                    'pro_dura_servicios' => $nomina->promedio_duracion_servicios,
-                    'total_dolares' => $nomina->total_dolares,
-                    'dias_trabajados' => $dias_trabajados,
-                    'total_bolivares' => $nomina->total_bolivares,
-                    'servicios' => $servicios,
-                    'nro_reporte' => 'E'.$this->empleado.'-'.$this->periodo.''.$random,
+                    'cedula'                => User::where('id', $this->empleado)->first()->cedula,
+                    'rango'                 => $rango,
+                    'periodo'               => $this->periodo,
+                    'nombre'                => $user->name,
+                    'total_servicios'       => $nomina->total_servicios,
+                    'propinas_bsd'          => ($user->area_trabajo == 'Tienda') ? '0.00' : $nomina->total_propina_bsd,
+                    'propinas_usd'          => ($user->area_trabajo == 'Tienda') ? '0.00' : $propinas_usd,
+                    'comision_bsd'          => ($user->area_trabajo == 'Tienda') ? '0.00' : $nomina->total_comision_bolivares,
+                    'comision_usd'          => ($user->area_trabajo == 'Tienda') ? '0.00' : $nomina->total_comision_dolares,
+                    'pro_dura_servicios'    => ($nomina->promedio_duracion_servicios != 'null') ? $nomina->promedio_duracion_servicios : '0.00',
+                    'total_dolares'         => ($user->area_trabajo == 'Tienda') ? $nomina->total_dolares + $nomina->total_comision_dolares : $nomina->total_dolares,
+                    'dias_trabajados'       => $dias_trabajados,
+                    'total_bolivares'       => $nomina->total_bolivares,
+                    'servicios'             => $servicios,
+                    'nro_reporte'           => 'E'.$this->empleado.'-'.$this->periodo.''.$random,
                 ])
             ->withBrowsershot(function (Browsershot $browsershot) {
                     $browsershot->setNodeBinary(env('NODE')); //location of node

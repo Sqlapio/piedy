@@ -50,8 +50,8 @@
 
                 <!-- Empleado -->
                 <div class="flex flex-col">
-                    <p class="mt-2 text-[8px] font-bold text-black uppercase">Empleado: {{ $nombre }}</p>
-                    <p class="mb-2 text-[8px] font-bold text-black uppercase">C.I.: {{ $cedula }}</p>
+                    <p class="mt-2 text-[12px] font-bold text-black uppercase">Empleado: {{ $nombre }}</p>
+                    <p class="mb-2 text-[12px] font-bold text-black uppercase">C.I.: {{ $cedula }}</p>
                 </div>
 
                 <!-- Indicadores -->
@@ -92,7 +92,7 @@
                     <div>
                         <div class="flex justify-between items-center max-w-sm px-2 py-1 bg-white border border-[#349fda] rounded-lg shadow">
                             <div class="">
-                                <p class="text-[8px] font-normal text-black uppercase">Duracion de servicios</p>
+                                <p class="text-[8px] font-normal text-black uppercase">Tiempo Promedio de servicios</p>
                             </div>
                             <div>
                                 <span class="text-[8px] inline-flex items-center px-2 py-1 mr-auto font-bold text-center text-[#349fda] align-baseline rounded-lg border border-[#349fda]">
@@ -108,7 +108,7 @@
                     <div>
                         <div class="flex justify-between items-center max-w-sm px-2 py-1 bg-white border border-[#349fda] rounded-lg shadow">
                             <div class="">
-                                <p class="text-[8px] font-normal text-black uppercase">dias laborales</p>
+                                <p class="text-[8px] font-normal text-black uppercase">dias trabajados</p>
                             </div>
                             <div>
                                 <span class="text-[8px] inline-flex items-center px-2 py-1 mr-auto font-bold text-center text-[#349fda] align-baseline rounded-lg border border-[#349fda]">
@@ -122,13 +122,51 @@
                     </div>
                 </div>
 
-                <!-- Totales a pagar -->
+                <!-- Totales Propinas -->
                 <div class="grid md:grid-cols-2 sm:gap-2 md:gap-2 mt-3">
                     <!-- Dolares -->
                     <div>
                         <div class="flex justify-between items-center max-w-sm p-1 bg-white border border-green-500 rounded-lg shadow">
                             <div class="">
-                                <p class="text-[8px] font-extrabold text-black uppercase">Total Dolares</p>
+                                <p class="text-[8px] font-extrabold text-black uppercase">Propinas en Dolares</p>
+                            </div>
+                            <div>
+                                <span class="text-[8px] inline-flex items-center px-2 py-1 mr-auto font-extrabold text-center text-green-500 align-baseline rounded-lg border border-green-500">
+                                    <svg class="w-4 h-4 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.6 16.733c.234.269.548.456.895.534a1.4 1.4 0 0 0 1.75-.762c.172-.615-.446-1.287-1.242-1.481-.796-.194-1.41-.861-1.241-1.481a1.4 1.4 0 0 1 1.75-.762c.343.077.654.26.888.524m-1.358 4.017v.617m0-5.939v.725M4 15v4m3-6v6M6 8.5 10.5 5 14 7.5 18 4m0 0h-3.5M18 4v3m2 8a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"/>
+                                      </svg>
+                                    ${{ $propinas_usd }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bolivares -->
+                    <div>
+                        <div class="flex justify-between items-center max-w-sm p-1 bg-white border border-green-500 rounded-lg shadow">
+                            <div class="">
+                                <p class="text-[8px] font-extrabold text-black uppercase">Propinas en Bolivares</p>
+                            </div>
+                            <div>
+                                <span class="text-[8px] inline-flex items-center px-2 py-1 mr-auto font-extrabold text-center text-green-500 align-baseline rounded-lg border border-green-500">
+                                    <svg class="w-4 h-4 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.6 16.733c.234.269.548.456.895.534a1.4 1.4 0 0 0 1.75-.762c.172-.615-.446-1.287-1.242-1.481-.796-.194-1.41-.861-1.241-1.481a1.4 1.4 0 0 1 1.75-.762c.343.077.654.26.888.524m-1.358 4.017v.617m0-5.939v.725M4 15v4m3-6v6M6 8.5 10.5 5 14 7.5 18 4m0 0h-3.5M18 4v3m2 8a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"/>
+                                      </svg>
+                                    Bs.{{ $propinas_bsd }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Totales Comisiones -->
+                <div class="grid md:grid-cols-2 sm:gap-2 md:gap-2 mt-3">
+                    <!-- Dolares -->
+                    <div>
+                        <div class="flex justify-between items-center max-w-sm p-1 bg-white border border-green-500 rounded-lg shadow">
+                            <div class="">
+                                <p class="text-[8px] font-extrabold text-black uppercase">Comisión en Dolares</p>
                             </div>
                             <div>
                                 <span class="text-[8px] inline-flex items-center px-2 py-1 mr-auto font-extrabold text-center text-green-500 align-baseline rounded-lg border border-green-500">
@@ -144,7 +182,44 @@
                     <div>
                         <div class="flex justify-between items-center max-w-sm p-1 bg-white border border-green-500 rounded-lg shadow">
                             <div class="">
-                                <p class="text-[8px] font-extrabold text-black uppercase">Total Bolivares</p>
+                                <p class="text-[8px] font-extrabold text-black uppercase">Comisión en Bolivares</p>
+                            </div>
+                            <div>
+                                <span class="text-[8px] inline-flex items-center px-2 py-1 mr-auto font-extrabold text-center text-green-500 align-baseline rounded-lg border border-green-500">
+                                    <svg class="w-4 h-4 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.6 16.733c.234.269.548.456.895.534a1.4 1.4 0 0 0 1.75-.762c.172-.615-.446-1.287-1.242-1.481-.796-.194-1.41-.861-1.241-1.481a1.4 1.4 0 0 1 1.75-.762c.343.077.654.26.888.524m-1.358 4.017v.617m0-5.939v.725M4 15v4m3-6v6M6 8.5 10.5 5 14 7.5 18 4m0 0h-3.5M18 4v3m2 8a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"/>
+                                      </svg>
+                                    Bs. {{ $total_bolivares }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Totales a pagar -->
+                <div class="grid md:grid-cols-2 sm:gap-2 md:gap-2 mt-3">
+                    <!-- Dolares -->
+                    <div>
+                        <div class="flex justify-between items-center max-w-sm p-1 bg-white border border-green-500 rounded-lg shadow">
+                            <div class="">
+                                <p class="text-[8px] font-extrabold text-black uppercase">Total en Dolares</p>
+                            </div>
+                            <div>
+                                <span class="text-[8px] inline-flex items-center px-2 py-1 mr-auto font-extrabold text-center text-green-500 align-baseline rounded-lg border border-green-500">
+                                    <svg class="w-4 h-4 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.6 16.733c.234.269.548.456.895.534a1.4 1.4 0 0 0 1.75-.762c.172-.615-.446-1.287-1.242-1.481-.796-.194-1.41-.861-1.241-1.481a1.4 1.4 0 0 1 1.75-.762c.343.077.654.26.888.524m-1.358 4.017v.617m0-5.939v.725M4 15v4m3-6v6M6 8.5 10.5 5 14 7.5 18 4m0 0h-3.5M18 4v3m2 8a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"/>
+                                      </svg>
+                                    ${{ $total_dolares }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Bolivares -->
+                    <div>
+                        <div class="flex justify-between items-center max-w-sm p-1 bg-white border border-green-500 rounded-lg shadow">
+                            <div class="">
+                                <p class="text-[8px] font-extrabold text-black uppercase">Total en Bolivares</p>
                             </div>
                             <div>
                                 <span class="text-[8px] inline-flex items-center px-2 py-1 mr-auto font-extrabold text-center text-green-500 align-baseline rounded-lg border border-green-500">
@@ -172,13 +247,22 @@
                                     cliente
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Tiempo Trabajo(min)
+                                    Duración(min)
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Costo Servicio($)
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Pago($)
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Comision($)
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Comision($)
+                                    Pago(Bs.)
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Comision(Bs.)
                                 </th>
                             </tr>
                         </thead>
@@ -198,7 +282,28 @@
                                 <td class="px-6 py-2 text-[8px]">
                                     <div class="flex flex-col">
                                         <div>
+                                            {{ $servicio->total_USD }}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-2 text-[8px]">
+                                    <div class="flex flex-col">
+                                        <div>
+                                            ${{ $servicio->pago_usd }}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-2 text-[8px]">
+                                    <div class="flex flex-col">
+                                        <div>
                                             ${{ $servicio->comision_dolares }}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-2 text-[8px]">
+                                    <div class="flex flex-col">
+                                        <div>
+                                            Bs.{{ $servicio->pago_bsd }}
                                         </div>
                                     </div>
                                 </td>

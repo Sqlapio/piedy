@@ -155,6 +155,8 @@ class Reporte extends Component
                 $servicios = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->get();
                 $dias_trabajados = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->groupBy('fecha_venta')->count();
                 $rango = date('d-m-Y', strtotime($nomina->fecha_ini)).' al '.date('d-m-Y', strtotime($nomina->fecha_fin));
+                $propinas_usd = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->sum('propina_bsd');
+
             }
 
             if($user->area_trabajo == 'manicure'){
@@ -162,6 +164,7 @@ class Reporte extends Component
                 $servicios = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->get();
                 $dias_trabajados = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->groupBy('fecha_venta')->count();
                 $rango = date('d-m-Y', strtotime($nomina->fecha_ini)).' al '.date('d-m-Y', strtotime($nomina->fecha_fin));
+                $propinas_usd = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->sum('propina_bsd');
             }
 
             pdf::view('pdf.reporte',
@@ -171,6 +174,8 @@ class Reporte extends Component
                     'periodo' => $this->periodo,
                     'nombre' => $user->name,
                     'total_servicios' => $nomina->total_servicios,
+                    'propinas_bsd' => $nomina->total_propina_bsd,
+                    'propinas_usd' => $propinas_usd,
                     'pro_dura_servicios' => $nomina->promedio_duracion_servicios,
                     'total_dolares' => $nomina->total_dolares,
                     'dias_trabajados' => $dias_trabajados,
@@ -181,7 +186,7 @@ class Reporte extends Component
             ->withBrowsershot(function (Browsershot $browsershot) {
                     $browsershot->setNodeBinary(env('NODE')); //location of node
                     $browsershot->setNpmBinary(env('NPM'));
-                    $browsershot->setChromePath(env('CHROMIUM'));
+                    // $browsershot->setChromePath(env('CHROMIUM'));
                 })
             ->format(Format::Letter)
             ->margins(5, 0, 18, 0)

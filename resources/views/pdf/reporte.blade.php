@@ -242,79 +242,115 @@
                 <div class="relative overflow-x-auto shadow-md rounded-lg border">
                     <table class="table-fixed w-full text-[8px] text-left text-gray-500 dark:text-gray-400">
                         <thead class=" text-[8px] text-black uppercase bg-gray-300">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 ">
-                                    cliente
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Duración(min)
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Costo Servicio($)
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Pago($)
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Comision($)
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Pago(Bs.)
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Comision(Bs.)
-                                </th>
-                            </tr>
+                            @if ($area_trabajo == 'Tienda')
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 ">
+                                        cliente
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Costo Servicio($)
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Comision($)
+                                    </th>
+                                </tr>
+                            @else
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 ">
+                                        cliente
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Duración(min)
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Costo Servicio($)
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Pago($)
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Comision($)
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Pago(Bs.)
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Comision(Bs.)
+                                    </th>
+                                </tr>
+                            @endif
                         </thead>
                         <tbody>
                             @foreach($servicios as $servicio)
-                            <tr class="odd:bg-white even:bg-gray-200">
-                                <th class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[100px] truncate">
-                                    {{ $servicio->cliente }}
-                                </th>
-                                <td class="px-6 py-2 text-[8px]">
-                                    <div class="flex flex-col">
-                                        <div>
-                                            {{ $servicio->duracion }}
+                            @if ($area_trabajo == 'Tienda')
+                                <tr class="odd:bg-white even:bg-gray-200">
+                                    <th class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[100px] truncate">
+                                        {{ $servicio->cliente }}
+                                    </th>
+                                    <td class="px-6 py-2 text-[8px]">
+                                        <div class="flex flex-col">
+                                            <div>
+                                                {{ $servicio->total_USD }}
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-2 text-[8px]">
-                                    <div class="flex flex-col">
-                                        <div>
-                                            {{ $servicio->total_USD }}
+                                    </td>
+                                    <td class="px-6 py-2 text-[8px]">
+                                        <div class="flex flex-col">
+                                            <div>
+                                                ${{ $servicio->comision_gerente }}
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-2 text-[8px]">
-                                    <div class="flex flex-col">
-                                        <div>
-                                            ${{ $servicio->pago_usd }}
+                                    </td>
+                                </tr>
+                            @else
+                                <tr class="odd:bg-white even:bg-gray-200">
+                                    <th class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[100px] truncate">
+                                        {{ $servicio->cliente }}
+                                    </th>
+                                    <td class="px-6 py-2 text-[8px]">
+                                        <div class="flex flex-col">
+                                            <div>
+                                                {{ $servicio->duracion }}
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-2 text-[8px]">
-                                    <div class="flex flex-col">
-                                        <div>
-                                            ${{ $servicio->comision_dolares }}
+                                    </td>
+                                    <td class="px-6 py-2 text-[8px]">
+                                        <div class="flex flex-col">
+                                            <div>
+                                                {{ $servicio->total_USD }}
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-2 text-[8px]">
-                                    <div class="flex flex-col">
-                                        <div>
-                                            Bs.{{ $servicio->pago_bsd }}
+                                    </td>
+                                    <td class="px-6 py-2 text-[8px]">
+                                        <div class="flex flex-col">
+                                            <div>
+                                                ${{ $servicio->pago_usd }}
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-2 text-[8px]">
-                                    <div class="flex flex-col">
-                                        <div>
-                                            Bs.{{ $servicio->comision_bolivares }}
+                                    </td>
+                                    <td class="px-6 py-2 text-[8px]">
+                                        <div class="flex flex-col">
+                                            <div>
+                                                ${{ $servicio->comision_dolares }}
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td class="px-6 py-2 text-[8px]">
+                                        <div class="flex flex-col">
+                                            <div>
+                                                Bs.{{ $servicio->pago_bsd }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-2 text-[8px]">
+                                        <div class="flex flex-col">
+                                            <div>
+                                                Bs.{{ $servicio->comision_bolivares }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endif
                             @endforeach
                         </tbody>
                     </table>

@@ -291,7 +291,7 @@ class ApiClientesController extends Controller
     {
         return User::query()
             ->select('id', 'name', 'email')
-            ->where('tipo_usuario', 'empleado')
+            ->whereBetween('tipo_usuario', ['empleado', 'encargado'])
             ->where('status', '1')
             ->orderBy('name')
             ->when(

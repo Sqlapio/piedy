@@ -186,7 +186,7 @@ class Reporte extends Component
             ->withBrowsershot(function (Browsershot $browsershot) {
                     $browsershot->setNodeBinary(env('NODE')); //location of node
                     $browsershot->setNpmBinary(env('NPM'));
-                    // $browsershot->setChromePath(env('CHROMIUM'));
+                    $browsershot->setChromePath(env('CHROMIUM'));
                 })
             ->format(Format::Letter)
             ->margins(5, 0, 18, 0)

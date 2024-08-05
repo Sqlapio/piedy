@@ -154,11 +154,11 @@ class GiftCard extends Component
 
             $correo = Cliente::where('id',  $asignar_giftCard->cliente_id)->first()->email;
 
-            if($asignar_giftCard->monto == '20'){
-                $image = 'gift20.png';
+            if($asignar_giftCard->monto == '25'){
+                $image = 'gift25.png';
             }
-            if($asignar_giftCard->monto == '40'){
-                $image = 'gift40.png';
+            if($asignar_giftCard->monto == '50'){
+                $image = 'gift50.png';
             }
 
             $mailData = [

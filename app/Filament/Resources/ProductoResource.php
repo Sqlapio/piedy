@@ -87,7 +87,9 @@ class ProductoResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('cod_producto')->searchable(),
+                TextColumn::make('cod_producto')
+                ->toggleable(isToggledHiddenByDefault: true)
+                ->searchable(),
                 ImageColumn::make('image')
                     ->circular()
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -96,7 +98,7 @@ class ProductoResource extends Resource
                 TextColumn::make('categoria.descripcion')->searchable(),
                 TextColumn::make('precio_venta')
                     ->money('USD')
-                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->alignCenter()
                     ->searchable(),
                 TextColumn::make('existencia')
                 ->alignCenter()

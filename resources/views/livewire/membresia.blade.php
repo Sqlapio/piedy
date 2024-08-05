@@ -19,7 +19,7 @@ $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
 
                     <div class="w-full px-8 absolute top-12">
                         <div class="flex justify-between">
-                            <div class="">
+                            <div class="lg:mt-10">
                                 <p class="font-light text-black text-xs">
                                     Nombre
                                 </p>
@@ -51,8 +51,8 @@ $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
                 <div class="grid sm:grid-cols-1 md:grid-cols-2 sm:gap-6">
 
                     <div class="w-full group mb-4">
-                        <label class="mb-1 block text-md text-black text-left">Cliente</label>
-                        <x-select wire:model.live="cliente_id" placeholder="Seleccion" :async-data="route('api.clientes')" option-label="nombre" option-value="id" />
+                        <label class="mb-1 block text-xs text-black text-left">Cliente(Email)</label>
+                        <x-select wire:model.live="cliente_id" placeholder="Seleccion" :async-data="route('api.clientes')" option-label="email" option-value="id" />
                         <div class="py-2">
                             <x-badge wire:click='nuevo_cliente()' rounded positive label="+ NUEVO CLIENTE" class="py-1 cursor-pointer"/>
                         </div>
@@ -60,20 +60,20 @@ $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
 
                     {{-- Monto --}}
                     <div class="w-full group mb-4">
-                        <label class="mb-1 block text-md text-black text-left">Monto: {{ $monto }}$ - Bs.{{ round($monto * $tasa, 2) }}</label>
-                        <x-select wire:model.live="monto" placeholder="seleccione el monto" :options="['20', '40']" right-icon="currency-dollar"/>
+                        <label class="mb-1 block text-xs text-black text-left">Monto: {{ $monto }}$ - Bs.{{ round($monto * $tasa, 2) }}</label>
+                        <x-select wire:model.live="monto" placeholder="seleccione el monto" :options="[39.99]" right-icon="currency-dollar"/>
                         {{-- <label class="mb-1 block text-sm text-gray-500 text-left">{{ $monto }}$ - Bs.{{ round($monto * $tasa, 2) }}</label> --}}
                     </div>
 
                     {{-- Metodo de pago --}}
                     <div class="w-full group mb-4">
-                        <label class="mb-1 block text-md text-black text-left">Metodo de Pago</label>
+                        <label class="mb-1 block text-xs text-black text-left">Metodo de Pago</label>
                         <x-select placeholder="Método de pago" :options="['Transferencia', 'Pago Movil', 'Zelle']" wire:model.live="metodo_pago"/>
                     </div>
 
                     {{-- Referencia --}}
                     <div class="w-full group mb-4">
-                        <label class="mb-1 block text-md text-black text-left">Referencia</label>
+                        <label class="mb-1 block text-xs text-black text-left">Referencia</label>
                         <x-inputs.maskable wire:model="referencia" right-icon="color-swatch" mask="########"/>
                     </div>
 

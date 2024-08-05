@@ -142,11 +142,14 @@ class Membresia extends Component
                 /**Guardo la imagen */
                 Storage::put('public/barcodes/' . $barcode . '.jpg', $image);
 
+                $_cliente = Cliente::where('id', $this->cliente_id)->first();
                 /**Guardo la informacion de la membresia y del usuario asignado */
                 $asignar_membresia = new ModelsMembresia();
                 $asignar_membresia->cod_membresia       = $barcode;
                 $asignar_membresia->pm                  = rand('1111', '9999');
                 $asignar_membresia->cliente_id          = $this->cliente_id;
+                $asignar_membresia->cliente             = $_cliente->nombre.' '.$_cliente->apellido;
+                $asignar_membresia->correo              = $_cliente->email;
                 $asignar_membresia->fecha_activacion    = now()->format('d-m-Y');
                 $asignar_membresia->fecha_exp           = date("d-m-Y", strtotime(date($asignar_membresia->fecha_activacion) . "+1 month"));
                 $asignar_membresia->monto               = $this->monto;
@@ -159,8 +162,8 @@ class Membresia extends Component
                     $mov_membresia->membresia_id   = $asignar_membresia->id;
                     $mov_membresia->descripcion    = 'activacion';
                     $mov_membresia->cliente_id     = $this->cliente_id;
-                    $mov_membresia->cliente        = $asignar_membresia->cliente->nombre.' '.$asignar_membresia->cliente->apellido;
-                    $mov_membresia->cedula         = $asignar_membresia->cliente->cedula;
+                    $mov_membresia->cliente        = $asignar_membresia->cliente;
+                    $mov_membresia->cedula         = $_cliente->cedula;
                     $mov_membresia->save();
 
                 } else {
@@ -176,7 +179,7 @@ class Membresia extends Component
                     'exp'               => date("m/y", strtotime($asignar_membresia->fecha_exp)),
                     'cliente'           => $info_cliente->nombre . ' ' . $info_cliente->apellido,
                     'barcode'           => $asignar_membresia->barcode,
-                    'user_email'        => 'gusta.acp@gmail.com',
+                    'user_email'        => $info_cliente->email,
                 ];
 
                 NotificacionesController::notification($mailData, $type);
@@ -194,7 +197,7 @@ class Membresia extends Component
                     'monto_pagado'      => ($mov_membresia->pago_usd != 0) ? $mov_membresia->pago_usd : $mov_membresia->pago_bsd,
                     'referencia'        => $mov_membresia->referencia,
                     'tasa'              => $tasa,
-                    'user_email'        => 'gusta.acp@gmail.com',
+                    'user_email'        => $correo,
                 ];
                 // dd($mailData);
                 NotificacionesController::notification($mailData, $type, $asignar_membresia->pm);

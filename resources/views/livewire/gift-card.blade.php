@@ -55,7 +55,7 @@
                         {{-- Monto --}}
                         <div class="w-full group mb-4">
                             <label class="mb-1 block text-xs text-black text-left">Monto: {{ $monto }}$ - Bs.{{ round($monto * $tasa, 2) }}</label>
-                            <x-select wire:model.live="monto" placeholder="seleccione el monto" :options="['20', '40']" right-icon="currency-dollar"/>
+                            <x-select wire:model.live="monto" placeholder="seleccione el monto" :options="['25', '50']" right-icon="currency-dollar"/>
                             {{-- <label class="mb-1 block text-sm text-gray-500 text-left">{{ $monto }}$ - Bs.{{ round($monto * $tasa, 2) }}</label> --}}
                         </div>
 

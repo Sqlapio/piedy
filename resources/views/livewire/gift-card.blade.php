@@ -14,7 +14,7 @@
 
                         <div class="w-full px-8 absolute top-12">
                             <div class="flex justify-between">
-                                <div class="">
+                                <div class="lg:mt-10">
                                     <p class="font-light text-black text-xs">
                                         Nombre
                                     </p>

@@ -59,10 +59,10 @@ class ProductoResource extends Resource
                     ->numeric()
                     ->required(),
                 DatePicker::make('fecha_carga')->format('d-m-Y'),
-                TextInput::make('unidad')
-                    ->required(),
                 TextInput::make('contenido_neto')
                     ->numeric(),
+                TextInput::make('unidad')
+                    ->required(),
                 TextInput::make('comision_venta_emp')
                     ->numeric(),
                 TextInput::make('comision_venta_gte')
@@ -98,10 +98,16 @@ class ProductoResource extends Resource
                     ->money('USD')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
-                TextColumn::make('existencia')->searchable(),
+                TextColumn::make('existencia')
+                ->alignCenter()
+                ->searchable(),
                 TextColumn::make('fecha_carga')->searchable(),
-                TextColumn::make('unidad')->searchable(),
-                TextColumn::make('contenido_neto')->searchable(),
+                TextColumn::make('contenido_neto')
+                ->alignCenter()
+                ->searchable(),
+                TextColumn::make('unidad')
+                ->alignCenter()
+                ->searchable(),
                 TextColumn::make('comision_venta_emp')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
@@ -109,6 +115,7 @@ class ProductoResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 IconColumn::make('status')
+                ->alignCenter()
                 ->options([
                     'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
                     'heroicon-m-minus-circle' => fn ($state, $record): bool => $record->status === 'inactivo',

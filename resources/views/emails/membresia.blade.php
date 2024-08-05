@@ -61,10 +61,11 @@
                 <div class="credit-card-expiry">
                     <img style="
                         display: block;
+                        margin-top: 2px;
                         margin-left: auto;
                         margin-right: auto;
                         width: 350px;
-                        height: auto;
+                        height: 40px;
                         " src="{{ url('storage'.$mailData['barcode']) }}">
                 </div>
             </div>

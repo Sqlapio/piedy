@@ -180,13 +180,13 @@ class PagoExterno extends Component
                             $correo = env('CEO');
                             $mailData = [
                                 'codigo_asignacion' => $this->cod_asignacion,
+                                'tasa'              => $tasa,
                                 'cod_membresia'     => $membresia->cod_membresia,
                                 'cliente'           => $membresia->cliente,
                                 'tecnico'           => $servicio->empleado,
                                 'fecha_venta'       => $servicio->fecha_venta,
-                                'servicio'          => Disponible::where('cod_asignacion', $this->cod_asignacion)->where('status', 'facturado')->first()->servicio,
-                                'responsable'       => $servicio->responsable,
-                                'user_email'        => 'gusta.acp@gmail.com',
+                                'responsable'       => $user->name,
+                                'user_email'        => $correo,
                             ];
 
                             /**Fin del envio de notificacion al administrador */

@@ -35,7 +35,7 @@
             <h2 style="text-align: justify; margin-left: 20px;">Administrador</h2>
         </p>
         <p style="text-align: justify; margin-left: 20px;">
-            Se informa que la MEMBRESIA con el Nro. {{ $mailData['codigo_seguridad'] }}, acaba de ser usada en tienda.<br>
+            Se informa que la MEMBRESIA con el Nro. {{ $mailData['cod_membresia'] }}, acaba de ser usada en tienda.<br>
             A continuación el Detalle de uso:
             <br>
             <br>

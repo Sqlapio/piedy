@@ -19,9 +19,9 @@ class MovimientoMembresiaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-c-shield-check';
 
-    protected static ?string $navigationGroup = 'Gestión de Membresias';
+    protected static ?string $navigationGroup = 'Membresias';
 
-    protected static ?string $navigationLabel = 'Movimiento de Membresias';
+    protected static ?string $navigationLabel = 'Detalle de Movimientos';
 
     public static function form(Form $form): Form
     {

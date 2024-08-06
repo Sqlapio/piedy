@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -19,9 +20,9 @@ class MembresiaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-c-identification';
 
-    protected static ?string $navigationGroup = 'Gestión de Membresias';
+    protected static ?string $navigationGroup = 'Membresias';
 
-    protected static ?string $navigationLabel = 'Membresias Registradas';
+    protected static ?string $navigationLabel = 'Registradas';
 
     public static function form(Form $form): Form
     {
@@ -83,6 +84,16 @@ class MembresiaResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('referencia')
                     ->searchable(),
+                IconColumn::make('status')
+                    ->label('Estatus')
+                    ->options([
+                        'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === 1,
+                        'heroicon-m-minus-circle' => fn ($state, $record): bool => $record->status === 2,
+                    ])
+                    ->colors([
+                        'success' => 1,
+                        'danger' => 2,
+                    ]),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

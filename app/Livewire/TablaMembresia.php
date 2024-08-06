@@ -38,16 +38,16 @@ class TablaMembresia extends Component implements HasForms, HasTable
                     ->label('Cédula')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('correo')
+                    ->label('Email')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('fecha_activacion')
                     ->label('Activación')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('fecha_exp')
                     ->label('Vence')
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('monto')
-                    ->label('Monto')
                     ->sortable()
                     ->searchable(),
                 IconColumn::make('status')

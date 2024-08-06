@@ -189,6 +189,14 @@ $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
             </div>
         </section>
 
+        <section class="tabla">
+            {{-- Tabla de membrtesias --}}
+            <div class="border rounded-lg mb-5">
+                <p class="p-4 text-xl font-bold text-[#bc9c95]">MEMBRESIAS REGISTRADAS</p>
+                @livewire('tabla-membresia')
+            </div>
+        </section>
+
     @else
 
         <section class="renovacion tabla">

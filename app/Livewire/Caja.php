@@ -96,7 +96,7 @@ class Caja extends Component
             $this->op2_hidden = 'hidden';
         }
 
-        if ($this->metodo_pago_pre == 1 || $this->metodo_pago_pre == 2) {
+        if ($this->metodo_pago_pre == 'Giftcard' || $this->metodo_pago_pre == 'Seguro - TuDr.EnCasa') {
             $this->atr_giftCard = '';
         }
 
@@ -300,9 +300,9 @@ class Caja extends Component
                                             'metodo_pago'           => ($this->op1 != '') ? $this->op1 : 'N/A',
                                             'metodo_pago_dos'       => ($this->op2 != '') ? $this->op2 : 'N/A',
                                             'metodo_pago_prepagado' => ($this->metodo_pago_pre != '') ? $this->metodo_pago_pre : 'N/A',
-                                            'referencia'            => $this->referencia,
+                                            'referencia'            => $valida_cod->referencia,
                                             'total_USD'             => $total_vista,
-                                            'pago_usd'              => $this->monto_giftcard,
+                                            'pago_usd'              => 0.00,
                                             'pago_bsd'              => ($this->valor_dos == '') ? 0.00 : Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
                                             'propina_usd'           => ($this->propina_usd != '') ? $this->propina_usd : 0.00,
                                             'propina_bsd'           => ($this->propina_bsd != '') ? $this->propina_bsd : 0.00,
@@ -320,7 +320,7 @@ class Caja extends Component
                                         $movimiento->gift_card_id = $valida_cod->id;
                                         $movimiento->codigo_seguridad = $valida_cod->codigo_seguridad;
                                         $movimiento->cliente_id = $item->cliente_id;
-                                        $movimiento->monto_pagado = floatval($total_vista_actualizado);
+                                        $movimiento->monto_pagado = $this->monto_giftcard;
                                         $movimiento->fecha_debito = date('d-m-Y');
                                         $movimiento->responsable = Auth::user()->name;
                                         $movimiento->save();

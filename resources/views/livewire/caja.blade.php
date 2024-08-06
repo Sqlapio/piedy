@@ -42,7 +42,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                     </div>
                     {{-- <div>
                         <input type="checkbox" wire:model.live="seguro" wire:click="selected_tudrencasa()" id="react-option" value="" class="hidden peer" required="">
-                        <label for="react-option" class="inline-flex items-center justify-between w-full text-gray-500 bg-white cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">                           
+                        <label for="react-option" class="inline-flex items-center justify-between w-full text-gray-500 bg-white cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                             <img class="w-[{{ $pixeles }}] h-auto" src="{{ asset('images/'.$img_dr_encasa) }}" alt="">
                         </label>
                     </div> --}}
@@ -103,14 +103,14 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 <div class="grid grid-cols-1 gap-2">
                     <div class="px-2">
                         <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Metodo de pago Prepagado:</p>
-                        <x-select   class="{{ ($metodo_pago_pre == 1) ? 'border rounded-md border-green-400' : '' }}" 
-                                    placeholder="Select one status" 
+                        <x-select   class="{{ ($metodo_pago_pre == 'Giftcard') ? 'border rounded-md border-green-400' : '' }}"
+                                    placeholder="Select one status"
                                     :options="[
                                         ['name' => 'Giftcard',  'id' => 1],
                                         ['name' => 'Seguro - TuDr.EnCasa', 'id' => 2],
                                         ]"
                                     option-label="name"
-                                    option-value="id"
+                                    option-value="name"
                                     wire:model.live="metodo_pago_pre"
                                     />
                     </div>

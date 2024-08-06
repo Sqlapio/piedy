@@ -165,6 +165,7 @@ class Membresia extends Component
                 $asignar_membresia->monto               = $this->monto;
                 $asignar_membresia->referencia          = $this->referencia;
                 $asignar_membresia->barcode             = '/barcodes/'.$barcode.'.jpg';
+                $asignar_membresia->responsable         = Auth::user()->name;
                 $asignar_membresia->save();
 
                 if ($asignar_membresia->save()) {
@@ -174,6 +175,7 @@ class Membresia extends Component
                     $mov_membresia->cliente_id     = $this->cliente_id;
                     $mov_membresia->cliente        = $asignar_membresia->cliente;
                     $mov_membresia->cedula         = $_cliente->cedula;
+                    $mov_membresia->responsable    = Auth::user()->name;
                     $mov_membresia->save();
 
                 } else {
@@ -266,6 +268,7 @@ class Membresia extends Component
             $mov_membresia->cliente_id     = $update->cliente_id;
             $mov_membresia->cliente        = $update->cliente;
             $mov_membresia->cedula         = Cliente::where('id', $update->cliente_id)->first()->cedula;
+            $mov_membresia->responsable    = Auth::user()->name;
             $mov_membresia->save();
 
             Notification::make()

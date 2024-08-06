@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Validate;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 
 class Membresia extends Component
@@ -39,6 +40,13 @@ class Membresia extends Component
     public $telefono;
     /***************************************************************** */
 
+    /**Propiedades para renovacion */
+    /***************************************************************** */
+    public $cod_pm;
+    public $atr_hidden_renovar = 'block';
+    public $atr_hidden_renovar_form = 'hidden';
+    /***************************************************************** */
+
     public $tasa;
     public $cliente;
     public $codigo_seguridad;
@@ -46,6 +54,8 @@ class Membresia extends Component
 
     public $atr_nuevo_cliente = 'hidden';
     public $atr_hidden = 'block';
+    public $atr_hidden_form = 'block';
+    public $atr_hidden_registro = 'block';
 
     public function nuevo_cliente()
     {
@@ -222,6 +232,62 @@ class Membresia extends Component
         }
     }
 
+    public function renovar()
+    {
+        $this->atr_hidden_renovar = 'hidden';
+        $this->atr_hidden_registro = 'hidden';
+        $this->atr_hidden_renovar_form = 'block';
+
+    }
+
+    public function exe_renovacion()
+    {
+        $validated = Validator::make(
+            // Data to validate...
+            ['cod_pm' => $this->cod_pm],
+            // Validation rules to apply...
+            ['cod_pm' => 'required'],
+            // Custom validation messages...
+            ['required' => 'El :attribute es requerido para su validación'],
+         )->validate();
+
+         try {
+
+            $update = ModelsMembresia::where('pm', $this->cod_pm)->first();
+            $update->update([
+                'fecha_activacion' => now()->format('d-m-Y'),
+                'fecha_exp' => date("d-m-Y", strtotime(date("d-m-Y") . "+1 month")),
+                'status' => 1,
+            ]);
+
+            $mov_membresia = new MovimientoMembresia();
+            $mov_membresia->membresia_id   = $update->id;
+            $mov_membresia->descripcion    = 'renovación';
+            $mov_membresia->cliente_id     = $update->cliente_id;
+            $mov_membresia->cliente        = $update->cliente;
+            $mov_membresia->cedula         = Cliente::where('id', $update->cliente_id)->first()->cedula;
+            $mov_membresia->save();
+
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body("La Membresia fue activada de forma exitosa")
+            ->send();
+
+            $this->reset();
+
+         } catch (\Throwable $th) {
+            Notification::make()
+                ->title('NOTIFICACIÓN DE ERROR')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+         }
+         
+    }
+
     public function render()
     {
         $this->codigo_seguridad = random_int(1111111111111111, 9999999999999999);
@@ -235,8 +301,20 @@ class Membresia extends Component
         }else{
             $this->cliente = '---- ----';
         }
+
+        /**Renovacion de Membresia */
+        $renovacion_cliente = ModelsMembresia::where('pm', $this->cod_pm)->first();
+        if(isset($renovacion_cliente)){
+            $renova_cliente = $renovacion_cliente->cliente;
+            $renova_ci = Cliente::where('id', $renovacion_cliente->cliente_id)->first()->cedula;
+            $renova_email = $renovacion_cliente->correo;
+        }else{
+            $renova_cliente = '---- ----';
+            $renova_ci = '--------';
+            $renova_email = '----@----';
+        }
         /**Tasa BCV del dia */
         $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
-        return view('livewire.membresia', compact('tasa', 'barcode'));
+        return view('livewire.membresia', compact('tasa', 'barcode', 'renova_cliente', 'renova_ci', 'renova_email'));
     }
 }

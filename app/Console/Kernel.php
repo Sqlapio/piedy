@@ -14,11 +14,19 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('app:appointment-reminder')
-        ->dailyAt('9:00')
+        ->dailyAt('9:30')
         ->emailOutputTo('gusta.acp@gmail.com');
 
         $schedule->command('app:activa-periodo-nomina')
-        ->monthlyOn(1, '8:00')
+        ->monthlyOn(1, '9:30')
+        ->emailOutputTo('gusta.acp@gmail.com');
+
+        $schedule->command('app:expira-membresia')
+        ->dailyAt('9:30')
+        ->emailOutputTo('gusta.acp@gmail.com');
+
+        $schedule->command('app:expira-giftcard')
+        ->dailyAt('9:30')
         ->emailOutputTo('gusta.acp@gmail.com');
     }
 

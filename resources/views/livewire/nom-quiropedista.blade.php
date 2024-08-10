@@ -46,48 +46,33 @@
                             <th scope="col" class="px-6 py-3">
                                 Quiropedista
                             </th>
-                            {{-- <th scope="col" class="px-6 py-3">
-                                Asignaciones($)
-                            </th> --}}
                             <th scope="col" class="px-6 py-3">
                                 Asignaciones(Bs.)
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Deducciones($)
                             </th>
-                            {{-- <th scope="col" class="px-6 py-3">
-                                Deducciones(Bs.)
-                            </th> --}}
                         </tr>
                         </tr>
                     </thead>
                     <tbody>
-                        @for($i = 0; $i < count($data); $i++) <tr class="bg-[#e4dcdc] border-b border-white">
-                            <th scope="row" class="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-white">
-                                {{ $data[$i]->name }}
-                            </th>
-                            {{-- <td class="px-6 py-4">
-                                <div class="">
-                                    <x-input right-icon="calculator" wire:change="conver_asignacion_dolares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="asignacion_dolares.{{ $data[$i]->id }}" type="email" />
-                                </div>
-                            </td> --}}
-                            <td class="px-6 py-4">
-                                <div class="">
-                                    <x-input right-icon="calculator" wire:change="conver_asignacion_bolivares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="asignacion_bolivares.{{ $data[$i]->id }}" type="email" />
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="">
-                                    <x-input right-icon="calculator" wire:change="conver_deduccion_dolares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="deduccion_dolares.{{ $data[$i]->id }}" type="email" />
-                                </div>
-                            </td>
-                            {{-- <td class="px-6 py-4">
-                                <div class="">
-                                    <x-input right-icon="calculator" wire:change="conver_deduccion_bolivares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="deduccion_bolivares.{{ $data[$i]->id }}" type="email" />
-                                </div>
-                            </td> --}}
+                        @for($i = 0; $i < count($data); $i++)
+                            <tr class="bg-[#e4dcdc] border-b border-white">
+                                <th scope="row" class="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-white">
+                                    {{ $data[$i]->name }}
+                                </th>
+                                <td class="px-6 py-4">
+                                    <div class="">
+                                        <x-input right-icon="calculator" wire:change="conver_asignacion_bolivares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="asignacion_bolivares.{{ $data[$i]->id }}" type="email" />
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="">
+                                        <x-input right-icon="calculator" wire:change="conver_deduccion_dolares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="deduccion_dolares.{{ $data[$i]->id }}" type="email" />
+                                    </div>
+                                </td>
                             </tr>
-                            @endfor
+                        @endfor
                     </tbody>
                 </table>
             </div>

@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -113,5 +114,15 @@ class User extends Authenticatable
     public function reportes(): HasMany
     {
         return $this->hasMany(Reporte::class, 'id', 'user_id');
+    }
+
+    /**
+     * Get the primeraAsignacion associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function primeraAsignacion(): HasOne
+    {
+        return $this->hasOne(Disponible::class, 'id', 'empleado_id');
     }
 }

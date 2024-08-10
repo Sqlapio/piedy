@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificacionesEmail;
 use App\Models\Cita;
+use App\Models\Disponible;
 use App\Models\Membresia;
 use App\Models\MovimientoMembresia;
 use App\Models\PeriodoNomina;
@@ -169,9 +170,17 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('caja');
     })->name('caja');
 
+    /**
+     * Rutas para agregas servicios o productos
+     */
     Route::get('/agregar/servicios', function () {
         return view('agregar_servicios');
     })->name('agregar_servicios');
+
+    Route::get('/agregar/productos', function () {
+        return view('agregar_productos');
+    })->name('agregar_productos');
+    /**********************************************/
 
     Route::get('/facturar/cliente', function () {
         return view('facturar_cliente');
@@ -340,9 +349,7 @@ Route::get('/pp', function () {
 });
 
 Route::get('/ex', function () {
-    Browsershot::url('http://piedy.test/pay/ex')
-
-        ->landscape()
-        ->save('invoice.pdf');
+    $data = Disponible::where('cod_asignacion', 'Pca-70438679')->with('primeraAsignacion')->first();
+    dd($data);
 
 });

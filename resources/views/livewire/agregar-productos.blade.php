@@ -4,7 +4,7 @@
         {{-- servicio asignado --}}
         <div class="w-full max-h-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
             <h5 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                Cliente: {{ $data->cliente }}
+                Tecnico: {{ $data->cliente }}
             </h5>
 
             <div class="flex items-center gap-2">
@@ -19,33 +19,16 @@
                 </div>
             </div>
 
-            <p class="text-sm mt-8 font-normal text-gray-500 dark:text-gray-400">Servicio Principales realizados</p>
+            <p class="text-sm mt-8 font-normal text-gray-500 dark:text-gray-400">Productos Adicionales vendidos</p>
             <ul class="my-4 space-y-3">
-                @if(count($detalle) > 0)
-                    @foreach ($detalle as $item)
+                @if(count($detalle_productos) > 0)
+                    @foreach ($productos as $item_prod)
                         <li>
                             <a href="#" class="flex items-center p-2 px-2 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
-                                <span class="flex-1 ml-3 text-sm whitespace-nowrap">{{ $item->servicio }}</span>
-                                <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-md font-extrabold text-white ">${{ $item->costo }}</span>
-                                <svg wire:click="delete({{ $item->id }})" class="w-4 h-4 mr-2 text-red-600 cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
-                                </svg>
-                            </a>
-                        </li>
-                    @endforeach
-                @endif
-            </ul>
-            
-            <p class="text-sm mt-8 font-normal text-gray-500 dark:text-gray-400">Servicio Adicionales realizados</p>
-            <ul class="my-4 space-y-3">
-                @if(count($detalle_adicional) > 0)
-                    @foreach ($detalle_adicional as $item_adicional)
-                        <li>
-                            <a href="#" class="flex items-center p-2 px-2 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
-                                <span class="flex-1 ml-3 text-sm whitespace-nowrap">{{ $item_adicional->servicio }}</span>
-                                <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-md font-extrabold text-white ">${{ $item_adicional->costo }}</span>
+                                <span class="flex-1 ml-3 text-sm whitespace-nowrap">{{ $item_prod->descripcion }}</span>
+                                <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-md font-extrabold text-white ">${{ $item_prod->precio_venta }}</span>
                                 @if($data->status == 'activo')
-                                <svg wire:click="delete({{ $item_adicional->id }})" class="w-4 h-4 mr-2 text-red-600 cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <svg wire:click="delete({{ $item_prod->id }})" class="w-4 h-4 mr-2 text-red-600 cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
                                 </svg>
                                 @endif
@@ -82,47 +65,38 @@
             </div>
             <p class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-1 p-1">Selección de servícios</p>
             <ul class="space-y-3">
-                {{-- {{ var_export($servicios_adicionales) }} --}}
-                @foreach ($servicios_adicionales as $item)
-                <div class="">
-                    <input type="checkbox" id="{{ $item->id }}" wire:model.live="servicios" value="{{ $item->id }}" class="hidden peer" wire:click="select_servicios({{ $item->id }})">
-                    <label for="{{ $item->id }}" class="inline-flex items-center justify-between w-full p-3 text-black bg-gray-400 border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-green-600 peer-checked:bg-green-600 peer-checked:text-white shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]">
-                        <div class="flex items-center space-x-4 w-full">
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-extrabold text-white truncate dark:text-white">
-                                    {{ $item->descripcion }}
-                                </p>
+
+                @foreach($productos as $item)
+                    <div class="">
+                        <label for="{{ $item->id }}" class="inline-flex items-center justify-between w-full p-3 text-black bg-[#caa79f] border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-green-600 peer-checked:bg-green-600 peer-checked:text-white shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]">
+                            <div class="flex items-center space-x-4 w-full">
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-bold text-white truncate dark:text-white">
+                                        {{ $item->descripcion }}
+                                    </p>
+                                </div>
+                                <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                    <p class="text-lg text-white truncate dark:text-gray-400">
+                                        ${{ $item->precio_venta }}
+                                    </p>
+                                </div>
                             </div>
-                            <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                <p class="text-lg text-white truncate dark:text-gray-400">
-                                    ${{ $item->costo }}
-                                </p>
-                            </div>
+                        </label>
+                    </div>
+                    <div class="w-full flex justify-end">
+                        <div class="">
+                            <x-inputs.number  wire:change="sumatoria({{ $item->id }})" id="{{ $item->id }}" wire:model="productos_adicionales.{{ $item->id }}" />
                         </div>
-                    </label>
-                </div>
+                    </div>
                 @endforeach
-                @if($tecnicoId == '2')
-                <div class="grid grid-cols-3 gap-2">
-                    <div class="w-full {{ $atr_u_h }}">
-                        <x-inputs.maskable wire:model="total_u_h" mask="##" right-icon="user" label="Uñas con Hongo" placeholder="Nro. del 1 al 10" />
-                    </div>
-                    <div class="w-full {{ $atr_u_e }}">
-                        <x-inputs.maskable wire:model="total_u_e" mask="##" right-icon="user" label="Uñas Encarnadas" placeholder="Nro. del 1 al 10" />
-                    </div>
-                    <div class="w-full {{ $atr_berrugas }}">
-                        <x-inputs.maskable wire:model="total_berrugas" mask="#" right-icon="user" label="Uñas con Berrugas" placeholder="Nro. del 1 al 3" />
-                    </div>
-                </div>
-                @endif
                 <div class="bg-white px-4 py-3 items-center justify-between border-t border-gray-200 sm:px-6">
                     {{-- Paginacion --}}
-                    {{ $servicios_adicionales->links() }}
+                    {{ $productos->links() }}
                 </div>
 
                     <div class="grid grid-cols-2 gap-2">
                         <div class="sm:mt-2">
-                            <button type="button" wire:click="carga_servicios_adicionales()" class="inline-flex w-full justify-center rounded-lg bg-green-700 px-3 py-3 mb-auto text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                            <button type="button" wire:click="carga_productos_adicionales()" class="inline-flex w-full justify-center rounded-lg bg-green-700 px-3 py-3 mb-auto text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="carga_servicios_adicionales" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
                                 </svg>
@@ -143,3 +117,4 @@
         </div>
     </div>
 </div>
+

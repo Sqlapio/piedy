@@ -363,6 +363,13 @@ class DetalleAsignacion extends ModalComponent
         $this->redirect('/agregar/servicios');
     }
 
+    public function agregar_productos()
+    {
+        session(['cod_asignacion' => $this->disponible->cod_asignacion]);
+
+        $this->redirect('/agregar/productos');
+    }
+
     public function facturar_servicio()
     {
         session(['cod_asignacion' => $this->disponible->cod_asignacion]);

@@ -132,7 +132,7 @@ class UtilsController extends Controller
             $valorUno = floatval($valorUno) + floatval($monto_giftcard);
 
             if ($tipoSrv != 'vip') {
-                
+
                 if($tipoSrvID == '2'){
                     /**1.- Busco el valor de la quiropedia basica */
                     $quiroBasica = Servicio::where('descripcion', 'Quiropedia Basica')->first()->costo;
@@ -327,5 +327,44 @@ class UtilsController extends Controller
         $array = $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray();
 
         return $array[$key];
+    }
+
+    static function comiEmple_ventaProducto($costo)
+    {
+        $comision = Comision::where('aplicacion', 'producto')
+        ->where('beneficiario', 'empleado')
+        ->where('accion', 'directa')
+        ->first()
+        ->porcentaje;
+
+        $calculo = ($comision * $costo) / 100;
+
+        return $calculo;
+    }
+
+    static function comiGerente_ventaProducto($costo)
+    {
+        $comision = Comision::where('aplicacion', 'producto')
+        ->where('beneficiario', 'gerente')
+        ->where('accion', 'indirecta')
+        ->first()
+        ->porcentaje;
+
+        $calculo = ($comision * $costo) / 100;
+
+        return $calculo;
+    }
+
+    static function comiGerente_ventaProducto_directa($costo)
+    {
+        $comision = Comision::where('aplicacion', 'producto')
+        ->where('beneficiario', 'gerente')
+        ->where('accion', 'directa')
+        ->first()
+        ->porcentaje;
+
+        $calculo = ($comision * $costo) / 100;
+
+        return $calculo;
     }
 }

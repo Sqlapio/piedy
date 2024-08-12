@@ -125,4 +125,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(Disponible::class, 'id', 'empleado_id');
     }
+
+    /**
+     * Get all of the comments for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function ventasProductos(): HasMany
+    {
+        return $this->hasMany(VentaProducto::class, 'id', 'empleado_id');
+    }
 }

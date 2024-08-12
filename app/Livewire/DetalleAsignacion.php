@@ -16,6 +16,7 @@ use App\Models\DetalleAsignacion as ModelsDetalleAsignacion;
 use App\Models\TasaBcv;
 use App\Models\User;
 use App\Models\Venta;
+use App\Models\VentaProducto;
 use App\Models\VentaServicio;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Carbon\Carbon;
@@ -363,6 +364,13 @@ class DetalleAsignacion extends ModalComponent
         $this->redirect('/agregar/servicios');
     }
 
+    public function agregar_productos()
+    {
+        session(['cod_asignacion' => $this->disponible->cod_asignacion]);
+
+        $this->redirect('/agregar/productos');
+    }
+
     public function facturar_servicio()
     {
         session(['cod_asignacion' => $this->disponible->cod_asignacion]);
@@ -460,19 +468,31 @@ class DetalleAsignacion extends ModalComponent
             ->where('servicio_categoria', 'principal')
             ->get();
 
-        $total = DB::table('detalle_asignacions')
+        $total_servicios = DB::table('detalle_asignacions')
             ->select(DB::raw('SUM(costo) as total'))
             ->where('cod_asignacion', $this->disponible->cod_asignacion)
             ->where('status', '1')
-            ->first();
+            ->first()
+            ->total;
 
-        $total_vista = $total->total;
+        /**Calculo el total de los productos */
+        $total_productos = DB::table('venta_productos')
+            ->select(DB::raw('SUM(total_venta) as total'))
+            ->where('cod_asignacion', $this->disponible->cod_asignacion)
+            ->where('status', '1')
+            ->first()->total;
+
+        $total_vista = $total_servicios + $total_productos;
+
 
         $servicios_adicionales = Servicio::Where('categoria', 'principal')
             ->Where('descripcion', 'like', "%{$this->buscar}%")
             ->orderBy('id', 'desc')
             ->simplePaginate(4);
 
-        return view('livewire.detalle-asignacion', compact('data', 'detalle', 'total_vista', 'servicios_adicionales'));
+        /**Seleccion los productos que voy a vender y los muestro en la lista de 'Productos Adicionales para la venta' */
+        $lista_prod = VentaProducto::where('cod_asignacion', $this->disponible->cod_asignacion)->where('status', 1)->with('producto')->get();
+
+        return view('livewire.detalle-asignacion', compact('data', 'detalle', 'total_vista', 'total_productos', 'servicios_adicionales', 'lista_prod'));
     }
 }

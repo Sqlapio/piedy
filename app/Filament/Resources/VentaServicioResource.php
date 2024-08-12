@@ -166,6 +166,14 @@ class VentaServicioResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
+                TextColumn::make('comision_emp_venprod')
+                    ->label(('Comision Producto($)'))
+                        ->summarize(Sum::make()
+                            ->label('Neto Comision Producto(Bs.)'))
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('propina_usd')
                     ->money('USD')
                     ->label('Propina($)')

@@ -24,6 +24,7 @@ class Reporte extends Model
         'user_id',
         'cod_reporte',
         'cod_quincena',
+        'descripcion',
         'tipo',
         'responsable',
         'fecha',

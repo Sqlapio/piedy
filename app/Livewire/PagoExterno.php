@@ -116,7 +116,7 @@ class PagoExterno extends Component
             if(isset($servicio) && $servicio->fecha_venta == date('d-m-Y')){
 
                 /**3. pregunto por la membresia y me traigo toda la informacion */
-                $membresia = Membresia::orWhere('cod_membresia', $this->barcode)
+                $membresia = Membresia::Where('cod_membresia', $this->barcode)
                 ->orWhere('pm', $this->pcs)
                 ->first();
 
@@ -129,13 +129,13 @@ class PagoExterno extends Component
                         if($dia == '0' || $dia == '1' || $dia == '2' || $dia == '3' || $dia == '4'){
 
                             /**Me traigo de la base de datos toda la informacion de dicha membresia */
-                            $_membresia = Membresia::where('cod_membresia', $this->barcode)->orWhere('pm', $this->pcs)->first();
+                            // $_membresia = Membresia::where('cod_membresia', $this->barcode)->orWhere('pm', $this->pcs)->first();
 
                             DB::table('venta_servicios')->where('cod_asignacion', $this->cod_asignacion)
                                 ->update([
                                     'metodo_pago_prepagado'   => 'Membresia',
-                                    'referencia'    => $_membresia->referencia,
-                                    'membresia_exp' => date("m/y", strtotime($_membresia->fecha_exp )),
+                                    'referencia'    => $membresia->referencia,
+                                    'membresia_exp' => date("m/y", strtotime($membresia->fecha_exp )),
                                     'total_USD'     => 0.00,
                                     'pago_usd'      => 0.00,
                                     'pago_bsd'      => 0.00,
@@ -147,13 +147,13 @@ class PagoExterno extends Component
                             $data_empleado = Disponible::where('cod_asignacion', $this->cod_asignacion)->first();
 
                             $mov_membresia = new MovimientoMembresia();
-                            $mov_membresia->membresia_id        = $_membresia->id;
+                            $mov_membresia->membresia_id        = $membresia->id;
                             $mov_membresia->descripcion         = 'consumo en tienda';
                             $mov_membresia->empleado_id         = $data_empleado->empleado_id;
                             $mov_membresia->empleado            = $data_empleado->empleado;
-                            $mov_membresia->cliente_id          = $_membresia->cliente_id;
-                            $mov_membresia->cliente             = $_membresia->cliente->nombre.' '.$_membresia->cliente->apellido;
-                            $mov_membresia->cedula              = $_membresia->cliente->cedula;
+                            $mov_membresia->cliente_id          = $membresia->cliente_id;
+                            $mov_membresia->cliente             = $membresia->cliente;
+                            $mov_membresia->cedula              = Cliente::where('id', $membresia->cliente_id)->first()->cedula;
                             $mov_membresia->responsable         = $user->name;
                             $mov_membresia->save();
 
@@ -180,13 +180,13 @@ class PagoExterno extends Component
                             $correo = env('CEO');
                             $mailData = [
                                 'codigo_asignacion' => $this->cod_asignacion,
+                                'tasa'              => $tasa,
                                 'cod_membresia'     => $membresia->cod_membresia,
-                                'cliente'           => $membresia->cliente->nombre.' '.$membresia->cliente->apellido,
+                                'cliente'           => $membresia->cliente,
                                 'tecnico'           => $servicio->empleado,
                                 'fecha_venta'       => $servicio->fecha_venta,
-                                'servicio'          => Disponible::where('cod_asignacion', $this->cod_asignacion)->where('status', 'facturado')->first()->servicio,
-                                'responsable'       => $servicio->responsable,
-                                'user_email'        => 'gusta.acp@gmail.com',
+                                'responsable'       => $user->name,
+                                'user_email'        => $correo,
                             ];
 
                             /**Fin del envio de notificacion al administrador */

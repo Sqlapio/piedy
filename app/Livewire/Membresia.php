@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Validate;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 
 class Membresia extends Component
@@ -39,6 +40,13 @@ class Membresia extends Component
     public $telefono;
     /***************************************************************** */
 
+    /**Propiedades para renovacion */
+    /***************************************************************** */
+    public $cod_pm;
+    public $atr_hidden_renovar = 'block';
+    public $atr_hidden_renovar_form = 'hidden';
+    /***************************************************************** */
+
     public $tasa;
     public $cliente;
     public $codigo_seguridad;
@@ -46,6 +54,8 @@ class Membresia extends Component
 
     public $atr_nuevo_cliente = 'hidden';
     public $atr_hidden = 'block';
+    public $atr_hidden_form = 'block';
+    public $atr_hidden_registro = 'block';
 
     public function nuevo_cliente()
     {
@@ -142,16 +152,20 @@ class Membresia extends Component
                 /**Guardo la imagen */
                 Storage::put('public/barcodes/' . $barcode . '.jpg', $image);
 
+                $_cliente = Cliente::where('id', $this->cliente_id)->first();
                 /**Guardo la informacion de la membresia y del usuario asignado */
                 $asignar_membresia = new ModelsMembresia();
                 $asignar_membresia->cod_membresia       = $barcode;
                 $asignar_membresia->pm                  = rand('1111', '9999');
                 $asignar_membresia->cliente_id          = $this->cliente_id;
+                $asignar_membresia->cliente             = $_cliente->nombre.' '.$_cliente->apellido;
+                $asignar_membresia->correo              = $_cliente->email;
                 $asignar_membresia->fecha_activacion    = now()->format('d-m-Y');
                 $asignar_membresia->fecha_exp           = date("d-m-Y", strtotime(date($asignar_membresia->fecha_activacion) . "+1 month"));
                 $asignar_membresia->monto               = $this->monto;
                 $asignar_membresia->referencia          = $this->referencia;
                 $asignar_membresia->barcode             = '/barcodes/'.$barcode.'.jpg';
+                $asignar_membresia->responsable         = Auth::user()->name;
                 $asignar_membresia->save();
 
                 if ($asignar_membresia->save()) {
@@ -159,8 +173,9 @@ class Membresia extends Component
                     $mov_membresia->membresia_id   = $asignar_membresia->id;
                     $mov_membresia->descripcion    = 'activacion';
                     $mov_membresia->cliente_id     = $this->cliente_id;
-                    $mov_membresia->cliente        = $asignar_membresia->cliente->nombre.' '.$asignar_membresia->cliente->apellido;
-                    $mov_membresia->cedula         = $asignar_membresia->cliente->cedula;
+                    $mov_membresia->cliente        = $asignar_membresia->cliente;
+                    $mov_membresia->cedula         = $_cliente->cedula;
+                    $mov_membresia->responsable    = Auth::user()->name;
                     $mov_membresia->save();
 
                 } else {
@@ -176,7 +191,7 @@ class Membresia extends Component
                     'exp'               => date("m/y", strtotime($asignar_membresia->fecha_exp)),
                     'cliente'           => $info_cliente->nombre . ' ' . $info_cliente->apellido,
                     'barcode'           => $asignar_membresia->barcode,
-                    'user_email'        => 'gusta.acp@gmail.com',
+                    'user_email'        => $info_cliente->email,
                 ];
 
                 NotificacionesController::notification($mailData, $type);
@@ -194,7 +209,7 @@ class Membresia extends Component
                     'monto_pagado'      => ($mov_membresia->pago_usd != 0) ? $mov_membresia->pago_usd : $mov_membresia->pago_bsd,
                     'referencia'        => $mov_membresia->referencia,
                     'tasa'              => $tasa,
-                    'user_email'        => 'gusta.acp@gmail.com',
+                    'user_email'        => $correo,
                 ];
                 // dd($mailData);
                 NotificacionesController::notification($mailData, $type, $asignar_membresia->pm);
@@ -219,6 +234,63 @@ class Membresia extends Component
         }
     }
 
+    public function renovar()
+    {
+        $this->atr_hidden_renovar = 'hidden';
+        $this->atr_hidden_registro = 'hidden';
+        $this->atr_hidden_renovar_form = 'block';
+
+    }
+
+    public function exe_renovacion()
+    {
+        $validated = Validator::make(
+            // Data to validate...
+            ['cod_pm' => $this->cod_pm],
+            // Validation rules to apply...
+            ['cod_pm' => 'required'],
+            // Custom validation messages...
+            ['required' => 'El :attribute es requerido para su validación'],
+         )->validate();
+
+         try {
+
+            $update = ModelsMembresia::where('pm', $this->cod_pm)->first();
+            $update->update([
+                'fecha_activacion' => now()->format('d-m-Y'),
+                'fecha_exp' => date("d-m-Y", strtotime(date("d-m-Y") . "+1 month")),
+                'status' => 1,
+            ]);
+
+            $mov_membresia = new MovimientoMembresia();
+            $mov_membresia->membresia_id   = $update->id;
+            $mov_membresia->descripcion    = 'renovación';
+            $mov_membresia->cliente_id     = $update->cliente_id;
+            $mov_membresia->cliente        = $update->cliente;
+            $mov_membresia->cedula         = Cliente::where('id', $update->cliente_id)->first()->cedula;
+            $mov_membresia->responsable    = Auth::user()->name;
+            $mov_membresia->save();
+
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body("La Membresia fue activada de forma exitosa")
+            ->send();
+
+            $this->reset();
+
+         } catch (\Throwable $th) {
+            Notification::make()
+                ->title('NOTIFICACIÓN DE ERROR')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+         }
+         
+    }
+
     public function render()
     {
         $this->codigo_seguridad = random_int(1111111111111111, 9999999999999999);
@@ -232,8 +304,20 @@ class Membresia extends Component
         }else{
             $this->cliente = '---- ----';
         }
+
+        /**Renovacion de Membresia */
+        $renovacion_cliente = ModelsMembresia::where('pm', $this->cod_pm)->first();
+        if(isset($renovacion_cliente)){
+            $renova_cliente = $renovacion_cliente->cliente;
+            $renova_ci = Cliente::where('id', $renovacion_cliente->cliente_id)->first()->cedula;
+            $renova_email = $renovacion_cliente->correo;
+        }else{
+            $renova_cliente = '---- ----';
+            $renova_ci = '--------';
+            $renova_email = '----@----';
+        }
         /**Tasa BCV del dia */
         $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
-        return view('livewire.membresia', compact('tasa', 'barcode'));
+        return view('livewire.membresia', compact('tasa', 'barcode', 'renova_cliente', 'renova_ci', 'renova_email'));
     }
 }

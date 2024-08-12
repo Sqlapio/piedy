@@ -137,6 +137,7 @@ class GiftCard extends Component
             $asignar_giftCard->pgc              = $this->pgc;
             $asignar_giftCard->cliente_id       = $this->cliente_id;
             $asignar_giftCard->cliente          = $this->cliente;
+            $asignar_giftCard->correo           = Cliente::where('id', $this->cliente_id)->first()->email;
             $asignar_giftCard->monto            = $this->monto;
             $asignar_giftCard->fecha_emicion    = $this->fecha_emicion;
             $asignar_giftCard->fecha_vence      = $this->fecha_vence;
@@ -154,11 +155,11 @@ class GiftCard extends Component
 
             $correo = Cliente::where('id',  $asignar_giftCard->cliente_id)->first()->email;
 
-            if($asignar_giftCard->monto == '20'){
-                $image = 'gift20.png';
+            if($asignar_giftCard->monto == '25'){
+                $image = 'gift25.png';
             }
-            if($asignar_giftCard->monto == '40'){
-                $image = 'gift40.png';
+            if($asignar_giftCard->monto == '50'){
+                $image = 'gift50.png';
             }
 
             $mailData = [

@@ -104,7 +104,7 @@ class VentaServicioResource extends Resource
                     ->searchable()
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'giftcard'      => 'warning',
+                        'Giftcard'      => 'warning',
                         'Membresia'     => 'warning',
                         'N/A'           => 'gray',
                     }),

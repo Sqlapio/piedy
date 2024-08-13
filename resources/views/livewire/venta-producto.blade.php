@@ -23,7 +23,7 @@
                         @foreach ($lista_prod as $item_prod)
                             <li>
                                 <a href="#" class="flex items-center p-2 px-2 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
-                                    <span class="flex-1 ml-3 text-sm whitespace-nowrap">{{ $item_prod->producto->descripcion }}</span>
+                                    <span class="flex-1 ml-3 text-sm whitespace-nowrap">{{ $item_prod->producto->descripcion }} - ({{ $item_prod->cantidad }} Und)</span>
                                     <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-md font-extrabold text-white ">${{ $item_prod->producto->precio_venta }}</span>
                                     @if($item_prod->status == 1)
                                     <svg wire:click="notificacion_delete({{ $item_prod->id }})" class="w-4 h-4 mr-2 text-red-600 cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">

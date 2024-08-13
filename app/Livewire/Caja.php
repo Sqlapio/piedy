@@ -583,7 +583,8 @@ class Caja extends Component
             ->where('fecha_venta', now()->format('d-m-Y'))
             ->where('responsable', Auth::user()->name)
             ->first()->total;
-
+        Debugbar::info($total_prod_ven_gerente);
+        
         $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
 
         if ($this->monto_giftcard != '') {
@@ -601,16 +602,17 @@ class Caja extends Component
         /**Seleccion los productos que voy a vender y los muestro en la lista de 'Productos cargados' */
         $lista_prod = VentaProducto::where('cod_asignacion', $codigo['cod_asignacion'])->where('status', 1)->where('facturado', 1)->with('producto')->get();
 
-        $total_prod_ven_gerente = DB::table('venta_productos')
-            ->select(DB::raw('SUM(total_venta) as total'))
-            ->where('status', '1')
+        /**Seleccion los productos que voy a vender y los muestro en la lista de 'Productos cargados' */
+        $lista_prod_ven_gerente = VentaProducto::where('status', '1')
             ->where('facturado', 1)
             ->where('fecha_venta', now()->format('d-m-Y'))
             ->where('responsable', Auth::user()->name)
-            ->first()->total;
+            ->with('producto')
+            ->get();
 
 
 
-        return view('livewire.caja', compact('data', 'detalle', 'total_vista', 'total_vista_bsd', 'lista_prod', 'total_productos', 'total_prod_ven_gerente'));
+
+        return view('livewire.caja', compact('data', 'detalle', 'total_vista', 'total_vista_bsd', 'lista_prod', 'total_productos', 'lista_prod_ven_gerente'));
     }
 }

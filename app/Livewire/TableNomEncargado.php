@@ -30,7 +30,7 @@ class TableNomEncargado extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(NomEncargado::query())
+            ->query(NomEncargado::query()->where('fecha_calculo', now()->format('d-m-Y')))
             ->columns([
                 TextColumn::make('name')
                     ->label('Encargado')
@@ -41,10 +41,16 @@ class TableNomEncargado extends Component implements HasForms, HasTable
                     ->label('Servicios')
                     ->alignCenter()
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('total_comision_dolares')
                     ->label('Comision($)')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('total_comisiones_venprod')
+                    ->label('Comision Producto($)')
                     ->sortable()
                     ->searchable(),
 
@@ -85,6 +91,8 @@ class TableNomEncargado extends Component implements HasForms, HasTable
                     ->searchable(),
                 //
             ])
+            ->striped()
+            ->defaultGroup('quincena')
             ->filters([
                 //
             ])

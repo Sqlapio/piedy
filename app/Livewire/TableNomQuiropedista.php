@@ -34,7 +34,7 @@ class TableNomQuiropedista extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(NomQuiropedista::query())
+            ->query(NomQuiropedista::query()->where('fecha_calculo', now()->format('d-m-Y')))
             ->columns([
                 TextColumn::make('name')
                     ->label('Empleado')
@@ -45,7 +45,8 @@ class TableNomQuiropedista extends Component implements HasForms, HasTable
                     ->label('Servicios')
                     ->alignCenter()
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('promedio_duracion_servicios')
                     ->label('Duración(Min)')
@@ -64,11 +65,17 @@ class TableNomQuiropedista extends Component implements HasForms, HasTable
                     ->sortable()
                     ->searchable(),
 
+                TextColumn::make('total_comisiones_venprod_dolares')
+                    ->label('Comision Productos($)')
+                    ->sortable()
+                    ->searchable(),
+
                 TextColumn::make('asignaciones_bolivares')
                     ->label('Bono(Bs.)')
                     ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
 
                 TextColumn::make('deducciones_dolares')
                     ->label('Deduccion($)')

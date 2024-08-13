@@ -40,15 +40,26 @@ class TableNomManicurista extends Component implements HasForms, HasTable
                     ->label('Servicios')
                     ->alignCenter()
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('total_comision_dolares')
                     ->label('Comision($)')
                     ->sortable()
                     ->searchable(),
 
+                TextColumn::make('total_comisiones_venprod_dolares')
+                    ->label('Comision Productos($)')
+                    ->sortable()
+                    ->searchable(),
+
                 TextColumn::make('total_comision_bolivares')
                     ->label('Comision(Bs.)')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('total_propina_bsd')
+                    ->label('Propina(Bs.)')
                     ->sortable()
                     ->searchable(),
 

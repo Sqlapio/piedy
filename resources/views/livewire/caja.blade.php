@@ -70,15 +70,17 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                     </div>
                 </div>
                 @if(count($lista_prod) > 0)
-                    <li>
-                        <a href="#" class="flex items-center p-2 px-5 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span class="flex-1 ml-3 text-sm whitespace-nowrap">Total venta productos</span>
-                            <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-md font-extrabold text-white ">${{ $total_productos }}</span>
-                        </a>
-                    </li>
+                    @foreach($lista_prod as $item_prod)
+                        <li>
+                            <a href="#" class="flex items-center p-2 px-5 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span class="flex-1 ml-3 text-sm whitespace-nowrap">{{ $item_prod->producto->descripcion }} - ({{ $item_prod->cantidad }} Und)</span>
+                                <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-md font-extrabold text-white ">${{ $item_prod->producto->precio_venta }}</span>
+                            </a>
+                        </li>
+                    @endforeach
                 @else
                     <li>
                         <a href="#" class="flex items-center p-2 px-5 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
@@ -96,16 +98,18 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                             <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Productos Vendidos por el Gerente:</p>
                         </div>
                     </div>
-                @if($total_prod_ven_gerente > 0)
-                    <li>
-                        <a href="#" class="flex items-center p-2 px-5 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span class="flex-1 ml-3 text-sm whitespace-nowrap">Total venta productos</span>
-                            <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-md font-extrabold text-white ">${{ $total_prod_ven_gerente }}</span>
-                        </a>
-                    </li>
+                @if(count($lista_prod_ven_gerente) > 0)
+                    @foreach($lista_prod_ven_gerente as $item_prod)
+                        <li>
+                            <a href="#" class="flex items-center p-2 px-5 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span class="flex-1 ml-3 text-sm whitespace-nowrap">{{ $item_prod->producto->descripcion }} - ({{ $item_prod->cantidad }} Und)</span>
+                                <span class="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-md font-extrabold text-white ">${{ $item_prod->producto->precio_venta }}</span>
+                            </a>
+                        </li>
+                    @endforeach
                 @else
                     <li>
                         <a href="#" class="flex items-center p-2 px-5 text-base font-bold text-white rounded-lg bg-green-500 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">

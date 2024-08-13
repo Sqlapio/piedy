@@ -166,6 +166,11 @@ class VentaProducto extends Component
 
     }
 
+    public function cerrar_venta()
+    {
+        $this->redirect('/dashboard');
+    }
+
     public function render(Request $request)
     {
 

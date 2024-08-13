@@ -34,5 +34,7 @@ class NomManicurista extends Model
         'fecha_fin',
         'quincena',
         'cod_quincena',
+        'fecha_calculo',
+        'total_comisiones_venprod_dolares'
     ];
 }

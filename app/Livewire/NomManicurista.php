@@ -139,6 +139,7 @@ class NomManicurista extends Component
 
                 $nomina->total_comision_dolares    = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_dolares');
                 $nomina->total_comision_bolivares  = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_bolivares');
+                $nomina->total_comisiones_venprod_dolares   = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_emp_venprod');
                 $nomina->total_propina_bsd         = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('propina_bsd');
 
                 //Recorro el array de las asignaciones en bolivares
@@ -168,10 +169,11 @@ class NomManicurista extends Component
                 $nomina->comision_membresias = $total_comision * $tasa_bcv;
                 $nomina->fecha_ini = $this->desde;
                 $nomina->fecha_fin = $this->hasta;
-                $nomina->total_dolares = $nomina->total_comision_dolares - $nomina->deducciones_dolares;
+                $nomina->total_dolares = $nomina->total_comision_dolares + $nomina->total_comisiones_venprod_dolares - $nomina->deducciones_dolares;
                 $nomina->total_bolivares = $nomina->total_comision_bolivares + $nomina->asignaciones_bolivares + $nomina->comision_membresias + $nomina->total_propina_bsd;
                 $nomina->quincena = $this->quincena;
                 $nomina->cod_quincena = $periodo;
+                $nomina->fecha_calculo = now()->format('d-m-Y');
 
                 /**
                  * Restriccion para validar el periodo de nomina correcto esto,

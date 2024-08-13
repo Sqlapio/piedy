@@ -36,5 +36,7 @@ class NomQuiropedista extends Model
         'total_bolivares',
         'quincena',
         'cod_quincena',
+        'fecha_calculo',
+        'total_comisiones_venprod_dolares'
     ];
 }

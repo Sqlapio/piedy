@@ -31,6 +31,8 @@ class NomEncargado extends Model
         'total_bolivares',
         'quincena',
         'cod_quincena',
+        'total_comisiones_venprod',
+        'fecha_calculo',
 
     ];
 }

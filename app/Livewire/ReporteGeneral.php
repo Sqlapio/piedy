@@ -91,9 +91,8 @@ class ReporteGeneral extends Component
 
             $total_general_dolares = $total_facturado_usd_quiropedistas + $total_facturado_usd_manicuristas;
             $total_general_bolivares = $total_facturado_bsd_quiropedistas + $total_facturado_bsd_manicuristas + $total_facturado_bsd_encargados;
+            $nomina_general_dolares =  ($total_general_bolivares / $totales->tasa_bcv) + $total_general_dolares;
 
-            $total_general_dolares =  ($total_general_bolivares / $totales->tasa_bcv) + $total_general_dolares;
-            
             $random = rand('11111', '99999');
             
             $pdf = $this->periodo.'_'.$random.'.pdf';
@@ -104,9 +103,9 @@ class ReporteGeneral extends Component
                     'nomina_encargados'         => $nomina_encargados,
                     'periodo'                   => $this->periodo,
                     'rango'                     => Carbon::createFromFormat('Y-m-d', $rango_fechas->fecha_ini)->format('d-m-Y').' al '.Carbon::createFromFormat('Y-m-d', $rango_fechas->fecha_fin)->format('d-m-Y'),
-                    'total_general_dolares'     => $total_general_dolares,
-                    'total_general_bolivares'   => $total_general_bolivares,
-                    'total_general_dolares'     => $total_general_dolares,
+                    'total_general_dolares'     => number_format($total_general_dolares, 2),
+                    'total_general_bolivares'   => number_format($total_general_bolivares, 2, ",", "."),
+                    'nomina_general_dolares'    => number_format($nomina_general_dolares, 2),
                     'tasa_bcv'                  => $totales->tasa_bcv,
                 ])
             ->withBrowsershot(function (Browsershot $browsershot) {

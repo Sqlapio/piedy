@@ -49,12 +49,12 @@
                 </div>
 
                 <!-- Titulo de Indicadores -->
-                <div class="fex mt-3">
-                    <p class="mt-3 mb-1 text-[10px] font-bold text-black uppercase">Totales de Nomina</p>
+                <div class="fex mt-1">
+                    <p class="mt-1 mb-1 text-[10px] font-bold text-black uppercase">Totales de Nomina</p>
                 </div>
 
                 <!-- Indicadores Linea 1 -->
-                <div class="grid sm:grid-cols-2 md:grid-cols-2 gap-4">
+                <div class="grid sm:grid-cols-3 md:grid-cols-3 gap-4">
                     <!-- Total facturado Dolares -->
                     <div>
                         <div class="flex justify-between items-center p-2 bg-white border border-[#349fda] rounded-lg shadow">
@@ -99,7 +99,7 @@
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16M8 14h8m-4-7V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z"/>
                                       </svg>
 
-                                   ${{ $total_general_dolares }}
+                                   ${{ $nomina_general_dolares }}
                                 </span>
                             </div>
                         </div>
@@ -114,7 +114,7 @@
 
                 <!-- Tasa Bcv -->
                 <div class="flex">
-                    <p class="mt-1 mb-1 text-[10px] font-bold text-black uppercase">Tasa BCV: Bs. {{ $tasa_bcv }}</p>
+                    <p class="mb-1 text-[10px] font-bold text-black uppercase">Tasa BCV: Bs. {{ $tasa_bcv }}</p>
                 </div>
 
                 <!-- Tabla -->
@@ -157,8 +157,8 @@
                     </table>
                 </div>
 
-                <!-- Tabla -->
-                <div class="relative overflow-x-auto shadow-md rounded-lg border">
+                <!-- Tabla Gerente -->
+                <div class="relative overflow-x-auto shadow-md rounded-lg border mt-3">
                     <table class="w-full text-[10px] text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class=" text-[10px] text-black uppercase bg-gray-300">
                             <tr>
@@ -166,7 +166,10 @@
                                     Gerente
                                 </th>
                                 <th scope="col" class="px-6 py-3 w-[80px]">
-                                    Servicios
+                                    Servicios con Comisión
+                                </th>
+                                <th scope="col" class="px-6 py-3 w-[80px]">
+                                    Comisiones($)
                                 </th>
                                 <th scope="col" class="px-6 py-3 w-[80px]">
                                     Total($)
@@ -184,6 +187,9 @@
                                 </th>
                                 <td class="px-6 py-2 w-[80px]">
                                     {{ $item->total_servicios }}
+                                </td>
+                                <td class="px-6 py-2 w-[80px]">
+                                    {{ $item->total_comision_dolares }}
                                 </td>
                                 <td class="px-6 py-2 w-[80px]">
                                     {{ $item->total_dolares }}

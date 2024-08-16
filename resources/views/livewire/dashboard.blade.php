@@ -21,7 +21,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                     {{-- <div class="text-sm text-gray-500 dark:text-gray-400">Tasa del dia: {{ $tasa->tasa }}</div> --}}
                 </div>
             </div>
-            @if(Auth::user()->tipo_usuario == 'gerente')
+            @if(Auth::user()->tipo_usuario == 'gerente' || Auth::user()->tipo_usuario == 'encargado')
                 <div class="flex justify-end titulos gap-3">
                     <div wire:click="gift()"
                     class="cursor-pointer flex items-center border p-4 rounded-xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]"

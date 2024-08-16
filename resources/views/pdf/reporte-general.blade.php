@@ -160,9 +160,9 @@
                 <!-- Tabla Gerente -->
                 <div class="relative overflow-x-auto shadow-md rounded-lg border mt-3">
                     <table class="w-full text-[10px] text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class=" text-[10px] text-black uppercase bg-gray-300">
+                        <thead class=" text-[8px] text-black uppercase bg-gray-300">
                             <tr>
-                                <th scope="col" class="px-6 py-3 w-[100px]">
+                                <th scope="col" class="px-6 py-3 w-[50px]">
                                     Gerente
                                 </th>
                                 <th scope="col" class="px-6 py-3 w-[80px]">
@@ -170,6 +170,9 @@
                                 </th>
                                 <th scope="col" class="px-6 py-3 w-[80px]">
                                     Comisiones($)
+                                </th>
+                                <th scope="col" class="px-6 py-3 w-[80px]">
+                                    Conversión(Bs.) a BCV
                                 </th>
                                 <th scope="col" class="px-6 py-3 w-[80px]">
                                     Total($)
@@ -190,6 +193,9 @@
                                 </td>
                                 <td class="px-6 py-2 w-[80px]">
                                     {{ $item->total_comision_dolares }}
+                                </td>
+                                <td class="px-6 py-2 w-[80px]">
+                                    {{ $item->total_comision_dolares * $tasa_bcv  }}
                                 </td>
                                 <td class="px-6 py-2 w-[80px]">
                                     {{ $item->total_dolares }}

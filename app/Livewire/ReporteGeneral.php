@@ -75,27 +75,39 @@ class ReporteGeneral extends Component
                 )
             ->get();
 
+            $nomina_encargados = NomEncargado::where('cod_quincena', $this->periodo)->get();
+
             $totales = NominaGeneral::where('cod_quincena', $this->periodo)->first();
 
             $rango_fechas = PeriodoNomina::where('cod_quincena', $this->periodo)->first();
 
-            $total_facturado_usd = VentaServicio::whereBetween('created_at', [$rango_fechas->fecha_ini.' 00:00:00.000', $rango_fechas->fecha_fin.' 23:59:59.000'])->sum('pago_usd');
-            $total_facturado_bsd = VentaServicio::whereBetween('created_at', [$rango_fechas->fecha_ini.' 00:00:00.000', $rango_fechas->fecha_fin.' 23:59:59.000'])->sum('pago_bsd');
+            $total_facturado_usd_quiropedistas = NomQuiropedista::where('cod_quincena', $this->periodo)->sum('total_dolares');
+            $total_facturado_bsd_quiropedistas = NomQuiropedista::where('cod_quincena', $this->periodo)->sum('total_bolivares');
 
+            $total_facturado_usd_manicuristas = NomManicurista::where('cod_quincena', $this->periodo)->sum('total_dolares');
+            $total_facturado_bsd_manicuristas = NomManicurista::where('cod_quincena', $this->periodo)->sum('total_bolivares');
+
+            $total_facturado_bsd_encargados = NomEncargado::where('cod_quincena', $this->periodo)->sum('total_bolivares');
+
+            $total_general_dolares = $total_facturado_usd_quiropedistas + $total_facturado_usd_manicuristas;
+            $total_general_bolivares = $total_facturado_bsd_quiropedistas + $total_facturado_bsd_manicuristas + $total_facturado_bsd_encargados;
+
+            $total_general_dolares =  ($total_general_bolivares / $totales->tasa_bcv) + $total_general_dolares;
+            
             $random = rand('11111', '99999');
+            
             $pdf = $this->periodo.'_'.$random.'.pdf';
 
             pdf::view('pdf.reporte-general',
                 [
-                    'nomina' => $nominas,
-                    'periodo' => $this->periodo,
-                    'rango' => Carbon::createFromFormat('Y-m-d', $rango_fechas->fecha_ini)->format('d-m-Y').' al '.Carbon::createFromFormat('Y-m-d', $rango_fechas->fecha_fin)->format('d-m-Y'),
-                    'total_general_dolares' => $totales->total_dolares,
-                    'total_general_bolivares' => $totales->total_bolivares,
-                    'total_general' => $totales->total_general,
-                    'tasa_bcv' => $totales->tasa_bcv,
-                    'total_facturado_usd' => $total_facturado_usd,
-                    'total_facturado_bsd' => $total_facturado_bsd,
+                    'nomina'                    => $nominas,
+                    'nomina_encargados'         => $nomina_encargados,
+                    'periodo'                   => $this->periodo,
+                    'rango'                     => Carbon::createFromFormat('Y-m-d', $rango_fechas->fecha_ini)->format('d-m-Y').' al '.Carbon::createFromFormat('Y-m-d', $rango_fechas->fecha_fin)->format('d-m-Y'),
+                    'total_general_dolares'     => $total_general_dolares,
+                    'total_general_bolivares'   => $total_general_bolivares,
+                    'total_general_dolares'     => $total_general_dolares,
+                    'tasa_bcv'                  => $totales->tasa_bcv,
                 ])
             ->withBrowsershot(function (Browsershot $browsershot) {
                     $browsershot->setNodeBinary(env('NODE')); //location of node

@@ -10,10 +10,10 @@
             </div>
             <div class="grid md:grid-cols-4 sm:gap-4 md:gap-4">
                 <div>
-                    <x-datetime-picker id="min-max-times-input" without-timezone label="Desde:" placeholder="desde" wire:model.defer="desde" min-time="08:00" max-time="23:00" parse-format="YYYY-MM-DD HH:mm:ss" />
+                    <x-datetime-picker id="min-max-times-input" without-timezone label="Desde:" placeholder="desde" wire:model.defer="desde" min-time="05:00" max-time="23:00" parse-format="YYYY-MM-DD HH:mm:ss" />
                 </div>
                 <div>
-                    <x-datetime-picker id="min-max-times-input" without-timezone label="Hasta:" placeholder="hasta" wire:model.defer="hasta" min-time="08:00" max-time="23:00" parse-format="YYYY-MM-DD HH:mm:ss" />
+                    <x-datetime-picker id="min-max-times-input" without-timezone label="Hasta:" placeholder="hasta" wire:model.defer="hasta" min-time="05:00" max-time="23:00" parse-format="YYYY-MM-DD HH:mm:ss" />
                 </div>
                 <div>
                     <x-select label="Select Status" placeholder="Selccione quincena"
@@ -55,9 +55,9 @@
                             <th scope="col" class="px-6 py-3">
                                 Deducciones($)
                             </th>
-                            {{-- <th scope="col" class="px-6 py-3">
+                            <th scope="col" class="px-6 py-3">
                                 Deducciones(Bs.)
-                            </th> --}}
+                            </th>
                         </tr>
                         </tr>
                     </thead>
@@ -79,6 +79,11 @@
                             <td class="px-6 py-4">
                                 <div class="">
                                     <x-input right-icon="calculator" wire:change="conver_deduccion_dolares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="deduccion_dolares.{{ $data[$i]->id }}" type="email" />
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="">
+                                    <x-input right-icon="calculator" wire:change="conver_deduccion_bolivares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="deduccion_bolivares.{{ $data[$i]->id }}" type="email" />
                                 </div>
                             </td>
                             {{-- <td class="px-6 py-4">

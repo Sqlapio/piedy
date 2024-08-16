@@ -19,6 +19,7 @@ class NomManicurista extends Component
 {
     public array $asignacion_bolivares;
     public array $deduccion_dolares;
+    public array $deduccion_bolivares;
 
     #[Rule('required', message: 'Campo obligatorio')]
     public $desde;
@@ -48,6 +49,21 @@ class NomManicurista extends Component
     {
         try {
             $this->deduccion_dolares[$id] = number_format(floatval(($this->deduccion_dolares[$id]) / 100), 2, ',', '.');
+
+        } catch (\Throwable $th) {
+            Notification::make()
+                    ->title('NOTIFICACIÓN')
+                    ->icon('heroicon-o-shield-check')
+                    ->color('danger')
+                    ->body($th->getMessage())
+                    ->send();
+        }
+    }
+
+    public function conver_deduccion_bolivares($id)
+    {
+        try {
+            $this->deduccion_bolivares[$id] = number_format(floatval(($this->deduccion_bolivares[$id]) / 100), 2, ',', '.');
 
         } catch (\Throwable $th) {
             Notification::make()
@@ -140,7 +156,8 @@ class NomManicurista extends Component
                 $nomina->total_comision_dolares    = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_dolares');
                 $nomina->total_comision_bolivares  = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_bolivares');
                 $nomina->total_propina_bsd         = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('propina_bsd');
-
+                $nomina->total_propina_usd         = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('propina_usd');
+                
                 //Recorro el array de las asignaciones en bolivares
                 for ($i=0; $i < count($this->asignacion_bolivares); $i++) {
                     $_bolivares = $this->asignacion_dolares[$item->id];
@@ -151,6 +168,12 @@ class NomManicurista extends Component
                 for ($i=0; $i < count($this->deduccion_dolares); $i++) {
                     $_dedu_dolares = $this->deduccion_dolares[$item->id];
                     $nomina->deducciones_dolares            = str_replace(',', '.', str_replace('.', '', $_dedu_dolares));
+                }
+
+                //Recorro el array de las asignaciones en bolivares
+                for ($i=0; $i < count($this->deduccion_bolivares); $i++) {
+                    $_dedu_bolivares = $this->deduccion_bolivares[$item->id];
+                    $nomina->deducciones_bolivares            = str_replace(',', '.', str_replace('.', '', $_dedu_bolivares));
                 }
 
                 //Calculo de porcentaje de acuerdo con el total de membresias atendias
@@ -166,12 +189,12 @@ class NomManicurista extends Component
                 $total_comision = ($_porcen_representacion * $_40porcen) / 100;
 
                 $nomina->comision_membresias = $total_comision * $tasa_bcv;
-                $nomina->fecha_ini = $this->desde;
-                $nomina->fecha_fin = $this->hasta;
-                $nomina->total_dolares = $nomina->total_comision_dolares - $nomina->deducciones_dolares;
-                $nomina->total_bolivares = $nomina->total_comision_bolivares + $nomina->asignaciones_bolivares + $nomina->comision_membresias + $nomina->total_propina_bsd;
-                $nomina->quincena = $this->quincena;
-                $nomina->cod_quincena = $periodo;
+                $nomina->fecha_ini          = $this->desde;
+                $nomina->fecha_fin          = $this->hasta;
+                $nomina->total_dolares      = ($nomina->total_comision_dolares + $nomina->total_propina_usd) - $nomina->deducciones_dolares;
+                $nomina->total_bolivares    = ($nomina->total_comision_bolivares + $nomina->asignaciones_bolivares + $nomina->comision_membresias + $nomina->total_propina_bsd) - $nomina->deducciones_bolivares;
+                $nomina->quincena           = $this->quincena;
+                $nomina->cod_quincena       = $periodo;
 
                 /**
                  * Restriccion para validar el periodo de nomina correcto esto,

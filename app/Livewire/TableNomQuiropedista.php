@@ -67,29 +67,42 @@ class TableNomQuiropedista extends Component implements HasForms, HasTable
                 TextColumn::make('asignaciones_bolivares')
                     ->label('Bono(Bs.)')
                     ->sortable()
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
 
                 TextColumn::make('deducciones_dolares')
                     ->label('Deduccion($)')
                     ->sortable()
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
+
+                TextColumn::make('deducciones_bolivares')
+                    ->label('Deduccion(Bs.)')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('total_propina_bsd')
+                    ->label('Propina(Bs.)')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('total_propina_usd')
+                    ->label('Propina($)')
+                    ->sortable()
+                    ->searchable(),
 
 
                 TextColumn::make('total_dolares')
-                ->label('Nomina($)')
-                    ->summarize(Sum::make()
-                        ->label('Total Nomina($)'))
-                    ->sortable()
-                    ->searchable(),
+                    ->label('Nomina($)')
+                        ->summarize(Sum::make()
+                            ->label('Total Nomina($)'))
+                        ->sortable()
+                        ->searchable(),
 
                 TextColumn::make('total_bolivares')
-                ->label('Nomina(Bs.)')
-                    ->summarize(Sum::make()
-                        ->label('Total Nomina(Bs.)'))
-                    ->sortable()
-                    ->searchable(),
+                    ->label('Nomina(Bs.)')
+                        ->summarize(Sum::make()
+                            ->label('Total Nomina(Bs.)'))
+                        ->sortable()
+                        ->searchable(),
                 //
             ])
             ->striped()

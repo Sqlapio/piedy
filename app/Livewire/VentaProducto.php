@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Filament\Resources\VentaProductoResource;
 use App\Http\Controllers\UtilsController;
+use App\Models\Cliente;
 use App\Models\Producto;
 use App\Models\User;
 use App\Models\VentaProducto as ModelsVentaProducto;
@@ -25,6 +26,7 @@ class VentaProducto extends Component
     public $buscar;
     public $productos_adicionales = [];
     public $total_productos = [];
+    public $cliente_id;
 
     public function mount()
     {
@@ -33,7 +35,6 @@ class VentaProducto extends Component
 
     public function notificacion()
     {
-
         $this->dialog()->confirm([
 
                 'title'       => 'Notificación de Venta',
@@ -113,6 +114,8 @@ class VentaProducto extends Component
     {
         try {
 
+            $cliente = Cliente::where('id', $this->cliente_id)->first();
+
             $codigo = $request->session()->get('cod_asignacion');
 
             foreach ($this->productos_adicionales as $key => $value)
@@ -129,6 +132,8 @@ class VentaProducto extends Component
                 /**Guardo la transaccion en la tabla de venta productos */
                 $venta = new ModelsVentaProducto();
                 $venta->cod_asignacion      = $codigo;
+                $venta->cliente_id          = $this->cliente_id;
+                $venta->cliente             = $cliente->nombre.' '.$cliente->apellido;
                 $venta->empleado_id         = Auth::user()->id;
                 $venta->rol                 = Auth::user()->tipo_usuario;
                 $venta->producto_id         = $info_prod->id;
@@ -169,6 +174,13 @@ class VentaProducto extends Component
     public function cerrar_venta()
     {
         $this->redirect('/dashboard');
+    }
+
+    public function facturar_producto(Request $request)
+    {
+        session(['cod_asignacion' => $request->session()->get('cod_asignacion')]);
+
+        $this->redirect('/caja/producto');
     }
 
     public function render(Request $request)

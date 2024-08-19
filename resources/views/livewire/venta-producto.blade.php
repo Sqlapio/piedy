@@ -56,12 +56,12 @@
                 </ul>
             </div>
 
-            {{-- servicios adicionales --}}
+            {{-- Seleccion de proructos --}}
             <div class="w-full max-h-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
                 <div class="flex justify-start mb-4">
                     <input wire:model.live="buscar" type="search" id="search" name="buscar" class="border-b border-gray-200 py-2 text-sm rounded-full shadow-lg focus:ring-check-blue focus:border-check-blue" placeholder="Buscar servicio" autocomplete="off">
                 </div>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-1 p-1">Selección de servícios</p>
+                <p class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-1 p-1">Selección de Productos</p>
                 <ul class="space-y-3">
 
                     @foreach($productos as $item)
@@ -88,24 +88,40 @@
                         {{ $productos->links() }}
                     </div>
 
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="sm:mt-2">
-                                <button type="button" wire:click="notificacion()" class="inline-flex w-full justify-center rounded-lg bg-green-700 px-3 py-3 mb-auto text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
-                                    <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="carga_servicios_adicionales" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                                    </svg>
-                                    <span>AÑADIR PRODUCTOS</span>
-                                </button>
-                            </div>
-                            <div class="sm:mt-2">
-                                <button type="button" wire:click="cerrar_venta()" class="inline-flex w-full justify-center rounded-lg bg-red-700 px-3 py-3 mb-auto text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
-                                    <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="cerrar" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                                    </svg>
-                                    <span>CERRAR VENTA</span>
-                                </button>
-                            </div>
+                    {{-- Seleccion del Cliente --}}
+                    <div class="mt-10 text-left sm:mt-5">
+                        <div class="p-2">
+                            <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Seleccione el Cliente</label>
+                            <x-select wire:model.defer="cliente_id" placeholder="Seleccion" :async-data="route('api.clientes')" option-label="nombre" option-value="id" />
                         </div>
+                    </div>
+
+                    <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-2">
+                        <div class="sm:mt-2">
+                            <button type="button" wire:click="notificacion()" class="inline-flex w-full justify-center rounded-lg bg-green-700 px-3 py-3 mb-auto text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="carga_servicios_adicionales" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                </svg>
+                                <span>AÑADIR PRODUCTOS</span>
+                            </button>
+                        </div>
+                        <div class="sm:mt-2">
+                            <button type="button" wire:click="cerrar()" class="inline-flex w-full justify-center rounded-lg bg-red-700 px-3 py-3 mb-auto text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="facturar_producto" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                </svg>
+                                <span>CERRAR VENTA</span>
+                            </button>
+                        </div>
+                        <div class="sm:mt-2">
+                            <button type="button" wire:click="facturar_producto()" class="inline-flex w-full justify-center rounded-lg bg-red-700 px-3 py-3 mb-auto text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="facturar_producto" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                </svg>
+                                <span>FACTURAR VENTA</span>
+                            </button>
+                        </div>
+                    </div>
 
                 </ul>
             </div>

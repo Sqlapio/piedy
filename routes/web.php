@@ -180,6 +180,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/agregar/productos', function () {
         return view('agregar_productos');
     })->name('agregar_productos');
+
+    Route::get('/caja/producto', function () {
+        return view('caja-producto');
+    })->name('caja_producto');
     /**********************************************/
 
     Route::get('/facturar/cliente', function () {

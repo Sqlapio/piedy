@@ -242,17 +242,7 @@ class Caja extends Component
                 ->where('facturado', 1)
                 ->first()->total;
 
-            /**Calculo el total de los productos vendidos por el gerente de tienda */
-            $total_prod_ven_gerente = DB::table('venta_productos')
-            ->select(DB::raw('SUM(total_venta) as total'))
-            ->where('status', '1')
-            ->where('facturado', 1)
-            ->where('fecha_venta', now()->format('d-m-Y'))
-            ->where('responsable', Auth::user()->name)
-            ->first()->total;
-
-
-            $total_vista = $total_servicios + $total_productos + $total_prod_ven_gerente;
+            $total_vista = $total_servicios + $total_productos;
 
             $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
 
@@ -448,11 +438,11 @@ class Caja extends Component
                                 ->where('cod_asignacion', $codigo['cod_asignacion'])
                                 ->where('status', '1')
                                 ->first()->total;
-                                dump($new_valor_uno, $new_valor_dos);
+
                             }else{
                                 $new_valor_uno = $this->valor_uno;
                                 $new_valor_dos = $this->valor_dos;
-                                dump($new_valor_uno, $new_valor_dos);
+
                             }
 
                             /**
@@ -474,7 +464,7 @@ class Caja extends Component
                                     'metodo_pago'           => ($this->op1 != '') ? $this->op1 : 'N/A',
                                     'metodo_pago_dos'       => ($this->op2 != '') ? $this->op2 : 'N/A',
                                     'metodo_pago_prepagado' => ($this->metodo_pago_pre != '') ? $this->metodo_pago_pre : 'N/A',
-                                    'referencia'            => $this->referencia,
+                                    'referencia'            => ($this->referencia == '') ? $this->referencia : 'N/A',
                                     'total_USD'             => $total_vista,
                                     'pago_usd'              => ($this->valor_uno == '') ? 0.00 : floatval($this->valor_uno),
                                     'pago_bsd'              => ($this->valor_dos == '') ? 0.00 : Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
@@ -575,44 +565,24 @@ class Caja extends Component
             ->where('facturado', 1)
             ->first()->total;
 
-        /**Calculo el total de los productos vendidos por el gerente de tienda */
-        $total_prod_ven_gerente = DB::table('venta_productos')
-            ->select(DB::raw('SUM(total_venta) as total'))
-            ->where('status', '1')
-            ->where('facturado', 1)
-            ->where('fecha_venta', now()->format('d-m-Y'))
-            ->where('responsable', Auth::user()->name)
-            ->first()->total;
-        Debugbar::info($total_prod_ven_gerente);
-        
         $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
 
         if ($this->monto_giftcard != '') {
-            $total_vista = $total_servicios - $this->monto_giftcard + $total_productos + $total_prod_ven_gerente;
+            $total_vista = $total_servicios - $this->monto_giftcard + $total_productos;
             $total_vista_bsd = $total_vista * $tasa_bcv;
         } elseif($this->metodo_pago_pre == 2) {
             $comision = Comision::where('aplicacion', 'seguro')->first()->porcentaje;
-            $total_vista = $total_servicios - (($total_servicios * 10) / 100) + $total_productos + $total_prod_ven_gerente;
+            $total_vista = $total_servicios - (($total_servicios * 10) / 100) + $total_productos;
             $total_vista_bsd = $total_vista * $tasa_bcv;
         }else{
-            $total_vista = $total_servicios + $total_productos + $total_prod_ven_gerente;
+            $total_vista = $total_servicios + $total_productos;
             $total_vista_bsd = $total_vista * $tasa_bcv;
         }
 
         /**Seleccion los productos que voy a vender y los muestro en la lista de 'Productos cargados' */
         $lista_prod = VentaProducto::where('cod_asignacion', $codigo['cod_asignacion'])->where('status', 1)->where('facturado', 1)->with('producto')->get();
 
-        /**Seleccion los productos que voy a vender y los muestro en la lista de 'Productos cargados' */
-        $lista_prod_ven_gerente = VentaProducto::where('status', '1')
-            ->where('facturado', 1)
-            ->where('fecha_venta', now()->format('d-m-Y'))
-            ->where('responsable', Auth::user()->name)
-            ->with('producto')
-            ->get();
 
-
-
-
-        return view('livewire.caja', compact('data', 'detalle', 'total_vista', 'total_vista_bsd', 'lista_prod', 'total_productos', 'lista_prod_ven_gerente'));
+        return view('livewire.caja', compact('data', 'detalle', 'total_vista', 'total_vista_bsd', 'lista_prod', 'total_productos'));
     }
 }

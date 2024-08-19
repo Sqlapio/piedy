@@ -130,26 +130,17 @@ class Caja extends Component
             ->where('status', '1')
             ->first()->total;
 
-        /**Calculo el total de los productos vendidos por el gerente de tienda */
-        $total_prod_ven_gerente = DB::table('venta_productos')
-            ->select(DB::raw('SUM(total_venta) as total'))
-            ->where('status', '1')
-            ->where('facturado', 1)
-            ->where('fecha_venta', now()->format('d-m-Y'))
-            ->where('responsable', Auth::user()->name)
-            ->first()->total;
-
         $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
 
         if ($this->monto_giftcard != '') {
-            $total_vista = $total_servicios - $this->monto_giftcard + $total_productos + $total_prod_ven_gerente;
+            $total_vista = $total_servicios - $this->monto_giftcard + $total_productos;
             $total_vista_bsd = $total_vista * $tasa_bcv;
         } elseif($this->metodo_pago_pre == 2) {
             $comision = Comision::where('aplicacion', 'seguro')->first()->porcentaje;
-            $total_vista = $total_servicios - (($total_servicios * 10) / 100) + $total_productos + $total_prod_ven_gerente;
+            $total_vista = $total_servicios - (($total_servicios * 10) / 100) + $total_productos;
             $total_vista_bsd = $total_vista * $tasa_bcv;
         }else{
-            $total_vista = $total_servicios + $total_productos + $total_prod_ven_gerente;
+            $total_vista = $total_servicios + $total_productos;
             $total_vista_bsd = $total_vista * $tasa_bcv;
         }
 

@@ -86,8 +86,13 @@
 
         <div class="{{ $atr_facturar }}">
             <div class="block py-2">
-                <label class="opacity-60 mb-1 mt-4 block text-sm font-medium text-italblue">Código de Asignación</label>
-                <x-select wire:model="cod_asignacion" placeholder="Seleccion" :async-data="route('api.servicios_por_facturar')" option-label="cod_asignacion" option-value="cod_asignacion" class="mb-8"/>
+                <label for="small" class="block mb-2 mt-3 text-sm font-medium text-gray-900 dark:text-white">Lista de Membresias abiertas</label>
+                <select id="small" wire:model="cod_asignacion" class="block w-full p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <option selected>Servicios de membresia</option>
+                    @foreach($srv_membresias as $item)
+                        <option value={{ $item->cod_asignacion }}>{{ $item->cod_asignacion }}</option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="flex items-center justify-end mt-10">

@@ -241,7 +241,6 @@ class PagoExterno extends Component
             }
 
         } catch (\Throwable $th) {
-            dd($th);
             Notification::make()
                     ->title('NOTIFICACIÓN')
                     ->icon('heroicon-o-shield-check')
@@ -253,6 +252,7 @@ class PagoExterno extends Component
 
     public function render()
     {
-        return view('livewire.pago-externo');
+        $srv_membresias = DetalleAsignacion::where('cod_servicio', 'Sco-92146')->where('servicio', 'Membresia')->where('status', 1)->get();
+        return view('livewire.pago-externo', compact('srv_membresias'));
     }
 }

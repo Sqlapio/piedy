@@ -36,6 +36,7 @@ class TableNomManicurista extends Component implements HasForms, HasTable
                     ->label('Empleado')
                     ->sortable()
                     ->searchable(),
+
                 TextColumn::make('total_servicios')
                     ->label('Servicios')
                     ->alignCenter()
@@ -55,14 +56,27 @@ class TableNomManicurista extends Component implements HasForms, HasTable
                 TextColumn::make('asignaciones_bolivares')
                     ->label('Bono(Bs.)')
                     ->sortable()
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
+                
+                TextColumn::make('total_propina_bsd')
+                    ->label('Propinas(Bs.)')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('total_propina_usd')
+                    ->label('Propina($)')
+                    ->sortable()
+                    ->searchable(),
 
                 TextColumn::make('deducciones_dolares')
                     ->label('Deduccion($)')
                     ->sortable()
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
+
+                TextColumn::make('deducciones_bolivares')
+                    ->label('Deduccion(Bs.)')
+                    ->sortable()
+                    ->searchable(),
 
                 TextColumn::make('comision_membresias')
                     ->label('Membresia(Bs.)')
@@ -70,21 +84,21 @@ class TableNomManicurista extends Component implements HasForms, HasTable
                     ->searchable(),
 
                 TextColumn::make('total_dolares')
-                ->label('Nomina($)')
-                    ->money('USD')
-                    ->summarize(Sum::make()
+                    ->label('Nomina($)')
                         ->money('USD')
-                        ->label('Total Nomina($)'))
-                    ->sortable()
-                    ->searchable(),
+                        ->summarize(Sum::make()
+                            ->money('USD')
+                            ->label('Total Nomina($)'))
+                        ->sortable()
+                        ->searchable(),
                 TextColumn::make('total_bolivares')
-                ->label('Nomina(Bs.)')
-                    ->money('VES')
-                    ->summarize(Sum::make()
+                    ->label('Nomina(Bs.)')
                         ->money('VES')
-                        ->label('Total Nomina(Bs.)'))
-                    ->sortable()
-                    ->searchable(),
+                        ->summarize(Sum::make()
+                            ->money('VES')
+                            ->label('Total Nomina(Bs.)'))
+                        ->sortable()
+                        ->searchable(),
                 //
             ])
             ->defaultGroup('quincena')

@@ -145,7 +145,7 @@ class CajaProducto extends Component
                         $facturar->metodo_pago           = ($this->op1 != '') ? $this->op1 : 'N/A';
                         $facturar->metodo_pago_dos       = ($this->op2 != '') ? $this->op2 : 'N/A';
                         $facturar->metodo_pago_prepagado = 'N/A';
-                        $facturar->referencia            = $this->referencia;
+                        $facturar->referencia            = ($this->referencia == '') ? $this->referencia : 'N/A';
                         $facturar->total_USD             = $total_vista;
                         $facturar->pago_usd              = ($this->valor_uno == '') ? 0.00 : floatval($this->valor_uno);
                         $facturar->pago_bsd              = ($this->valor_dos == '') ? 0.00 : Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos)));
@@ -165,7 +165,7 @@ class CajaProducto extends Component
                         $facturar->save();
 
                         /**Estatus facturado para los productos vendidos por el gerente de tienda o el encargado de tienda */
-                        $prod_facturado_gerente = VentaProducto::where('status', 1)
+                        $prod_facturado_gerente = VentaProducto::where('cod_asignacion', $codigo)
                         ->where('facturado', 1)
                         ->where('fecha_venta', now()->format('d-m-Y'))
                         ->where('responsable', Auth::user()->name)

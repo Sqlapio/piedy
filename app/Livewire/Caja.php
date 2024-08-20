@@ -420,14 +420,14 @@ class Caja extends Component
                                 $comision_emp_venprod = DB::table('venta_productos')
                                 ->select(DB::raw('SUM(comision_empleado) as total'))
                                 ->where('cod_asignacion', $codigo['cod_asignacion'])
-                                ->where('status', '1')
+                                ->where('facturado', '1')
                                 ->first()->total;
 
                                 /**Busco la comision total del gerente calculada en la asignacion del producto */
                                 $comision_gerente_venprod = DB::table('venta_productos')
                                 ->select(DB::raw('SUM(comision_gerente) as total'))
                                 ->where('cod_asignacion', $codigo['cod_asignacion'])
-                                ->where('status', '1')
+                                ->where('facturado', '1')
                                 ->first()->total;
 
                             }else{
@@ -472,19 +472,9 @@ class Caja extends Component
 
                             if($facturar){
                                 /**Estatus facturado para los productos vendidos por el tecnico */
-                                $prod_facturado = VentaProducto::where('cod_asignacion', $item->cod_asignacion)->where('status', 1)->get();
+                                $prod_facturado = VentaProducto::where('cod_asignacion', $item->cod_asignacion)
+                                ->where('facturado', 1)->get();
                                 foreach($prod_facturado as $value)
-                                {
-                                    $value->facturado = 2;
-                                    $value->save();
-                                }
-                                /**Estatus facturado para los productos vendidos por el gerente de tienda o el encargado de tienda */
-                                $prod_facturado_gerente = VentaProducto::where('status', 1)
-                                ->where('facturado', 1)
-                                ->where('fecha_venta', now()->format('d-m-Y'))
-                                ->where('responsable', Auth::user()->name)
-                                ->get();
-                                foreach($prod_facturado_gerente as $value)
                                 {
                                     $value->facturado = 2;
                                     $value->save();

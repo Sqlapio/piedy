@@ -53,4 +53,14 @@ class Disponible extends Model
     {
         return $this->hasMany(Servicio::class, 'id', 'servicio_id');
     }
+
+    /**
+     * Get the primeraAsignacion associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function primeraAsignacion(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'empleado_id', 'id');
+    }
 }

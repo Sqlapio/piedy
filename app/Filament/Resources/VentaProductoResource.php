@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -33,7 +34,36 @@ class VentaProductoResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('cod_asignacion')
+                ->searchable()
+                    ->sortable(),
+                TextColumn::make('empleado.name')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('producto.descripcion')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('costo_producto')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('comision_empleado')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('comision_gerente')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('fecha_venta')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('cantidad')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('total_venta')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('responsable')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 //
@@ -47,14 +77,14 @@ class VentaProductoResource extends Resource
                 ]),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -62,5 +92,5 @@ class VentaProductoResource extends Resource
             'create' => Pages\CreateVentaProducto::route('/create'),
             'edit' => Pages\EditVentaProducto::route('/{record}/edit'),
         ];
-    }    
+    }
 }

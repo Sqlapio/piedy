@@ -67,4 +67,14 @@ class Producto extends Model
         return $this->hasMany(MovimientoSalida::class, 'producto_id', 'id');
     }
 
+    /**
+     * Get all of the ventas for the Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function ventas(): HasMany
+    {
+        return $this->hasMany(VentaProducto::class, 'id', 'producto_id');
+    }
+
 }

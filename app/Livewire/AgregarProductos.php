@@ -2,22 +2,27 @@
 
 namespace App\Livewire;
 
-use App\Filament\Resources\VentaProductoResource;
+use App\Http\Controllers\NotificacionesController;
 use App\Http\Controllers\UtilsController;
 use App\Models\Cliente;
+use App\Models\DetalleAsignacion;
+use App\Models\Disponible;
 use App\Models\Producto;
+
 use App\Models\User;
-use App\Models\VentaProducto as ModelsVentaProducto;
+use App\Models\VentaProducto;
+use App\Models\VentaServicio;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Exception;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 use WireUi\Traits\Actions;
 
-class VentaProducto extends Component
+class AgregarProductos extends Component
 {
     use Actions;
 
@@ -26,15 +31,10 @@ class VentaProducto extends Component
     public $buscar;
     public $productos_adicionales = [];
     public $total_productos = [];
-    public $cliente_id;
-
-    public function mount()
-    {
-        session(['cod_asignacion' => 'Pca-'.random_int(11111111, 99999999)]);
-    }
 
     public function notificacion()
     {
+
         $this->dialog()->confirm([
 
                 'title'       => 'Notificación de Venta',
@@ -78,13 +78,13 @@ class VentaProducto extends Component
 
     public function delete(Request $request, $id)
     {
-        $codigo = $request->session()->get('cod_asignacion');
+        $codigo = $request->session()->all();
 
-        $producto = ModelsVentaProducto::where('id', $id)->where('cod_asignacion', $codigo)->update([
+        $producto = VentaProducto::where('id', $id)->update([
             'status' => 2
         ]);
 
-        $producto_id = ModelsVentaProducto::where('id', $id)->where('cod_asignacion', $codigo)->first();
+        $producto_id = VentaProducto::where('id', $id)->first();
 
         $update_existencia = Producto::where('id', $producto_id->producto_id)->first();
         $update_existencia->update([
@@ -114,9 +114,9 @@ class VentaProducto extends Component
     {
         try {
 
-            $cliente = Cliente::where('id', $this->cliente_id)->first();
+            $codigo = $request->session()->all();
 
-            $codigo = $request->session()->get('cod_asignacion');
+            $data = Disponible::where('cod_asignacion', $codigo['cod_asignacion'])->first();
 
             foreach ($this->productos_adicionales as $key => $value)
             {
@@ -130,16 +130,14 @@ class VentaProducto extends Component
                 $total = $info_prod->precio_venta * (intval($value));
 
                 /**Guardo la transaccion en la tabla de venta productos */
-                $venta = new ModelsVentaProducto();
-                $venta->cod_asignacion      = $codigo;
-                $venta->cliente_id          = $this->cliente_id;
-                $venta->cliente             = $cliente->nombre.' '.$cliente->apellido;
-                $venta->empleado_id         = Auth::user()->id;
-                $venta->rol                 = Auth::user()->tipo_usuario;
+                $venta = new VentaProducto();
+                $venta->cod_asignacion      = $codigo['cod_asignacion'];
+                $venta->empleado_id         = $data->empleado_id;
+                $venta->rol                 = User::where('id', $data->empleado_id)->first()->area_trabajo;
                 $venta->producto_id         = $info_prod->id;
                 $venta->costo_producto      = $info_prod->precio_venta;
-                $venta->comision_empleado   = 0.00;
-                $venta->comision_gerente    = UtilsController::comiGerente_ventaProducto_directa($total);
+                $venta->comision_empleado   = UtilsController::comiEmple_ventaProducto($total);
+                $venta->comision_gerente    = UtilsController::comiGerente_ventaProducto($total);
                 $venta->fecha_venta         = now()->format('d-m-Y');
                 $venta->cantidad            = (intval($value));
                 $venta->total_venta         = $total;
@@ -173,20 +171,21 @@ class VentaProducto extends Component
 
     public function cerrar_venta()
     {
-        $this->redirect('/dashboard');
-    }
-
-    public function facturar_producto(Request $request)
-    {
-        session(['cod_asignacion' => $request->session()->get('cod_asignacion')]);
-
-        $this->redirect('/caja/producto');
+        $this->redirect('/cabinas');
     }
 
     public function render(Request $request)
     {
+        /**
+         * El codigo es tomado de la variables de sesion
+         * del usuario
+         *
+         * @param $codigo
+         */
+        $codigo = $request->session()->all();
 
-        $codigo = $request->session()->get('cod_asignacion');
+        /**Obtengo la informacion de la primera asignacion y los datos del empleados y del cliente */
+        $data = Disponible::where('cod_asignacion', $codigo['cod_asignacion'])->with('primeraAsignacion')->first();
 
         /**Obtengo todos los productos para vender */
         $productos = Producto::where('existencia', '>=', 1)->Paginate(5);
@@ -194,21 +193,13 @@ class VentaProducto extends Component
         /**Calculo el total de la vista */
         $total_vista = DB::table('venta_productos')
             ->select(DB::raw('SUM(total_venta) as total'))
-            ->where('cod_asignacion', $codigo)
-            ->where('status', 1)
-            ->where('fecha_venta', now()->format('d-m-Y'))
-            ->where('responsable', Auth::User()->name)
+            ->where('cod_asignacion', $codigo['cod_asignacion'])
+            ->where('status', '1')
             ->first()->total;
 
         /**Seleccion los productos que voy a vender y los muestro en la lista de 'Productos Adicionales vendidos' */
-        $lista_prod = ModelsVentaProducto::where('cod_asignacion', $codigo)
-        ->where('status', 1)
-        ->where('fecha_venta', now()->format('d-m-Y'))
-        ->where('responsable', Auth::User()->name)
-        ->with('producto')
-        ->get();
+        $lista_prod = VentaProducto::where('cod_asignacion', $codigo['cod_asignacion'])->where('status', 1)->with('producto')->get();
 
-        return view('livewire.venta-producto', compact('productos', 'lista_prod', 'total_vista', 'codigo'));
-
+        return view('livewire.agregar-productos', compact('data', 'productos', 'total_vista', 'lista_prod'));
     }
 }

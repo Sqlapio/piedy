@@ -55,6 +55,12 @@ class ComisionResource extends Resource
                         'cupones' => 'Cupones',
                         'tudrencasa' => 'TuDrEnCasa',
                     ]),
+                Select::make('accion')
+                ->label('Accion de Venta')
+                    ->options([
+                        'directa' => 'Directa',
+                        'indirecta' => 'Indirecta',
+                    ]),
                 Select::make('status')
                     ->options([
                         '1' => 'Activo',

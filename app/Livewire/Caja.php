@@ -13,6 +13,7 @@ use App\Models\MovimientoGiftCard;
 use App\Models\Servicio;
 use App\Models\TasaBcv;
 use App\Models\User;
+use App\Models\VentaProducto;
 use App\Models\VentaServicio;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Carbon\Carbon;
@@ -115,23 +116,31 @@ class Caja extends Component
 
         $item = VentaServicio::where('cod_asignacion', $codigo['cod_asignacion'])->first();
 
-        $total = DB::table('detalle_asignacions')
+        $total_servicios = DB::table('detalle_asignacions')
             ->select(DB::raw('SUM(costo) as total'))
-            ->where('cod_asignacion', $item->cod_asignacion)
+            ->where('cod_asignacion', $codigo['cod_asignacion'])
             ->where('status', '1')
-            ->first();
+            ->first()
+            ->total;
+
+        /**Calculo el total de la vista */
+        $total_productos = DB::table('venta_productos')
+            ->select(DB::raw('SUM(total_venta) as total'))
+            ->where('cod_asignacion', $codigo['cod_asignacion'])
+            ->where('status', '1')
+            ->first()->total;
 
         $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
 
         if ($this->monto_giftcard != '') {
-            $total_vista = $total->total - $this->monto_giftcard;
+            $total_vista = $total_servicios - $this->monto_giftcard + $total_productos;
             $total_vista_bsd = $total_vista * $tasa_bcv;
         } elseif($this->metodo_pago_pre == 2) {
             $comision = Comision::where('aplicacion', 'seguro')->first()->porcentaje;
-            $total_vista = $total->total - (($total->total * 10) / 100);
+            $total_vista = $total_servicios - (($total_servicios * 10) / 100) + $total_productos;
             $total_vista_bsd = $total_vista * $tasa_bcv;
         }else{
-            $total_vista = $total->total;
+            $total_vista = $total_servicios + $total_productos;
             $total_vista_bsd = $total_vista * $tasa_bcv;
         }
 
@@ -189,26 +198,6 @@ class Caja extends Component
         }
     }
 
-    public function eliminar_servicio($value)
-    {
-        $this->dialog()->confirm([
-            'title'       => 'seguro deseas eliminar el servicio?',
-            'description' => 'Esta operación por seguridad no podra ser reversada.',
-            'acceptLabel' => 'Si, eliminar',
-            'method'      => 'delete',
-            'params'      => $value,
-        ]);
-    }
-
-    public function delete($value)
-    {
-        try {
-            $item = DetalleAsignacion::where('id', $value)->update(['status' => 3]);
-        } catch (\Throwable $th) {
-            dd($th);
-        }
-    }
-
     public function facturar_servicio(Request $request)
     {
         if ($this->descripcion == '') {
@@ -229,13 +218,22 @@ class Caja extends Component
             $item = VentaServicio::where('cod_asignacion', $codigo['cod_asignacion'])->first();
             Debugbar::info($item);
 
-            $total = DB::table('detalle_asignacions')
-                ->select(DB::raw('SUM(costo) as total'))
-                ->where('cod_asignacion', $item->cod_asignacion)
-                ->where('status', '1')
-                ->first();
+            $total_servicios = DB::table('detalle_asignacions')
+            ->select(DB::raw('SUM(costo) as total'))
+            ->where('cod_asignacion', $codigo['cod_asignacion'])
+            ->where('status', '1')
+            ->first()
+            ->total;
 
-            $total_vista = $total->total;
+            /**Calculo el total de la vista */
+            $total_productos = DB::table('venta_productos')
+                ->select(DB::raw('SUM(total_venta) as total'))
+                ->where('cod_asignacion', $codigo['cod_asignacion'])
+                ->where('status', '1')
+                ->where('facturado', 1)
+                ->first()->total;
+
+            $total_vista = $total_servicios + $total_productos;
 
             $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
 
@@ -403,18 +401,61 @@ class Caja extends Component
 
                         if ($this->metodo_pago_pre == '') {
 
+                            /**
+                             * Logica para calcular el porcentaje de los servicios sin tocar el valor de los productos
+                             * que ya fue calculado en pasos anteriores, al momento de asignar el prodcuto.
+                             * number_format($total_vista_bsd, 2, ",", ".")
+                             */
+                            if($total_productos > 0){
+                                /**Calculo el porcentaje que representa el total de los servicios */
+                                $porcen_total_srv = ($total_servicios * 100) / $total_vista;
+
+                                /**Calculoel porcentaje que representa el valor1($) y el valor2(Bs), que es la forma de pago del cliente */
+                                $new_valor_uno = number_format((($porcen_total_srv * floatval($this->valor_uno)) / 100), 2, ",", ".");
+
+                                /**Calculoel porcentaje que representa el valor1($) y el valor2(Bs), que es la forma de pago del cliente */
+                                $new_valor_dos = number_format((($porcen_total_srv * Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos)))) / 100), 2, ",", ".");
+
+                                /**Busco la comision total del empleado calculada en la asignacion del producto */
+                                $comision_emp_venprod = DB::table('venta_productos')
+                                ->select(DB::raw('SUM(comision_empleado) as total'))
+                                ->where('cod_asignacion', $codigo['cod_asignacion'])
+                                ->where('facturado', '1')
+                                ->first()->total;
+
+                                /**Busco la comision total del gerente calculada en la asignacion del producto */
+                                $comision_gerente_venprod = DB::table('venta_productos')
+                                ->select(DB::raw('SUM(comision_gerente) as total'))
+                                ->where('cod_asignacion', $codigo['cod_asignacion'])
+                                ->where('facturado', '1')
+                                ->first()->total;
+
+                            }else{
+                                $new_valor_uno = $this->valor_uno;
+                                $new_valor_dos = $this->valor_dos;
+
+                            }
+
+                            /**
+                             * AQUI DEBO LOCOCAR LA LOGICA PARA PODER SERPARAR LAS CANTIDADES Y PODER OBTENER EL VALOR 1 Y EL VALOR 2
+                             * QUE VIAJAN AL CONTROLADOR
+                             *
+                             * ($this->valor_uno, $this->valor_dos)
+                             */
+                            // dump($new_valor_uno, floatval($new_valor_uno), $new_valor_dos, number_format($new_valor_dos, 2, ",", "."));
                             /**Controlador para calcular las comisiones */
-                            $res = UtilsController::cal_comision_empleado($this->valor_uno, $this->valor_dos, $tipoSrv->asignacion, $tipoSrv->tipo_servicio_id, $total_vista, $this->monto_giftcard);
+                            $res = UtilsController::cal_comision_empleado($new_valor_uno, $new_valor_dos, $tipoSrv->asignacion, $tipoSrv->tipo_servicio_id, $total_servicios, $this->monto_giftcard);
 
                             /**
                              * Actualizamos la tabla de ventas, Detalles de asignacion y Disponible
+                             * ($total_productos > 0) ?
                              */
                             $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
                                 ->update([
                                     'metodo_pago'           => ($this->op1 != '') ? $this->op1 : 'N/A',
                                     'metodo_pago_dos'       => ($this->op2 != '') ? $this->op2 : 'N/A',
                                     'metodo_pago_prepagado' => ($this->metodo_pago_pre != '') ? $this->metodo_pago_pre : 'N/A',
-                                    'referencia'            => $this->referencia,
+                                    'referencia'            => ($this->referencia == '') ? $this->referencia : 'N/A',
                                     'total_USD'             => $total_vista,
                                     'pago_usd'              => ($this->valor_uno == '') ? 0.00 : floatval($this->valor_uno),
                                     'pago_bsd'              => ($this->valor_dos == '') ? 0.00 : Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
@@ -423,10 +464,23 @@ class Caja extends Component
                                     'referencia_propina'    => $this->ref_propina,
                                     'comision_dolares'      => $res['comision_usd_emp_valorUno'],
                                     'comision_bolivares'    => $res['comision_bs_emp_valorDos'],
-                                    'comision_gerente'      => $res['comision_usd_gte'],
+                                    'comision_gerente'      => ($total_productos > 0) ? $res['comision_usd_gte'] + $comision_gerente_venprod : $res['comision_usd_gte'],
+                                    'comision_emp_venprod'  => ($total_productos > 0) ? $comision_emp_venprod : 0.00,
                                     'responsable_id'        => Auth::user()->id,
                                     'responsable'           => Auth::user()->name,
                                 ]);
+
+                            if($facturar){
+                                /**Estatus facturado para los productos vendidos por el tecnico */
+                                $prod_facturado = VentaProducto::where('cod_asignacion', $item->cod_asignacion)
+                                ->where('facturado', 1)->get();
+                                foreach($prod_facturado as $value)
+                                {
+                                    $value->facturado = 2;
+                                    $value->save();
+                                }
+
+                            }
                         }
 
                         DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
@@ -459,87 +513,6 @@ class Caja extends Component
         }
     }
 
-    public function cliente_especial()
-    {
-        $this->dialog()->confirm([
-            'title'       => 'Es un cliente especial?',
-            'description' => 'Esta modalida de cobro no genera un registro de caja, pero si realiza el calculo de comisiones respectivamente.',
-            'icon'        => 'question',
-            'accept'      => [
-                'label'  => 'Si, es cliente especial',
-                'method' => 'ejecuta_ce',
-                'params' => 'Saved',
-            ],
-            'reject' => [
-                'label'  => 'No, cancelar',
-                'method' => 'cancelar',
-            ],
-        ]);
-    }
-
-    /** Ejecutar el cliente especial */
-    public function ejecuta_ce(Request $request)
-    {
-        /**
-         * El codigo es tomado de la variables de sesion
-         * del usuario
-         *
-         * @param $codigo
-         */
-        $codigo = $request->session()->all();
-
-        $item = VentaServicio::where('cod_asignacion', $codigo['cod_asignacion'])->first();
-        Debugbar::info($item);
-
-        $total = DB::table('detalle_asignacions')
-            ->select(DB::raw('SUM(costo) as total'))
-            ->where('cod_asignacion', $item->cod_asignacion)
-            ->where('status', '1')
-            ->first();
-
-        $total_vista = $total->total;
-
-        $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
-
-        $total_vista_bsd = $total_vista * $tasa_bcv;
-
-        try {
-
-            $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
-                ->update([
-                    'metodo_pago' => 'cliente especial',
-                    'total_USD' => $total_vista,
-                    'propina_usd'   => $this->propina_usd != '' ? $this->propina_usd : 0.00,
-                    'propina_bsd'   => $this->propina_bsd != '' ? $this->propina_bsd : 0.00,
-                    'responsable'   => Auth::user()->name,
-                ]);
-
-            DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
-                ->update([
-                    'status' => '2',
-                ]);
-
-            Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
-                ->update([
-                    'status' => 'facturado'
-                ]);
-
-            Notification::make()
-                ->title('La factura fue cerrada con exito')
-                ->success()
-                ->send();
-
-            $this->redirect('/cabinas');
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
-    }
-
-    public function cancelar()
-    {
-        $this->reset();
-    }
-
     public function render(Request $request)
     {
         /**
@@ -558,27 +531,39 @@ class Caja extends Component
             ->where('status', '1')
             ->get();
 
-        $total = DB::table('detalle_asignacions')
+        $total_servicios = DB::table('detalle_asignacions')
             ->select(DB::raw('SUM(costo) as total'))
-            ->where('cod_asignacion', $data->cod_asignacion)
+            ->where('cod_asignacion', $codigo['cod_asignacion'])
             ->where('status', '1')
-            ->first();
+            ->first()
+            ->total;
+
+        /**Calculo el total de los productos vendidos por el tecnico */
+        $total_productos = DB::table('venta_productos')
+            ->select(DB::raw('SUM(total_venta) as total'))
+            ->where('cod_asignacion', $codigo['cod_asignacion'])
+            ->where('status', '1')
+            ->where('facturado', 1)
+            ->first()->total;
 
         $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
 
         if ($this->monto_giftcard != '') {
-            $total_vista = $total->total - $this->monto_giftcard;
+            $total_vista = $total_servicios - $this->monto_giftcard + $total_productos;
             $total_vista_bsd = $total_vista * $tasa_bcv;
         } elseif($this->metodo_pago_pre == 2) {
             $comision = Comision::where('aplicacion', 'seguro')->first()->porcentaje;
-            $total_vista = $total->total - (($total->total * 10) / 100);
+            $total_vista = $total_servicios - (($total_servicios * 10) / 100) + $total_productos;
             $total_vista_bsd = $total_vista * $tasa_bcv;
         }else{
-            $total_vista = $total->total;
+            $total_vista = $total_servicios + $total_productos;
             $total_vista_bsd = $total_vista * $tasa_bcv;
         }
 
+        /**Seleccion los productos que voy a vender y los muestro en la lista de 'Productos cargados' */
+        $lista_prod = VentaProducto::where('cod_asignacion', $codigo['cod_asignacion'])->where('status', 1)->where('facturado', 1)->with('producto')->get();
 
-        return view('livewire.caja', compact('data', 'detalle', 'total_vista', 'total_vista_bsd'));
+
+        return view('livewire.caja', compact('data', 'detalle', 'total_vista', 'total_vista_bsd', 'lista_prod', 'total_productos'));
     }
 }

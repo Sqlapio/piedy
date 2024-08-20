@@ -26,6 +26,7 @@ class Comision extends Model
         'aplicacion',
         'beneficiario',
         'porcentaje',
+        'accion',
         'status',
         'rango_id',
     ];
@@ -46,4 +47,3 @@ class Comision extends Model
     }
 
 }
- 

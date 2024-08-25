@@ -64,6 +64,11 @@ class TableNomQuiropedista extends Component implements HasForms, HasTable
                     ->sortable()
                     ->searchable(),
 
+                TextColumn::make('total_comision_venprod')
+                    ->label('Comision Productos($)')
+                    ->sortable()
+                    ->searchable(),
+
                 TextColumn::make('asignaciones_bolivares')
                     ->label('Bono(Bs.)')
                     ->sortable()

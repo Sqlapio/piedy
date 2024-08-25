@@ -6,6 +6,7 @@ use App\Models\NomEncargado as ModelsNomEncargado;
 use App\Models\PeriodoNomina;
 use App\Models\TasaBcv;
 use App\Models\User;
+use App\Models\VentaProducto;
 use App\Models\VentaServicio;
 use Exception;
 use Filament\Notifications\Notification;
@@ -102,12 +103,15 @@ class NomEncargado extends Component
 
             foreach($data as $item)
             {
+                $responsable = User::where('id', $item->id)->first()->name;
+
                 $nomina = new ModelsNomEncargado();
                 $nomina->user_id = $item->id;
                 $nomina->name = $item->name;
                 $nomina->total_servicios         = VentaServicio::where('responsable_id', $item->id)->where('comision_gerente', '!=', 'NULL')->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->count();
                 $nomina->total_comision_dolares  = VentaServicio::where('responsable_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_gerente');
-
+                $nomina->total_comision_venprod    = VentaProducto::where('responsable', $responsable)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_gerente');
+                
                 //Recorro el array de las asignaciones en bolivares
                 for ($i=0; $i < count($this->asignacion_bolivares); $i++) {
 
@@ -125,7 +129,7 @@ class NomEncargado extends Component
                 $nomina->salario_quincenal = $item->salario / 2;
                 $nomina->fecha_ini = $this->desde;
                 $nomina->fecha_fin = $this->hasta;
-                $nomina->total_dolares = $nomina->salario_quincenal + $nomina->total_comision_dolares - $nomina->deducciones_dolares;
+                $nomina->total_dolares = ($nomina->salario_quincenal + $nomina->total_comision_dolares + $nomina->total_comision_venprod) - $nomina->deducciones_dolares;
                 $nomina->total_bolivares = ($nomina->total_dolares * $tasa_bcv) + (($nomina->asignaciones_bolivares) ? $nomina->asignaciones_bolivares : 0.00);
                 $nomina->quincena = $this->quincena;
                 $nomina->cod_quincena = $periodo;

@@ -9,6 +9,7 @@ use App\Models\NomManicurista as ModelsNomManicurista;
 use App\Models\PeriodoNomina;
 use App\Models\TasaBcv;
 use App\Models\User;
+use App\Models\VentaProducto;
 use App\Models\VentaServicio;
 use Exception;
 use Filament\Notifications\Notification;
@@ -155,6 +156,7 @@ class NomManicurista extends Component
 
                 $nomina->total_comision_dolares    = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_dolares');
                 $nomina->total_comision_bolivares  = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_bolivares');
+                $nomina->total_comision_venprod    = VentaProducto::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_empleado');
                 $nomina->total_propina_bsd         = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('propina_bsd');
                 $nomina->total_propina_usd         = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('propina_usd');
                 
@@ -191,7 +193,7 @@ class NomManicurista extends Component
                 $nomina->comision_membresias = $total_comision * $tasa_bcv;
                 $nomina->fecha_ini          = $this->desde;
                 $nomina->fecha_fin          = $this->hasta;
-                $nomina->total_dolares      = ($nomina->total_comision_dolares + $nomina->total_propina_usd) - $nomina->deducciones_dolares;
+                $nomina->total_dolares      = ($nomina->total_comision_dolares + $nomina->total_propina_usd + $nomina->total_comision_venprod) - $nomina->deducciones_dolares;
                 $nomina->total_bolivares    = ($nomina->total_comision_bolivares + $nomina->asignaciones_bolivares + $nomina->comision_membresias + $nomina->total_propina_bsd) - $nomina->deducciones_bolivares;
                 $nomina->quincena           = $this->quincena;
                 $nomina->cod_quincena       = $periodo;

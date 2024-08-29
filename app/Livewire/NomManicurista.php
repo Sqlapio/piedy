@@ -129,7 +129,7 @@ class NomManicurista extends Component
 
             //Total de membresiaatendidas en el rabgo de fecha seleccionado
             $sum_membresia = MovimientoMembresia::where('descripcion', '=', 'consumo en tienda')->count();
-
+            dump($sum_membresia);
             foreach($data as $item)
             {
 
@@ -159,7 +159,7 @@ class NomManicurista extends Component
                 $nomina->total_comision_venprod    = VentaProducto::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_empleado');
                 $nomina->total_propina_bsd         = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('propina_bsd');
                 $nomina->total_propina_usd         = VentaServicio::where('empleado_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('propina_usd');
-                
+
                 //Recorro el array de las asignaciones en bolivares
                 for ($i=0; $i < count($this->asignacion_bolivares); $i++) {
                     $_bolivares = $this->asignacion_dolares[$item->id];
@@ -187,6 +187,7 @@ class NomManicurista extends Component
                     $_porcen_representacion = 0;
                 }else{
                     $_porcen_representacion = ($emp_membresia * 100) / $sum_membresia;
+                    dd($_porcen_representacion);
                 }
                 $total_comision = ($_porcen_representacion * $_40porcen) / 100;
 

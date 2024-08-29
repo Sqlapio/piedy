@@ -62,16 +62,16 @@ class Reporte extends Component
     {
         try {
 
-            $nomQuiropedista = NomQuiropedista::where('status', '1')->get();
-            $totalNomQuiropedistaDolares = $nomQuiropedista->sum('total_dolares');
+            $nomQuiropedista               = NomQuiropedista::where('status', '1')->get();
+            $totalNomQuiropedistaDolares   = $nomQuiropedista->sum('total_dolares');
             $totalNomQuiropedistaBolivares = $nomQuiropedista->sum('total_bolivares');
 
-            $nomManicurista = NomManicurista::where('status', '1')->get();
-            $totalNomManicuristaDolares = $nomManicurista->sum('total_dolares');
+            $nomManicurista               = NomManicurista::where('status', '1')->get();
+            $totalNomManicuristaDolares   = $nomManicurista->sum('total_dolares');
             $totalNomManicuristaBolivares = $nomManicurista->sum('total_bolivares');
 
-            $nomEncargado = NomEncargado::where('status', '1')->get();
-            $totalNomEncargadoDolares = $nomEncargado->sum('total_dolares');
+            $nomEncargado               = NomEncargado::where('status', '1')->get();
+            $totalNomEncargadoDolares   = $nomEncargado->sum('total_dolares');
             $totalNomEncargadoBolivares = $nomEncargado->sum('total_bolivares');
 
 

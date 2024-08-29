@@ -132,14 +132,11 @@ class Caja extends Component
 
         $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
 
-        if ($this->monto_giftcard != '') {
-            $total_vista = $total_servicios - $this->monto_giftcard + $total_productos;
-            $total_vista_bsd = $total_vista * $tasa_bcv;
-        } elseif($this->metodo_pago_pre == 2) {
+        if ($this->metodo_pago_pre == 2) {
             $comision = Comision::where('aplicacion', 'seguro')->first()->porcentaje;
             $total_vista = $total_servicios - (($total_servicios * 10) / 100) + $total_productos;
             $total_vista_bsd = $total_vista * $tasa_bcv;
-        }else{
+        } else {
             $total_vista = $total_servicios + $total_productos;
             $total_vista_bsd = $total_vista * $tasa_bcv;
         }
@@ -185,14 +182,12 @@ class Caja extends Component
             if ($valida_cod->status == '1' && $valida_cod->cliente_id != $item->cliente_id) {
                 session()->flash('error', 'TARJETA GIFTCARD ACTIVA!, PERO NO PERTENECE AL CLIENTE');
                 $this->reset(['codigo', 'monto_giftcard']);
-
             }
 
             if ($valida_cod->status == '2') {
-                session()->flash('error', 'TARJETA GIFTCARD INACTIVA. FECHA DE USO: '.$valida_cod->updated_at.'');
+                session()->flash('error', 'TARJETA GIFTCARD INACTIVA. FECHA DE USO: ' . $valida_cod->updated_at . '');
             }
-
-        }else {
+        } else {
             session()->flash('error', 'CODIGO NO EXISTE');
             $this->reset(['codigo', 'monto_giftcard']);
         }
@@ -219,11 +214,11 @@ class Caja extends Component
             Debugbar::info($item);
 
             $total_servicios = DB::table('detalle_asignacions')
-            ->select(DB::raw('SUM(costo) as total'))
-            ->where('cod_asignacion', $codigo['cod_asignacion'])
-            ->where('status', '1')
-            ->first()
-            ->total;
+                ->select(DB::raw('SUM(costo) as total'))
+                ->where('cod_asignacion', $codigo['cod_asignacion'])
+                ->where('status', '1')
+                ->first()
+                ->total;
 
             /**Calculo el total de la vista */
             $total_productos = DB::table('venta_productos')
@@ -245,261 +240,194 @@ class Caja extends Component
             if ($this->descripcion == 'Multiple') {
                 try {
 
-                        if ($this->ref_usd == '' && $this->ref_bsd == '') {
-                            $this->referencia = '';
-                        }
+                    if ($this->ref_usd == '' && $this->ref_bsd == '') {
+                        $this->referencia = '';
+                    }
 
-                        if ($this->ref_usd != '' && $this->ref_bsd == '') {
-                            $this->referencia = $this->ref_usd;
-                        }
+                    if ($this->ref_usd != '' && $this->ref_bsd == '') {
+                        $this->referencia = $this->ref_usd;
+                    }
 
-                        if ($this->ref_usd == '' && $this->ref_bsd != '') {
-                            $this->referencia = $this->ref_bsd;
-                        }
+                    if ($this->ref_usd == '' && $this->ref_bsd != '') {
+                        $this->referencia = $this->ref_bsd;
+                    }
 
-                        if ($this->ref_usd != '' && $this->ref_bsd != '') {
-                            $this->referencia = $this->ref_usd . '-' . $this->ref_bsd;
-                        }
+                    if ($this->ref_usd != '' && $this->ref_bsd != '') {
+                        $this->referencia = $this->ref_usd . '-' . $this->ref_bsd;
+                    }
 
-                        /**Obtengo el codigo del servicio a facturar */
-                        $srv_vip = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
-                            ->where('status', '1')
-                            ->first()
-                            ->cod_servicio;
+                    /**Obtengo el codigo del servicio a facturar */
+                    $srv_vip = DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)
+                        ->where('status', '1')
+                        ->first()
+                        ->cod_servicio;
 
-                        /**Pregunto? si la asignacion del servicio en VIP */
-                        $tipoSrv = Servicio::where('cod_servicio', $srv_vip)->first();
+                    /**Pregunto? si la asignacion del servicio en VIP */
+                    $tipoSrv = Servicio::where('cod_servicio', $srv_vip)->first();
 
-                        /**CASO DE USO 1
-                         * METODO DE PAGO: SOLO CON GIFTCARD
-                         */
-                        if ($this->monto_giftcard != '') {
+                    /**CASO DE USO 1
+                     * METODO DE PAGO: SOLO CON GIFTCARD
+                     */
+                    if ($this->monto_giftcard != '') {
 
-                            /**Tomo la informacion de giftCard segun el codigo de 4 digitos asignado */
-                            $valida_cod = GiftCard::where('pgc', $this->codigo)->first();
+                        /**Tomo la informacion de giftCard segun el codigo de 4 digitos asignado */
+                        $valida_cod = GiftCard::where('pgc', $this->codigo)->first();
 
-                            /**Valido que el monto de la giftcard no puede ser mayor al monto total a pagar*/
-                            if ($this->monto_giftcard > $total_vista) {
-                                throw new Exception("El monto de Giftcard es mayor al monto del servicio total. Favor intente con otra", 401);
-                            } else {
-                                /**Calculo el nuevo valor del servicio restando el valor de la giftcard */
-                                $total_vista_actualizado = $total_vista - $this->monto_giftcard;
+                        /**Valido que el monto de la giftcard no puede ser mayor al monto total a pagar*/
+                        if ($this->monto_giftcard < $total_vista) {
+                            throw new Exception("El monto de Giftcard es menor al monto del servicio total. Favor intente con otra", 401);
+                        } else {
 
-                                /**Si el total a pagar es igual a cero(0), implica que el cliente va a cancelar el total de la cuenta con la giftcard */
-                                if($total_vista_actualizado == 0){
-                                    /**Controlador para calcular las comisiones */
-                                    $res = UtilsController::cal_comision_giftCard($this->monto_giftcard, $tipoSrv);
+                            $res = UtilsController::cal_comision_giftCard($total_vista, $tipoSrv->asignacion);
 
-                                    /**
-                                     * Actualizamos la tabla de ventas, Detalles de asignacion y Disponible
-                                     */
-                                    $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
-                                        ->update([
-                                            'metodo_pago'           => ($this->op1 != '') ? $this->op1 : 'N/A',
-                                            'metodo_pago_dos'       => ($this->op2 != '') ? $this->op2 : 'N/A',
-                                            'metodo_pago_prepagado' => ($this->metodo_pago_pre != '') ? $this->metodo_pago_pre : 'N/A',
-                                            'referencia'            => $valida_cod->referencia,
-                                            'total_USD'             => $total_vista,
-                                            'pago_usd'              => 0.00,
-                                            'pago_bsd'              => ($this->valor_dos == '') ? 0.00 : Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
-                                            'propina_usd'           => ($this->propina_usd != '') ? $this->propina_usd : 0.00,
-                                            'propina_bsd'           => ($this->propina_bsd != '') ? $this->propina_bsd : 0.00,
-                                            'referencia_propina'    => $this->ref_propina,
-                                            'comision_dolares'      => $res['comision_usd_emp_valorUno'],
-                                            'comision_bolivares'    => $res['comision_bs_emp_valorDos'],
-                                            'comision_gerente'      => $res['comision_usd_gte'],
-                                            'responsable_id'        => Auth::user()->id,
-                                            'responsable'           => Auth::user()->name,
-                                        ]);
+                            /**Valido el estatus de la giftcard se encuentre activa(1) y que pertenesca al cliente */
+                            if ($valida_cod->status == '1' && $valida_cod->cliente_id == $item->cliente_id)
+                            {
+                                $movimiento                     = new MovimientoGiftCard();
+                                $movimiento->gift_card_id       = $valida_cod->id;
+                                $movimiento->codigo_seguridad   = $valida_cod->codigo_seguridad;
+                                $movimiento->cliente_id         = $item->cliente_id;
+                                $movimiento->monto_pagado       = $this->monto_giftcard;
+                                $movimiento->fecha_debito       = date('d-m-Y');
+                                $movimiento->responsable        = Auth::user()->name;
+                                $movimiento->save();
 
-                                    /**Valido el estatus de la giftcard se encuentre activa(1) y que pertenesca al cliente */
-                                    if ($valida_cod->status == '1' && $valida_cod->cliente_id == $item->cliente_id) {
-                                        $movimiento = new MovimientoGiftCard();
-                                        $movimiento->gift_card_id = $valida_cod->id;
-                                        $movimiento->codigo_seguridad = $valida_cod->codigo_seguridad;
-                                        $movimiento->cliente_id = $item->cliente_id;
-                                        $movimiento->monto_pagado = $this->monto_giftcard;
-                                        $movimiento->fecha_debito = date('d-m-Y');
-                                        $movimiento->responsable = Auth::user()->name;
-                                        $movimiento->save();
-
-                                        /**Actualizo el status de la giftCard a 2, que significa que ya fue utilizada */
-                                        GiftCard::where('pgc', $this->codigo)
-                                        ->update([
-                                            /**Giftcard usada */
-                                            'status' => '2'
-                                        ]);
-
-                                    } else {
-                                        throw new Exception("La tarjeta GiftCard ya fue consumida en su totalidad, ó no pertenece al cliente. Favor intente con otra", 401);
-                                    }
-
+                                $resto = $valida_cod->monto - $total_vista;
+                                if(($resto) == 0){
+                                    GiftCard::where('pgc', $this->codigo)->where('status', 1)->update([
+                                        'monto' => $resto,
+                                        'status' => '2',
+                                    ]);
                                 }else{
-                                    /**Al entrean aqui, quiere decir que el cliente va a cancelar de forma parcial, una parte con la giftcard y el resto seleccionando uno
-                                     * o ambos metodos de pago que serian en Dolares y/o Bolivares
-                                     */
-
-                                     /**Restriccion para que el cliente seleccione otro metodo de pago para completar la cuenta
-                                      * ya que la giftcard debe usarce completa y NO DE FORMA PARCIAL
-                                      */
-                                    if($this->valor_uno == '' || $this->valor_dos == '')
-                                    {
-                                        throw new Exception("Debe seleccionar un metodo de pago en Dolares o en Bolivares", 401);
-                                    }
-
-                                    /**Controlador para calcular las comisiones */
-                                    $res = UtilsController::cal_comision_empleado($this->valor_uno, $this->valor_dos, $tipoSrv, $total_vista, $this->monto_giftcard);
-
-                                    /**
-                                     * Actualizamos la tabla de ventas, Detalles de asignacion y Disponible
-                                     */
-                                    $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
-                                        ->update([
-                                            'metodo_pago'           => ($this->op1 != '') ? $this->op1 : 'N/A',
-                                            'metodo_pago_dos'       => ($this->op2 != '') ? $this->op2 : 'N/A',
-                                            'metodo_pago_prepagado' => ($this->metodo_pago_pre != '') ? $this->metodo_pago_pre : 'N/A',
-                                            'referencia'            => $this->referencia,
-                                            'total_USD'             => $total_vista,
-                                            'pago_usd'              => ($this->valor_uno == '') ? 0.00 : floatval($this->valor_uno),
-                                            'pago_bsd'              => ($this->valor_dos == '') ? 0.00 : Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
-                                            'propina_usd'           => ($this->propina_usd != '') ? $this->propina_usd : 0.00,
-                                            'propina_bsd'           => ($this->propina_bsd != '') ? $this->propina_bsd : 0.00,
-                                            'referencia_propina'    => $this->ref_propina,
-                                            'comision_dolares'      => $res['comision_usd_emp_valorUno'],
-                                            'comision_bolivares'    => $res['comision_bs_emp_valorDos'],
-                                            'comision_gerente'      => $res['comision_usd_gte'],
-                                            'responsable_id'        => Auth::user()->id,
-                                            'responsable'           => Auth::user()->name,
-                                        ]);
-
-                                    /**Valido el estatus de la giftcard se encuentre activa(1) y que pertenesca al cliente */
-                                    if ($valida_cod->status == '1' && $valida_cod->cliente_id == $item->cliente_id) {
-                                        $movimiento = new MovimientoGiftCard();
-                                        $movimiento->gift_card_id = $valida_cod->id;
-                                        $movimiento->codigo_seguridad = $valida_cod->codigo_seguridad;
-                                        $movimiento->cliente_id = $item->cliente_id;
-                                        $movimiento->monto_pagado = $valida_cod->monto;
-                                        $movimiento->fecha_debito = date('d-m-Y');
-                                        $movimiento->responsable = Auth::user()->name;
-                                        $movimiento->save();
-
-                                        /**Actualizo el status de la giftCard a 2, que significa que ya fue utilizada */
-                                        GiftCard::where('pgc', $this->codigo)
-                                        ->update([
-                                            /**giftcard usada */
-                                            'status' => '2'
-                                        ]);
-
-                                    } else {
-                                        throw new Exception("La tarjeta GiftCard ya fue consumida en su totalidad, ó no pertenece al cliente. Favor intente con otra", 401);
-                                    }
-
+                                    GiftCard::where('pgc', $this->codigo)->where('status', 1)->update([
+                                        'monto' => $valida_cod->monto - $total_vista,
+                                    ]);
                                 }
+
+                            }else {
+                                throw new Exception("La tarjeta GiftCard ya fue consumida en su totalidad, ó no pertenece al cliente. Favor intente con otra", 401);
                             }
-
-                        }
-
-                        if ($this->metodo_pago_pre == '') {
-
-                            /**
-                             * Logica para calcular el porcentaje de los servicios sin tocar el valor de los productos
-                             * que ya fue calculado en pasos anteriores, al momento de asignar el prodcuto.
-                             * number_format($total_vista_bsd, 2, ",", ".")
-                             */
-                            if($total_productos > 0){
-                                /**Calculo el porcentaje que representa el total de los servicios */
-                                $porcen_total_srv = ($total_servicios * 100) / $total_vista;
-
-                                /**Calculoel porcentaje que representa el valor1($) y el valor2(Bs), que es la forma de pago del cliente */
-                                $new_valor_uno = number_format((($porcen_total_srv * floatval($this->valor_uno)) / 100), 2, ",", ".");
-
-                                /**Calculoel porcentaje que representa el valor1($) y el valor2(Bs), que es la forma de pago del cliente */
-                                $new_valor_dos = number_format((($porcen_total_srv * Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos)))) / 100), 2, ",", ".");
-
-                                /**Busco la comision total del empleado calculada en la asignacion del producto */
-                                $comision_emp_venprod = DB::table('venta_productos')
-                                ->select(DB::raw('SUM(comision_empleado) as total'))
-                                ->where('cod_asignacion', $codigo['cod_asignacion'])
-                                ->where('facturado', '1')
-                                ->first()->total;
-
-                                /**Busco la comision total del gerente calculada en la asignacion del producto */
-                                $comision_gerente_venprod = DB::table('venta_productos')
-                                ->select(DB::raw('SUM(comision_gerente) as total'))
-                                ->where('cod_asignacion', $codigo['cod_asignacion'])
-                                ->where('facturado', '1')
-                                ->first()->total;
-
-                            }else{
-                                $new_valor_uno = $this->valor_uno;
-                                $new_valor_dos = $this->valor_dos;
-
-                            }
-
-                            /**
-                             * AQUI DEBO LOCOCAR LA LOGICA PARA PODER SERPARAR LAS CANTIDADES Y PODER OBTENER EL VALOR 1 Y EL VALOR 2
-                             * QUE VIAJAN AL CONTROLADOR
-                             *
-                             * ($this->valor_uno, $this->valor_dos)
-                             */
-                            // dump($new_valor_uno, floatval($new_valor_uno), $new_valor_dos, number_format($new_valor_dos, 2, ",", "."));
-                            /**Controlador para calcular las comisiones */
-                            $res = UtilsController::cal_comision_empleado($new_valor_uno, $new_valor_dos, $tipoSrv->asignacion, $tipoSrv->tipo_servicio_id, $total_servicios, $this->monto_giftcard);
-
                             /**
                              * Actualizamos la tabla de ventas, Detalles de asignacion y Disponible
-                             * ($total_productos > 0) ?
                              */
                             $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
                                 ->update([
                                     'metodo_pago'           => ($this->op1 != '') ? $this->op1 : 'N/A',
                                     'metodo_pago_dos'       => ($this->op2 != '') ? $this->op2 : 'N/A',
                                     'metodo_pago_prepagado' => ($this->metodo_pago_pre != '') ? $this->metodo_pago_pre : 'N/A',
-                                    'referencia'            => ($this->referencia == '') ? $this->referencia : 'N/A',
+                                    'referencia'            => $valida_cod->referencia,
                                     'total_USD'             => $total_vista,
-                                    'pago_usd'              => ($this->valor_uno == '') ? 0.00 : floatval($this->valor_uno),
+                                    'pago_usd'              => 0.00,
                                     'pago_bsd'              => ($this->valor_dos == '') ? 0.00 : Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
                                     'propina_usd'           => ($this->propina_usd != '') ? $this->propina_usd : 0.00,
                                     'propina_bsd'           => ($this->propina_bsd != '') ? $this->propina_bsd : 0.00,
                                     'referencia_propina'    => $this->ref_propina,
                                     'comision_dolares'      => $res['comision_usd_emp_valorUno'],
                                     'comision_bolivares'    => $res['comision_bs_emp_valorDos'],
-                                    'comision_gerente'      => ($total_productos > 0) ? $res['comision_usd_gte'] + $comision_gerente_venprod : $res['comision_usd_gte'],
-                                    'comision_emp_venprod'  => ($total_productos > 0) ? $comision_emp_venprod : 0.00,
+                                    'comision_gerente'      => $res['comision_usd_gte'],
                                     'responsable_id'        => Auth::user()->id,
                                     'responsable'           => Auth::user()->name,
                                 ]);
 
-                            if($facturar){
-                                /**Estatus facturado para los productos vendidos por el tecnico */
-                                $prod_facturado = VentaProducto::where('cod_asignacion', $item->cod_asignacion)
-                                ->where('facturado', 1)->get();
-                                foreach($prod_facturado as $value)
-                                {
-                                    $value->facturado = 2;
-                                    $value->save();
-                                }
+                        }
+                    }
 
-                            }
+                    if ($this->metodo_pago_pre == '') {
+
+                        /**
+                         * Logica para calcular el porcentaje de los servicios sin tocar el valor de los productos
+                         * que ya fue calculado en pasos anteriores, al momento de asignar el prodcuto.
+                         * number_format($total_vista_bsd, 2, ",", ".")
+                         */
+                        if ($total_productos > 0) {
+                            /**Calculo el porcentaje que representa el total de los servicios */
+                            $porcen_total_srv = ($total_servicios * 100) / $total_vista;
+
+                            /**Calculoel porcentaje que representa el valor1($) y el valor2(Bs), que es la forma de pago del cliente */
+                            $new_valor_uno = number_format((($porcen_total_srv * floatval($this->valor_uno)) / 100), 2, ",", ".");
+
+                            /**Calculoel porcentaje que representa el valor1($) y el valor2(Bs), que es la forma de pago del cliente */
+                            $new_valor_dos = number_format((($porcen_total_srv * Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos)))) / 100), 2, ",", ".");
+
+                            /**Busco la comision total del empleado calculada en la asignacion del producto */
+                            $comision_emp_venprod = DB::table('venta_productos')
+                                ->select(DB::raw('SUM(comision_empleado) as total'))
+                                ->where('cod_asignacion', $codigo['cod_asignacion'])
+                                ->where('facturado', '1')
+                                ->first()->total;
+
+                            /**Busco la comision total del gerente calculada en la asignacion del producto */
+                            $comision_gerente_venprod = DB::table('venta_productos')
+                                ->select(DB::raw('SUM(comision_gerente) as total'))
+                                ->where('cod_asignacion', $codigo['cod_asignacion'])
+                                ->where('facturado', '1')
+                                ->first()->total;
+                        } else {
+                            $new_valor_uno = $this->valor_uno;
+                            $new_valor_dos = $this->valor_dos;
                         }
 
-                        DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
+                        /**
+                         * AQUI DEBO LOCOCAR LA LOGICA PARA PODER SERPARAR LAS CANTIDADES Y PODER OBTENER EL VALOR 1 Y EL VALOR 2
+                         * QUE VIAJAN AL CONTROLADOR
+                         *
+                         * ($this->valor_uno, $this->valor_dos)
+                         */
+                        // dump($new_valor_uno, floatval($new_valor_uno), $new_valor_dos, number_format($new_valor_dos, 2, ",", "."));
+                        /**Controlador para calcular las comisiones */
+                        $res = UtilsController::cal_comision_empleado($new_valor_uno, $new_valor_dos, $tipoSrv->asignacion, $tipoSrv->tipo_servicio_id, $total_servicios, $this->monto_giftcard);
+
+                        /**
+                         * Actualizamos la tabla de ventas, Detalles de asignacion y Disponible
+                         * ($total_productos > 0) ?
+                         */
+                        $facturar = DB::table('venta_servicios')->where('cod_asignacion', $item->cod_asignacion)
                             ->update([
-                                'status' => '2',
+                                'metodo_pago'           => ($this->op1 != '') ? $this->op1 : 'N/A',
+                                'metodo_pago_dos'       => ($this->op2 != '') ? $this->op2 : 'N/A',
+                                'metodo_pago_prepagado' => ($this->metodo_pago_pre != '') ? $this->metodo_pago_pre : 'N/A',
+                                'referencia'            => ($this->referencia == '') ? $this->referencia : 'N/A',
+                                'total_USD'             => $total_vista,
+                                'pago_usd'              => ($this->valor_uno == '') ? 0.00 : floatval($this->valor_uno),
+                                'pago_bsd'              => ($this->valor_dos == '') ? 0.00 : Str::replace(',', '.', (Str::replace('.', '', $this->valor_dos))),
+                                'propina_usd'           => ($this->propina_usd != '') ? $this->propina_usd : 0.00,
+                                'propina_bsd'           => ($this->propina_bsd != '') ? $this->propina_bsd : 0.00,
+                                'referencia_propina'    => $this->ref_propina,
+                                'comision_dolares'      => $res['comision_usd_emp_valorUno'],
+                                'comision_bolivares'    => $res['comision_bs_emp_valorDos'],
+                                'comision_gerente'      => ($total_productos > 0) ? $res['comision_usd_gte'] + $comision_gerente_venprod : $res['comision_usd_gte'],
+                                'comision_emp_venprod'  => ($total_productos > 0) ? $comision_emp_venprod : 0.00,
+                                'responsable_id'        => Auth::user()->id,
+                                'responsable'           => Auth::user()->name,
                             ]);
 
-                        Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
-                            ->update([
-                                'status' => 'facturado'
-                            ]);
+                        if ($facturar) {
+                            /**Estatus facturado para los productos vendidos por el tecnico */
+                            $prod_facturado = VentaProducto::where('cod_asignacion', $item->cod_asignacion)
+                                ->where('facturado', 1)->get();
+                            foreach ($prod_facturado as $value) {
+                                $value->facturado = 2;
+                                $value->save();
+                            }
+                        }
+                    }
 
-                        Notification::make()
-                            ->title('La factura fue cerrada con exito')
-                            ->success()
-                            ->send();
+                    DetalleAsignacion::where('cod_asignacion', $item->cod_asignacion)->where('status', '1')
+                        ->update([
+                            'status' => '2',
+                        ]);
 
-                        $this->redirect('/cabinas');
+                    Disponible::where('cod_asignacion', $item->cod_asignacion)->where('status', 'por facturar')
+                        ->update([
+                            'status' => 'facturado'
+                        ]);
 
+                    Notification::make()
+                        ->title('La factura fue cerrada con exito')
+                        ->success()
+                        ->send();
+
+                    $this->redirect('/cabinas');
                 } catch (\Throwable $th) {
                     dd($th);
                     Notification::make()
@@ -548,14 +476,11 @@ class Caja extends Component
 
         $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
 
-        if ($this->monto_giftcard != '') {
-            $total_vista = $total_servicios - $this->monto_giftcard + $total_productos;
-            $total_vista_bsd = $total_vista * $tasa_bcv;
-        } elseif($this->metodo_pago_pre == 2) {
+        if ($this->metodo_pago_pre == 2) {
             $comision = Comision::where('aplicacion', 'seguro')->first()->porcentaje;
             $total_vista = $total_servicios - (($total_servicios * 10) / 100) + $total_productos;
             $total_vista_bsd = $total_vista * $tasa_bcv;
-        }else{
+        } else {
             $total_vista = $total_servicios + $total_productos;
             $total_vista_bsd = $total_vista * $tasa_bcv;
         }

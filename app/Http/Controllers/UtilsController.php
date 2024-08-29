@@ -27,6 +27,7 @@ class UtilsController extends Controller
 
     static function cal_comision_giftCard($monto, $tipoSrv)
     {
+
         try {
             /**1.- Busco el valor de la quiropedia basica */
             $quiroBasica = Servicio::where('descripcion', 'Quiropedia Basica')->first()->costo;

@@ -74,6 +74,11 @@
                                         <x-input right-icon="calculator" wire:change="conver_deduccion_dolares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="deduccion_dolares.{{ $data[$i]->id }}" type="email" />
                                     </div>
                                 </td>
+                                <td class="px-6 py-4">
+                                    <div class="">
+                                        <x-input right-icon="calculator" wire:change="conver_deduccion_bolivares({{ $data[$i]->id }})" id="{{ $data[$i]->id }}" wire:model="deduccion_bolivares.{{ $data[$i]->id }}" type="email" />
+                                    </div>
+                                </td>
                             </tr>
                         @endfor
                     </tbody>

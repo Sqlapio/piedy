@@ -280,7 +280,7 @@
                 <div class="relative overflow-x-auto shadow-md rounded-lg border">
                     <table class="table-fixed w-full text-[8px] text-left text-gray-500 dark:text-gray-400">
                         <thead class=" text-[8px] text-black uppercase bg-gray-300">
-                            @if ($area_trabajo == 'Tienda')
+                            @if ($area_trabajo == 'Tienda' || $area_trabajo == 'Administración')
                                 <tr>
                                     <th scope="col" class="px-6 py-3 ">
                                         cliente
@@ -320,7 +320,7 @@
                         </thead>
                         <tbody>
                             @foreach($servicios as $servicio)
-                            @if ($area_trabajo == 'Tienda')
+                            @if ($area_trabajo == 'Tienda' || $area_trabajo == 'Administración')
                                 <tr class="odd:bg-white even:bg-gray-200">
                                     <th class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[100px] truncate">
                                         {{ $servicio->cliente }}

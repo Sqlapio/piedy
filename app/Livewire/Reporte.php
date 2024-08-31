@@ -199,7 +199,7 @@ class Reporte extends Component
                     'pro_dura_servicios'    => ($nomina->promedio_duracion_servicios != 'null') ? $nomina->promedio_duracion_servicios : '0.00',
                     'total_dolares'         => ($user->area_trabajo == 'Tienda') ? $nomina->total_dolares + $nomina->total_comision_dolares : $nomina->total_dolares,
                     'dias_trabajados'       => $dias_trabajados,
-                    'total_bolivares'       => $nomina->total_bolivares + ((isset($total_comi_mem_atendidas)) ? $total_comi_mem_atendidas : 0),
+                    'total_bolivares'       => $nomina->total_bolivares,
                     'servicios'             => $servicios,
                     'nro_reporte'           => 'E'.$this->empleado.'-'.$this->periodo.''.$random,
                     'area_trabajo'          => $area_trabajo,
@@ -209,7 +209,7 @@ class Reporte extends Component
             ->withBrowsershot(function (Browsershot $browsershot) {
                     $browsershot->setNodeBinary(env('NODE')); //location of node
                     $browsershot->setNpmBinary(env('NPM'));
-                    $browsershot->setChromePath(env('CHROMIUM'));
+                    // $browsershot->setChromePath(env('CHROMIUM'));
                 })
             ->format(Format::Letter)
             ->margins(5, 0, 18, 0)

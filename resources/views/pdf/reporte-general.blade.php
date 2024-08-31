@@ -169,10 +169,10 @@
                                     Servicios con Comisión
                                 </th>
                                 <th scope="col" class="px-6 py-3 w-[80px]">
-                                    Comisiones($)
+                                    Comision($)
                                 </th>
                                 <th scope="col" class="px-6 py-3 w-[80px]">
-                                    Conversión(Bs.) a BCV
+                                    Comision Pro($)
                                 </th>
                                 <th scope="col" class="px-6 py-3 w-[80px]">
                                     Total($)
@@ -195,7 +195,7 @@
                                     {{ $item->total_comision_dolares }}
                                 </td>
                                 <td class="px-6 py-2 w-[80px]">
-                                    {{ $item->total_comision_dolares * $tasa_bcv  }}
+                                    {{ $item->total_comision_venprod  }}
                                 </td>
                                 <td class="px-6 py-2 w-[80px]">
                                     {{ $item->total_dolares }}

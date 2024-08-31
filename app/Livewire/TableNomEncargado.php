@@ -44,10 +44,10 @@ class TableNomEncargado extends Component implements HasForms, HasTable
                     ->searchable(),
 
                 TextColumn::make('total_comision_dolares')
-                    ->label('Comision($)')
+                    ->label('Comision Servicios($)')
                     ->sortable()
                     ->searchable(),
-                
+
                 TextColumn::make('total_comision_venprod')
                     ->label('Comision Productos($)')
                     ->sortable()

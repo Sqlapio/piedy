@@ -129,7 +129,7 @@ class NomManicurista extends Component
 
             //Total de membresiaatendidas en el rabgo de fecha seleccionado
             $sum_membresia = MovimientoMembresia::where('descripcion', '=', 'consumo en tienda')->count();
-            dump($sum_membresia);
+
             foreach($data as $item)
             {
 
@@ -187,7 +187,6 @@ class NomManicurista extends Component
                     $_porcen_representacion = 0;
                 }else{
                     $_porcen_representacion = ($emp_membresia * 100) / $sum_membresia;
-                    dd($_porcen_representacion);
                 }
                 $total_comision = ($_porcen_representacion * $_40porcen) / 100;
 

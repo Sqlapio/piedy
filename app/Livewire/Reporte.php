@@ -6,10 +6,12 @@ use App\Models\NomEncargado;
 use App\Models\NominaGeneral;
 use App\Models\NomManicurista;
 use App\Models\NomQuiropedista;
+use App\Models\MovimientoMembresia;
 use App\Models\PeriodoNomina;
 use App\Models\Reporte as ModelsReporte;
 use App\Models\TasaBcv;
 use App\Models\User;
+use App\Models\VentaProducto;
 use App\Models\VentaServicio;
 use Carbon\Carbon;
 use Exception;
@@ -157,6 +159,7 @@ class Reporte extends Component
                 $rango = date('d-m-Y', strtotime($nomina->fecha_ini)).' al '.date('d-m-Y', strtotime($nomina->fecha_fin));
                 $propinas_usd = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->sum('propina_usd');
                 $area_trabajo = $user->area_trabajo;
+                $total_productos = VentaProducto::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->sum('cantidad');
 
             }
 
@@ -167,6 +170,9 @@ class Reporte extends Component
                 $rango = date('d-m-Y', strtotime($nomina->fecha_ini)).' al '.date('d-m-Y', strtotime($nomina->fecha_fin));
                 $propinas_usd = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->sum('propina_usd');
                 $area_trabajo = $user->area_trabajo;
+                $total_productos = VentaProducto::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->sum('cantidad');
+                $total_mem_atendidas = MovimientoMembresia::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->count();
+                $total_comi_mem_atendidas = $nomina->comision_membresias;
             }
 
             if($user->area_trabajo == 'Tienda'){
@@ -175,6 +181,7 @@ class Reporte extends Component
                 $dias_trabajados = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('responsable_id', $user->id)->groupBy('fecha_venta')->count();
                 $rango = date('d-m-Y', strtotime($nomina->fecha_ini)).' al '.date('d-m-Y', strtotime($nomina->fecha_fin));
                 $area_trabajo = $user->area_trabajo;
+                $total_productos = VentaProducto::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->sum('cantidad');
             }
 
             pdf::view('pdf.reporte',
@@ -184,6 +191,7 @@ class Reporte extends Component
                     'periodo'               => $this->periodo,
                     'nombre'                => $user->name,
                     'total_servicios'       => $nomina->total_servicios,
+                    'total_productos'       => (isset($total_productos)) ? $total_productos : 0,
                     'propinas_bsd'          => ($user->area_trabajo == 'Tienda') ? '0.00' : $nomina->total_propina_bsd,
                     'propinas_usd'          => ($user->area_trabajo == 'Tienda') ? '0.00' : $propinas_usd,
                     'comision_bsd'          => ($user->area_trabajo == 'Tienda') ? '0.00' : $nomina->total_comision_bolivares,
@@ -191,10 +199,12 @@ class Reporte extends Component
                     'pro_dura_servicios'    => ($nomina->promedio_duracion_servicios != 'null') ? $nomina->promedio_duracion_servicios : '0.00',
                     'total_dolares'         => ($user->area_trabajo == 'Tienda') ? $nomina->total_dolares + $nomina->total_comision_dolares : $nomina->total_dolares,
                     'dias_trabajados'       => $dias_trabajados,
-                    'total_bolivares'       => $nomina->total_bolivares,
+                    'total_bolivares'       => $nomina->total_bolivares + ((isset($total_comi_mem_atendidas)) ? $total_comi_mem_atendidas : 0),
                     'servicios'             => $servicios,
                     'nro_reporte'           => 'E'.$this->empleado.'-'.$this->periodo.''.$random,
-                    'area_trabajo'          => $area_trabajo
+                    'area_trabajo'          => $area_trabajo,
+                    'total_mem_atendidas'   => (isset($total_mem_atendidas)) ? $total_mem_atendidas : 0,
+                    'total_comi_mem_atendidas' => (isset($total_comi_mem_atendidas)) ? $total_comi_mem_atendidas : 0,
                 ])
             ->withBrowsershot(function (Browsershot $browsershot) {
                     $browsershot->setNodeBinary(env('NODE')); //location of node

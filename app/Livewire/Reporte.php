@@ -160,6 +160,8 @@ class Reporte extends Component
                 $propinas_usd = VentaServicio::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->sum('propina_usd');
                 $area_trabajo = $user->area_trabajo;
                 $total_productos = VentaProducto::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->sum('cantidad');
+                $total_productos = VentaProducto::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->sum('cantidad');
+                $total_comi_ventaprod = $nomina->total_comision_venprod;
 
             }
 
@@ -173,6 +175,8 @@ class Reporte extends Component
                 $total_productos = VentaProducto::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->sum('cantidad');
                 $total_mem_atendidas = MovimientoMembresia::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->count();
                 $total_comi_mem_atendidas = $nomina->comision_membresias;
+                $total_productos = VentaProducto::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->sum('cantidad');
+                $total_comi_ventaprod = $nomina->total_comision_venprod;
             }
 
             if($user->area_trabajo == 'Tienda' || $user->area_trabajo == 'Administración'){
@@ -182,6 +186,7 @@ class Reporte extends Component
                 $rango = date('d-m-Y', strtotime($nomina->fecha_ini)).' al '.date('d-m-Y', strtotime($nomina->fecha_fin));
                 $area_trabajo = $user->area_trabajo;
                 $total_productos = VentaProducto::whereBetween('created_at', [$nomina->fecha_ini, $nomina->fecha_fin])->where('empleado_id', $user->id)->sum('cantidad');
+                $total_comi_ventaprod = $nomina->total_comision_venprod;
             }
 
             pdf::view('pdf.reporte',
@@ -192,6 +197,7 @@ class Reporte extends Component
                     'nombre'                => $user->name,
                     'total_servicios'       => $nomina->total_servicios,
                     'total_productos'       => (isset($total_productos)) ? $total_productos : 0,
+                    'total_comi_ventaprod'  => $total_comi_ventaprod,
                     'propinas_bsd'          => ($user->area_trabajo == 'Tienda' || $user->area_trabajo == 'Administración') ? '0.00' : $nomina->total_propina_bsd,
                     'propinas_usd'          => ($user->area_trabajo == 'Tienda' || $user->area_trabajo == 'Administración') ? '0.00' : $propinas_usd,
                     'comision_bsd'          => ($user->area_trabajo == 'Tienda' || $user->area_trabajo == 'Administración') ? '0.00' : $nomina->total_comision_bolivares,

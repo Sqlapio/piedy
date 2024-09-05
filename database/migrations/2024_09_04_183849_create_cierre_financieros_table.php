@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('fecha_ini');
             $table->string('fecha_fin');
             $table->string('codigo_quincena');
+            $table->integer('numero_quincena');
             $table->string('responsable');
             $table->timestamps();
         });

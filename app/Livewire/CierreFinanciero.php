@@ -6,12 +6,18 @@ use App\Models\CierreFinanciero as ModelsCierreFinanciero;
 use App\Models\DetalleAsignacion;
 use App\Models\GiftCard;
 use App\Models\Membresia;
+use App\Models\MovimientoMembresia;
 use App\Models\NominaGeneral;
+use App\Models\PeriodoNomina;
 use App\Models\Producto;
 use App\Models\TasaBcv;
+use App\Models\User;
 use App\Models\VentaProducto;
 use App\Models\VentaServicio;
+use Exception;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 use WireUi\Traits\Actions;
@@ -20,7 +26,6 @@ class CierreFinanciero extends Component
 {
     use Actions;
 
-    #[Rule('required', message: 'Campo obligatorio')]
     public $costo_operativo;
 
     #[Rule('required', message: 'Campo obligatorio')]
@@ -64,14 +69,22 @@ class CierreFinanciero extends Component
     function ejecutar_cierre()
     {
 
+
         try {
 
             $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
+            $quincena = PeriodoNomina::where('cod_quincena', $this->periodo)->first();
 
-            $total_ingreso_bolivares     = VentaServicio::whereBetween('created_at', [$this->desde, $this->hasta])->sum('pago_bsd');
-            $total_ingreso_bolivares_conversion = $total_ingreso_bolivares / $tasa_bcv;
+            if($quincena->numero_quincena == 2 && $this->costo_operativo == '')
+            {
+                throw new Exception("Esta realizando el calculo para el cierre financiero, debe cargar el costo operativo", 401);
+            }
 
-            $total_ingreso_dolares       = VentaServicio::whereBetween('created_at', [$this->desde, $this->hasta])->sum('pago_usd');
+
+            $servicios_ingreso_bolivares     = VentaServicio::whereBetween('created_at', [$this->desde, $this->hasta])->sum('pago_bsd');
+            $servicios_ingreso_bolivares_conversion = $servicios_ingreso_bolivares / $tasa_bcv;
+
+            $servicios_ingreso_dolares       = VentaServicio::whereBetween('created_at', [$this->desde, $this->hasta])->sum('pago_usd');
 
             $total_servicios             = DetalleAsignacion::whereBetween('created_at', [$this->desde, $this->hasta])->count();
 
@@ -95,7 +108,8 @@ class CierreFinanciero extends Component
             $total_comisiones_dolares    = $nomina_empleados->total_dolares;
 
             /**Indicador de Inventario */
-            $inventario = Producto::where('existencia', '=', 0)->count();
+            $inventario = Producto::whereBetween('updated_at', [$this->desde, $this->hasta])->where('existencia', '=', 0)->count();
+
             if($inventario > 0){
                 $indicador_inventario = 1;
             }else{
@@ -104,21 +118,28 @@ class CierreFinanciero extends Component
 
             /**Calculos Generales */
 
-            $total_general_ventas   = $total_ingreso_bolivares_conversion + $total_ingreso_dolares + $total_gif_card_vendidas_bsd_conversion + $total_gif_card_vendidas_bsd + $total_productos_vendidos + $total_membresias_vendidas;
+            $total_general_ventas   = $servicios_ingreso_bolivares_conversion + $servicios_ingreso_dolares + $total_gif_card_vendidas_bsd_conversion + $total_gif_card_vendidas_bsd + $total_productos_vendidos + $total_membresias_vendidas;
 
-            $utilidad_real          = $total_general_ventas - $total_comisiones_bolivares_conversion - $total_comisiones_dolares - $this->costo_operativo;
+            if($quincena->numero_quincena == 2){
+                $utilidad_real = $total_general_ventas - $total_comisiones_bolivares_conversion - $total_comisiones_dolares - $this->costo_operativo;
+            }else{
+                $utilidad_real = $total_general_ventas - $total_comisiones_bolivares_conversion - $total_comisiones_dolares;
 
-            /**Cargamos la informacion en la base de datos */
+            }
+
+            /**Cargamos la informacion en la base de datos
+             * LLenamos la tabla de cierre financiero
+            */
             $cierre_financiero = new ModelsCierreFinanciero();
             $cierre_financiero->total_general_ventas        = $total_general_ventas;
-            $cierre_financiero->total_ingreso_bolivares     = $total_ingreso_bolivares;
-            $cierre_financiero->total_ingreso_dolares       = $total_ingreso_dolares;
+            $cierre_financiero->total_ingreso_bolivares     = $servicios_ingreso_bolivares + $total_gif_card_vendidas_bsd;
+            $cierre_financiero->total_ingreso_dolares       = $servicios_ingreso_dolares + $total_gif_card_vendidas_usd + $total_membresias_vendidas;
             $cierre_financiero->total_servicios             = $total_servicios;
             $cierre_financiero->total_clientes_atendidos    = $total_clientes_atendidos;
             $cierre_financiero->total_membresias_vendidas   = $total_membresias_vendidas;
             $cierre_financiero->total_gif_card_vendidas     = $total_gif_card_vendidas_usd + $total_gif_card_vendidas_bsd_conversion;
             $cierre_financiero->total_productos_vendidos    = $total_productos_vendidos;
-            $cierre_financiero->total_costos_operativos     = $this->costo_operativo;
+            $cierre_financiero->total_costos_operativos     = ($this->costo_operativo != '') ? $this->costo_operativo : 0.00;
             $cierre_financiero->total_general_comiciones    = $total_comisiones_bolivares_conversion + $total_comisiones_dolares;
             $cierre_financiero->total_comisiones_bolivares  = $total_comisiones_bolivares;
             $cierre_financiero->total_comisiones_dolares    = $total_comisiones_dolares;
@@ -129,12 +150,49 @@ class CierreFinanciero extends Component
             $cierre_financiero->fecha_ini                   = $this->desde;
             $cierre_financiero->fecha_fin                   = $this->hasta;
             $cierre_financiero->codigo_quincena             = $this->periodo;
+            $cierre_financiero->numero_quincena             = $quincena->numero_quincena;
+            $cierre_financiero->mes                         = $quincena->mes;
             $cierre_financiero->responsable                 = Auth::user()->name;
-            $cierre_financiero->save();
+            // $cierre_financiero->save();
+
+            /**LLenamos la tabla de indicadores de gerente */
+            $gerentes = User::where('tipo_servicio_id', 3)->get();
+            foreach($gerentes as $item)
+            {
+                $gift_card_vendidas     = GiftCard::whereBetween('created_at', [$this->desde, $this->hasta])->where('empleado_id', $item->id)->count();
+                $membresias_vendidas    = MovimientoMembresia::whereBetween('created_at', [$this->desde, $this->hasta])->where('empleado_id', $item->id)->count();
+                $servicios_vip_vendidos = VentaServicio::where('responsable_id', $item->id)->where('comision_gerente', '!=', 'NULL')->whereBetween('created_at', [$this->desde, $this->hasta])->count();
+                $productos_vendidos     = VentaProducto::where('empleado_id', $item->id)->sum('cantidad');
+                $dias_trabajados        = DB::table('venta_servicios')
+                ->select(DB::raw('count(fecha_venta) as fecha'))
+                ->where('empleado_id', $item->id)
+                ->whereBetween('created_at', [$this->desde, $this->hasta])
+                ->groupBy('fecha_venta')
+                ->get();
+
+                dd($dias_trabajados);
+
+            }
+
+            $this->reset();
+
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-document-text')
+            ->iconColor('info')
+            ->color('info')
+            ->body('El cierre financiero fue ejecutado de forma correcta.')
+            ->send();
 
             //code...
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-document-text')
+            ->iconColor('danger')
+            ->color('danger')
+            ->body($th->getMessage())
+            ->send();
         }
 
     }

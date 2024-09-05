@@ -3,21 +3,21 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CierreFinancieroResource\Pages;
-use App\Filament\Resources\CierreFinancieroResource\RelationManagers;
 use App\Models\CierreFinanciero;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Filters\SelectFilter;
 
 class CierreFinancieroResource extends Resource
 {
     protected static ?string $model = CierreFinanciero::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-m-chart-bar-square';
+
+    protected static ?string $navigationLabel = 'Dashboard Financiero';
 
     public static function form(Form $form): Form
     {
@@ -85,6 +85,9 @@ class CierreFinancieroResource extends Resource
                 Forms\Components\TextInput::make('codigo_quincena')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('mes')
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('responsable')
                     ->required()
                     ->maxLength(255),
@@ -143,6 +146,8 @@ class CierreFinancieroResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('responsable')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('mes')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -153,7 +158,26 @@ class CierreFinancieroResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('mes')
+                ->options([
+                    'Enero' => 'Enero',
+                    'Febrero' => 'Febrero',
+                    'Marzo' => 'Marzo',
+                    'Abril' => 'Abril',
+                    'Mayo' => 'Mayo',
+                    'Junio' => 'Junio',
+                    'Julio' => 'Julio',
+                    'Agosto' => 'Agosto',
+                    'Septiembre' => 'Septiembre',
+                    'Octubre' => 'Octubre',
+                    'Noviembre' => 'Noviembre',
+                    'Diciembre' => 'Diciembre',
+                ]),
+                SelectFilter::make('numero_quincena')
+                ->options([
+                    '1' => 'Primera Quicena',
+                    '2' => 'Segunda Quincena',
+                ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

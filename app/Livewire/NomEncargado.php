@@ -110,8 +110,8 @@ class NomEncargado extends Component
                 $nomina->name = $item->name;
                 $nomina->total_servicios         = VentaServicio::where('responsable_id', $item->id)->where('comision_gerente', '!=', 'NULL')->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->count();
                 $nomina->total_comision_dolares  = VentaServicio::where('responsable_id', $item->id)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_gerente');
-                $nomina->total_comision_venprod    = VentaProducto::where('responsable', $responsable)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_gerente');
-                
+                $nomina->total_comision_venprod  = VentaProducto::where('responsable', $responsable)->whereBetween('created_at', [$this->desde.'.000', $this->hasta.'.000'])->sum('comision_gerente');
+
                 //Recorro el array de las asignaciones en bolivares
                 for ($i=0; $i < count($this->asignacion_bolivares); $i++) {
 

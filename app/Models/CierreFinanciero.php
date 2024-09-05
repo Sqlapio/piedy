@@ -39,6 +39,8 @@ class CierreFinanciero extends Model
         'fecha_ini',
         'fecha_fin',
         'codigo_quincena',
+        'mes',
+        'numero_quincena',
         'responsable',
     ];
 }

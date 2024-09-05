@@ -143,6 +143,13 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     })->name('cierre_general');
 
     /**
+     * Ruta para cierre financiero
+     */
+    Route::get('/c/f', function () {
+        return view('cierre-financiero');
+    })->name('cierre-financiero');
+
+    /**
      * Rutas para gastos
      */
     Route::get('/gastos', function () {

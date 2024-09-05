@@ -263,6 +263,18 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                     </div>
                 </div>
             </div>
+            {{-- Cierre Financiero --}}
+            <div wire:click="valida_tasa({{ 14 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
+                <div class="flex items-center w-24 h-24"></div>
+                <div class="ml-12 text-right">
+                    <div class="sm:hidden md:hidden lg:block mt-2 text-4xl text-white text- leading-7 font-bold">
+                        Cierre Financiero
+                    </div>
+                    <div class="mt-3 text-right text-xs font-semibold text-white">
+                        <div>Modulo para Cierre Financiero</div>
+                    </div>
+                </div>
+            </div>
         </div>
     @endif
 

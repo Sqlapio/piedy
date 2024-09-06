@@ -135,4 +135,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(VentaProducto::class, 'id', 'empleado_id');
     }
+
+    /**
+     * Get all of the comments for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function indicadores(): HasMany
+    {
+        return $this->hasMany(IndicadorVentaGerente::class, 'id', 'empleado_id');
+    }
 }

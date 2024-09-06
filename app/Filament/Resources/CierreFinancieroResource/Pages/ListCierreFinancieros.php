@@ -39,6 +39,7 @@ class ListCierreFinancieros extends ListRecords
             CierreFinancieroResource\Widgets\VentaServicioStats::class,
             CierreFinancieroResource\Widgets\Comision::class,
             CierreFinancieroResource\Widgets\VentaServicioPropinasStats::class,
+            CierreFinancieroResource\Widgets\IndicadorVentaGerente::class,
         ];
     }
 

@@ -43,7 +43,7 @@ class Comision extends BaseWidget
 
         return [
 
-            Stat::make('TOTAL COMISIONES ($)', '$'.number_format($this->getPageTableQuery()->sum('total_general_comiciones'), 2, '.', ','))
+            Stat::make('TOTAL COMISIONES EN DIVISAS($)', '$'.number_format($this->getPageTableQuery()->sum('total_general_comiciones'), 2, '.', ','))
                 ->description('Total neto comisiones en Dolares')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('success')
@@ -63,7 +63,7 @@ class Comision extends BaseWidget
                         ->toArray()
                 ),
 
-            Stat::make('COMISIONES ($)', '$'.number_format($this->getPageTableQuery()->sum('total_comisiones_dolares'), 2, '.', ','))
+            Stat::make('COMISIONES EN DIVISAS($)', '$'.number_format($this->getPageTableQuery()->sum('total_comisiones_dolares'), 2, '.', ','))
                 ->description('Comisión total por pago en dolares')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('success')

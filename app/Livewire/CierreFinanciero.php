@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\CierreFinanciero as ModelsCierreFinanciero;
 use App\Models\DetalleAsignacion;
 use App\Models\GiftCard;
+use App\Models\IndicadorVentaGerente;
 use App\Models\Membresia;
 use App\Models\MovimientoMembresia;
 use App\Models\NominaGeneral;
@@ -81,35 +82,27 @@ class CierreFinanciero extends Component
             }
 
 
-            $servicios_ingreso_bolivares     = VentaServicio::whereBetween('created_at', [$this->desde, $this->hasta])->sum('pago_bsd');
-            $servicios_ingreso_bolivares_conversion = $servicios_ingreso_bolivares / $tasa_bcv;
-
-            $servicios_ingreso_dolares       = VentaServicio::whereBetween('created_at', [$this->desde, $this->hasta])->sum('pago_usd');
-
-            $total_servicios             = DetalleAsignacion::whereBetween('created_at', [$this->desde, $this->hasta])->count();
-
-            $total_clientes_atendidos    = VentaServicio::whereBetween('created_at', [$this->desde, $this->hasta])->count('cliente');
-
-            $total_membresias_vendidas   = Membresia::whereBetween('created_at', [$this->desde, $this->hasta])->sum('monto');
-
-            $total_gif_card_vendidas_usd = GiftCard::whereBetween('created_at', [$this->desde, $this->hasta])->sum('pago_usd');
-
-            $total_gif_card_vendidas_bsd = GiftCard::whereBetween('created_at', [$this->desde, $this->hasta])->sum('pago_bsd');
-            $total_gif_card_vendidas_bsd_conversion = $total_gif_card_vendidas_bsd / $tasa_bcv;
-
-            $total_productos_vendidos    = VentaProducto::whereBetween('created_at', [$this->desde, $this->hasta])->sum('total_venta');
+            $servicios_ingreso_bolivares                = VentaServicio::whereBetween('created_at', [$this->desde, $this->hasta])->sum('pago_bsd');
+            $servicios_ingreso_bolivares_conversion     = $servicios_ingreso_bolivares / $tasa_bcv;
+            $servicios_ingreso_dolares                  = VentaServicio::whereBetween('created_at', [$this->desde, $this->hasta])->sum('pago_usd');
+            $total_servicios                            = DetalleAsignacion::whereBetween('created_at', [$this->desde, $this->hasta])->count();
+            $total_clientes_atendidos                   = VentaServicio::whereBetween('created_at', [$this->desde, $this->hasta])->count('cliente');
+            $total_membresias_vendidas_usd              = Membresia::whereBetween('created_at', [$this->desde, $this->hasta])->sum('pago_usd');
+            $membresias_vendidas_bsd                    = Membresia::whereBetween('created_at', [$this->desde, $this->hasta])->sum('pago_bsd');
+            $total_membresias_vendidas_bsd_conversion   = $membresias_vendidas_bsd / $tasa_bcv;
+            $total_gif_card_vendidas_usd                = GiftCard::whereBetween('created_at', [$this->desde, $this->hasta])->sum('pago_usd');
+            $total_gif_card_vendidas_bsd                = GiftCard::whereBetween('created_at', [$this->desde, $this->hasta])->sum('pago_bsd');
+            $total_gif_card_vendidas_bsd_conversion     = $total_gif_card_vendidas_bsd / $tasa_bcv;
+            $total_productos_vendidos                   = VentaProducto::whereBetween('created_at', [$this->desde, $this->hasta])->sum('total_venta');
 
             /**Comisiones de los empleados */
             $nomina_empleados  = NominaGeneral::where('cod_quincena', $this->periodo)->first();
-
             $total_comisiones_bolivares = $nomina_empleados->total_bolivares;
             $total_comisiones_bolivares_conversion = $total_comisiones_bolivares / $tasa_bcv;
-
             $total_comisiones_dolares    = $nomina_empleados->total_dolares;
 
             /**Indicador de Inventario */
             $inventario = Producto::whereBetween('updated_at', [$this->desde, $this->hasta])->where('existencia', '=', 0)->count();
-
             if($inventario > 0){
                 $indicador_inventario = 1;
             }else{
@@ -118,7 +111,13 @@ class CierreFinanciero extends Component
 
             /**Calculos Generales */
 
-            $total_general_ventas   = $servicios_ingreso_bolivares_conversion + $servicios_ingreso_dolares + $total_gif_card_vendidas_bsd_conversion + $total_gif_card_vendidas_bsd + $total_productos_vendidos + $total_membresias_vendidas;
+            $total_general_ventas   = $servicios_ingreso_bolivares_conversion
+            + $servicios_ingreso_dolares
+            + $total_gif_card_vendidas_bsd_conversion
+            + $total_gif_card_vendidas_usd
+            + $total_productos_vendidos
+            + $total_membresias_vendidas_usd
+            + $total_membresias_vendidas_bsd_conversion;
 
             if($quincena->numero_quincena == 2){
                 $utilidad_real = $total_general_ventas - $total_comisiones_bolivares_conversion - $total_comisiones_dolares - $this->costo_operativo;
@@ -132,11 +131,11 @@ class CierreFinanciero extends Component
             */
             $cierre_financiero = new ModelsCierreFinanciero();
             $cierre_financiero->total_general_ventas        = $total_general_ventas;
-            $cierre_financiero->total_ingreso_bolivares     = $servicios_ingreso_bolivares + $total_gif_card_vendidas_bsd;
-            $cierre_financiero->total_ingreso_dolares       = $servicios_ingreso_dolares + $total_gif_card_vendidas_usd + $total_membresias_vendidas;
+            $cierre_financiero->total_ingreso_bolivares     = $servicios_ingreso_bolivares + $total_gif_card_vendidas_bsd + $membresias_vendidas_bsd ;
+            $cierre_financiero->total_ingreso_dolares       = $servicios_ingreso_dolares + $total_gif_card_vendidas_usd + $total_membresias_vendidas_usd;
             $cierre_financiero->total_servicios             = $total_servicios;
             $cierre_financiero->total_clientes_atendidos    = $total_clientes_atendidos;
-            $cierre_financiero->total_membresias_vendidas   = $total_membresias_vendidas;
+            $cierre_financiero->total_membresias_vendidas   = $total_membresias_vendidas_usd + $total_membresias_vendidas_bsd_conversion;
             $cierre_financiero->total_gif_card_vendidas     = $total_gif_card_vendidas_usd + $total_gif_card_vendidas_bsd_conversion;
             $cierre_financiero->total_productos_vendidos    = $total_productos_vendidos;
             $cierre_financiero->total_costos_operativos     = ($this->costo_operativo != '') ? $this->costo_operativo : 0.00;
@@ -153,10 +152,10 @@ class CierreFinanciero extends Component
             $cierre_financiero->numero_quincena             = $quincena->numero_quincena;
             $cierre_financiero->mes                         = $quincena->mes;
             $cierre_financiero->responsable                 = Auth::user()->name;
-            // $cierre_financiero->save();
+            $cierre_financiero->save();
 
             /**LLenamos la tabla de indicadores de gerente */
-            $gerentes = User::where('tipo_servicio_id', 3)->get();
+            $gerentes = User::where('tipo_servicio_id', 3)->where('status', 1)->get();
             foreach($gerentes as $item)
             {
                 $gift_card_vendidas     = GiftCard::whereBetween('created_at', [$this->desde, $this->hasta])->where('empleado_id', $item->id)->count();
@@ -164,13 +163,27 @@ class CierreFinanciero extends Component
                 $servicios_vip_vendidos = VentaServicio::where('responsable_id', $item->id)->where('comision_gerente', '!=', 'NULL')->whereBetween('created_at', [$this->desde, $this->hasta])->count();
                 $productos_vendidos     = VentaProducto::where('empleado_id', $item->id)->sum('cantidad');
                 $dias_trabajados        = DB::table('venta_servicios')
-                ->select(DB::raw('count(fecha_venta) as fecha'))
-                ->where('empleado_id', $item->id)
-                ->whereBetween('created_at', [$this->desde, $this->hasta])
-                ->groupBy('fecha_venta')
+                ->select('responsable_id', 'fecha_venta')
+                ->where('responsable_id', 38)
+                ->whereBetween('created_at',['2024-08-01 00:00:00', '2024-08-15 23:59:59'])
+                ->groupBy('fecha_venta', 'responsable_id')
                 ->get();
 
-                dd($dias_trabajados);
+                $indicador = new IndicadorVentaGerente();
+                $indicador->empleado_id = $item->id;
+                $indicador->gift_card_vendidas = $gift_card_vendidas;
+                $indicador->membresias_vendidas = $membresias_vendidas;
+                $indicador->servicios_vip_vendidos = $servicios_vip_vendidos;
+                $indicador->productos_vendidos = $productos_vendidos;
+                $indicador->dias_trabajados = count($dias_trabajados);
+                $indicador->fecha_ini = $this->desde;
+                $indicador->fecha_fin = $this->hasta;
+                $indicador->fecha = now()->format('d-m-Y');
+                $indicador->codigo_quincena = $this->periodo;
+                $indicador->numero_quincena = $cierre_financiero->numero_quincena;
+                $indicador->mes = $cierre_financiero->mes;
+                $indicador->responsable = Auth::user()->name;
+                $indicador->save();
 
             }
 

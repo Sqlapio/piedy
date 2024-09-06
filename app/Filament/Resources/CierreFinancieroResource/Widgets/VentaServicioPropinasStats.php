@@ -67,7 +67,7 @@ class VentaServicioPropinasStats extends BaseWidget
                         ->toArray()
                 ),
 
-            Stat::make('TOTAL MEMBRESIAS VENDIDAS($)', '$'.number_format($this->getPageTableQuery()->sum('total_membresias_vendidas'), 2, '.', ','))
+            Stat::make('TOTAL MEMBRESIAS VENDIDAS EN DIVISAS($)', '$'.number_format($this->getPageTableQuery()->sum('total_membresias_vendidas'), 2, '.', ','))
                 ->description('Cantidad vendida: '.Membresia::whereBetween('created_at', [$data_financiera->fecha_ini, $data_financiera->fecha_fin])->count().' membresias')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('info')
@@ -77,7 +77,7 @@ class VentaServicioPropinasStats extends BaseWidget
                         ->toArray()
                 ),
 
-            Stat::make('TOTAL GIFTCARD VENDIDAS($)', '$'.number_format($this->getPageTableQuery()->sum('total_gif_card_vendidas'), 2, '.', ','))
+            Stat::make('TOTAL GIFTCARD VENDIDAS EN DIVISAS($)', '$'.number_format($this->getPageTableQuery()->sum('total_gif_card_vendidas'), 2, '.', ','))
                 ->description('Cantidad vendida: '.GiftCard::whereBetween('created_at', [$data_financiera->fecha_ini, $data_financiera->fecha_fin])->count().' giftcards')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('info')
@@ -87,7 +87,7 @@ class VentaServicioPropinasStats extends BaseWidget
                         ->toArray()
                 ),
 
-            Stat::make('TOTAL PRODUCTOS VENDIDOS($)', '$'.number_format($this->getPageTableQuery()->sum('total_productos_vendidos'), 2, '.', ','))
+            Stat::make('TOTAL PRODUCTOS VENDIDOS EN DIVISAS($)', '$'.number_format($this->getPageTableQuery()->sum('total_productos_vendidos'), 2, '.', ','))
                 ->description('Cantidad vendida: '.VentaProducto::whereBetween('created_at', [$data_financiera->fecha_ini, $data_financiera->fecha_fin])->sum('cantidad').' productos')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('warning')
@@ -97,7 +97,7 @@ class VentaServicioPropinasStats extends BaseWidget
                         ->toArray()
                 ),
 
-            Stat::make('INDICADOR DE INVENTARIO($)', $this->getPageTableQuery()->sum('indicador_inventario'))
+            Stat::make('INDICADOR DE INVENTARIO EN DIVISAS($)', $this->getPageTableQuery()->sum('indicador_inventario'))
                 ->description('1: Producto(s) en existencia cero - 0: Sin productos en cero')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('warning')

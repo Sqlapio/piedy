@@ -62,7 +62,7 @@
                         {{-- Metodo de pago --}}
                         <div class="w-full group mb-4">
                             <label class="mb-1 block text-xs text-black text-left">Metodo de Pago</label>
-                            <x-select placeholder="Método de pago" :options="['Transferencia', 'Pago Movil', 'Zelle']" wire:model.live="metodo_pago"/>
+                            <x-select placeholder="Método de pago" :options="['Efectivo', 'Punto de venta', 'Transferencia', 'Pago Movil', 'Zelle']" wire:model.live="metodo_pago"/>
                         </div>
 
                         {{-- Referencia --}}

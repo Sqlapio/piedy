@@ -18,7 +18,7 @@ $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
             </div>
 
             <h1 class="text-xl mb-6 font-bold text-black {{ $atr_hidden_renovar_form }}">Renovación de Membresia</h1>
-        
+
             {{-- FORMULARIO RENOVAR MEMBRESIA --}}
             <div class="rounded-xl mb-5 {{ $atr_hidden }} {{ $atr_hidden_renovar_form }}">
                 <div class="w-full mt-5">
@@ -108,7 +108,7 @@ $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
                             {{-- Metodo de pago --}}
                             <div class="w-full group mb-4">
                                 <label class="mb-1 block text-xs text-black text-left">Metodo de Pago</label>
-                                <x-select placeholder="Método de pago" :options="['Transferencia', 'Pago Movil', 'Zelle']" wire:model.live="metodo_pago" />
+                                <x-select placeholder="Método de pago" :options="['Efectivo', 'Punto de venta', 'Transferencia', 'Pago Movil', 'Zelle']" wire:model.live="metodo_pago" />
                             </div>
 
                             {{-- Referencia --}}
@@ -165,7 +165,7 @@ $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
                             {{-- <label for="floating_company" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono</label> --}}
                         </div>
                     </div>
-        
+
                     {{-- Boton agregar nuevo cliente --}}
                     <div class="flex justify-end p-2 mt-auto gap-5">
                         <div>
@@ -240,7 +240,7 @@ $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
                 @livewire('tabla-membresia')
             </div>
         </section>
-        
+
     @endif
 
     {{-- div para separacion --}}

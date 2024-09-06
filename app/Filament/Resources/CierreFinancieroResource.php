@@ -6,6 +6,7 @@ use App\Filament\Resources\CierreFinancieroResource\Pages;
 use App\Models\CierreFinanciero;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Pages\Concerns\ExposesTableToWidgets;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -18,6 +19,8 @@ class CierreFinancieroResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-m-chart-bar-square';
 
     protected static ?string $navigationLabel = 'Dashboard Financiero';
+
+    use ExposesTableToWidgets;
 
     public static function form(Form $form): Form
     {

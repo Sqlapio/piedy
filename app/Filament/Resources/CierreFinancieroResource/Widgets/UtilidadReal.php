@@ -53,7 +53,7 @@ class UtilidadReal extends BaseWidget
 
         return [
 
-            Stat::make('UTILIDAD REAL($)', '$'.number_format($this->getPageTableQuery()->sum('utilidad_real'), 2, '.', ','))
+            Stat::make('UTILIDAD REAL EN DIVISAS($)', '$'.number_format($this->getPageTableQuery()->sum('utilidad_real'), 2, '.', ','))
                 ->description('Utilidad Neta Real (Ganancia PIEDY)')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('primary')
@@ -62,7 +62,7 @@ class UtilidadReal extends BaseWidget
                         ->map(fn(TrendValue $value) => $value->aggregate)
                         ->toArray()
                 ),
-            Stat::make('COSTO OPERATIVO($)', '$'.number_format($this->getPageTableQuery()->sum('total_costos_operativos'), 2, '.', ','))
+            Stat::make('COSTO OPERATIVO EN DIVISAS($)', '$'.number_format($this->getPageTableQuery()->sum('total_costos_operativos'), 2, '.', ','))
                 ->description('Costos de alquiler, servicios y reposición de materia prima')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('info')

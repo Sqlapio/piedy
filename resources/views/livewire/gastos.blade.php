@@ -8,40 +8,33 @@ $monto = ModelsCajaChica::where('fecha', $hoy)->first();
     <div class="p-5">
         @livewire('notifications')
         <h1 class="text-xl mb-6 font-bold uppercase text-[#bd9c95]">Modulo de Gastos</h1>
-        {{-- tabla y boton del formulario de clientes --}}
-
-        {{-- BCV linea --}}
-        <div class="grid grid-cols-1 gap-4 py-3 mt-5">
-            {{-- CAJA CHICA --}}
-            <div class="flex justify-between">
-                <div class="flex items-center space-x-2 py-2" onclick="Livewire.dispatch('openModal', { component: 'modal-caja-chica' })">
-                    <img class="w-10 h-auto" src="{{ asset('images/expenses.png') }}" alt="">
-                    <div class="titulos">
-                        <div class="font-bold dark:text-white cursor-pointer">CAJA CHICA</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400 cursor-pointer">Monto de apertura: ${{ ($monto == null) ? '0.00' : $monto->monto }}</div>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-2 py-2" onclick="Livewire.dispatch('openModal', { component: 'modal-caja-chica' })">
-                    <img class="w-10 h-auto" src="{{ asset('images/calculator.png') }}" alt="">
-                    <div class="titulos">
-                        <div class="font-bold dark:text-white cursor-pointer">HABER:</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400 cursor-pointer">${{ ($monto == null) ? '0.00' : $monto->saldo }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         {{-- Formulario de registro de gastos --}}
-        <div class="bg-white rounded-xl {{ $ocultar_form_cliente }}">
+        <div class="bg-white rounded-xl">
             <div class="grid md:grid-cols-3 md:gap-6 mt-5">
                 <div class="px-2">
                     <x-input wire:model="descripcion" right-icon="user" label="Descripción" placeholder="Artículo de compra" />
                 </div>
                 <div class="px-2">
-                    <x-select label="Tipo de pago" placeholder="Tipo moneda de pago" :options="['USD']" wire:model.defer="forma_pago" />
+                    <x-inputs.phone label="Número de Factura" placeholder="######" wire:model.defer="numero_factura" mask="['########', '####']"/>
+                    {{-- <x-input wire:model="numero_factura" right-icon="user" label="Número de Factura" placeholder="Artículo de compra" /> --}}
                 </div>
                 <div class="px-2">
-                    <x-input wire:model="monto" label="Monto en ($ ó Bs.)" placeholder="monto de la compra" hint="Ejemplo: 1.258,62" />
+                    <x-input wire:model="descripcion" right-icon="user" label="Descripción" placeholder="Artículo de compra" />
+                </div>
+                <div class="px-2">
+                    <x-native-select
+                    label="Tipo de pago"
+                    :options="[
+                        ['name' => 'Dolares-USD',  'id' => 'usd'],
+                        ['name' => 'Bolivares-BS', 'id' => 'bsd']
+                    ]"
+                    option-label="name"
+                    option-value="id"
+                    wire:model.defer="forma_pago" />
+                </div>
+                <div class="px-2">
+                    <x-inputs.currency label="Monto de la factura" thousands="." decimal="," precision="4"  wire:model="monto" corner-hint="Eje: 1356,90 - 345,78"/>
                 </div>
             </div>
             <div class="flex justify-end p-2 mt-10">
@@ -63,7 +56,7 @@ $monto = ModelsCajaChica::where('fecha', $hoy)->first();
 
     {{-- div para sepracion del menu --}}
     <div class="w-full h-28"></div>
-    
+
     {{-- Menu para table --}}
     <div class="fixed sm:z-0 md:z-0 lg:z-50 w-full h-16 mt-5 max-w-lg -translate-x-1/2 bg-white border border-gray-200 rounded-full bottom-4 left-1/2 dark:bg-gray-700 dark:border-gray-600">
         <div class="grid h-full max-w-lg grid-cols-7 mx-auto ">

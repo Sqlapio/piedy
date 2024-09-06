@@ -163,8 +163,12 @@ class Membresia extends Component
                 $asignar_membresia->fecha_activacion    = now()->format('d-m-Y');
                 $asignar_membresia->fecha_exp           = date("d-m-Y", strtotime(date($asignar_membresia->fecha_activacion) . "+1 month"));
                 $asignar_membresia->monto               = $this->monto;
+                $asignar_membresia->metodo_pago         = $this->metodo_pago;
+                $asignar_membresia->pago_usd            = ($this->metodo_pago == 'Zelle' || $this->metodo_pago == 'Efectivo') ? $this->monto : 0.00;
+                $asignar_membresia->pago_bsd            = ($this->metodo_pago == 'Transferencia' || $this->metodo_pago == 'Pago Movil') ? $this->monto * $tasa : 0.00;
                 $asignar_membresia->referencia          = $this->referencia;
                 $asignar_membresia->barcode             = '/barcodes/'.$barcode.'.jpg';
+                $asignar_membresia->empleado_id         = Auth::user()->id;
                 $asignar_membresia->responsable         = Auth::user()->name;
                 $asignar_membresia->save();
 
@@ -288,7 +292,7 @@ class Membresia extends Component
                 ->body($th->getMessage())
                 ->send();
          }
-         
+
     }
 
     public function render()

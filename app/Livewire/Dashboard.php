@@ -189,6 +189,11 @@ class Dashboard extends Component
             $this->redirect('/l/srv');
 
         }
+        if($valor == 14)
+        {
+            $this->redirect('/c/f');
+
+        }
     }
 
     public function cierre_general()

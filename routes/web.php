@@ -143,6 +143,13 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     })->name('cierre_general');
 
     /**
+     * Ruta para cierre financiero
+     */
+    Route::get('/c/f', function () {
+        return view('cierre-financiero');
+    })->name('cierre-financiero');
+
+    /**
      * Rutas para gastos
      */
     Route::get('/gastos', function () {
@@ -353,7 +360,12 @@ Route::get('/pp', function () {
 });
 
 Route::get('/ex', function () {
-    $data = Disponible::where('cod_asignacion', 'Pca-70438679')->with('primeraAsignacion')->first();
-    dd($data);
+    $p = DB::table('venta_servicios')
+    ->select('responsable_id', 'fecha_venta')
+    ->where('responsable_id', 38)
+    ->whereBetween('created_at',['2024-08-01 00:00:00', '2024-08-15 23:59:59'])
+    ->groupBy('fecha_venta', 'responsable_id')
+    ->get();
+    dd(count($p));
 
 });

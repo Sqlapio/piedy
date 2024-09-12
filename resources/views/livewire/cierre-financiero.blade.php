@@ -26,10 +26,6 @@
                     <div>
                         <x-select wire:change="$emit('selected', $event.target.value)" label="Periodo de Nomina" wire:model.defer="periodo" placeholder="Seleccion" :async-data="route('api.periodo.nomina')" option-label="cod_quincena" option-value="cod_quincena"/>
                     </div>
-                    <!-- Costo operativo -->
-                    <div>
-                        <x-input wire:model="costo_operativo" label="Costo Operativo"/>
-                    </div>
 
                     <!-- Boton -->
                     <div class="mt-5">

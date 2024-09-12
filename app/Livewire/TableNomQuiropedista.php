@@ -111,7 +111,7 @@ class TableNomQuiropedista extends Component implements HasForms, HasTable
                 //
             ])
             ->striped()
-            ->defaultGroup('quincena')
+            ->defaultGroup('cod_quincena')
             ->filters([
                 //
             ])

@@ -28,8 +28,6 @@ class CierreFinanciero extends Component
 {
     use Actions;
 
-    public $costo_operativo;
-
     #[Rule('required', message: 'Campo obligatorio')]
     public $periodo;
 
@@ -71,17 +69,10 @@ class CierreFinanciero extends Component
     function ejecutar_cierre()
     {
 
-
         try {
 
             $tasa_bcv = TasaBcv::where('id', 1)->first()->tasa;
             $quincena = PeriodoNomina::where('cod_quincena', $this->periodo)->first();
-
-            if($quincena->numero_quincena == 2 && $this->costo_operativo == '')
-            {
-                throw new Exception("Esta realizando el calculo para el cierre financiero, debe cargar el costo operativo", 401);
-            }
-
 
             $servicios_ingreso_bolivares                = VentaServicio::whereBetween('created_at', [$this->desde, $this->hasta])->sum('pago_bsd');
             $servicios_ingreso_bolivares_conversion     = $servicios_ingreso_bolivares / $tasa_bcv;
@@ -95,11 +86,6 @@ class CierreFinanciero extends Component
             $total_gif_card_vendidas_bsd                = GiftCard::whereBetween('created_at', [$this->desde, $this->hasta])->sum('pago_bsd');
             $total_gif_card_vendidas_bsd_conversion     = $total_gif_card_vendidas_bsd / $tasa_bcv;
             $total_productos_vendidos                   = VentaProducto::whereBetween('created_at', [$this->desde, $this->hasta])->sum('total_venta');
-
-            /**Calcuulo de los Gastos Generales */
-            $total_gastos_usd = Gasto::whereBetween('created_at', [$this->desde, $this->hasta])->sum('mosto_usd');
-            $total_gastos_bsd = Gasto::whereBetween('created_at', [$this->desde, $this->hasta])->sum('monto_bsd');
-            $total_gastos_bsd_conversion   = $total_gastos_bsd / $tasa_bcv;
 
             /**Comisiones de los empleados */
             $nomina_empleados  = NominaGeneral::where('cod_quincena', $this->periodo)->first();
@@ -126,7 +112,15 @@ class CierreFinanciero extends Component
             + $total_membresias_vendidas_bsd_conversion;
 
             if($quincena->numero_quincena == 2){
-                $utilidad_real = $total_general_ventas - $total_comisiones_bolivares_conversion - $total_comisiones_dolares - $this->costo_operativo;
+                /**Calcuulo de los Gastos Generales */
+                $total_gastos_usd               = Gasto::whereBetween('created_at', [$this->desde, $this->hasta])->sum('monto_usd');
+                $total_gastos_bsd               = Gasto::whereBetween('created_at', [$this->desde, $this->hasta])->sum('monto_bsd');
+                $total_gastos_bsd_conversion    = $total_gastos_bsd / $tasa_bcv;
+                $total_gastos_generales         = $total_gastos_usd + $total_gastos_bsd_conversion;
+
+                /**Calculo de la Utilidad real */
+                $utilidad_real = $total_general_ventas - $total_comisiones_bolivares_conversion - $total_comisiones_dolares - $total_gastos_generales;
+
             }else{
                 $utilidad_real = $total_general_ventas - $total_comisiones_bolivares_conversion - $total_comisiones_dolares;
 
@@ -144,7 +138,7 @@ class CierreFinanciero extends Component
             $cierre_financiero->total_membresias_vendidas   = $total_membresias_vendidas_usd + $total_membresias_vendidas_bsd_conversion;
             $cierre_financiero->total_gif_card_vendidas     = $total_gif_card_vendidas_usd + $total_gif_card_vendidas_bsd_conversion;
             $cierre_financiero->total_productos_vendidos    = $total_productos_vendidos;
-            $cierre_financiero->total_costos_operativos     = $total_gastos_bsd + $$total_gastos_bsd_conversion;
+            $cierre_financiero->total_costos_operativos     = $total_gastos_generales;
             $cierre_financiero->total_general_comiciones    = $total_comisiones_bolivares_conversion + $total_comisiones_dolares;
             $cierre_financiero->total_comisiones_bolivares  = $total_comisiones_bolivares;
             $cierre_financiero->total_comisiones_dolares    = $total_comisiones_dolares;

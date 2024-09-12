@@ -96,6 +96,7 @@ class TableNomManicurista extends Component implements HasForms, HasTable
                             ->label('Total Nomina($)'))
                         ->sortable()
                         ->searchable(),
+
                 TextColumn::make('total_bolivares')
                     ->label('Nomina(Bs.)')
                         ->money('VES')
@@ -106,7 +107,8 @@ class TableNomManicurista extends Component implements HasForms, HasTable
                         ->searchable(),
                 //
             ])
-            ->defaultGroup('quincena')
+            ->striped()
+            ->defaultGroup('cod_quincena')
             ->filters([
                 //
             ])

@@ -176,19 +176,19 @@ class CierreFinanciero extends Component
                 ->get();
 
                 $indicador = new IndicadorVentaGerente();
-                $indicador->empleado_id = $item->id;
-                $indicador->gift_card_vendidas = $gift_card_vendidas;
-                $indicador->membresias_vendidas = $membresias_vendidas;
-                $indicador->servicios_vip_vendidos = $servicios_vip_vendidos;
-                $indicador->productos_vendidos = $productos_vendidos;
-                $indicador->dias_trabajados = count($dias_trabajados);
-                $indicador->fecha_ini = $this->desde;
-                $indicador->fecha_fin = $this->hasta;
-                $indicador->fecha = now()->format('d-m-Y');
-                $indicador->codigo_quincena = $this->periodo;
-                $indicador->numero_quincena = $cierre_financiero->numero_quincena;
-                $indicador->mes = $cierre_financiero->mes;
-                $indicador->responsable = Auth::user()->name;
+                $indicador->empleado_id             = $item->id;
+                $indicador->gift_card_vendidas      = $gift_card_vendidas;
+                $indicador->membresias_vendidas     = $membresias_vendidas;
+                $indicador->servicios_vip_vendidos  = $servicios_vip_vendidos;
+                $indicador->productos_vendidos      = $productos_vendidos;
+                $indicador->dias_trabajados         = count($dias_trabajados);
+                $indicador->fecha_ini               = $this->desde;
+                $indicador->fecha_fin               = $this->hasta;
+                $indicador->fecha                   = now()->format('d-m-Y');
+                $indicador->codigo_quincena         = $this->periodo;
+                $indicador->numero_quincena         = $cierre_financiero->numero_quincena;
+                $indicador->mes                     = $cierre_financiero->mes;
+                $indicador->responsable             = Auth::user()->name;
                 $indicador->save();
 
             }

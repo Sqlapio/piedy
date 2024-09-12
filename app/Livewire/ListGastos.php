@@ -14,11 +14,18 @@ use Filament\Tables\Table;
 use Livewire\Component;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\On;
 
 class ListGastos extends Component implements HasForms, HasTable
 {
     use InteractsWithForms;
     use InteractsWithTable;
+
+    #[On('carga-gastos')]
+    public function updateNominaCreada()
+    {
+        $this->reset();
+    }
 
     public function table(Table $table): Table
     {
@@ -26,25 +33,31 @@ class ListGastos extends Component implements HasForms, HasTable
             ->query(Gasto::query()->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]))
             ->columns([
                 TextColumn::make('descripcion')
-                ->label('Descripción del gasto')
+                ->label('Descripción')
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('forma_pago')
                 ->label('Forma de pago')
                 ->searchable(),
-                TextColumn::make('created_at')
-                ->label('Fecha/Hora del gasto')
+                TextColumn::make('fecha_factura')
+                ->label('Fecha Fectura')
                 ->sortable()
                 ->searchable(),
-                TextColumn::make('responsable')
-                ->label('Responsable')
+                TextColumn::make('numero_factura')
+                ->label('Nro. Factura')
                 ->searchable(),
                 TextColumn::make('monto_usd')
                 ->label('Monto($)')
                 ->money('USD')
                     ->summarize(Sum::make()
-                        ->label(('Total de gastos'))
+                        ->label(('Total($)'))
                         ->money('USD'))
+                ->searchable(),
+                TextColumn::make('monto_bsd')
+                ->label('Monto(Bsd)')
+                    ->summarize(Sum::make()
+                        ->label(('Total(Bs.)'))
+                        ->money('VEF'))
                 ->searchable(),
 
                 //

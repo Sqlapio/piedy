@@ -94,6 +94,8 @@ class CierreDiario extends Component implements HasForms, HasTable
 
             $query = ModelsCierreDiario::where('fecha', date('d-m-Y'))->count();
 
+            $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
+
             if($query >= 2){
                 $error = ValidationException::withMessages(['cierre' => 'No se pueden ejecutar mas de dos(2) cierres en una jornada laboral']);
                     Notification::make()
@@ -119,7 +121,11 @@ class CierreDiario extends Component implements HasForms, HasTable
                 $total_bs = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
 
                 /** totales gastos en Dolares*/
-                $total_gastos_usd = Gasto::where('fecha', date('d-m-Y'))->sum('monto_usd');
+                $total_gastos_usd = Gasto::where('fecha_carga', date('d-m-Y'))->sum('monto_usd');
+
+                /** totales gastos en Bolivares*/
+                $total_gastos_bsd = Gasto::where('fecha_carga', date('d-m-Y'))->sum('monto_bsd');
+                $conversion_total_gastos_bsd = $total_gastos_bsd * $tasa;
 
                 /** totales gastos en Dolares*/
                 $efectivo_caja_usd = CajaChica::where('fecha', date('d-m-Y'))->first();
@@ -150,7 +156,7 @@ class CierreDiario extends Component implements HasForms, HasTable
                 $cierre->monto_ref_credito       = str_replace(',', '.', str_replace('.', '', $this->monto_ref_credito));
                 $cierre->ref_visaMaster          = $this->ref_visaMaster;
                 $cierre->monto_ref_visaMaster        = str_replace(',', '.', str_replace('.', '', $this->monto_ref_visaMaster));
-                $cierre->total_gastos            = $total_gastos_usd;
+                $cierre->total_gastos            = $total_gastos_usd + $conversion_total_gastos_bsd;
                 $cierre->saldo_caja_chica        = (isset($efectivo_caja_usd->saldo)) ? $efectivo_caja_usd->saldo : 0;
                 $cierre->fecha                   = date('d-m-Y');
                 $cierre->responsable             = $user->name;
@@ -159,7 +165,6 @@ class CierreDiario extends Component implements HasForms, HasTable
                 /** Notificacion para el usuario cuando su servicio fue anulado */
                 $type = 'cierre_diario';
                 $correo = env('CEO');
-                $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
 
                 $mailData = [
                         'tasa_bcv' => $tasa,

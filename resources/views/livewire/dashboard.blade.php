@@ -216,7 +216,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
         {{-- tercera linea --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2 px-3">
             {{-- Empleados --}}
-            <div wire:click="valida_tasa({{ 1 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg'); background-size: cover;">
+            <div wire:click="valida_tasa({{ 1 }})" class="p-6 rounded-lg cursor-pointer" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg'); background-size: cover;">
                 <div class="flex items-center w-24 h-24"></div>
                 <div class="ml-12 text-right">
                     <div class="mt-2 text-4xl text-white leading-7 font-bold">
@@ -228,7 +228,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 </div>
             </div>
             {{-- Nomina --}}
-            <div wire:click="valida_tasa({{ 10 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
+            <div wire:click="valida_tasa({{ 10 }})" class="p-6 rounded-lg cursor-pointer" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
                 <div class="flex items-center w-24 h-24"></div>
                 <div class="ml-12 text-right">
                     <div class="sm:hidden md:hidden lg:block mt-2 text-4xl text-white text- leading-7 font-bold">
@@ -240,7 +240,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 </div>
             </div>
             {{-- Reportes --}}
-            <div wire:click="valida_tasa({{ 11 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
+            <div wire:click="valida_tasa({{ 11 }})" class="p-6 rounded-lg cursor-pointer" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
                 <div class="flex items-center w-24 h-24"></div>
                 <div class="ml-12 text-right">
                     <div class="sm:hidden md:hidden lg:block mt-2 text-4xl text-white text- leading-7 font-bold">
@@ -252,7 +252,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 </div>
             </div>
             {{-- Reportes General --}}
-            <div wire:click="valida_tasa({{ 12 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
+            <div wire:click="valida_tasa({{ 12 }})" class="p-6 rounded-lg cursor-pointer" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
                 <div class="flex items-center w-24 h-24"></div>
                 <div class="ml-12 text-right">
                     <div class="sm:hidden md:hidden lg:block mt-2 text-4xl text-white text- leading-7 font-bold">
@@ -264,7 +264,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 </div>
             </div>
             {{-- Cierre Financiero --}}
-            <div wire:click="valida_tasa({{ 14 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
+            <div wire:click="valida_tasa({{ 14 }})" class="p-6 rounded-lg cursor-pointer" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
                 <div class="flex items-center w-24 h-24"></div>
                 <div class="ml-12 text-right">
                     <div class="sm:hidden md:hidden lg:block mt-2 text-4xl text-white text- leading-7 font-bold">
@@ -272,6 +272,18 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                     </div>
                     <div class="mt-3 text-right text-xs font-semibold text-white">
                         <div>Modulo para Cierre Financiero</div>
+                    </div>
+                </div>
+            </div>
+            {{-- gastos --}}
+            <div wire:click="valida_tasa({{ 8 }})" class="p-6 rounded-lg cursor-pointer" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
+                <div class="flex items-center w-24 h-24"></div>
+                <div class="ml-12 text-right">
+                    <div class="sm:hidden md:hidden lg:block mt-2 text-4xl text-white text- leading-7 font-bold">
+                        Gastos
+                    </div>
+                    <div class="mt-3 text-right text-xs font-semibold text-white">
+                        <div>Modulo de gastos</div>
                     </div>
                 </div>
             </div>
@@ -283,7 +295,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
         {{-- tercera linea --}}
         <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-2 px-3">
             {{-- Empleados --}}
-            <div wire:click="valida_tasa({{ 13 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg'); background-size: cover;">
+            <div wire:click="valida_tasa({{ 13 }})" class="p-6 rounded-lg cursor-pointer" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg'); background-size: cover;">
                 <div class="flex items-center w-24 h-24"></div>
                 <div class="ml-12 text-right">
                     <div class="mt-2 text-4xl text-white leading-7 font-bold">

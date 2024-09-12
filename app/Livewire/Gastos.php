@@ -28,44 +28,12 @@ class Gastos extends Component
     #[Rule('required', message: 'Campo requerido')]
     public $forma_pago;
 
-    public $referencia;
+    public $numero_factura;
+    public $fecha_factura;
 
     public $buscar;
     public $ocultar_form_cliente = 'hidden';
     public $ocultar_table_cliente = '';
-
-    public function ocultar_table()
-    {
-        $hoy = date('d-m-Y');
-
-        try {
-
-            $caja_chica = CajaChica::where('fecha', $hoy)->first();
-
-            if($caja_chica == null)
-            {
-                $this->dialog()->error(
-                    $title = 'Error !!!',
-                    $description = 'La caja chica no ha sido aperturada. Debe cargar el monto incial.'
-                );
-
-            }else{
-
-                $this->ocultar_table_cliente = 'hidden';
-                $this->ocultar_form_cliente = '';
-
-            }
-
-        } catch (\Throwable $th) {
-            Notification::make()
-            ->title('NOTIFICACIÓN DE ERROR')
-            ->icon('heroicon-o-shield-check')
-            ->iconColor('danger')
-            ->body($th->getMessage())
-            ->send();
-        }
-
-    }
 
     public function store()
     {
@@ -79,53 +47,53 @@ class Gastos extends Component
             $gasto->descripcion = $this->descripcion;
             $gasto->forma_pago = $this->forma_pago;
 
-            if($this->referencia == ''){
-                $gasto->referencia = 'No aplica';
+            /**
+             * Logica para formar el correlativo de la factura.
+             */
+            if($this->numero_factura == ''){
+                /**Busco el ultimo numero de factura generado por el sistema */
+                $ultimo_correlativo = Gasto::where('numero_factura', 'like', '%Pcf-%')->latest()->first();
+
+                if(isset($ultimo_correlativo))
+                {
+                    $parte_entera = intval(str_replace('Pcf-', '', $ultimo_correlativo->numero_factura));
+                    $sum_correlativo = $parte_entera + 1;
+
+                }else{
+                    $sum_correlativo = 1;
+                }
+
+                $gasto->numero_factura = 'Pcf-'.str_pad($sum_correlativo, 6, '0', STR_PAD_LEFT);
+
             }else{
-                $gasto->referencia = $this->referencia;
+                $gasto->numero_factura = $this->numero_factura;
             }
 
-            if($this->forma_pago == 'USD'){
-                $gasto->monto_usd = str_replace(',', '.', str_replace('.', '', $this->monto));
-            }
-            if($this->forma_pago == 'BS'){
-                $gasto->monto_bsd = str_replace(',', '.', str_replace('.', '', $this->monto));
+            /**
+             * Logica para cargar el monto segun el tipo de pago
+             */
+            if($gasto->forma_pago == 'usd'){
+                $gasto->monto_usd = $this->monto;
+            }else{
+                $gasto->monto_bsd = $this->monto;
             }
 
-            $gasto->fecha = date('d-m-Y');
+            $gasto->fecha_carga = now()->format('d-m-Y');
+            $gasto->fecha_factura = date('d-m-Y', strtotime($this->fecha_factura));
             $gasto->responsable = Auth::user()->name;
             $gasto->save();
 
-            /**Logica para guardar los movimientos de caja chica */
-            $mov_caja_chica = new MovimientoCajaChica();
-            $mov_caja_chica->gasto_id       = $gasto->id;
-            $mov_caja_chica->caja_chica_id  = $cc->id;
-            $mov_caja_chica->saldo          = $cc->saldo - $gasto->monto_usd;
-            $mov_caja_chica->fecha          = date('d-m-Y');
-            $mov_caja_chica->responsable    = Auth::user()->name;
-            if($mov_caja_chica->saldo < 0)
-            {
-                throw new Exception("El monto de caja chica no permite valores negativo.");
-                $this->reset();
-            }else{
+            $this->reset();
 
-                $mov_caja_chica->save();
-                /**
-                 * Actualizo el saldo de la caja chica
-                 */
-                DB::table('caja_chicas')->where('id', $cc->id)
-                    ->update([
-                        'saldo' => $mov_caja_chica->saldo,
-                        'responsable' => Auth::user()->name
-                    ]);
+            $this->dispatch('carga-gastos');
 
-                Notification::make()
-                    ->title('El gasto fue registrado con éxito')
-                    ->success()
-                    ->send();
-
-                $this->reset();
-            }
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-document-text')
+            ->iconColor('info')
+            ->color('info')
+            ->body('El gasto fue cargado de forma correcta.')
+            ->send();
 
 
         } catch (\Throwable $th) {
@@ -164,14 +132,6 @@ class Gastos extends Component
 
     public function render()
     {
-        return view('livewire.gastos', [
-            'data' => Gasto::orderBy('id', 'desc')
-                ->orWhere('descripcion', 'like', "%{$this->buscar}%")
-                ->orWhere('forma_pago', 'like', "%{$this->buscar}%")
-                ->orWhere('monto_usd', 'like', "%{$this->buscar}%")
-                ->orWhere('monto_bsd', 'like', "%{$this->buscar}%")
-                ->orWhere('referencia', 'like', "%{$this->buscar}%")
-                ->paginate(5)
-        ]);
+        return view('livewire.gastos');
     }
 }

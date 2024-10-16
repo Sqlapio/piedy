@@ -135,6 +135,7 @@ class UtilsController extends Controller
             if ($tipoSrv != 'vip') {
 
                 if($tipoSrvID == '2'){
+                    
                     /**1.- Busco el valor de la quiropedia basica */
                     $quiroBasica = Servicio::where('descripcion', 'Quiropedia Basica')->first()->costo;
 

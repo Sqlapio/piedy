@@ -107,7 +107,7 @@ class NomQuiropedista extends Component
             $data = User::where('tipo_servicio_id', '2')->where('status', '1')->get();
             $nro_empleados = count($data);
 
-            $periodo_nomina = PeriodoNomina::where('status', '1')->first();
+            $periodo_nomina = PeriodoNom0ina::where('status', '1')->first();
             if(isset($periodo_nomina)){
                 $periodo = $periodo_nomina->cod_quincena;
             }else{

@@ -35,6 +35,7 @@ class Producto extends Model
         'image',
         'status',
         'responsable',
+        'sucursal_id'
     ];
 
     public function comision():BelongsTo
@@ -75,6 +76,16 @@ class Producto extends Model
     public function ventas(): HasMany
     {
         return $this->hasMany(VentaProducto::class, 'id', 'producto_id');
+    }
+
+    /**
+     * Get the user that owns the Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function sucursal(): BelongsTo
+    {
+        return $this->belongsTo(Sucursal::class, 'sucursal_id', 'id');
     }
 
 }

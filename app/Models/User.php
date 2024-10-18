@@ -33,7 +33,8 @@ class User extends Authenticatable
         'tipo_usuario',
         'area_trabajo',
         'tipo_servicio_id',
-        'salario'
+        'salario',
+        'sucursal_id'
     ];
 
     /**
@@ -144,5 +145,15 @@ class User extends Authenticatable
     public function indicadores(): HasMany
     {
         return $this->hasMany(IndicadorVentaGerente::class, 'id', 'empleado_id');
+    }
+
+    /**
+     * Get the user associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function sucursal(): HasOne
+    {
+        return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
     }
 }

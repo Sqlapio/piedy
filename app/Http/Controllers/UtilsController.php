@@ -4,11 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Cita;
 use App\Models\Comision;
+use App\Models\CarProducto;
 use App\Models\Servicio;
+use App\Models\Producto;
+use App\Models\VentaProducto;
+use App\Models\TasaBcv;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Exception;
+use Filament\Notifications\Notification;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class UtilsController extends Controller
@@ -367,5 +374,175 @@ class UtilsController extends Controller
         $calculo = ($comision * $costo) / 100;
 
         return $calculo;
+    }
+
+    static function facturarProducto_usd($metodoUsd, $montoUsd, $codigoAsignacion)
+    {
+
+        try {
+
+            $total_compra = CarProducto::sum('total_compra_usd');
+
+            if($montoUsd == $total_compra){
+
+                $porcentCom = Comision::where('cod_comision', 'Pco-19999')->where('status', '1')->first()->porcentaje;
+
+                $productos = CarProducto::all();
+
+                foreach($productos as $item){
+                    $Producto = Producto::where('cod_producto', $item->cod_producto)->first();
+                    $venta_producto = new VentaProducto();
+                    $venta_producto->cod_asignacion = $codigoAsignacion;
+                    $venta_producto->empleado_id    = Auth::user()->id;
+                    $venta_producto->rol = 'gerente';
+                    $venta_producto->producto_id = $Producto->id;
+                    $venta_producto->costo_producto = $Producto->precio_venta;
+                    $venta_producto->metodo_pago = 'USD';
+                    $venta_producto->metodoUsd = $metodoUsd;
+                    $venta_producto->comision_gerente = ($porcentCom * $item->total_compra_usd) / 100;
+                    $venta_producto->fecha_venta = now()->format('d-m-Y');
+                    $venta_producto->cantidad = $item->cantidad;
+                    $venta_producto->total_venta = $Producto->precio_venta * $item->cantidad;
+                    $venta_producto->responsable = Auth::user()->name;
+                    $venta_producto->sucursal_id = Auth::user()->sucursal->id;
+                    $venta_producto->save();
+
+                    $Producto->existencia = $Producto->existencia - $item->cantidad;
+                    $Producto->save();
+                }
+
+                return true;
+
+            }else{
+
+                return false;
+            }
+
+        } catch (\Throwable $th) {
+            dd($th);
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-document-text')
+            ->iconColor('danger')
+            ->color('danger')
+            ->body($th->getMessage())
+            ->send();
+        }
+
+    }
+
+    static function facturarProducto_bsd($metodoBsd, $montoBsd, $codigoAsignacion, $referenciaBsd, $nroTarjeta)
+    {
+        try {
+
+            $total_compra = CarProducto::sum('total_compra_bsd');
+
+            $porcentCom = Comision::where('cod_comision', 'Pco-19999')->where('status', '1')->first()->porcentaje;
+
+            $productos = CarProducto::all();
+
+            foreach($productos as $item){
+                $Producto = Producto::where('cod_producto', $item->cod_producto)->first();
+                $venta_producto = new VentaProducto();
+                $venta_producto->cod_asignacion = $codigoAsignacion;
+                $venta_producto->empleado_id    = Auth::user()->id;
+                $venta_producto->rol = 'gerente';
+                $venta_producto->producto_id = $Producto->id;
+                $venta_producto->costo_producto = $Producto->precio_venta;
+                $venta_producto->metodo_pago = 'BSD';
+                $venta_producto->metodoBsd = $metodoBsd;
+                $venta_producto->comision_gerente = ($porcentCom * $item->total_compra_usd) / 100;
+                $venta_producto->fecha_venta = now()->format('d-m-Y');
+                $venta_producto->cantidad = $item->cantidad;
+                $venta_producto->total_venta = $Producto->precio_venta * $item->cantidad;
+                $venta_producto->referenciaBsd = ($referenciaBsd == null) ? 'N/a' : $referenciaBsd ;
+                $venta_producto->nroTarjeta = ($nroTarjeta == null) ? 'N/a' : $nroTarjeta;
+                $venta_producto->responsable = Auth::user()->name;
+                $venta_producto->save();
+            }
+
+            if($venta_producto->save()){
+                return true;
+            }else{
+                return false;
+            }
+
+        } catch (\Throwable $th) {
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-document-text')
+            ->iconColor('danger')
+            ->color('danger')
+            ->body($th->getMessage())
+            ->send();
+        }
+
+    }
+
+    static function facturarProducto_multiple($montoUsd, $montoBsd, $metodoUsd, $metodoBsd, $codigoAsignacion, $referenciaUsd, $referenciaBsd, $nroTarjeta)
+    {
+        // dd($metodoUsd, Str::replace(',', '.', (Str::replace('.', '', $montoBsd))), $metodoBsd, $montoUsd, $codigoAsignacion, $referenciaUsd, $referenciaBsd, $nroTarjeta);
+        try {
+
+            /**Validacion para no permitir los numero de referencias duplicados */
+            $exite_referencia = VentaProducto::where('referenciaUsd', $referenciaUsd)->orWhere('referenciaBsd', $referenciaBsd)->get();
+            if(count($exite_referencia) > 0){
+                throw new Exception("Numero de referencia duplicado. Por favor vuelva a intentarlo", 401);
+            }
+
+            $total_compra_usd = CarProducto::sum('total_compra_usd');
+            // $total_compra_bsd = CarProducto::sum('total_compra_bsd');
+
+            $porcentCom = Comision::where('cod_comision', 'Pco-19999')->where('status', '1')->first()->porcentaje;
+
+            $productos = CarProducto::all();
+
+            foreach($productos as $item){
+
+                $Producto = Producto::where('cod_producto', $item->cod_producto)->first();
+                $venta_producto = new VentaProducto();
+                $venta_producto->cod_asignacion = $codigoAsignacion;
+                $venta_producto->empleado_id    = Auth::user()->id;
+                $venta_producto->rol = 'gerente';
+                $venta_producto->producto_id = $Producto->id;
+                $venta_producto->costo_producto = $Producto->precio_venta;
+                $venta_producto->metodo_pago = 'multiple';
+
+                $venta_producto->metodoUsd = $metodoUsd;
+                $venta_producto->metodoBsd = $metodoBsd;
+
+                $venta_producto->montoUsd = $montoUsd;
+                $venta_producto->montoBsd = Str::replace(',', '.', (Str::replace('.', '', $montoBsd)));
+
+                $venta_producto->comision_gerente = ($porcentCom * $item->total_compra_usd) / 100;
+                $venta_producto->fecha_venta = now()->format('d-m-Y');
+                $venta_producto->cantidad = $item->cantidad;
+                $venta_producto->total_venta = $Producto->precio_venta * $item->cantidad;
+
+                $venta_producto->referenciaUsd = ($referenciaUsd == null) ? 'N/A' : $referenciaUsd;
+                $venta_producto->referenciaBsd = ($referenciaBsd == null) ? 'N/A' : $referenciaBsd;
+
+                $venta_producto->nroTarjeta = ($nroTarjeta == null) ? 'N/A' : $nroTarjeta;
+                $venta_producto->responsable = Auth::user()->name;
+
+                $venta_producto->save();
+            }
+
+            if($venta_producto->save()){
+                return true;
+            }else{
+                return false;
+            }
+
+        } catch (\Throwable $th) {
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-document-text')
+            ->iconColor('danger')
+            ->color('danger')
+            ->body($th->getMessage())
+            ->send();
+        }
+
     }
 }

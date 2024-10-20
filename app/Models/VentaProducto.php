@@ -30,6 +30,7 @@ class VentaProducto extends Model
         'fecha_venta',
         'costo_producto',
         'total_venta',
+        'cantidad',
         'responsable'
     ];
 

@@ -4,12 +4,15 @@ namespace App\Filament\Widgets;
 
 use App\Models\Frecuencia;
 use App\Models\VentaServicio;
+use App\Models\VentaProducto;
+
 // use Carbon\Carbon;
 use Illuminate\Support\Carbon;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
+use Illuminate\Support\Facades\DB;
 
 class ClienteNuevoChart extends ChartWidget
 {
@@ -78,22 +81,38 @@ class ClienteNuevoChart extends ChartWidget
             ->perDay()
             ->count('cliente');
 
+        $data3 = DB::table('venta_productos')
+        ->select(DB::raw('count(cantidad) as cantidad, producto_id'))
+        ->groupBy('producto_id')
+        ->get();
+
+        // dd($data3, $data3->map(fn ($data3) => $value->cantidad));
+
         return [
             'datasets' => [
+                // [
+                //     'label' => 'Clientes Nuevos',
+                //     'data' => $data1->map(fn (TrendValue $value) => $value->aggregate),
+                //     'backgroundColor' => '#22c55e',
+                //     'borderColor' => '#22c55e',
+                // ],
+                // [
+                //     'label' => 'Clientes Atendidos',
+                //     'data' => $data2->map(fn (TrendValue $value) => $value->aggregate),
+                //     'backgroundColor' => '#36A2EB',
+                //     'borderColor' => '#36A2EB',
+                // ],
+
                 [
-                    'label' => 'Clientes Nuevos',
-                    'data' => $data1->map(fn (TrendValue $value) => $value->aggregate),
-                    'backgroundColor' => '#22c55e',
-                    'borderColor' => '#22c55e',
-                ],
-                [
-                    'label' => 'Clientes Atendidos',
-                    'data' => $data2->map(fn (TrendValue $value) => $value->aggregate),
+                    'label' => 'Ventas',
+                    'data' => $data3->map(fn ($data3) => $data3->cantidad),
                     'backgroundColor' => '#36A2EB',
                     'borderColor' => '#36A2EB',
                 ],
             ],
-            'labels' => ($data1->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray()),
+            'labels' => ($data3->map(fn ($data3) => $data3->producto_id)),
+
+            // 'labels' => ($data1->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray()),
         ];
     }
 

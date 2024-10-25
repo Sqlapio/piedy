@@ -15,12 +15,15 @@ use Flowframe\Trend\TrendValue;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificacionesEmail;
+use App\Models\AsignarProducto;
 use App\Models\Cita;
 use App\Models\Disponible;
 use App\Models\Membresia;
 use App\Models\MovimientoMembresia;
 use App\Models\PeriodoNomina;
 use App\Models\User;
+use App\Models\InventarioSucursal;
+use App\Models\Producto;
 use Spatie\Browsershot\Browsershot;
 
 /*
@@ -360,12 +363,17 @@ Route::get('/pp', function () {
 });
 
 Route::get('/ex', function () {
-    $p = DB::table('venta_servicios')
-    ->select('responsable_id', 'fecha_venta')
-    ->where('responsable_id', 38)
-    ->whereBetween('created_at',['2024-08-01 00:00:00', '2024-08-15 23:59:59'])
-    ->groupBy('fecha_venta', 'responsable_id')
-    ->get();
-    dd(count($p));
+
+    // $p = Producto::find(1)->with('sucursal')->first();
+    $p = AsignarProducto::find(11)->with('producto')->first();
+    dd($p->producto->descripcion);
+
+    // $p = DB::table('venta_servicios')
+    // ->select('responsable_id', 'fecha_venta')
+    // ->where('responsable_id', 38)
+    // ->whereBetween('created_at',['2024-08-01 00:00:00', '2024-08-15 23:59:59'])
+    // ->groupBy('fecha_venta', 'responsable_id')
+    // ->get();
+    // dd(count($p));
 
 });

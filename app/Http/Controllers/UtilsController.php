@@ -7,6 +7,7 @@ use App\Models\Comision;
 use App\Models\CarProducto;
 use App\Models\Servicio;
 use App\Models\Producto;
+use App\Models\InventarioSucursal;
 use App\Models\VentaProducto;
 use App\Models\TasaBcv;
 use Illuminate\Http\Request;
@@ -407,8 +408,11 @@ class UtilsController extends Controller
                     $venta_producto->sucursal_id = Auth::user()->sucursal->id;
                     $venta_producto->save();
 
-                    $Producto->existencia = $Producto->existencia - $item->cantidad;
-                    $Producto->save();
+                    //Descuento la cantidad vendida de la exitencia del producto por sucursal
+                    $productoSucursal = InventarioSucursal::where('producto_id', $Producto->id)->first();
+                    $productoSucursal->cantidad = $productoSucursal->cantidad - $item->cantidad;
+                    $productoSucursal->save();
+
                 }
 
                 return true;
@@ -419,7 +423,7 @@ class UtilsController extends Controller
             }
 
         } catch (\Throwable $th) {
-            dd($th);
+
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-document-text')
@@ -459,6 +463,11 @@ class UtilsController extends Controller
                 $venta_producto->nroTarjeta = ($nroTarjeta == null) ? 'N/a' : $nroTarjeta;
                 $venta_producto->responsable = Auth::user()->name;
                 $venta_producto->save();
+
+                //Descuento la cantidad vendida de la exitencia del producto por sucursal
+                $productoSucursal = InventarioSucursal::where('producto_id', $Producto->id)->first();
+                $productoSucursal->cantidad = $productoSucursal->cantidad - $item->cantidad;
+                $productoSucursal->save();
             }
 
             if($venta_producto->save()){
@@ -526,6 +535,11 @@ class UtilsController extends Controller
                 $venta_producto->responsable = Auth::user()->name;
 
                 $venta_producto->save();
+
+                //Descuento la cantidad vendida de la exitencia del producto por sucursal
+                $productoSucursal = InventarioSucursal::where('producto_id', $Producto->id)->first();
+                $productoSucursal->cantidad = $productoSucursal->cantidad - $item->cantidad;
+                $productoSucursal->save();
             }
 
             if($venta_producto->save()){

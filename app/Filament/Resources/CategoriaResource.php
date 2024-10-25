@@ -35,13 +35,17 @@ class CategoriaResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Categoria::query()->orderBy('created_at', 'desc'))
             ->columns([
                 Tables\Columns\TextColumn::make('descripcion')
+                    ->color('colorOne')
+                    ->icon('heroicon-s-tag')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Fecha de Creación')
+                    ->icon('heroicon-s-calendar-days')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()

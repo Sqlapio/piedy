@@ -12,8 +12,10 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens;
     use HasFactory;
@@ -66,6 +68,15 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    /**
+     * Restriccion para acceso al panel administrativo
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return str_ends_with($this->email, '@piedyadmin.com') && $this->hasVerifiedEmail();
+    }
+
 
     public function clientes():HasMany
     {
@@ -156,4 +167,15 @@ class User extends Authenticatable
     {
         return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
     }
+
+    /**
+     * Get all of the logs for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function logs(): HasMany
+    {
+        return $this->hasMany(LogInventario::class, 'id', 'user_id');
+    }
+
 }

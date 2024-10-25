@@ -85,6 +85,11 @@ class TablePreSelectPro extends Component implements HasForms, HasTable
                 ->action(fn (CarProducto $record) => $record->delete())
                 ->icon('heroicon-c-trash')
                 ->color('danger')
+                //UI - Modal
+                ->modalIcon('heroicon-m-shopping-cart')
+                ->modalHeading('Eliminar Item')
+                ->modalDescription('Estas seguro que desea eliminar el item a pre-facturacion')
+                ->modalSubmitActionLabel('Si, eliminar item!')
                 //
             ])
             ->bulkActions([

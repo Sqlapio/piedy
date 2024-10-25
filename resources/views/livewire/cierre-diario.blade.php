@@ -1,53 +1,12 @@
 <div>
-    <div class="p-5">
+    <div class="mt-10 pt-5">
         @livewire('notifications')
-        <h1 class="text-xl mb-6 font-bold text-[#bd9c95]">Modulo de cierre por turno</h1>
-        <div class="flex justify-between mt-auto">
-            <div class="flex-col">
-                {{-- Referencia --}}
-                <div class="grid md:grid-cols-3 md:gap-6">
-                    <div class="w-full">
-                        <x-inputs.maskable wire:model="ref_debito" mask="######" right-icon="hashtag" label="Cierre Debito Aprobado" placeholder="Nro. Lote 000456" />
-                    </div>
-                    <div class="w-full">
-                        <x-inputs.maskable wire:model="ref_credito" mask="######" right-icon="hashtag" label="Cierre Credito Aprobado" placeholder="Nro. Lote 000324" />
-                    </div>
-                    <div class="w-full">
-                        <x-inputs.maskable wire:model="ref_visaMaster" mask="######" right-icon="hashtag" label="Cierre Visa/Master Debito Aprobado" placeholder="Nro. Lote 000235" />
-                    </div>
-                </div>
-                {{-- montos --}}
-                <div class="grid md:grid-cols-3 md:gap-6 mt-5">
-                    <div class="w-full">
-                        <x-input wire:model="monto_ref_debito" wire:change="conver_ref_debito" right-icon="calculator" label="Monto Debito Aprobado" placeholder="Ejemplo: 1.2345,89" />
-                    </div>
-                    
-                    <div class="w-full">
-                        <x-input wire:model="monto_ref_credito" wire:change="conver_ref_credito" right-icon="calculator" label="Monto Credito Aprobado" placeholder="Ejemplo: 456,90" />
-                    </div>
-                    <div class="w-full">
-                        <x-input wire:model="monto_ref_visaMaster" wire:change="conver_ref_visaMaster" right-icon="calculator" label="Monto Visa/Master Debito Aprobado" placeholder="Ejemplo: 1.456,00" />
-                    </div>
-                </div>
-            </div>
-            <button type="submit" wire:click.prevent="notificacion_cierre()" class="justify-end rounded-md border border-transparent bg-[#7898a5] py-4 px-4 text-sm font-bold text-white shadow-sm hover:bg-check-green">
-                <svg xmlns="http://www.w3.org/2000/svg" wire:loading wire:target="notificacion_cierre" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-spin h-5 w-5 mr-3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                </svg>
-                <span>EJECUTAR CIERRE</span>
-            </button>
-        </div>
+        <h1 class="text-xl mb-6 font-bold text-[#bd9c95] uppercase">Modulo de cierre por turno</h1>
     </div>
 
-    <div class="border rounded-lg mb-5">
-        <p class="p-4 text-3xl font-bold text-black">Cierre de caja</p>
+    <div class="border rounded-lg mb-5 mt-10">
         {{ $this->table }}
     </div>
-    <div class="border rounded-lg mb-5">
-        <p class="p-4 text-3xl font-bold text-black">Gastos</p>
-        @livewire('tabla-cierre-gastos')
-    </div>
-
     <div class="w-full h-28"></div>
     {{-- Menu para table --}}
     <div class="fixed sm:z-0 md:z-0 lg:z-50 w-full h-16 mt-5 max-w-lg -translate-x-1/2 bg-white border border-gray-200 rounded-full bottom-4 left-1/2 dark:bg-gray-700 dark:border-gray-600">

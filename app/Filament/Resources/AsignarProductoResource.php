@@ -6,6 +6,7 @@ use App\Filament\Resources\AsignarProductoResource\Pages;
 use App\Filament\Resources\AsignarProductoResource\RelationManagers;
 use App\Models\AsignarProducto;
 use App\Models\Producto;
+use App\Models\Sucursal;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -27,7 +28,7 @@ class AsignarProductoResource extends Resource
 
     protected static ?string $navigationGroup = 'Movimientos de inventario';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-user-plus';
 
     public static function form(Form $form): Form
     {
@@ -35,17 +36,22 @@ class AsignarProductoResource extends Resource
             ->schema([
                 Select::make('producto_id')
                 ->label('Producto')
-                ->options(Producto::all()->pluck('descripcion', 'id'))
+                ->options(Producto::all()->where('uso', 'consumo-interno')->pluck('descripcion', 'id'))
                 ->searchable()
                 ->required(),
                 TextInput::make('cantidad')->required(),
+                Select::make('sucursal_id')
+                ->label('Sucursal')
+                ->options(Sucursal::all()->pluck('nombre', 'id'))
+                ->searchable()
+                ->required(),
                 DatePicker::make('fecha_entrega')
                     ->label('Fecha de entraga')
                     ->format('d-m-Y')
                     ->required(),
                 Select::make('user_id')
                     ->label('Empleado')
-                    ->options(User::all()->where('tipo_usuario', 'empleado')->pluck('name', 'id'))
+                    ->options(User::all()->where('tipo_usuario', 'empleado')->where('status', 1)->pluck('name', 'id'))
                     ->searchable()
                     ->required(),
                 TextInput::make('responsable')->default(Auth::user()->name),
@@ -55,19 +61,36 @@ class AsignarProductoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(AsignarProducto::query()->orderBy('created_at', 'desc'))
             ->columns([
-                TextColumn::make('producto.cod_producto')->searchable(),
-                TextColumn::make('producto.descripcion')->searchable(),
-                Tables\Columns\TextColumn::make('cantidad')
+                TextColumn::make('producto.descripcion')
+                    ->color('colorTree')
+                    ->icon('heroicon-o-check')
+                    ->searchable(),
+                TextColumn::make('cantidad')
+                    ->icon('heroicon-o-square-3-stack-3d')
+                    ->color('success')
+                    ->searchable(),
+                TextColumn::make('sucursal.nombre')
+                    ->icon('heroicon-c-building-office-2')
+                    ->color('colorTwo')
+                    ->searchable()
                     ->searchable(),
                 TextColumn::make('user.name')
                     ->label('Empleado')
+                    ->color('colorTwo')
+                    ->icon('heroicon-m-user')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('responsable')
+                TextColumn::make('responsable')
+                    ->label('Responsable')
+                    ->color('colorTwo')
+                    ->icon('heroicon-m-user')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                ->label('Fecha de entrega')
+                TextColumn::make('created_at')
+                    ->label('Fecha de entrega')
+                    ->label('Fecha de Creación')
+                    ->icon('heroicon-s-calendar-days')
                     ->dateTime()
                     ->sortable(),
             ])

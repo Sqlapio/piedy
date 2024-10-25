@@ -84,7 +84,7 @@ class Dashboard extends Component
                     $description = 'Debe actualizar la tasa del BCV para poder utilizar el sistema. Por favor haga click en el simbolo del BCV.'
                 );
             }else{
-                $this->redirect('/productos');
+                $this->redirect('/productos/venta');
             }
         }
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class AsignarProducto extends Model
@@ -27,6 +28,7 @@ class AsignarProducto extends Model
         'user_id',
         'cantidad',
         'fecha_entrega',
+        'sucursal_id',
         'responsable',
     ];
 
@@ -43,6 +45,16 @@ class AsignarProducto extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    /**
+     * Get all of the sucursal for the AsignarProducto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sucursal(): HasMany
+    {
+        return $this->hasMany(Sucursal::class, 'id', 'sucursal_id');
     }
 
 

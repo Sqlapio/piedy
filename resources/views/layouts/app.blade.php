@@ -38,7 +38,7 @@
         <x-dialog z-index="z-50" blur="md" align="center" />
 
         <x-banner />
-        <div class="container mx-auto min-h-screen bg-white">
+        <div class="mx-auto min-h-screen">
             @livewire('navigation-menu')
 
             <!-- Page Heading -->

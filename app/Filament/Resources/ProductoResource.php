@@ -3,12 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductoResource\Pages;
-use App\Filament\Resources\ProductoResource\RelationManagers;
-use App\Models\Categoria;
-use App\Models\Comision;
 use App\Models\Producto;
-use Filament\Forms;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -19,10 +14,6 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Widgets\Concerns\InteractsWithPageTable;
-use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Auth;
 
 class ProductoResource extends Resource
@@ -55,23 +46,26 @@ class ProductoResource extends Resource
                     ->prefix('$')
                     ->numeric()
                     ->inputMode('decimal'),
-                TextInput::make('existencia')
-                    ->numeric()
-                    ->required(),
-                DatePicker::make('fecha_carga')->format('d-m-Y'),
                 TextInput::make('contenido_neto')
+                    ->required()
                     ->numeric(),
-                TextInput::make('unidad')
-                    ->required(),
-                TextInput::make('comision_venta_emp')
-                    ->numeric(),
-                TextInput::make('comision_venta_gte')
-                    ->numeric(),
+                Select::make('unidad')
+                    ->required()
+                    ->options([
+                        'gr' => 'Gramos',
+                        'ml' => 'Mililitros',
+                        'oz' => 'Onzas ',
+                    ]),
                 Select::make('status')
                     ->options([
                         'activo' => 'Activo',
                         'inactivo' => 'Inactivo',
                     ]),
+                Select::make('uso')
+                    ->options([
+                        'consumo-interno' => 'Consumo Interno',
+                        'venta' => 'Venta',
+                    ])->required(),
                 TextInput::make('responsable')->default(Auth::user()->name),
                 FileUpload::make('image')
                     ->imageEditor()
@@ -86,47 +80,62 @@ class ProductoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Producto::query()->orderBy('created_at', 'desc'))
             ->columns([
+
                 TextColumn::make('cod_producto')
-                ->toggleable(isToggledHiddenByDefault: true)
-                ->searchable(),
-                ImageColumn::make('image')
-                    ->circular()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
-                TextColumn::make('descripcion')->searchable(),
-                TextColumn::make('categoria.descripcion')->searchable(),
+
+                ImageColumn::make('image')
+                    ->circular()
+                    ->searchable(),
+
+                TextColumn::make('descripcion')
+                    ->searchable(),
+
+                TextColumn::make('categoria.descripcion')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable(),
+
                 TextColumn::make('precio_venta')
+                    ->color('success')
+                    ->icon('heroicon-s-currency-dollar')
                     ->money('USD')
                     ->alignCenter()
                     ->searchable(),
-                TextColumn::make('existencia')
-                ->alignCenter()
-                ->searchable(),
-                TextColumn::make('fecha_carga')->searchable(),
+
                 TextColumn::make('contenido_neto')
-                ->alignCenter()
-                ->searchable(),
+                    ->alignCenter()
+                    ->searchable(),
+
                 TextColumn::make('unidad')
-                ->alignCenter()
-                ->searchable(),
-                TextColumn::make('comision_venta_emp')
-                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->alignCenter()
                     ->searchable(),
-                TextColumn::make('comision_venta_gte')
-                    ->toggleable(isToggledHiddenByDefault: true)
+
+                // IconColumn::make('status')
+                //     ->alignCenter()
+                //     ->options([
+                //         'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
+                //         'heroicon-m-minus-circle' => fn ($state, $record): bool => $record->status === 'inactivo',
+                //     ])
+                //     ->colors([
+                //         'danger' => 'inactivo',
+                //         'success' => 'activo',
+                //     ]),
+
+                TextColumn::make('responsable')
+                    ->label('Responsable')
+                    ->color('primary')
+                    ->icon('heroicon-m-user')
                     ->searchable(),
-                IconColumn::make('status')
-                ->alignCenter()
-                ->options([
-                    'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
-                    'heroicon-m-minus-circle' => fn ($state, $record): bool => $record->status === 'inactivo',
-                ])
-                ->colors([
-                    'danger' => 'inactivo',
-                    'success' => 'activo',
-                ]),
-                TextColumn::make('responsable')->searchable(),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Fecha de Creación')
+                    ->icon('heroicon-s-calendar-days')
+                    ->dateTime()
+                    ->searchable()
+                    ->sortable(),
 
             ])
             ->groups([

@@ -30,6 +30,8 @@ class Venta extends Component implements HasForms, HasTable
 
 
         return $table
+            ->heading('FACTURACION')
+            ->description('Tabla de gestion para facturacion simple')
             ->query(VentaServicio::query()->where('fecha_venta', $fecha_venta))
             ->columns([
                 TextColumn::make('cod_asignacion')

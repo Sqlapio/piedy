@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Producto extends Model
 {
@@ -26,16 +27,12 @@ class Producto extends Model
         'categoria_id',
         'descripcion',
         'precio_venta',
-        'existencia',
-        'fecha_carga',
         'unidad',
         'contenido_neto',
-        'comision_venta_emp',
-        'comision_venta_gte',
         'image',
         'status',
         'responsable',
-        'sucursal_id'
+        'uso'
     ];
 
     public function comision():BelongsTo
@@ -49,11 +46,11 @@ class Producto extends Model
     }
 
     /**
-     * Relacion Uno a Muchos
+     * Get all of the comments for the User
      *
-     * Un producto tiene Muchos movimiento de entrada
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function get_productos_asignados():HasMany
+    public function asignaciones(): HasMany
     {
         return $this->hasMany(AsignarProducto::class, 'id', 'producto_id');
     }
@@ -87,5 +84,36 @@ class Producto extends Model
     {
         return $this->belongsTo(Sucursal::class, 'sucursal_id', 'id');
     }
+
+    /**
+     * Get the inventario that owns the Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function inventario(): HasOne
+    {
+        return $this->hasOne(Inventario::class, 'id', 'producto_id');
+    }
+
+    /**
+     * Get all of the movimientos_inventarios for the Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function movimientoInventarios(): HasMany
+    {
+        return $this->hasMany(MovimientoInventario::class);
+    }
+
+    /**
+     * Get all of the movimientos_inventarios for the Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function inventarioSucursales(): HasMany
+    {
+        return $this->hasMany(InventarioSucursal::class, 'id', 'producto_id');
+    }
+
 
 }

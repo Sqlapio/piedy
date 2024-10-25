@@ -51,6 +51,7 @@ class UserResource extends Resource
                         'empleado' => 'Empleado',
                         'encargado' => 'Encargado',
                         'nomina' => 'Nomina',
+                        'super-admin' => 'SuperAdmin',
                     ]),
 
                 Select::make('area_trabajo')
@@ -61,7 +62,7 @@ class UserResource extends Resource
                         'Administración' => 'Administración',
                         'Nomina' => 'Nomina',
                     ])->searchable(),
-                    
+
                 Select::make('tipo_servicio_id')
                     ->relationship('tipo_servicio', 'descripcion')
                     ->searchable()
@@ -71,19 +72,19 @@ class UserResource extends Resource
                             ->required(),
                     ])
                     ->required(),
-                    
+
                 TextInput::make('salario')
                     ->label('Salario Mensual')
                     ->prefix('$')
                     ->numeric()
                     ->inputMode('decimal'),
-                    
+
                 Select::make('status')
                     ->options([
                         '1' => 'Activo',
                         '2' => 'Inactivo',
                     ])->searchable(),
-                    
+
                 TextInput::make('password')
                     ->password()
                     ->dehydrateStateUsing(fn ($state) => Hash::make($state))

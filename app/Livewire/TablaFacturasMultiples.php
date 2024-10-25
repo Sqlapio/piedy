@@ -34,6 +34,8 @@ class TablaFacturasMultiples extends Component implements HasForms, HasTable
         $fecha_venta = date('d-m-Y');
 
         return $table
+            ->heading('FACTURACION MULTI-CLIENTE')
+            ->description('Tabla de gestion para facturacion multiple')
             ->query(FacturaMultiple::query()->where('fecha_venta', $fecha_venta))
             ->columns([
                 TextColumn::make('responsable')
@@ -45,13 +47,16 @@ class TablaFacturasMultiples extends Component implements HasForms, HasTable
                 TextColumn::make('cliente')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                    
                 TextColumn::make('empleado')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('created_at')
                     ->label('Fecha de registro')
                     ->searchable(),
                 TextColumn::make('metodo_pago')->searchable(),
+
                 TextColumn::make('referencia')->searchable(),
 
                 TextColumn::make('total_usd')->money('USD')
@@ -61,16 +66,16 @@ class TablaFacturasMultiples extends Component implements HasForms, HasTable
                     ->searchable(),
 
                 TextColumn::make('pago_usd')->money('USD')
-                ->label('Pago($)')
-                ->summarize(Sum::make()
-                ->label('Total($)'))
-                ->searchable(),
+                    ->label('Pago($)')
+                    ->summarize(Sum::make()
+                    ->label('Total($)'))
+                    ->searchable(),
 
                 TextColumn::make('pago_bsd')->money('VES')
-                ->label('Pago(Bs)')
-                ->summarize(Sum::make()
-                ->label('Total(Bs)'))
-                ->searchable(),
+                    ->label('Pago(Bs)')
+                    ->summarize(Sum::make()
+                    ->label('Total(Bs)'))
+                    ->searchable(),
 
             ])
             ->groups([

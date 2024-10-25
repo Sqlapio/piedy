@@ -8,69 +8,57 @@ use App\Models\TasaBcv as ModelsTasaBcv;
         $style = 'lg:grid-cols-2';
     }
 @endphp
-<div class="py-1 my-auto">
+<div class="py-5 my-auto">
 
     @if(Auth::user()->tipo_usuario == 'encargado' || Auth::user()->tipo_usuario == 'gerente')
-        {{-- BCV linea --}}
-        <div class="grid grid-cols-1 gap-4 p-3">
+        <div class="grid grid-cols-2 gap-4 p-3">
             {{-- TASA BCV --}}
-            <div class="flex items-center cursor-pointer" onclick="Livewire.dispatch('openModal', { component: 'tasa-bcv' })">
-                <img class="w-14 h-14 rounded-full" src="{{ asset('images/BCV.png') }}" alt="">
+            <div class="cursor-pointer flex items-center border p-1 rounded-xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]"
+                onclick="Livewire.dispatch('openModal', { component: 'tasa-bcv' })"
+                style="background-image: url('https://media.istockphoto.com/id/624878906/es/foto/fondo-abstracto-triangular.jpg?b=1&s=170667a&w=0&k=20&c=UTL2PU75t1yyJB_C9ORFOsA7LgkvxIZncxK7A44gGGA='); background-size: cover;">
+                <img class="w-14 h-14 m-2 rounded-full" src="{{ asset('images/BCV.png') }}" alt="">
                 <div class="ml-2 titulos">
                     <div class="font-bold dark:text-white">BCV: {{ $tasa->tasa }}Bs.</div>
                     {{-- <div class="text-sm text-gray-500 dark:text-gray-400">Tasa del dia: {{ $tasa->tasa }}</div> --}}
                 </div>
             </div>
-            @if(Auth::user()->tipo_usuario == 'gerente' || Auth::user()->tipo_usuario == 'encargado')
-                <div class="flex justify-end titulos gap-3">
-                    <div wire:click="gift()"
-                    class="cursor-pointer flex items-center border p-4 rounded-xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]"
-                    style="background-image: url('https://media.istockphoto.com/id/624878906/es/foto/fondo-abstracto-triangular.jpg?b=1&s=170667a&w=0&k=20&c=UTL2PU75t1yyJB_C9ORFOsA7LgkvxIZncxK7A44gGGA='); background-size: cover;">
-                        <div class="ml-1 titulos">
-                            <div class="text-sm text-black font-bold dark:text-gray-400">GIFTCARD/MEMBRESIA</div>
-                        </div>
+            <div wire:click="gift()"
+                class="cursor-pointer flex items-center border p-4 rounded-xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]"
+                style="background-image: url('https://media.istockphoto.com/id/624878906/es/foto/fondo-abstracto-triangular.jpg?b=1&s=170667a&w=0&k=20&c=UTL2PU75t1yyJB_C9ORFOsA7LgkvxIZncxK7A44gGGA='); background-size: cover;">
+                    <div class="ml-1 titulos">
+                        <div class="text-sm text-black font-bold dark:text-gray-400">GIFTCARD/MEMBRESIA</div>
                     </div>
-                    <div wire:click="cierre_general()"
-                    class="flex items-center border cursor-pointer p-4 rounded-xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]"
-                    style="background-image: url('https://media.istockphoto.com/id/624878906/es/foto/fondo-abstracto-triangular.jpg?b=1&s=170667a&w=0&k=20&c=UTL2PU75t1yyJB_C9ORFOsA7LgkvxIZncxK7A44gGGA='); background-size: cover;">
-                        <div class="ml-1 titulos">
-                            <div class="text-sm text-black font-bold dark:text-gray-400">CIERRE GENERAL</div>
-                        </div>
+            </div>
+            {{-- <div wire:click="cierre_general()"
+                class="flex items-center border cursor-pointer p-4 rounded-xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]"
+                style="background-image: url('https://media.istockphoto.com/id/624878906/es/foto/fondo-abstracto-triangular.jpg?b=1&s=170667a&w=0&k=20&c=UTL2PU75t1yyJB_C9ORFOsA7LgkvxIZncxK7A44gGGA='); background-size: cover;">
+                    <div class="ml-1 titulos">
+                        <div class="text-sm text-black font-bold dark:text-gray-400">CIERRE GENERAL</div>
                     </div>
-                </div>
-            @else
-                <div class="flex justify-end titulos gap-3">
-                    <div wire:click="gift()"
-                    class="cursor-pointer flex items-center border p-4 rounded-xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]"
-                    style="background-image: url('https://media.istockphoto.com/id/624878906/es/foto/fondo-abstracto-triangular.jpg?b=1&s=170667a&w=0&k=20&c=UTL2PU75t1yyJB_C9ORFOsA7LgkvxIZncxK7A44gGGA='); background-size: cover;">
-                        <div class="ml-1 titulos">
-                            <div class="text-sm text-black font-bold dark:text-gray-400">GIFTCARD/MEMBRESIA</div>
-                        </div>
-                    </div>
-                </div>
-            @endif
+            </div> --}}
+
         </div>
 
         {{-- Primera linea --}}
-        <div class="grid grid-cols-1 md:grid-cols-1 {{ $style }} gap-2 mb-2 px-3">
+        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-2 mb-2 px-3">
             {{-- Empleados --}}
-            @if(Auth::user()->tipo_usuario == 'gerente')
-            <div wire:click="valida_tasa({{ 1 }})" class="p-6 rounded-lg" style="background-image: url('https://img.favpng.com/0/11/4/polygon-geometry-plane-desktop-wallpaper-png-favpng-e7CGay7DssGUF8FwFkeWviuCM.jpg'); background-size: cover;">
-                <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-20">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
-                      </svg>
-                </div>
-                <div class="ml-12 text-right">
-                    <div class="mt-2 text-2xl text-black leading-7 font-bold">
-                        Empleados
+            {{-- @if(Auth::user()->tipo_usuario == 'gerente')
+                <div wire:click="valida_tasa({{ 1 }})" class="p-6 rounded-lg" style="background-image: url('https://img.favpng.com/0/11/4/polygon-geometry-plane-desktop-wallpaper-png-favpng-e7CGay7DssGUF8FwFkeWviuCM.jpg'); background-size: cover;">
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-20">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+                        </svg>
                     </div>
-                    <div class="sm:hidden md:hidden lg:block mt-3 text-right text-xs font-semibold text-black">
-                        <div>Registro y gestion de Empleados</div>
+                    <div class="ml-12 text-right">
+                        <div class="mt-2 text-2xl text-black leading-7 font-bold">
+                            Empleados
+                        </div>
+                        <div class="sm:hidden md:hidden lg:block mt-3 text-right text-xs font-semibold text-black">
+                            <div>Registro y gestion de Empleados</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            @endif
+            @endif --}}
             {{-- Clientes --}}
             <div wire:click="valida_tasa({{ 2 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/abstract-light-blue-background-geometry-pattern-hd-wallpaper_1000823-2187.jpg'); background-size: cover;">
                 <div class="flex items-center">
@@ -106,7 +94,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
         </div>
 
         {{-- Segunda linea --}}
-        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-2 mb-2 px-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2 mb-2 px-3">
             {{-- Agenda --}}
             <div wire:click="valida_tasa({{ 4 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/abstract-light-blue-background-hd-wallpaper_1000823-2469.jpg?size=626&ext=jpg&ga=GA1.1.1016474677.1696809600&semt=ais');background-size: cover;">
                 <div class="flex items-center">
@@ -140,7 +128,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 </div>
             </div>
             {{-- Servicios --}}
-            <div wire:click="valida_tasa({{ 6 }})" class="p-6 rounded-lg" style="background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20201015/pngtree-modern-low-poly-background-with-red-and-blue-gradient-colors-image_417695.jpg');background-size: cover;">
+            {{-- <div wire:click="valida_tasa({{ 6 }})" class="p-6 rounded-lg" style="background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20201015/pngtree-modern-low-poly-background-with-red-and-blue-gradient-colors-image_417695.jpg');background-size: cover;">
                 <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 005.304 0l6.401-6.402M6.75 21A3.75 3.75 0 013 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 003.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008z" />
@@ -154,11 +142,11 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                             <div>Carga y gestion de servicios</div>
                         </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
 
         {{-- tercera linea --}}
-        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-2 px-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2 px-3">
 
             {{-- Ventas --}}
             <div wire:click="valida_tasa({{ 7 }})" class="p-6 rounded-lg" style="background-image: url('https://static.vecteezy.com/system/resources/previews/000/406/488/original/background-wallpaper-with-polygons-in-gradient-colors-vector.jpg');background-size: cover;">
@@ -177,7 +165,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 </div>
             </div>
             {{-- gastos --}}
-            <div wire:click="valida_tasa({{ 8 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/papel-tapiz-triangulo-abstracto-colores-pastel-claros-coloridos-banner-panorama-generativo-ai_699690-19035.jpg');background-size: cover;">
+            {{-- <div wire:click="valida_tasa({{ 8 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/papel-tapiz-triangulo-abstracto-colores-pastel-claros-coloridos-banner-panorama-generativo-ai_699690-19035.jpg');background-size: cover;">
                 <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 15h2.25m8.024-9.75c.011.05.028.1.052.148.591 1.2.924 2.55.924 3.977a8.96 8.96 0 01-.999 4.125m.023-8.25c-.076-.365.183-.75.575-.75h.908c.889 0 1.713.518 1.972 1.368.339 1.11.521 2.287.521 3.507 0 1.553-.295 3.036-.831 4.398C20.613 14.547 19.833 15 19 15h-1.053c-.472 0-.745-.556-.5-.96a8.95 8.95 0 00.303-.54m.023-8.25H16.48a4.5 4.5 0 01-1.423-.23l-3.114-1.04a4.5 4.5 0 00-1.423-.23H6.504c-.618 0-1.217.247-1.605.729A11.95 11.95 0 002.25 12c0 .434.023.863.068 1.285C2.427 14.306 3.346 15 4.372 15h3.126c.618 0 .991.724.725 1.282A7.471 7.471 0 007.5 19.5a2.25 2.25 0 002.25 2.25.75.75 0 00.75-.75v-.633c0-.573.11-1.14.322-1.672.304-.76.93-1.33 1.653-1.715a9.04 9.04 0 002.86-2.4c.498-.634 1.226-1.08 2.032-1.08h.384" />
@@ -191,7 +179,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                             <div>Reporta tus gastos</div>
                         </div>
                 </div>
-            </div>
+            </div> --}}
             {{-- Cierre diario --}}
             <div wire:click="valida_tasa({{ 9 }})" class="p-6 rounded-lg" style="background-image: url('https://elucubracion.com/wp-content/uploads/2014/05/fondo-abstracto-1.png');background-size: cover;">
                 <div class="flex items-center">

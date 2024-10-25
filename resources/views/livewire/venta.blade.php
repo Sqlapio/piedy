@@ -1,11 +1,11 @@
 <div>
     <div class="border rounded-lg mb-5">
-        <p class="p-4 text-3xl font-bold text-[#bc9c95]">Facturación simple</p>
+
         {{ $this->table }}
     </div>
 
-    <div class="border rounded-lg mb-5">
-        <p class="p-4 text-3xl font-bold text-[#bc9c95]">Facturación multiple</p>
+    <div class="border rounded-lg mb-5 mt-10">
+
         @livewire('tabla-facturas-multiples')
     </div>
 

@@ -3,15 +3,15 @@
         @livewire('notifications')
         <div class="flex justify-between items-center gap-2 p-4">
             <div class="font-medium dark:text-white">
-                <div class="text-md text-black font-extrabold dark:text-gray-400">Codigo: {{ $codigoAsignacion }}</div>
+                <div class="text-lg text-black font-extrabold dark:text-gray-400 uppercase">Ventas de productos</div>
             </div>
             <div class="font-medium ">
                 @if($hidden == '')
-                <svg wire:click="updateProperty" class="w-[30px] h-[30px] text-[#16a34a] cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <svg wire:click="updateProperty" class="w-[35px] h-[35px] text-[#16a34a] cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14v3m4-6V7a3 3 0 1 1 6 0v4M5 11h10a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1Z"/>
                 </svg>
                 @else
-                <svg wire:click="updateProperty" class="w-[30px] h-[30px] text-[#dc2626] cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <svg wire:click="updateProperty" class="w-[35px] h-[35px] text-[#dc2626] cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v3m-3-6V7a3 3 0 1 1 6 0v4m-8 0h10a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1Z"/>
                   </svg>
 
@@ -35,26 +35,20 @@
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
                         Método de pago
                     </h2>
-                    <div class="mt-8 space-y-6">
-                        {{-- Metodo de pago Prepagado --}}
-                        {{-- <div class="grid grid-cols-1 gap-2">
-                            <div class="px-2">
-                                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Metodo de pago Prepagado:</p>
-                                <x-select class="" placeholder="Select one status"
-                                :options="[
-                                    ['name' => 'Giftcard',  'id' => 1],
-                                ]" option-label="name" option-value="name" wire:model.live="metodo_pago_pre" />
-
-                            </div>
-                        </div> --}}
+                    <div class="mt-2 space-y-6">
+                        <!-- Seleccion del Cliente -->
+                        <div class="py-2">
+                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Cliente</p>
+                            <x-select wire:model.defer="cliente_id" placeholder="Seleccion" :async-data="route('api.clientes')" option-label="nombre" option-value="id" required/>
+                        </div>
 
                         <!-- Metodfos de pago -->
                         <div class="grid grid-cols-2 gap-2 ">
-                            <div class="px-2 ">
+                            <div class="py-2">
                                 <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método de pago($)</p>
                                 <x-select class="" wire:model.live="metodoUsd" placeholder="Seleccione..." :async-data="route('api.metodo_pago_uno')" option-label="descripcion" option-value="descripcion" />
                             </div>
-                            <div class="px-2 ">
+                            <div class="py-2">
                                 <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Método de pago(Bs)</p>
                                 <x-select class="" wire:model.live="metodoBsd" placeholder="Seleccione..." :async-data="route('api.metodo_pago_dos')" option-label="descripcion" option-value="descripcion" />
                             </div>
@@ -62,13 +56,11 @@
 
                         <!-- Monto Dolares y Bolivares -->
                         <div class="grid grid-cols-2 gap-2 {{ ($metodoUsd != '' || $metodoBsd != '') ? 'block' : 'hidden' }}">
-                            <div class="px-2 ">
+                            <div class="py-2">
                                 <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Monto en Dolares($)</p>
-                                {{-- <x-inputs.maskable wire:model.live="ref_usd" mask="" placeholder="1236345678"/> --}}
-                                {{-- <x-input wire:keydown.enter="calculo($event.target.value)" wire:model.live="montoUsd" value="" placeholder="$0.00"/> --}}
                                 <x-inputs.currency icon="currency-dollar" wire:keydown.enter="calculo($event.target.value)" wire:model.live="montoUsd" value="" placeholder="0.00" />
                             </div>
-                            <div class="px-2 ">
+                            <div class="py-2">
                                 <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Monto en Bolivares(Bs)</p>
                                 <x-input icon="calculator" wire:model.live="montoBsd" value="{{ $montoBsd }}" placeholder="0.00" disabled/>
                             </div>

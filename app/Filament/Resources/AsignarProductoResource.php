@@ -65,7 +65,7 @@ class AsignarProductoResource extends Resource
             ->columns([
                 TextColumn::make('producto.descripcion')
                     ->color('colorTree')
-                    ->icon('heroicon-o-check')
+                    ->icon('heroicon-s-shopping-bag')
                     ->searchable(),
                 TextColumn::make('cantidad')
                     ->icon('heroicon-o-square-3-stack-3d')

@@ -21,43 +21,49 @@ class MovimientoInventarioResource extends Resource
 
     protected static ?string $navigationGroup = 'Movimientos de inventario';
 
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('producto_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('cantidad')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('tipo_movimiento')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('responsable')
-                    ->required()
-                    ->maxLength(255),
-            ]);
-    }
-
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('producto_id')
+                Tables\Columns\TextColumn::make('producto.descripcion')
+                    ->icon('heroicon-s-shopping-bag')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('cantidad')
+                    ->label('Existencia')
+                    ->icon('heroicon-o-square-3-stack-3d')
+                    ->color('success')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tipo_movimiento')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('responsable')
+                Tables\Columns\TextColumn::make('codigo')
+                    ->label('Código de Movimiento')
+                    ->icon('heroicon-s-hashtag')
+                    ->badge()
+                    ->color('colorTwo')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('sucursal.nombre')
+                    ->icon('heroicon-c-building-office-2')
+                    ->label('Sucursal')
+                    ->numeric()
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('responsable')
+                    ->label('Responsable')
+                    ->color('primary')
+                    ->icon('heroicon-m-user')
+                    ->numeric()
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Fecha de Creación')
+                    ->icon('heroicon-s-calendar-days')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -67,12 +73,12 @@ class MovimientoInventarioResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

@@ -92,6 +92,7 @@ class ProductoResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('descripcion')
+                    ->icon('heroicon-s-shopping-bag')
                     ->searchable(),
 
                 TextColumn::make('categoria.descripcion')

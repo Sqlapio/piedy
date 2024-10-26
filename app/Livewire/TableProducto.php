@@ -2,10 +2,10 @@
 
 namespace App\Livewire;
 
-use App\Models\Producto;
 use App\Models\CarProducto;
 use App\Models\InventarioSucursal;
 use App\Models\TasaBcv;
+use App\Models\Cliente;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables;
@@ -15,12 +15,12 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Columns\SelectColumn;
 
 class TableProducto extends Component implements HasForms, HasTable
 {

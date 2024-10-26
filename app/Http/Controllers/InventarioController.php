@@ -49,7 +49,7 @@ class InventarioController extends Controller
         }
     }
 
-    public static function cargar_movimiento($inventario_id, $sucursal_id, $cantidad)
+    public static function asigancion_sucursal($inventario_id, $sucursal_id, $cantidad)
     {
         try {
 
@@ -60,18 +60,31 @@ class InventarioController extends Controller
                 throw new Exception("No puede realizar el movimiento ya que el inventario esta en 0. Por favor comuniquese con el Administrador", 401);
             }
 
-            $movimientoInv = new InventarioSucursal();
-            $movimientoInv->producto_id = $producto->id;
-            $movimientoInv->sucursal_id = $sucursal_id;
-            $movimientoInv->cantidad    = $cantidad;
-            $movimientoInv->uso         = $producto->uso;
-            $movimientoInv->responsable = Auth::user()->name;
-            $movimientoInv->save();
+            //El prodducto ya exite en la sucursal?
+            $inventario_sucursal = InventarioSucursal::where('producto_id', $producto->id)
+            ->where('sucursal_id', $sucursal_id)
+            ->first();
+
+            if($inventario_sucursal)
+            {
+                $inventario_sucursal->cantidad += $cantidad;
+                $inventario_sucursal->save();
+
+            }else{
+                $movimientoInv = new InventarioSucursal();
+                $movimientoInv->producto_id = $producto->id;
+                $movimientoInv->sucursal_id = $sucursal_id;
+                $movimientoInv->cantidad    = $cantidad;
+                $movimientoInv->uso         = $producto->uso;
+                $movimientoInv->responsable = Auth::user()->name;
+                $movimientoInv->save();
+
+            }
 
             $restaExistencia = Inventario::where('producto_id', $producto->id)->first();
-                $restaExistencia->update([
-                    'cantidad' => $restaExistencia->cantidad - $cantidad
-                ]);
+            $restaExistencia->update([
+                'cantidad' => $restaExistencia->cantidad - $cantidad
+            ]);
 
             $descripcion = 'Reposición en Sucursal. Producto: '.$producto->descripcion.', Sucursal: '. Sucursal::find($sucursal_id)->nombre;
             LogInventario::log_inventario(Auth::user()->id, 'reposicion', $descripcion);

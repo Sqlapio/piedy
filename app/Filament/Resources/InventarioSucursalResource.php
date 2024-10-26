@@ -44,11 +44,11 @@ class InventarioSucursalResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table 
+        return $table
             ->query(InventarioSucursal::query()->orderBy('created_at', 'desc'))
             ->columns([
                 Tables\Columns\TextColumn::make('producto.descripcion')
-                    ->icon('heroicon-s-truck')
+                    ->icon('heroicon-s-shopping-bag')
                     ->numeric()
                     ->searchable()
                     ->sortable(),

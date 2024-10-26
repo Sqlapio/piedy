@@ -56,16 +56,6 @@ class Producto extends Model
     }
 
     /**
-     * Relacion Uno a Muchos
-     *
-     * Un producto tiene Muchos movimiento de salida
-     */
-    public function get_salidas():HasMany
-    {
-        return $this->hasMany(MovimientoSalida::class, 'producto_id', 'id');
-    }
-
-    /**
      * Get all of the ventas for the Producto
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -102,7 +92,7 @@ class Producto extends Model
      */
     public function movimientoInventarios(): HasMany
     {
-        return $this->hasMany(MovimientoInventario::class);
+        return $this->hasMany(MovimientoInventario::class, 'id', 'producto_id');
     }
 
     /**

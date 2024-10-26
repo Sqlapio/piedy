@@ -67,7 +67,7 @@ class InventarioResource extends Resource
                     ->label('Imagen')
                     ->circular(),
                 Tables\Columns\TextColumn::make('producto.descripcion')
-                    ->icon('heroicon-s-truck')
+                    ->icon('heroicon-s-shopping-bag')
                     ->numeric()
                     ->searchable()
                     ->sortable(),
@@ -119,15 +119,6 @@ class InventarioResource extends Resource
                                     ->schema([
 
                                         //Seleccion del producto
-                                        // Select::make('producto_id')
-                                        //     ->label('Producto')
-                                        //     ->prefixIcon('heroicon-s-square-3-stack-3d')
-                                        //     ->relationship('producto', 'descripcion')
-                                        //     ->searchable()
-                                        //     ->preload()
-                                        //     ->required(),
-
-                                        //Seleccion del producto
                                         Select::make('sucursal_id')
                                             ->label('Sucursal')
                                             ->prefixIcon('heroicon-c-building-office-2')
@@ -152,7 +143,7 @@ class InventarioResource extends Resource
                                     ]),
                                 ])
                         ])->action(function (Inventario $record, array $data) {
-                            InventarioController::cargar_movimiento(
+                            InventarioController::asigancion_sucursal(
                                 $record->id,
                                 $data['sucursal_id'],
                                 $data['cantidad']

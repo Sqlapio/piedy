@@ -46,4 +46,14 @@ class MovimientoInventario extends Model
     {
         return $this->hasOne(User::class, 'foreign_key', 'local_key');
     }
+
+    /**
+     * Get the producto that owns the MovimientoInventario
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function sucursal(): BelongsTo
+    {
+        return $this->belongsTo(Sucursal::class);
+    }
 }

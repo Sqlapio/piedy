@@ -59,7 +59,8 @@ class CreateAsignarProducto extends CreateRecord
                 $this->data['producto_id'],
                 $this->data['cantidad'],
                 $this->data['sucursal_id'],
-                $codigo = 'Pae-'.random_int(11111111, 99999999)
+                $codigo = 'Pae-'.random_int(11111111, 99999999),
+                $tipoMovimiento = 'Asignación de producto',
             );
 
         } catch (\Throwable $th) {

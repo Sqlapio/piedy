@@ -35,6 +35,8 @@ class VentaProducto extends Component
     #[Validate('required', message: 'Debe seleccionar el cliente')]
     public $cliente_id;
 
+    public $empleado_id;
+
     public $hidden = '';
     public $tableProductos = '';
     public $codigoAsignacion;
@@ -119,7 +121,7 @@ class VentaProducto extends Component
 
             }
 
-            $res = VentaProductoController::facturarProducto_usd($this->metodoUsd, $this->montoUsd, $this->cliente_id);
+            $res = VentaProductoController::facturarProducto_usd($this->metodoUsd, $this->montoUsd, $this->cliente_id, $this->empleado_id);
 
             if($res){
 
@@ -173,7 +175,7 @@ class VentaProducto extends Component
                 )->validate();
             }
 
-            $res = VentaProductoController::facturarProducto_bsd($this->metodoBsd, $this->montoBsd, $this->referenciaBsd, $this->nroTarjeta, $this->cliente_id);
+            $res = VentaProductoController::facturarProducto_bsd($this->metodoBsd, $this->montoBsd, $this->referenciaBsd, $this->nroTarjeta, $this->cliente_id, $this->empleado_id);
 
             if($res){
 
@@ -226,7 +228,7 @@ class VentaProducto extends Component
                 )->validate();
             }
 
-            $res = VentaProductoController::facturarProducto_multiple($this->montoUsd, $this->montoBsd, $this->metodoUsd, $this->metodoBsd, $this->referenciaUsd, $this->referenciaBsd, $this->nroTarjeta, $this->cliente_id);
+            $res = VentaProductoController::facturarProducto_multiple($this->montoUsd, $this->montoBsd, $this->metodoUsd, $this->metodoBsd, $this->referenciaUsd, $this->referenciaBsd, $this->nroTarjeta, $this->cliente_id, $this->empleado_id);
 
             if($res){
 

@@ -33,13 +33,20 @@
             <div class="p-2 col-span-2">
                 <div class="w-full max-h-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
-                        Método de pago
+                        Facturación
                     </h2>
                     <div class="mt-2 space-y-6">
-                        <!-- Seleccion del Cliente -->
-                        <div class="py-2">
-                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Cliente</p>
-                            <x-select wire:model.defer="cliente_id" placeholder="Seleccion" :async-data="route('api.clientes')" option-label="nombre" option-value="id" required/>
+                        <!-- Seleccion del Cliente y del Empleado -->
+                        <div class="grid grid-cols-2 gap-2 ">
+                            <div class="py-2">
+                                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Cliente</p>
+                                <x-select wire:model.defer="cliente_id" placeholder="Seleccion" :async-data="route('api.clientes')" option-label="nombre" option-value="id" required/>
+                            </div>
+                            <div class="py-2">
+                                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Empleado</p>
+                                <x-select wire:model.defer="empleado_id" placeholder="Seleccion" :async-data="route('api.empleados')" option-label="name" option-value="id" required/>
+                            </div>
+
                         </div>
 
                         <!-- Metodfos de pago -->

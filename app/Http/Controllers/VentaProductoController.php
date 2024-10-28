@@ -15,8 +15,9 @@ use Illuminate\Support\Str;
 
 class VentaProductoController extends Controller
 {
-    static function facturarProducto_usd($metodoUsd, $montoUsd, $cliente_id)
+    static function facturarProducto_usd($metodoUsd, $montoUsd, $cliente_id, $empleado_id)
     {
+        // dd($metodoUsd, $montoUsd, $cliente_id, $empleado_id);
         try {
 
             $codigoAsignacion = 'Pca-'.random_int(11111111, 99999999);
@@ -25,28 +26,65 @@ class VentaProductoController extends Controller
 
             if($montoUsd == $total_compra){
 
-                $porcentCom = Comision::where('cod_comision', 'Pco-19999')->where('status', '1')->first()->porcentaje;
-
                 $productos = CarProducto::all();
 
-                foreach($productos as $item){
+                /**
+                 * Comisiones de venta
+                 */
+                if($empleado_id == null)
+                {
+                    //La venta fue asignada al gerente
+                    //Comision Gerente 15%
+                    $porComGte = Comision::where('aplicacion', 'producto')
+                        ->where('beneficiario', 'gerente')
+                        ->where('accion', 'directa')
+                        ->where('status', '1')->first()
+                        ->porcentaje;
+
+                }else{
+                    //La venta fue asignada a un quiropedista o una manicurista
+                    //Se calculan ambas comisiones tanto para el gerente como para el empleado
+                    //Comision Empleado 10%
+                    $porComEmp = Comision::where('aplicacion', 'producto')
+                        ->where('beneficiario', 'empleado')
+                        ->where('accion', 'directa')
+                        ->where('status', '1')->first()
+                        ->porcentaje;
+
+                    //Comision Empleado 5%
+                    $porComGte = Comision::where('aplicacion', 'producto')
+                        ->where('beneficiario', 'gerente')
+                        ->where('accion', 'indirecta')
+                        ->where('status', '1')->first()
+                        ->porcentaje;
+
+                }
+
+                foreach($productos as $item)
+                {
+
                     $Producto = Producto::where('cod_producto', $item->cod_producto)->first();
                     $venta_producto = new VentaProducto();
                     $venta_producto->cod_asignacion     = $codigoAsignacion;
-                    $venta_producto->empleado_id        = Auth::user()->id;
-                    $venta_producto->rol                = 'gerente';
+                    $venta_producto->gerente_id         = Auth::user()->id;
                     $venta_producto->producto_id        = $Producto->id;
                     $venta_producto->costo_producto     = $Producto->precio_venta;
                     $venta_producto->metodo_pago        = 'USD';
+
                     $venta_producto->metodoUsd          = $metodoUsd;
                     $venta_producto->montoUsd           = $montoUsd;
-                    $venta_producto->comision_gerente   = ($porcentCom * $item->total_compra_usd) / 100;
+
+                    $venta_producto->comision_gerente   = ($porComGte * $Producto->precio_venta) / 100;
+                    $venta_producto->comision_empleado  = ($empleado_id == null) ? 0.00 : ($porComEmp * $Producto->precio_venta) / 100;
+
                     $venta_producto->fecha_venta        = now()->format('d-m-Y');
                     $venta_producto->cantidad           = $item->cantidad;
                     $venta_producto->total_venta        = $Producto->precio_venta * $item->cantidad;
                     $venta_producto->responsable        = Auth::user()->name;
                     $venta_producto->sucursal_id        = Auth::user()->sucursal->id;
+
                     $venta_producto->cliente_id         = $cliente_id;
+                    $venta_producto->empleado_id        = ($empleado_id == null) ? Auth::user()->id : $empleado_id;
                     $venta_producto->save();
 
                     //Descuento la cantidad vendida de la exitencia del producto por sucursal
@@ -84,7 +122,7 @@ class VentaProductoController extends Controller
 
     }
 
-    static function facturarProducto_bsd($metodoBsd, $montoBsd, $referenciaBsd, $nroTarjeta, $cliente_id)
+    static function facturarProducto_bsd($metodoBsd, $montoBsd, $referenciaBsd, $nroTarjeta, $cliente_id, $empleado_id = null)
     {
         try {
 
@@ -92,22 +130,56 @@ class VentaProductoController extends Controller
 
             $total_compra = CarProducto::sum('total_compra_bsd');
 
-            $porcentCom = Comision::where('cod_comision', 'Pco-19999')->where('status', '1')->first()->porcentaje;
-
             $productos = CarProducto::all();
 
-            foreach($productos as $item){
+            /**
+             * Comisiones de venta
+             */
+            if($empleado_id == null)
+            {
+                //La venta fue asignada al gerente
+                //Comision Gerente 15%
+                $porComGte = Comision::where('aplicacion', 'producto')
+                    ->where('beneficiario', 'gerente')
+                    ->where('accion', 'directa')
+                    ->where('status', '1')->first()
+                    ->porcentaje;
+
+            }else{
+                //La venta fue asignada a un quiropedista o una manicurista
+                //Se calculan ambas comisiones tanto para el gerente como para el empleado
+                //Comision Empleado 10%
+                $porComEmp = Comision::where('aplicacion', 'producto')
+                    ->where('beneficiario', 'empleado')
+                    ->where('accion', 'directa')
+                    ->where('status', '1')->first()
+                    ->porcentaje;
+
+                //Comision Empleado 5%
+                $porComGte = Comision::where('aplicacion', 'producto')
+                    ->where('beneficiario', 'gerente')
+                    ->where('accion', 'indirecta')
+                    ->where('status', '1')->first()
+                    ->porcentaje;
+
+            }
+
+            foreach($productos as $item)
+            {
                 $Producto = Producto::where('cod_producto', $item->cod_producto)->first();
                 $venta_producto = new VentaProducto();
                 $venta_producto->cod_asignacion     = $codigoAsignacion;
-                $venta_producto->empleado_id        = Auth::user()->id;
-                $venta_producto->rol                = 'gerente';
+                $venta_producto->gerente_id         = Auth::user()->id;
                 $venta_producto->producto_id        = $Producto->id;
                 $venta_producto->costo_producto     = $Producto->precio_venta;
                 $venta_producto->metodo_pago        = 'BSD';
+
                 $venta_producto->metodoBsd          = $metodoBsd;
                 $venta_producto->montoBsd           = Str::replace(',', '.', (Str::replace('.', '', $montoBsd)));
-                $venta_producto->comision_gerente   = ($porcentCom * $item->total_compra_usd) / 100;
+
+                $venta_producto->comision_gerente   = ($porComGte * $Producto->precio_venta) / 100;
+                $venta_producto->comision_empleado  = ($empleado_id == null) ? 0.00 : ($porComEmp * $Producto->precio_venta) / 100;
+
                 $venta_producto->fecha_venta        = now()->format('d-m-Y');
                 $venta_producto->cantidad           = $item->cantidad;
                 $venta_producto->total_venta        = $Producto->precio_venta * $item->cantidad;
@@ -115,7 +187,9 @@ class VentaProductoController extends Controller
                 $venta_producto->nroTarjeta         = ($nroTarjeta == null) ? 'N/a' : $nroTarjeta;
                 $venta_producto->responsable        = Auth::user()->name;
                 $venta_producto->sucursal_id        = Auth::user()->sucursal->id;
+
                 $venta_producto->cliente_id         = $cliente_id;
+                $venta_producto->empleado_id        = ($empleado_id == null) ? Auth::user()->id : $empleado_id;
                 $venta_producto->save();
 
                 //Descuento la cantidad vendida de la exitencia del producto por sucursal
@@ -151,7 +225,7 @@ class VentaProductoController extends Controller
 
     }
 
-    static function facturarProducto_multiple($montoUsd, $montoBsd, $metodoUsd, $metodoBsd, $referenciaUsd, $referenciaBsd, $nroTarjeta, $cliente_id)
+    static function facturarProducto_multiple($montoUsd, $montoBsd, $metodoUsd, $metodoBsd, $referenciaUsd, $referenciaBsd, $nroTarjeta, $cliente_id, $empleado_id = null)
     {
         try {
 
@@ -166,17 +240,47 @@ class VentaProductoController extends Controller
             $total_compra_usd = CarProducto::sum('total_compra_usd');
             // $total_compra_bsd = CarProducto::sum('total_compra_bsd');
 
-            $porcentCom = Comision::where('cod_comision', 'Pco-19999')->where('status', '1')->first()->porcentaje;
-
             $productos = CarProducto::all();
 
-            foreach($productos as $item){
+            /**
+             * Comisiones de venta
+             */
+            if($empleado_id == null)
+            {
+                //La venta fue asignada al gerente
+                //Comision Gerente 15%
+                $porComGte = Comision::where('aplicacion', 'producto')
+                    ->where('beneficiario', 'gerente')
+                    ->where('accion', 'directa')
+                    ->where('status', '1')->first()
+                    ->porcentaje;
+
+            }else{
+                //La venta fue asignada a un quiropedista o una manicurista
+                //Se calculan ambas comisiones tanto para el gerente como para el empleado
+                //Comision Empleado 10%
+                $porComEmp = Comision::where('aplicacion', 'producto')
+                    ->where('beneficiario', 'empleado')
+                    ->where('accion', 'directa')
+                    ->where('status', '1')->first()
+                    ->porcentaje;
+
+                //Comision Empleado 5%
+                $porComGte = Comision::where('aplicacion', 'producto')
+                    ->where('beneficiario', 'gerente')
+                    ->where('accion', 'indirecta')
+                    ->where('status', '1')->first()
+                    ->porcentaje;
+
+            }
+
+            foreach($productos as $item)
+            {
 
                 $Producto = Producto::where('cod_producto', $item->cod_producto)->first();
                 $venta_producto = new VentaProducto();
                 $venta_producto->cod_asignacion     = $codigoAsignacion;
-                $venta_producto->empleado_id        = Auth::user()->id;
-                $venta_producto->rol                = 'gerente';
+                $venta_producto->gerente_id         = Auth::user()->id;
                 $venta_producto->producto_id        = $Producto->id;
                 $venta_producto->costo_producto     = $Producto->precio_venta;
                 $venta_producto->metodo_pago        = 'multiple';
@@ -187,7 +291,9 @@ class VentaProductoController extends Controller
                 $venta_producto->montoUsd           = $montoUsd;
                 $venta_producto->montoBsd           = Str::replace(',', '.', (Str::replace('.', '', $montoBsd)));
 
-                $venta_producto->comision_gerente   = ($porcentCom * $item->total_compra_usd) / 100;
+                $venta_producto->comision_gerente   = ($porComGte * $Producto->precio_venta) / 100;
+                $venta_producto->comision_empleado  = ($empleado_id == null) ? 0.00 : ($porComEmp * $Producto->precio_venta) / 100;
+
                 $venta_producto->fecha_venta        = now()->format('d-m-Y');
                 $venta_producto->cantidad           = $item->cantidad;
                 $venta_producto->total_venta        = $Producto->precio_venta * $item->cantidad;
@@ -198,8 +304,9 @@ class VentaProductoController extends Controller
                 $venta_producto->nroTarjeta         = ($nroTarjeta == null) ? 'N/A' : $nroTarjeta;
                 $venta_producto->responsable        = Auth::user()->name;
                 $venta_producto->sucursal_id        = Auth::user()->sucursal->id;
-                $venta_producto->cliente_id         = $cliente_id;
 
+                $venta_producto->cliente_id         = $cliente_id;
+                $venta_producto->empleado_id        = ($empleado_id == null) ? Auth::user()->id : $empleado_id;
                 $venta_producto->save();
 
                 //Descuento la cantidad vendida de la exitencia del producto por sucursal
@@ -234,4 +341,5 @@ class VentaProductoController extends Controller
         }
 
     }
+
 }

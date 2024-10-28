@@ -7,6 +7,7 @@ use App\Models\CierreDiario;
 use App\Models\DetalleAsignacion;
 use App\Models\Gasto;
 use App\Models\TasaBcv;
+use App\Models\VentaProducto;
 use App\Models\VentaServicio;
 use Exception;
 use Filament\Notifications\Notification;
@@ -35,10 +36,14 @@ class CierreDiarioController extends Controller
 
                 /** totales de pagos en Dolares*/
                 $total_efectivo_usd = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Efectivo Usd')->sum('pago_usd');
+                $total_efectivo_usd_productos = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'USD')->where('metodoUSD', 'Efectivo Usd')->sum('montoUsd');
+
                 $total_zelle = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Zelle')->sum('pago_usd');
+                $total_zelle_productos = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'USD')->where('metodoUSD', 'Zelle')->sum('montoUsd');
 
                 /** totales de pagos en Bolivares*/
                 $total_bs = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
+                $total_bsd_productos = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'BSD')->sum('montoBsd');
 
                 /** totales gastos en Dolares*/
                 $efectivo_caja_usd = CajaChica::where('fecha', date('d-m-Y'))->first();
@@ -52,9 +57,9 @@ class CierreDiarioController extends Controller
 
                 $cierre = new CierreDiario();
                 $cierre->total_ventas            = $total_venta;
-                $cierre->total_dolares_efectivo  = $total_efectivo_usd;
-                $cierre->total_dolares_zelle     = $total_zelle;
-                $cierre->total_bolivares         = $total_bs;
+                $cierre->total_dolares_efectivo  = $total_efectivo_usd + $total_efectivo_usd_productos;
+                $cierre->total_dolares_zelle     = $total_zelle + $total_zelle_productos;
+                $cierre->total_bolivares         = $total_bs + $total_bsd_productos;
                 $cierre->ref_debito              = $ref_debito;
                 $cierre->monto_ref_debito        = (str_replace(',', '.', str_replace('.', '', $monto_ref_debito))) == null ? 0.00 : str_replace(',', '.', str_replace('.', '', $monto_ref_debito));
                 $cierre->ref_credito             = $ref_credito;

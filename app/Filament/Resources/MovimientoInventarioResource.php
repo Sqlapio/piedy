@@ -31,7 +31,7 @@ class MovimientoInventarioResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('cantidad')
-                    ->label('Existencia')
+                    ->label('Cantidad')
                     ->icon('heroicon-o-square-3-stack-3d')
                     ->color('success')
                     ->numeric()

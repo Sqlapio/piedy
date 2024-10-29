@@ -19,8 +19,10 @@
 
             </div>
         </div>
+
         <div class="grid grid-cols-1 gap-2 p-4 {{ $tableProductos }}">
-            @livewire('table-producto')
+            {{-- @livewire('table-producto') --}}
+            <livewire:table-producto :add_servicio="$add_servicio" />
         </div>
         <div class="grid grid-cols-5 gap-2 mb-10 p-2">
             {{-- servicio asignado --}}

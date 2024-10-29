@@ -6,6 +6,7 @@ use App\Models\CarProducto;
 use App\Models\InventarioSucursal;
 use App\Models\TasaBcv;
 use App\Models\Cliente;
+use App\Models\Disponible;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables;
@@ -21,6 +22,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Columns\SelectColumn;
+use Filament\Tables\Columns\ToggleColumn;
 
 class TableProducto extends Component implements HasForms, HasTable
 {
@@ -29,6 +31,7 @@ class TableProducto extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
+
         //Busco la sucursal del usuario
         $sucursal_id = Auth::user()->sucursal_id;
 
@@ -54,6 +57,19 @@ class TableProducto extends Component implements HasForms, HasTable
                     ->sortable(),
                 TextInputColumn::make('pre_compra')
                     ->label('Cantidad'),
+                SelectColumn::make('cod_asignacion')
+                    ->label('Codigo de Servicio')
+                    ->options(CarProducto::where('status', 1)->where('tipo', 'servicio')->pluck('cod_asignacion', 'cod_asignacion'))
+                    // ->afterStateUpdated(function ($record, $state) {
+                    //     Notification::make()
+                    //     ->title('Servicio asociado con éxito')
+                    //     ->icon('heroicon-o-document-text')
+                    //     ->iconColor('success')
+                    //     ->send();
+                    // })
+                // TextInputColumn::make('cod_asignacion')
+                //     ->label('Codigo de servicio')
+                //     ->hidden(! $p),
             ])
             ->filters([
                 //
@@ -66,14 +82,24 @@ class TableProducto extends Component implements HasForms, HasTable
                     $tasa = TasaBcv::all()->first()->tasa;
 
                     $preCompra = new CarProducto();
-                    $preCompra->cod_producto = $record->producto->cod_producto;
+                    $preCompra->cod_prod_serv = $record->producto->cod_producto;
                     $preCompra->precio_venta = $record->producto->precio_venta;
                     $preCompra->cantidad = $record->pre_compra;
                     $preCompra->total_compra_usd = $record->pre_compra * $record->producto->precio_venta;
                     $preCompra->total_compra_bsd = ($record->pre_compra * $record->producto->precio_venta) * $tasa;
+                    $preCompra->cod_asignacion = $record->cod_asignacion;
+                    $preCompra->tipo = 'producto';
 
                     if($preCompra->cantidad > 0){
                         $preCompra->save();
+                        if($record->cod_asignacion != '0'){
+                            Notification::make()
+                            ->title('El producto fue asociado al servicio con exito.')
+                            ->icon('heroicon-o-document-text')
+                            ->iconColor('success')
+                            ->color('colorTree')
+                            ->send();
+                        }
 
                     }else{
                         Notification::make()
@@ -85,7 +111,8 @@ class TableProducto extends Component implements HasForms, HasTable
 
                     InventarioSucursal::where('id', $record->id)
                     ->update([
-                        'pre_compra' => 0,
+                        'pre_compra'     => 0,
+                        'cod_asignacion' => 0,
                     ]);
 
                     $this->dispatch('add-item-car');

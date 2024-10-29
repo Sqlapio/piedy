@@ -39,7 +39,7 @@ class TablePreSelectPro extends Component implements HasForms, HasTable
         return $table
             ->heading('Pre-Orden')
             ->description('Producto agregados para la pre-compra')
-            ->query(CarProducto::query())
+            ->query(CarProducto::query()->where('cod_asignacion', '0')->where('tipo', 'producto'))
             ->columns([
 
                 TextColumn::make('precio_venta')

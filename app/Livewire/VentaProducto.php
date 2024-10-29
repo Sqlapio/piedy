@@ -51,6 +51,8 @@ class VentaProducto extends Component
     public $referenciaBsd;
     public $nroTarjeta;
 
+    public $add_servicio = null;
+
 
     public function updateProperty()
     {

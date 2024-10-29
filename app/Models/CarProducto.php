@@ -20,12 +20,14 @@ class CarProducto extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'cod_producto',
+        'cod_prod_serv',
         'cod_pre_seleccion',
         'precio_venta',
         'cantidad',
         'total_compra_usd',
         'total_compra_bsd',
+        'cod_asignacion',
+        'tipo'
 
     ];
 }

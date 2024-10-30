@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Sucursal extends Model
 {
@@ -71,6 +72,16 @@ class Sucursal extends Model
     public function movimientoInventarios(): HasMany
     {
         return $this->hasMany(MovimientoInventario::class, 'id', 'sucursal_id');
+    }
+
+    /**
+     * Get the servicio associated with the Sucursal
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function servicio(): HasOne
+    {
+        return $this->hasOne(Servicio::class, 'id', 'sucursal_id');
     }
 
 }

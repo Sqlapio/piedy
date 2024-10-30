@@ -65,6 +65,15 @@ class ServicioResource extends Resource
                         'inactivo' => 'Inactivo',
                     ])
                     ->required(),
+                Select::make('sucursal_id')
+                    ->relationship('sucursal', 'nombre')
+                    ->searchable()
+                    ->preload()
+                    ->createOptionForm([
+                        TextInput::make('descripcion')
+                            ->required(),
+                    ])
+                    ->required(),
             ]);
     }
 

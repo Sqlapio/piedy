@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DetalleAsignacion extends Model
@@ -22,20 +23,34 @@ class DetalleAsignacion extends Model
      */
     protected $fillable = [
         'cod_asignacion',
-        'cod_servicio',
+        'cod_prod_serv',
         'empleado_id',
-        'empleado',
         'servicio_id',
-        'servicio',
         'cliente_id',
-        'cliente',
+        'producto_id',
         'costo',
         'fecha',
         'status',
+        'tipo'
     ];
 
-    public function get_detalle_asiganciones(): HasMany
+    public function cliente(): BelongsTo
     {
-        return $this->hasMany(Cliente::class, 'cliente_id', 'id');
+        return $this->belongsTo(Cliente::class, 'cliente_id', 'id');
+    }
+
+    public function empleado(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'empleado_id', 'id');
+    }
+
+    public function servicio(): BelongsTo
+    {
+        return $this->belongsTo(Servicio::class, 'servicio_id', 'id');
+    }
+
+    public function producto(): BelongsTo
+    {
+        return $this->belongsTo(Producto::class, 'producto_id', 'id');
     }
 }

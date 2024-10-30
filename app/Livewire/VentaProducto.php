@@ -127,7 +127,7 @@ class VentaProducto extends Component
 
             if($res){
 
-                CarProducto::truncate();
+                CarProducto::where('sucursal_id', Auth::user()->sucursal_id)->delete();
 
                 $this->reset();
 
@@ -181,7 +181,7 @@ class VentaProducto extends Component
 
             if($res){
 
-                CarProducto::truncate();
+                CarProducto::where('sucursal_id', Auth::user()->sucursal_id)->delete();
 
                 $this->reset();
 
@@ -234,7 +234,7 @@ class VentaProducto extends Component
 
             if($res){
 
-                CarProducto::truncate();
+                CarProducto::where('sucursal_id', Auth::user()->sucursal_id)->delete();
 
                 $this->reset();
 

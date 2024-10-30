@@ -25,33 +25,28 @@ class Disponible extends Model
     protected $fillable = [
         'cod_asignacion',
         'cliente_id',
-        'cliente',
         'empleado_id',
-        'empleado',
-        'area_trabajo',
-        'cod_servicio',
+        'cod_prod_serv',
         'servicio_id',
-        'servicio',
-        'servicio_asignacion',
         'costo',
         'status',
     ];
 
 
 
-    public function cliente(): HasOne
+    public function cliente(): BelongsTo
     {
-        return $this->hasOne(Cliente::class, 'cliente_id', 'id');
+        return $this->belongsTo(Cliente::class, 'cliente_id', 'id');
     }
 
     public function empleado(): BelongsTo
     {
-        return $this->belongsTo(Empleado::class);
+        return $this->belongsTo(User::class, 'empleado_id', 'id');
     }
 
-    public function servicios(): HasMany
+    public function servicio(): BelongsTo
     {
-        return $this->hasMany(Servicio::class, 'id', 'servicio_id');
+        return $this->belongsTo(Servicio::class, 'servicio_id', 'id');
     }
 
     /**

@@ -8,70 +8,54 @@ use App\Models\Disponible;
 use App\Models\Servicio;
 use App\Models\User;
 use App\Models\CarProducto;
+use App\Models\Producto;
+use Exception;
 use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AsignacionController extends Controller
 {
-    public static function asigancion_servicio($cliente_id, $user_id, $servicio_id)
+    public static function asignacion_servicio($cliente_id, $user_id, $servicio_id)
     {
         try {
 
-            // $existe = Disponible::where('empleado_id', $user_id)->where('status', 'activo')->first();
-            $existe = CarProducto::where('user_id', $user_id)->where('status', 1)->first();
+            $existe = Disponible::where('empleado_id', $user_id)->where('status', 'activo')->first();
+
             if($existe != null){
 
                 return false;
 
             }else{
 
-                // $cliente    = Cliente::where('id', $cliente_id)->first();
                 $servicio   = Servicio::where('id', $servicio_id)->first();
-                // $empleado   = User::where('id', $user_id)->first();
 
-                // $disponible = new Disponible();
-                // $disponible->cod_asignacion     = 'Pca-'.random_int(11111111, 99999999);
-                // $disponible->cliente_id         = $cliente_id;
-                // $disponible->cliente            = $cliente->nombre . ' ' . $cliente->apellido;
-                // $disponible->empleado_id        = $user_id;
-                // $disponible->empleado           = $empleado->name;
-                // $disponible->area_trabajo       = $empleado->area_trabajo;
-                // $disponible->cod_servicio       = $servicio->cod_servicio;
-                // $disponible->servicio_id        = $servicio_id;
-                // $disponible->servicio           = $servicio->descripcion;
-                // $disponible->servicio_categoria = $servicio->categoria;
-                // $disponible->costo              = $servicio->costo;
-                // $disponible->sucursal_id        = $empleado->sucursal_id;
-                // $disponible->save();
-                $car_serv = new CarProducto();
-                $car_serv->cod_asignacion     = 'Pca-'.random_int(11111111, 99999999);
-                $car_serv->cod_prod_serv      = $servicio->cod_servicio;
-                $car_serv->cliente_id         = $cliente_id;
-                $car_serv->user_id        = $user_id;
-                $car_serv->precio_venta       = $servicio->costo;
-                $car_serv->tipo               = 'servicio';
-                $car_serv->status             = 1;
-                $car_serv->save();
-
-
+                $disponible = new Disponible();
+                $disponible->cod_asignacion  = 'Pca-'.random_int(11111111, 99999999);
+                $disponible->cliente_id      = $cliente_id;
+                $disponible->empleado_id     = $user_id;
+                $disponible->cod_prod_serv   = $servicio->cod_servicio;
+                $disponible->servicio_id     = $servicio_id;
+                $disponible->costo           = $servicio->costo;
+                $disponible->sucursal_id     = Auth::user()->sucursal_id;
+                $disponible->save();
 
                  /**
                  * Cargamos el servicio principal asigando
                  * en la tabla de detalle de asignacion
                  */
-                // $detalle_asignacion = new DetalleAsignacion();
-                // $detalle_asignacion->cod_asignacion     = $disponible->cod_asignacion;
-                // $detalle_asignacion->cod_servicio       = $disponible->cod_servicio;
-                // $detalle_asignacion->empleado_id        = $disponible->empleado_id;
-                // $detalle_asignacion->empleado           = $disponible->empleado;
-                // $detalle_asignacion->cliente_id         = $disponible->cliente_id;
-                // $detalle_asignacion->cliente            = $disponible->cliente;
-                // $detalle_asignacion->servicio_id        = $disponible->servicio_id;
-                // $detalle_asignacion->servicio           = $servicio->descripcion;
-                // $detalle_asignacion->servicio_categoria = $servicio->categoria;
-                // $detalle_asignacion->costo              = $disponible->costo;
-                // $detalle_asignacion->fecha              = date('d-m-Y');
-                // $detalle_asignacion->save();
+                $detalle_asignacion = new DetalleAsignacion();
+                $detalle_asignacion->cod_asignacion  = $disponible->cod_asignacion;
+                $detalle_asignacion->cod_prod_serv   = $disponible->cod_prod_serv;
+                $detalle_asignacion->empleado_id     = $disponible->empleado_id;
+                $detalle_asignacion->cliente_id      = $disponible->cliente_id;
+                $detalle_asignacion->servicio_id     = $disponible->servicio_id;
+                $detalle_asignacion->costo           = $disponible->costo;
+                $detalle_asignacion->fecha           = date('d-m-Y');
+                $detalle_asignacion->responsable     = Auth::user()->name;
+                $detalle_asignacion->sucursal_id     = Auth::user()->sucursal_id;
+                $detalle_asignacion->tipo            = 'servicio';
+                $detalle_asignacion->save();
 
                 return true;
 
@@ -85,5 +69,125 @@ class AsignacionController extends Controller
             ->body($th->getMessage())
             ->send();
         }
+    }
+
+    public static function asigna_servicio_adicional($servicio_id, $cod_asignacion, $cliente_id)
+    {
+        try {
+
+            $info_servPrincipal = Disponible::where('cod_asignacion', $cod_asignacion)
+            ->where('status', 'activo')
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->first();
+
+            $asigna_servicio = new DetalleAsignacion();
+            $asigna_servicio->cod_asignacion     = $cod_asignacion;
+            $asigna_servicio->cod_prod_serv      = Servicio::where('id', $servicio_id)->where('sucursal_id', Auth::user()->sucursal_id)->first()->cod_servicio;
+            $asigna_servicio->empleado_id        = Auth::user()->id;
+            $asigna_servicio->cliente_id         = $info_servPrincipal->cliente_id;
+
+            //Restriccion para servicios duplicados
+            $existeServicio = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
+            ->where('servicio_id', $servicio_id)
+            ->where('cliente_id', $cliente_id)
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->where('status', 1)
+            ->first();
+            if ($existeServicio) {
+                throw new Exception("El servicio ya se encuentra asignado a dicho cliente. Por favor intente con otro", 401);
+            }
+
+            $asigna_servicio->servicio_id        = $servicio_id;
+            $asigna_servicio->costo              = $info_servPrincipal->costo;
+            $asigna_servicio->fecha              = date('d-m-Y');
+            $asigna_servicio->responsable        = Auth::user()->name;
+            $asigna_servicio->sucursal_id        = Auth::user()->sucursal_id;
+            $asigna_servicio->tipo               = 'servicio';
+            $asigna_servicio->save();
+
+            //code...
+        } catch (\Throwable $th) {
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
+        }
+
+    }
+
+    public static function asigna_producto($producto_id, $cod_asignacion, $cliente_id)
+    {
+        try {
+
+            $info_servPrincipal = Disponible::where('cod_asignacion', $cod_asignacion)
+            ->where('status', 'activo')
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->first();
+
+            $producto = Producto::find($producto_id);
+
+            $asigna_producto = new DetalleAsignacion();
+            $asigna_producto->cod_asignacion   = $cod_asignacion;
+            $asigna_producto->cod_prod_serv    = $producto->cod_producto;
+            $asigna_producto->empleado_id      = Auth::user()->id;
+            $asigna_producto->cliente_id       = $info_servPrincipal->cliente_id;
+            $asigna_producto->producto_id      = $producto_id;
+            $asigna_producto->costo            = $producto->precio_venta;
+            $asigna_producto->fecha            = date('d-m-Y');
+            $asigna_producto->responsable      = Auth::user()->name;
+            $asigna_producto->sucursal_id      = Auth::user()->sucursal_id;
+            $asigna_producto->tipo             = 'producto';
+            $asigna_producto->save();
+
+            //code...
+        } catch (\Throwable $th) {
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
+        }
+
+    }
+
+    public static function cerrar_servicio($clave, $cod_asignacion)
+    {
+        try {
+
+            $cerrar_disponible = Disponible::where('cod_asignacion', $cod_asignacion)
+            ->where('status', 'activo')
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->first()
+            ->update([
+                'status' =>  'cerrado',
+            ]);
+
+            $cerrar_cabina = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
+            ->where('status', 1)
+            ->get();
+
+            foreach($cerrar_cabina as $item)
+            {
+                $item->update([
+                    'status' => 2,
+                    ]);
+            }
+
+            dd('listo');
+
+
+            //code...
+        } catch (\Throwable $th) {
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
+        }
+
     }
 }

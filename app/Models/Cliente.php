@@ -49,9 +49,9 @@ class Cliente extends Model
         return $this->hasMany(DetalleAsignacion::class, 'id', 'cliente_id');
     }
 
-    public function get_disponibles(): HasMany
+    public function disponible(): HasOne
     {
-        return $this->hasMany(Disponible::class, 'cliente_id', 'id');
+        return $this->hasOne(Disponible::class, 'id', 'cliente_id');
     }
 
     /**

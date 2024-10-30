@@ -105,5 +105,15 @@ class Producto extends Model
         return $this->hasMany(InventarioSucursal::class, 'id', 'producto_id');
     }
 
+    /**
+     * Get the detalleAsignacion associated with the Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function detalleAsignacion(): HasOne
+    {
+        return $this->hasOne(DetalleAsignacion::class, 'id', 'producto_id');
+    }
+
 
 }

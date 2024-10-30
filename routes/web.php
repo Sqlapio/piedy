@@ -365,8 +365,9 @@ Route::get('/pp', function () {
 Route::get('/ex', function () {
 
     // $p = Producto::find(1)->with('sucursal')->first();
-    $p = AsignarProducto::find(11)->with('producto')->first();
-    dd($p->producto->descripcion);
+
+    dd(User::whereBetween('tipo_servicio_id', [1, 2])->where('status', 1)->pluck('tipo_servicio_id', 'id'));
+
 
     // $p = DB::table('venta_servicios')
     // ->select('responsable_id', 'fecha_venta')

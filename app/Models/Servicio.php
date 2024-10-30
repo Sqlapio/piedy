@@ -31,6 +31,7 @@ class Servicio extends Model
         'categoria',
         'tipo_servicio_id',
         'status',
+        'sucursal_id'
     ];
 
     public function disponible(): BelongsTo
@@ -51,6 +52,16 @@ class Servicio extends Model
     public function tipo_servicio(): BelongsTo
     {
         return $this->belongsTo(TipoServicio::class, 'tipo_servicio_id', 'id');
+    }
+
+    /**
+     * Get the sucursal that owns the Servicio
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function sucursal(): BelongsTo
+    {
+        return $this->belongsTo(Sucursal::class, 'sucursal_id', 'id');
     }
 
 }

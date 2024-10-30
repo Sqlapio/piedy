@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Auth;
 
 class TablePreSelectPro extends Component implements HasForms, HasTable
 {
@@ -39,7 +40,7 @@ class TablePreSelectPro extends Component implements HasForms, HasTable
         return $table
             ->heading('Pre-Orden')
             ->description('Producto agregados para la pre-compra')
-            ->query(CarProducto::query()->where('cod_asignacion', '0')->where('tipo', 'producto'))
+            ->query(CarProducto::query()->where('sucursal_id', Auth::user()->sucursal_id)->where('status', 1))
             ->columns([
 
                 TextColumn::make('precio_venta')

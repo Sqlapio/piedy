@@ -7,7 +7,6 @@ use App\Http\Controllers\ClienteController;
 use App\Models\Cliente;
 use App\Models\User;
 use App\Models\Servicio;
-use Filament\Enums\ThemeMode;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -27,7 +26,9 @@ use Filament\Tables\Actions\CreateAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Get;
 use Filament\Support\RawJs;
+use Illuminate\Support\Collection;
 
 class TableCliente extends Component implements HasForms, HasTable
 {
@@ -67,16 +68,20 @@ class TableCliente extends Component implements HasForms, HasTable
                             ->label('Selección del Técnico')
                             ->options(User::whereBetween('tipo_servicio_id', [1, 2])->where('status', 1)->pluck('name', 'id'))
                             ->required()
+                            ->live()
                             ->searchable(),
                         Select::make('servicio_id')
                             ->label('Selección del Servicio')
-                            ->options(Servicio::orderBy('descripcion', 'asc')->pluck('descripcion', 'id'))
+                            ->options(fn (Get $get): Collection => Servicio::query()
+                            ->where('tipo_servicio_id', User::where('id', $get('user_id'))->first()->tipo_servicio_id)
+                            ->pluck('descripcion', 'id'))
+                            // ->options(Servicio::orderBy('descripcion', 'asc')->pluck('descripcion', 'id'))
                             ->required()
                             ->searchable(),
                     ])->action(function (Cliente $record, array $data) {
 
                         //Controller para asignacion de servicio
-                        $res = AsignacionController::asigancion_servicio($record->id, $data['user_id'], $data['servicio_id']);
+                        $res = AsignacionController::asignacion_servicio($record->id, $data['user_id'], $data['servicio_id']);
 
                         if ($res) {
                             Notification::make()

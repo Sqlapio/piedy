@@ -26,8 +26,6 @@ class VentaProductoController extends Controller
 
             if($montoUsd == $total_compra){
 
-                $productos = CarProducto::all();
-
                 /**
                  * Comisiones de venta
                  */
@@ -60,26 +58,29 @@ class VentaProductoController extends Controller
 
                 }
 
+                $productos = CarProducto::where('sucursal_id', Auth::user()->sucursal_id)->where('status', 1)->get();
+
                 foreach($productos as $item)
                 {
 
-                    $Producto = Producto::where('cod_producto', $item->cod_producto)->first();
+                    $producto = Producto::where('cod_producto', $item->cod_prod)->first();
+
                     $venta_producto = new VentaProducto();
                     $venta_producto->cod_asignacion     = $codigoAsignacion;
                     $venta_producto->gerente_id         = Auth::user()->id;
-                    $venta_producto->producto_id        = $Producto->id;
-                    $venta_producto->costo_producto     = $Producto->precio_venta;
+                    $venta_producto->producto_id        = $producto->id;
+                    $venta_producto->costo_producto     = $producto->precio_venta;
                     $venta_producto->metodo_pago        = 'USD';
 
                     $venta_producto->metodoUsd          = $metodoUsd;
                     $venta_producto->montoUsd           = $montoUsd;
 
-                    $venta_producto->comision_gerente   = ($porComGte * $Producto->precio_venta) / 100;
-                    $venta_producto->comision_empleado  = ($empleado_id == null) ? 0.00 : ($porComEmp * $Producto->precio_venta) / 100;
+                    $venta_producto->comision_gerente   = ($porComGte * $producto->precio_venta) / 100;
+                    $venta_producto->comision_empleado  = ($empleado_id == null) ? 0.00 : ($porComEmp * $producto->precio_venta) / 100;
 
                     $venta_producto->fecha_venta        = now()->format('d-m-Y');
                     $venta_producto->cantidad           = $item->cantidad;
-                    $venta_producto->total_venta        = $Producto->precio_venta * $item->cantidad;
+                    $venta_producto->total_venta        = $producto->precio_venta * $item->cantidad;
                     $venta_producto->responsable        = Auth::user()->name;
                     $venta_producto->sucursal_id        = Auth::user()->sucursal->id;
 
@@ -88,13 +89,13 @@ class VentaProductoController extends Controller
                     $venta_producto->save();
 
                     //Descuento la cantidad vendida de la exitencia del producto por sucursal
-                    $productoSucursal = InventarioSucursal::where('producto_id', $Producto->id)->where('sucursal_id', Auth::user()->sucursal->id)->first();
+                    $productoSucursal = InventarioSucursal::where('producto_id', $producto->id)->where('sucursal_id', Auth::user()->sucursal->id)->first();
                     $productoSucursal->cantidad = $productoSucursal->cantidad - $item->cantidad;
                     $productoSucursal->save();
 
                     //Cargamos el movimiento de inventario en su tabla
                     MovimientoInventarioController::registrar_movimiento(
-                        $Producto->id,
+                        $producto->id,
                         $item->cantidad,
                         $venta_producto->sucursal_id,
                         $codigoAsignacion,
@@ -110,7 +111,7 @@ class VentaProductoController extends Controller
             }
 
         } catch (\Throwable $th) {
-
+            dd($th);
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-document-text')
@@ -129,8 +130,6 @@ class VentaProductoController extends Controller
             $codigoAsignacion = 'Pca-'.random_int(11111111, 99999999);
 
             $total_compra = CarProducto::sum('total_compra_bsd');
-
-            $productos = CarProducto::all();
 
             /**
              * Comisiones de venta
@@ -164,25 +163,28 @@ class VentaProductoController extends Controller
 
             }
 
+            $productos = CarProducto::where('sucursal_id', Auth::user()->sucursal_id)->where('status', 1)->get();
+
             foreach($productos as $item)
             {
-                $Producto = Producto::where('cod_producto', $item->cod_producto)->first();
+                $producto = Producto::where('cod_producto', $item->cod_prod)->first();
+
                 $venta_producto = new VentaProducto();
                 $venta_producto->cod_asignacion     = $codigoAsignacion;
                 $venta_producto->gerente_id         = Auth::user()->id;
-                $venta_producto->producto_id        = $Producto->id;
-                $venta_producto->costo_producto     = $Producto->precio_venta;
+                $venta_producto->producto_id        = $producto->id;
+                $venta_producto->costo_producto     = $producto->precio_venta;
                 $venta_producto->metodo_pago        = 'BSD';
 
                 $venta_producto->metodoBsd          = $metodoBsd;
                 $venta_producto->montoBsd           = Str::replace(',', '.', (Str::replace('.', '', $montoBsd)));
 
-                $venta_producto->comision_gerente   = ($porComGte * $Producto->precio_venta) / 100;
-                $venta_producto->comision_empleado  = ($empleado_id == null) ? 0.00 : ($porComEmp * $Producto->precio_venta) / 100;
+                $venta_producto->comision_gerente   = ($porComGte * $producto->precio_venta) / 100;
+                $venta_producto->comision_empleado  = ($empleado_id == null) ? 0.00 : ($porComEmp * $producto->precio_venta) / 100;
 
                 $venta_producto->fecha_venta        = now()->format('d-m-Y');
                 $venta_producto->cantidad           = $item->cantidad;
-                $venta_producto->total_venta        = $Producto->precio_venta * $item->cantidad;
+                $venta_producto->total_venta        = $producto->precio_venta * $item->cantidad;
                 $venta_producto->referenciaBsd      = ($referenciaBsd == null) ? 'N/a' : $referenciaBsd ;
                 $venta_producto->nroTarjeta         = ($nroTarjeta == null) ? 'N/a' : $nroTarjeta;
                 $venta_producto->responsable        = Auth::user()->name;
@@ -193,13 +195,13 @@ class VentaProductoController extends Controller
                 $venta_producto->save();
 
                 //Descuento la cantidad vendida de la exitencia del producto por sucursal
-                $productoSucursal = InventarioSucursal::where('producto_id', $Producto->id)->where('sucursal_id', Auth::user()->sucursal->id)->first();
+                $productoSucursal = InventarioSucursal::where('producto_id', $producto->id)->where('sucursal_id', Auth::user()->sucursal->id)->first();
                 $productoSucursal->cantidad = $productoSucursal->cantidad - $item->cantidad;
                 $productoSucursal->save();
 
                 //Cargamos el movimiento de inventario en su tabla
                 MovimientoInventarioController::registrar_movimiento(
-                    $Producto->id,
+                    $producto->id,
                     $item->cantidad,
                     $venta_producto->sucursal_id,
                     $codigoAsignacion,
@@ -238,9 +240,7 @@ class VentaProductoController extends Controller
             }
 
             $total_compra_usd = CarProducto::sum('total_compra_usd');
-            // $total_compra_bsd = CarProducto::sum('total_compra_bsd');
-
-            $productos = CarProducto::all();
+            // $total_compra_bsd = CarProducto::sum('total_compra_bsd')
 
             /**
              * Comisiones de venta
@@ -274,15 +274,18 @@ class VentaProductoController extends Controller
 
             }
 
+            $productos = CarProducto::where('sucursal_id', Auth::user()->sucursal_id)->where('status', 1)->get();
+
             foreach($productos as $item)
             {
 
-                $Producto = Producto::where('cod_producto', $item->cod_producto)->first();
+                $producto = Producto::where('cod_producto', $item->cod_prod)->first();
+
                 $venta_producto = new VentaProducto();
                 $venta_producto->cod_asignacion     = $codigoAsignacion;
                 $venta_producto->gerente_id         = Auth::user()->id;
-                $venta_producto->producto_id        = $Producto->id;
-                $venta_producto->costo_producto     = $Producto->precio_venta;
+                $venta_producto->producto_id        = $producto->id;
+                $venta_producto->costo_producto     = $producto->precio_venta;
                 $venta_producto->metodo_pago        = 'multiple';
 
                 $venta_producto->metodoUsd          = $metodoUsd;
@@ -291,12 +294,12 @@ class VentaProductoController extends Controller
                 $venta_producto->montoUsd           = $montoUsd;
                 $venta_producto->montoBsd           = Str::replace(',', '.', (Str::replace('.', '', $montoBsd)));
 
-                $venta_producto->comision_gerente   = ($porComGte * $Producto->precio_venta) / 100;
-                $venta_producto->comision_empleado  = ($empleado_id == null) ? 0.00 : ($porComEmp * $Producto->precio_venta) / 100;
+                $venta_producto->comision_gerente   = ($porComGte * $producto->precio_venta) / 100;
+                $venta_producto->comision_empleado  = ($empleado_id == null) ? 0.00 : ($porComEmp * $producto->precio_venta) / 100;
 
                 $venta_producto->fecha_venta        = now()->format('d-m-Y');
                 $venta_producto->cantidad           = $item->cantidad;
-                $venta_producto->total_venta        = $Producto->precio_venta * $item->cantidad;
+                $venta_producto->total_venta        = $producto->precio_venta * $item->cantidad;
 
                 $venta_producto->referenciaUsd      = ($referenciaUsd == null) ? 'N/A' : $referenciaUsd;
                 $venta_producto->referenciaBsd      = ($referenciaBsd == null) ? 'N/A' : $referenciaBsd;
@@ -310,13 +313,13 @@ class VentaProductoController extends Controller
                 $venta_producto->save();
 
                 //Descuento la cantidad vendida de la exitencia del producto por sucursal
-                $productoSucursal = InventarioSucursal::where('producto_id', $Producto->id)->where('sucursal_id', Auth::user()->sucursal->id)->first();
+                $productoSucursal = InventarioSucursal::where('producto_id', $producto->id)->where('sucursal_id', Auth::user()->sucursal->id)->first();
                 $productoSucursal->cantidad = $productoSucursal->cantidad - $item->cantidad;
                 $productoSucursal->save();
 
                 //Cargamos el movimiento de inventario en su tabla
                 MovimientoInventarioController::registrar_movimiento(
-                    $Producto->id,
+                    $producto->id,
                     $item->cantidad,
                     $venta_producto->sucursal_id,
                     $codigoAsignacion,

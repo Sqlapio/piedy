@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ServicioResource\Pages;
 use App\Filament\Resources\ServicioResource\RelationManagers;
 use App\Models\Servicio;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -74,6 +75,10 @@ class ServicioResource extends Resource
                             ->required(),
                     ])
                     ->required(),
+                Select::make('user_id')
+                    ->multiple()
+                    ->preload()
+                    ->relationship(name: 'users', titleAttribute: 'name')
             ]);
     }
 

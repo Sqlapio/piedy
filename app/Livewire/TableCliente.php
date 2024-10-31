@@ -5,8 +5,10 @@ namespace App\Livewire;
 use App\Http\Controllers\AsignacionController;
 use App\Http\Controllers\ClienteController;
 use App\Models\Cliente;
+use App\Models\Rol;
 use App\Models\User;
 use App\Models\Servicio;
+use App\Models\ServicioUser;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -66,20 +68,23 @@ class TableCliente extends Component implements HasForms, HasTable
                     ->form([
                         Select::make('user_id')
                             ->label('Selección del Técnico')
-                            ->options(User::whereBetween('tipo_servicio_id', [1, 2])->where('status', 1)->pluck('name', 'id'))
+                            ->options(function() {
+                                $u = User::all()->pluck('name', 'id');
+                                return $u;
+                            })
                             ->required()
                             ->live()
                             ->searchable(),
-                        Select::make('servicio_id')
-                            ->label('Selección del Servicio')
-                            ->options(fn (Get $get): Collection => Servicio::query()
-                            ->where('tipo_servicio_id', User::where('id', $get('user_id'))->first()->tipo_servicio_id)
-                            ->pluck('descripcion', 'id'))
+                        Select::make('rol_id')
+                            ->label('servicio')
+                            ->options(function () {
+                                return;
+                            })
                             // ->options(Servicio::orderBy('descripcion', 'asc')->pluck('descripcion', 'id'))
                             ->required()
                             ->searchable(),
                     ])->action(function (Cliente $record, array $data) {
-
+                        dd($data);
                         //Controller para asignacion de servicio
                         $res = AsignacionController::asignacion_servicio($record->id, $data['user_id'], $data['servicio_id']);
 

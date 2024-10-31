@@ -14,6 +14,7 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -181,6 +182,26 @@ class User extends Authenticatable implements FilamentUser
     public function disponible(): HasOne
     {
         return $this->hasOne(Disponible::class, 'id', 'empleado_id');
+    }
+
+    /**
+     * Get the rol associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function rol(): HasOne
+    {
+        return $this->hasOne(Rol::class, 'rol_id', 'id');
+    }
+
+    /**
+     * The servicios that belong to the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function user(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'servicio_users', 'user_id', 'servicio_id');
     }
 
 }

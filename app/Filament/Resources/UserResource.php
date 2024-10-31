@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use App\Models\Servicio;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -90,6 +91,12 @@ class UserResource extends Resource
                     ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                     ->hiddenOn('edit')
                     ->required(),
+
+                Select::make('servicio_id')
+                    ->multiple()
+                    ->relationship(name: 'servicios', titleAttribute: 'descripcion')
+                    ->searchable()
+                    ->preload()
             ]);
     }
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -31,7 +32,8 @@ class Servicio extends Model
         'categoria',
         'tipo_servicio_id',
         'status',
-        'sucursal_id'
+        'sucursal_id',
+        'rol_id'
     ];
 
     public function disponible(): BelongsTo
@@ -62,6 +64,27 @@ class Servicio extends Model
     public function sucursal(): BelongsTo
     {
         return $this->belongsTo(Sucursal::class, 'sucursal_id', 'id');
+    }
+
+     /**
+     * Get all of the pivote for the Servicio
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function roles(): HasMany
+    {
+        return $this->hasMany(Rol::class, 'rol_id', 'id');
+    }
+
+    /**
+     * The roles that belong to the Servicio
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function servicios(): BelongsToMany
+    {
+        return $this->belongsToMany(Servicio::class, 'servicio_users', 'user_id', 'servicio_id')
+        ->withPivot(['descripcion']);
     }
 
 }

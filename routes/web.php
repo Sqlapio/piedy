@@ -5,7 +5,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NotificacionesController;
 use App\Livewire\Login;
 use App\Models\CierreGeneral;
-use App\Models\Cliente;
+use App\Models\ServicioUser;
 use App\Models\DetalleAsignacion;
 use App\Models\VentaServicio;
 use Illuminate\Support\Facades\Route;
@@ -365,16 +365,7 @@ Route::get('/pp', function () {
 Route::get('/ex', function () {
 
     // $p = Producto::find(1)->with('sucursal')->first();
-
-    dd(User::whereBetween('tipo_servicio_id', [1, 2])->where('status', 1)->pluck('tipo_servicio_id', 'id'));
-
-
-    // $p = DB::table('venta_servicios')
-    // ->select('responsable_id', 'fecha_venta')
-    // ->where('responsable_id', 38)
-    // ->whereBetween('created_at',['2024-08-01 00:00:00', '2024-08-15 23:59:59'])
-    // ->groupBy('fecha_venta', 'responsable_id')
-    // ->get();
-    // dd(count($p));
+    $d = ServicioUser::where('user_id', 42)->with('servicio')->get()->toArray();
+    dd($d[0]['servicio']['descripcion']);
 
 });

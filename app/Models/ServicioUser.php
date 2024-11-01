@@ -6,48 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class ServicioUser extends Model
+class ServicioUser extends Pivot
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'user_id',
-        'servicio_id',
-    ];
-
     /**
-     * The table associated with the model.
-     *
-     * @var string
+     * Define table
      */
     protected $table = 'servicio_users';
 
-    /**
-     * The relationships that should be touched on save.
-     *
-     * @var array
-     */
-    protected $touches = ['servicio', 'user'];
-
-    /**
-     * Get the bes for the pivot model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function servicio()
+    public static function booted(): void
     {
-        return $this->belongsTo(Servicio::class);
-    }
-
-    /**
-     * Get the product for the pivot model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class);
+        static::creating(function ($record) {
+            $record->descripcion =  Servicio::where('id', $record->servicio_id)->first()->descripcion;
+        });
     }
 
 

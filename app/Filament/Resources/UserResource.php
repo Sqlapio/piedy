@@ -92,11 +92,11 @@ class UserResource extends Resource
                     ->hiddenOn('edit')
                     ->required(),
 
-                Select::make('servicio_id')
-                    ->multiple()
-                    ->relationship(name: 'servicios', titleAttribute: 'descripcion')
-                    ->searchable()
+                Select::make('servicios')
+                    ->options(Servicio::all()->pluck('descripcion', 'id'))
                     ->preload()
+                    ->multiple()
+                    ->searchable(),
             ]);
     }
 

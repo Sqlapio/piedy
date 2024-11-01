@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ServicioResource\Pages;
 use App\Filament\Resources\ServicioResource\RelationManagers;
 use App\Models\Servicio;
-use App\Models\User;
+use App\Models\Rol;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -38,8 +38,9 @@ class ServicioResource extends Resource
                         'principal' => 'Principal',
                         'adicional' => 'Adicional',
                     ]),
-                Select::make('tipo_servicio_id')
-                    ->relationship('tipo_servicio', 'descripcion')
+                Select::make('rol_id')
+                ->label('A qué rol pertenece?')
+                    ->options(Rol::whereBetween('id', [1,2])->pluck('descripcion', 'id'))
                     ->searchable()
                     ->preload()
                     ->createOptionForm([
@@ -75,10 +76,6 @@ class ServicioResource extends Resource
                             ->required(),
                     ])
                     ->required(),
-                Select::make('user_id')
-                    ->multiple()
-                    ->preload()
-                    ->relationship(name: 'users', titleAttribute: 'name')
             ]);
     }
 
@@ -95,7 +92,7 @@ class ServicioResource extends Resource
                     'adicional' => 'warning',
                 })
                 ->searchable(),
-                TextColumn::make('tipo_servicio.descripcion')->label('Tipo de servício')->searchable(),
+                TextColumn::make('rol.descripcion')->label('Tipo de servício')->searchable(),
                 TextColumn::make('costo')->money('USD')->searchable()->label('Costo($)'),
                 TextColumn::make('asignacion')
                 ->badge()

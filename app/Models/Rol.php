@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class Rol extends Model
 {
@@ -25,12 +27,12 @@ class Rol extends Model
     }
 
     /**
-     * Get the user that owns the Rol
+     * Get all of the servicios for the TipoServicio
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function servicio(): BelongsTo
+    public function servicios(): HasMany
     {
-        return $this->belongsTo(Servicio::class, 'id', 'rol_id');
+        return $this->hasMany(Servicio::class);
     }
 }

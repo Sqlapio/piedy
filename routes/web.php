@@ -365,7 +365,10 @@ Route::get('/pp', function () {
 Route::get('/ex', function () {
 
     // $p = Producto::find(1)->with('sucursal')->first();
-    $d = ServicioUser::where('user_id', 42)->with('servicio')->get()->toArray();
-    dd($d[0]['servicio']['descripcion']);
+    // $d = ServicioUser::where('user_id', 42)->with('servicio')->get()->toArray();
+    dump( (Disponible::where('cod_asignacion', 'Pca-36432152')->first()->status == 'activo'));
+    //false
+    dd(! (Disponible::where('cod_asignacion', 'Pca-36432152')->first()->status == 'activo'));
+    //true
 
 });

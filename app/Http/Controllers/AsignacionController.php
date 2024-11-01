@@ -7,7 +7,7 @@ use App\Models\DetalleAsignacion;
 use App\Models\Disponible;
 use App\Models\Servicio;
 use App\Models\User;
-use App\Models\CarProducto;
+use App\Models\TasaBcv;
 use App\Models\Producto;
 use Exception;
 use Filament\Notifications\Notification;
@@ -21,6 +21,8 @@ class AsignacionController extends Controller
         try {
 
             $existe = Disponible::where('empleado_id', $user_id)->where('status', 'activo')->first();
+
+            $tasaBcv = TasaBcv::all()->first()->tasa;
 
             if($existe != null){
 
@@ -51,6 +53,7 @@ class AsignacionController extends Controller
                 $detalle_asignacion->cliente_id      = $disponible->cliente_id;
                 $detalle_asignacion->servicio_id     = $disponible->servicio_id;
                 $detalle_asignacion->costo           = $disponible->costo;
+                $detalle_asignacion->costo_bsd       = $disponible->costo * $tasaBcv;
                 $detalle_asignacion->fecha           = date('d-m-Y');
                 $detalle_asignacion->responsable     = Auth::user()->name;
                 $detalle_asignacion->sucursal_id     = Auth::user()->sucursal_id;
@@ -74,6 +77,8 @@ class AsignacionController extends Controller
     public static function asigna_servicio_adicional($servicio_id, $cod_asignacion, $cliente_id)
     {
         try {
+
+            $tasaBcv = TasaBcv::all()->first()->tasa;
 
             $info_servPrincipal = Disponible::where('cod_asignacion', $cod_asignacion)
             ->where('status', 'activo')
@@ -99,6 +104,7 @@ class AsignacionController extends Controller
 
             $asigna_servicio->servicio_id        = $servicio_id;
             $asigna_servicio->costo              = $info_servPrincipal->costo;
+            $asigna_servicio->costo_bsd          = $info_servPrincipal->costo * $tasaBcv;
             $asigna_servicio->fecha              = date('d-m-Y');
             $asigna_servicio->responsable        = Auth::user()->name;
             $asigna_servicio->sucursal_id        = Auth::user()->sucursal_id;
@@ -121,10 +127,7 @@ class AsignacionController extends Controller
     {
         try {
 
-            $info_servPrincipal = Disponible::where('cod_asignacion', $cod_asignacion)
-            ->where('status', 'activo')
-            ->where('sucursal_id', Auth::user()->sucursal_id)
-            ->first();
+            $tasaBcv = TasaBcv::all()->first()->tasa;
 
             $producto = Producto::find($producto_id);
 
@@ -132,9 +135,10 @@ class AsignacionController extends Controller
             $asigna_producto->cod_asignacion   = $cod_asignacion;
             $asigna_producto->cod_prod_serv    = $producto->cod_producto;
             $asigna_producto->empleado_id      = Auth::user()->id;
-            $asigna_producto->cliente_id       = $info_servPrincipal->cliente_id;
+            $asigna_producto->cliente_id       = $cliente_id;
             $asigna_producto->producto_id      = $producto_id;
             $asigna_producto->costo            = $producto->precio_venta;
+            $asigna_producto->costo_bsd        = $producto->precio_venta * $tasaBcv;
             $asigna_producto->fecha            = date('d-m-Y');
             $asigna_producto->responsable      = Auth::user()->name;
             $asigna_producto->sucursal_id      = Auth::user()->sucursal_id;

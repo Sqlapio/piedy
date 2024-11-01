@@ -84,4 +84,14 @@ class Sucursal extends Model
         return $this->hasOne(Servicio::class, 'id', 'sucursal_id');
     }
 
+    /**
+     * Get the metodoPrepago that owns the Sucursal
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function metodoPrepago(): BelongsTo
+    {
+        return $this->belongsTo(MetodoPrepago::class);
+    }
+
 }

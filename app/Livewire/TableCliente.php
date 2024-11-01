@@ -68,23 +68,19 @@ class TableCliente extends Component implements HasForms, HasTable
                     ->form([
                         Select::make('user_id')
                             ->label('Selección del Técnico')
-                            ->options(function() {
-                                $u = User::all()->pluck('name', 'id');
-                                return $u;
-                            })
+                            ->options(User::whereBetween('rol_id', [1,2])->where('status', 1)->pluck('name', 'id'))
                             ->required()
                             ->live()
                             ->searchable(),
-                        Select::make('rol_id')
+                        Select::make('servicio_id')
                             ->label('servicio')
-                            ->options(function () {
-                                return;
-                            })
+                            ->options(fn (Get $get): Collection => ServicioUser::query()
+                            ->where('user_id', $get('user_id'))
+                            ->pluck('descripcion', 'servicio_id'))
                             // ->options(Servicio::orderBy('descripcion', 'asc')->pluck('descripcion', 'id'))
                             ->required()
                             ->searchable(),
                     ])->action(function (Cliente $record, array $data) {
-                        dd($data);
                         //Controller para asignacion de servicio
                         $res = AsignacionController::asignacion_servicio($record->id, $data['user_id'], $data['servicio_id']);
 

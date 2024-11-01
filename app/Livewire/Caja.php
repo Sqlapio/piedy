@@ -451,11 +451,11 @@ class Caja extends Component
          */
         $codigo = $request->session()->all();
 
+        $factura = Disponible::where('cod_asignacion', $codigo['cod_asignacion'])->where('sucursal_id', Auth::user()->sucursal_id)->first();
+        
         $this->event();
 
-        $data = VentaServicio::where('cod_asignacion', $codigo['cod_asignacion'])->first();
-
-        $detalle = DetalleAsignacion::where('cod_asignacion', $data->cod_asignacion)
+        $detalle = DetalleAsignacion::where('cod_asignacion', $codigo)
             ->where('status', '1')
             ->get();
 
@@ -489,6 +489,6 @@ class Caja extends Component
         $lista_prod = VentaProducto::where('cod_asignacion', $codigo['cod_asignacion'])->where('status', 1)->where('facturado', 1)->with('producto')->get();
 
 
-        return view('livewire.caja', compact('data', 'detalle', 'total_vista', 'total_vista_bsd', 'lista_prod', 'total_productos'));
+        return view('livewire.caja', compact('detalle', 'total_vista', 'total_vista_bsd', 'lista_prod', 'total_productos', 'factura'));
     }
 }

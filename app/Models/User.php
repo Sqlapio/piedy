@@ -199,9 +199,11 @@ class User extends Authenticatable implements FilamentUser
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function user(): BelongsToMany
+    public function servicios(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'servicio_users', 'user_id', 'servicio_id');
+        return $this->belongsToMany(Servicio::class, 'servicio_users')
+        ->using(ServicioUser::class) 
+        ->withPivot(['descripcion']);
     }
 
 }

@@ -51,9 +51,9 @@ class Servicio extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function tipo_servicio(): BelongsTo
+    public function rol(): BelongsTo
     {
-        return $this->belongsTo(TipoServicio::class, 'tipo_servicio_id', 'id');
+        return $this->belongsTo(Rol::class);
     }
 
     /**
@@ -64,27 +64,6 @@ class Servicio extends Model
     public function sucursal(): BelongsTo
     {
         return $this->belongsTo(Sucursal::class, 'sucursal_id', 'id');
-    }
-
-     /**
-     * Get all of the pivote for the Servicio
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function roles(): HasMany
-    {
-        return $this->hasMany(Rol::class, 'rol_id', 'id');
-    }
-
-    /**
-     * The roles that belong to the Servicio
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function servicios(): BelongsToMany
-    {
-        return $this->belongsToMany(Servicio::class, 'servicio_users', 'user_id', 'servicio_id')
-        ->withPivot(['descripcion']);
     }
 
 }

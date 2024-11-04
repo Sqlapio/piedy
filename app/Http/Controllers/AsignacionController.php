@@ -123,7 +123,7 @@ class AsignacionController extends Controller
 
     }
 
-    public static function asigna_producto($producto_id, $cod_asignacion, $cliente_id)
+    public static function asigna_producto($producto_id, $cantidad, $cod_asignacion, $cliente_id)
     {
         try {
 
@@ -137,12 +137,13 @@ class AsignacionController extends Controller
             $asigna_producto->empleado_id      = Auth::user()->id;
             $asigna_producto->cliente_id       = $cliente_id;
             $asigna_producto->producto_id      = $producto_id;
-            $asigna_producto->costo            = $producto->precio_venta;
-            $asigna_producto->costo_bsd        = $producto->precio_venta * $tasaBcv;
+            $asigna_producto->costo            = $producto->precio_venta * $cantidad;
+            $asigna_producto->costo_bsd        = ($producto->precio_venta * $tasaBcv) * $cantidad;
             $asigna_producto->fecha            = date('d-m-Y');
             $asigna_producto->responsable      = Auth::user()->name;
             $asigna_producto->sucursal_id      = Auth::user()->sucursal_id;
             $asigna_producto->tipo             = 'producto';
+            $asigna_producto->cantidad         = $cantidad;
             $asigna_producto->save();
 
             //code...

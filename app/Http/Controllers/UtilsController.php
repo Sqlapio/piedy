@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Cita;
 use App\Models\Comision;
 use App\Models\CarProducto;
+use App\Models\DetalleAsignacion;
 use App\Models\Servicio;
+use App\Models\Disponible;
 use App\Models\Producto;
 use App\Models\InventarioSucursal;
 use App\Models\VentaProducto;
@@ -115,28 +117,28 @@ class UtilsController extends Controller
 
         try {
 
-            $porcentaje = Comision::where('aplicacion', 'servicio')
-                ->where('beneficiario', 'empleado')
-                ->first()
-                ->porcentaje;
+                $porcentaje = Comision::where('aplicacion', 'servicio')
+                    ->where('beneficiario', 'empleado')
+                    ->first()
+                    ->porcentaje;
 
-            /**Porcentaje de comision para servicio vip para empleados */
-            $porcen_vip_emp = Comision::where('aplicacion', 'vip')
-                ->where('beneficiario', 'empleado')
-                ->first()
-                ->porcentaje;
+                /**Porcentaje de comision para servicio vip para empleados */
+                $porcen_vip_emp = Comision::where('aplicacion', 'vip')
+                    ->where('beneficiario', 'empleado')
+                    ->first()
+                    ->porcentaje;
 
-            /**Porcentaje de comision para servicio vip para gerentes */
-            $porcen_vip_gte = Comision::where('aplicacion', 'vip')
-                ->where('beneficiario', 'gerente')
-                ->first()
-                ->porcentaje;
+                /**Porcentaje de comision para servicio vip para gerentes */
+                $porcen_vip_gte = Comision::where('aplicacion', 'vip')
+                    ->where('beneficiario', 'gerente')
+                    ->first()
+                    ->porcentaje;
 
-            /**Porcentaje de comision para servicio adicionales para empleado */
-            $porcen_adi_emp = Comision::where('aplicacion', 'servicio-adicional')
-                ->where('beneficiario', 'empleado')
-                ->first()
-                ->porcentaje;
+                /**Porcentaje de comision para servicio adicionales para empleado */
+                $porcen_adi_emp = Comision::where('aplicacion', 'servicio-adicional')
+                    ->where('beneficiario', 'empleado')
+                    ->first()
+                    ->porcentaje;
 
             $valorUno = floatval($valorUno) + floatval($monto_giftcard);
 
@@ -375,6 +377,114 @@ class UtilsController extends Controller
         $calculo = ($comision * $costo) / 100;
 
         return $calculo;
+    }
+
+    static function info($cod_asignacion)
+    {
+        try {
+
+            $costo_quiropedia_basica = Servicio::where('sucursal_id', Auth::user()->sucursal_id)
+            ->where('descripcion', 'Quiropedia Basica')
+            ->where('rol_id', 2)
+            ->where('categoria', 'principal')
+            ->first()->costo;
+
+            /**Porcentaje de comision para servicio vip para empleados */
+            $porcen_vip_emp = Comision::where('aplicacion', 'servicio')
+            ->where('beneficiario', 'empleado')
+            ->first()
+            ->porcentaje;
+
+            /**Porcentaje de comision para servicio vip para gerentes */
+            $porcen_vip_gte = Comision::where('aplicacion', 'vip')
+            ->where('beneficiario', 'gerente')
+            ->first()
+            ->porcentaje;
+
+            /**Porcentaje de comision para servicio adicionales para empleado */
+            $porcen_adi_emp = Comision::where('aplicacion', 'servicio-adicional')
+            ->where('beneficiario', 'empleado')
+            ->first()
+            ->porcentaje;
+
+            //3.- Costo total de todos los servicios
+            $costo_servicios = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->where('tipo', 'servicio')
+            ->where('status', 2)
+            ->sum('costo');
+
+            //Comision Empleado 10%
+            $porComEmp = Comision::where('aplicacion', 'producto')
+            ->where('beneficiario', 'empleado')
+            ->where('accion', 'directa')
+            ->where('status', '1')->first()
+            ->porcentaje;
+
+            //Comision Empleado 5%
+            $porComGte = Comision::where('aplicacion', 'producto')
+                ->where('beneficiario', 'gerente')
+                ->where('accion', 'indirecta')
+                ->where('status', '1')->first()
+                ->porcentaje;
+
+            $productos = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
+                ->where('sucursal_id', Auth::user()->sucursal_id)
+                ->where('tipo', 'producto')
+                ->where('status', 2)
+                ->get();
+
+            $info_cliente_user = Disponible::where('cod_asignacion', $cod_asignacion)
+                ->where('sucursal_id', Auth::user()->sucursal_id)
+                ->where('status', 'cerrado')
+                ->first();
+
+            $servicio_id = Disponible::where('cod_asignacion', $cod_asignacion)
+                ->where('sucursal_id', Auth::user()->sucursal_id)
+                ->where('status', 'cerrado')
+                ->first()
+                ->servicio_id;
+
+            //code...
+            return $valores = [
+                'costo_quiropedia_basica'   => $costo_quiropedia_basica,
+                'porcen_vip_emp'            => $porcen_vip_emp,
+                'porcen_vip_gte'            => $porcen_vip_gte,
+                'costo_total_servicios'     => $costo_servicios,
+                'porcen_adi_emp'            => $porcen_adi_emp,
+                'porcen_producto_emp'       => $porComEmp,
+                'porcen_producto_gte'       => $porComGte,
+                'productos'                 => $productos,
+                'info_cliente_user'         => $info_cliente_user,
+                'servicio_id'               => $servicio_id
+            ];
+
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+
+    }
+
+    static function calculo_vip($quirop_basica, $srvs_adicional, $porcen_vip_emp, $porcen_adi_emp, $porcen_vip_gte)
+    {
+        try {
+
+            $porcen_quirop_basica = ($porcen_vip_emp * $quirop_basica) / 100;
+
+            $porcen_servs_adicionales = ($porcen_adi_emp * $srvs_adicional) / 100;
+
+            $total_servicio = $quirop_basica + $srvs_adicional;
+            $porcen_gerente = ($porcen_vip_gte * $total_servicio) / 100;
+
+            return $res = [
+                'comision_total' => $porcen_quirop_basica + $porcen_servs_adicionales,
+                'comision_gerente' => $porcen_gerente
+            ];
+                //code...
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+
     }
 
 }

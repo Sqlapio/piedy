@@ -383,6 +383,12 @@ class UtilsController extends Controller
     {
         try {
 
+            $total_venta = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->where('status', 2)
+            ->sum('costo');
+
+            //Costo de la Quiropedia Basica
             $costo_quiropedia_basica = Servicio::where('sucursal_id', Auth::user()->sucursal_id)
             ->where('descripcion', 'Quiropedia Basica')
             ->where('rol_id', 2)
@@ -412,6 +418,8 @@ class UtilsController extends Controller
             ->where('sucursal_id', Auth::user()->sucursal_id)
             ->where('tipo', 'servicio')
             ->where('status', 2)
+            // ->get();
+            // dd($costo_servicios);
             ->sum('costo');
 
             //Comision Empleado 10%
@@ -428,17 +436,20 @@ class UtilsController extends Controller
                 ->where('status', '1')->first()
                 ->porcentaje;
 
+            //Productos asignados en la venta
             $productos = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
                 ->where('sucursal_id', Auth::user()->sucursal_id)
                 ->where('tipo', 'producto')
                 ->where('status', 2)
                 ->get();
 
+            //Informacion para obtener los id del cliente y del empleado involucrados en la venta
             $info_cliente_user = Disponible::where('cod_asignacion', $cod_asignacion)
                 ->where('sucursal_id', Auth::user()->sucursal_id)
                 ->where('status', 'cerrado')
                 ->first();
 
+            //Id del primer servicio asignado
             $servicio_id = Disponible::where('cod_asignacion', $cod_asignacion)
                 ->where('sucursal_id', Auth::user()->sucursal_id)
                 ->where('status', 'cerrado')
@@ -456,7 +467,8 @@ class UtilsController extends Controller
                 'porcen_producto_gte'       => $porComGte,
                 'productos'                 => $productos,
                 'info_cliente_user'         => $info_cliente_user,
-                'servicio_id'               => $servicio_id
+                'servicio_id'               => $servicio_id,
+                'total_venta'               => $total_venta
             ];
 
         } catch (\Throwable $th) {
@@ -467,6 +479,7 @@ class UtilsController extends Controller
 
     static function calculo_vip($quirop_basica, $srvs_adicional, $porcen_vip_emp, $porcen_adi_emp, $porcen_vip_gte)
     {
+
         try {
 
             $porcen_quirop_basica = ($porcen_vip_emp * $quirop_basica) / 100;
@@ -480,6 +493,152 @@ class UtilsController extends Controller
                 'comision_total' => $porcen_quirop_basica + $porcen_servs_adicionales,
                 'comision_gerente' => $porcen_gerente
             ];
+                //code...
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+
+    }
+
+    static function calculo_vip_bsd($quirop_basica, $srvs_adicional, $porcen_vip_emp, $porcen_adi_emp, $porcen_vip_gte)
+    {
+
+        try {
+
+            $tasa_bcv = TasaBcv::all()->first()->tasa;
+
+            $porcen_quirop_basica = ($porcen_vip_emp * $quirop_basica) / 100;
+
+            $porcen_servs_adicionales = ($porcen_adi_emp * $srvs_adicional) / 100;
+
+            $total_servicio = $quirop_basica + $srvs_adicional;
+            $porcen_gerente = ($porcen_vip_gte * $total_servicio) / 100;
+
+            return $res = [
+                'comision_total' => ($porcen_quirop_basica + $porcen_servs_adicionales) * $tasa_bcv,
+                'comision_gerente' => $porcen_gerente
+            ];
+                //code...
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+
+    }
+
+    static function calculo_vip_multiple($monto_usb, $monto_bsd, $total_venta, $quirop_basica, $srvs_adicional, $porcen_vip_emp, $porcen_adi_emp, $porcen_vip_gte)
+    {
+
+        try {
+
+            $tasa_bcv = TasaBcv::all()->first()->tasa;
+
+            //1.- Calculo de los porcentajes de representacion
+            //% quiropedia basica
+            $por_quirop_basica = ($quirop_basica * 100) / $total_venta;
+
+            //% servicios adicionales
+            $por_serv_adicionales = ($srvs_adicional * 100) / $total_venta;
+
+            //2.- Calculo de los porcentajes sobre el monto pagado por el cliente
+            //Calculo para el pago el dolares
+            $calculoUno = ($por_quirop_basica * $monto_usb) / 100;
+            $calculoDos = ($por_serv_adicionales * $monto_usb) / 100;
+
+            //Calculo para el pago el bolivares
+            $calculoTres = ($por_quirop_basica * $monto_bsd) / 100;
+            $calculoCuatro = ($por_serv_adicionales * $monto_bsd) / 100;
+
+            //3.- Calculo de las comisiones para cada monto pagado por el cliente
+            //Calculo para el pago el dolares (40% para el empleado)
+            $comision_dolares_uno = ($porcen_vip_emp * $calculoUno) / 100;
+
+            //Calculo para el pago el dolares (10% para el empleado)
+            $comision_dolares_dos = ($porcen_adi_emp * $calculoDos) / 100;
+
+            //3.- Calculo de las comisiones para cada monto pagado por el cliente
+            //Calculo para el pago el bolivares (40% para el empleado)
+            $comision_bolivares_uno = ($porcen_vip_emp * $calculoTres) / 100;
+
+
+            //Calculo para el pago el bolivares (10% para el empleado)
+            $comision_bolivares_dos = ($porcen_adi_emp * $calculoCuatro) / 100;
+
+
+            //4.- Calculo de comisones totales
+            $comision_total_dolares = $comision_dolares_uno + ($comision_bolivares_uno / $tasa_bcv);
+            $comision_total_bolivares = ($comision_dolares_dos / $tasa_bcv) + $comision_bolivares_dos;
+
+            $total_servicio = $quirop_basica + $srvs_adicional;
+            $comision_gerente = ($porcen_vip_gte * $total_servicio) / 100;
+
+
+            return $res = [
+                'comision_dolares'      => $comision_total_dolares,
+                'comision_bolivares'    => $comision_total_bolivares,
+                'comision_gerente'      => $comision_gerente
+            ];
+                //code...
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+
+    }
+
+    static function calculo_general($total_venta, $porcen_comision_emp)
+    {
+        try {
+
+            $comision = ($porcen_comision_emp * $total_venta) / 100;
+
+            return $res = [
+                'comision_total' => $comision,
+                'comision_gerente' => 0.00
+            ];
+
+                //code...
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+
+    }
+
+    static function calculo_general_bsd($total_venta, $porcen_comision_emp)
+    {
+
+        try {
+
+            $tasa_bcv = TasaBcv::all()->first()->tasa;
+
+            $comision = (($porcen_comision_emp * $total_venta) / 100) * $tasa_bcv;
+
+            return $res = [
+                'comision_total' => $comision,
+                'comision_gerente' => 0.00
+            ];
+
+                //code...
+        } catch (\Throwable $th) {
+            dd('calculo_general_bsd',$th);
+        }
+
+    }
+
+    static function calculo_general_multiple($monto_usb, $monto_bsd, $total_venta, $porcen_vip_emp)
+    {
+        try {
+
+            $tasa_bcv = TasaBcv::all()->first()->tasa;
+
+            $porcent_dolares = ($porcen_vip_emp * $monto_usb) / 100;
+
+            $porcent_bolivares = ($porcen_vip_emp * $monto_bsd) / 100;
+
+            return $res = [
+                'comision_dolares'      => $porcent_dolares,
+                'comision_bolivares'    => $porcent_bolivares,
+                'comision_gerente'      => 0.00
+            ];
+
                 //code...
         } catch (\Throwable $th) {
             dd($th);

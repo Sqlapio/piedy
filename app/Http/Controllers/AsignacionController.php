@@ -181,9 +181,6 @@ class AsignacionController extends Controller
                     ]);
             }
 
-            dd('listo');
-
-
             //code...
         } catch (\Throwable $th) {
             Notification::make()

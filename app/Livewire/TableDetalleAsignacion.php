@@ -34,6 +34,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Fieldset;
+use Illuminate\Support\Str;
 use Closure;
 
 class TableDetalleAsignacion extends Component implements HasForms, HasTable
@@ -280,7 +281,12 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     $data['pago_usd'],
                                     $data['metodo_pago'],
                                     $this->cod_asignacion,
-                                    (isset($data['ref_zelle'])) ? $data['ref_zelle'] : null
+                                    (isset($data['ref_zelle'])) ? $data['ref_zelle'] : null,
+                                    (isset($data['propina_usd'])) ? $data['propina_usd'] : 0.00,
+                                    (isset($data['propina_bsd'])) ? $data['propina_bsd'] : 0.00,
+                                    (isset($data['pro_ref_debito_credito'])) ? $data['pro_ref_debito_credito'] : null,
+                                    (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null
+
                                 );
 
                             }
@@ -289,12 +295,15 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                             if($data['metodo_pago_dos'] != '' &&  $data['metodo_pago'] == '')
                             {
                                 CajaController::bolivares(
-                                    $data['pago_bsd'],
                                     $data['metodo_pago_dos'],
                                     $this->cod_asignacion,
                                     (isset($data['ref_pago_movil'])) ? $data['ref_pago_movil'] : null,
                                     (isset($data['ref_debito_credito'])) ? $data['ref_debito_credito'] : null,
-                                    (isset($data['nro_tarjeta'])) ? $data['nro_tarjeta'] : null
+                                    (isset($data['nro_tarjeta'])) ? $data['nro_tarjeta'] : null,
+                                    (isset($data['propina_usd'])) ? $data['propina_usd'] : 0.00,
+                                    (isset($data['propina_bsd'])) ? $data['propina_bsd'] : 0.00,
+                                    (isset($data['pro_ref_debito_credito'])) ? $data['pro_ref_debito_credito'] : null,
+                                    (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null
                                 );
 
                             }
@@ -302,16 +311,23 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                             //Pago en Bolivares metodos 2 - 4 - 5 - 7
                             if($data['metodo_pago'] != '' && $data['metodo_pago_dos'] != '')
                             {
+                                $monto_bsd = Str::replace(',', '.', (Str::replace('.', '', $data['pago_bsd'])));
+
                                 CajaController::multiple(
                                     $data['pago_usd'],
-                                    $data['pago_bsd'],
+                                    $monto_bsd,
                                     $this->cod_asignacion,
                                     $data['metodo_pago'],
                                     $data['metodo_pago_dos'],
                                     (isset($data['ref_zelle'])) ? $data['ref_zelle'] : null,
                                     (isset($data['ref_pago_movil'])) ? $data['ref_pago_movil'] : null,
                                     (isset($data['ref_debito_credito'])) ? $data['ref_debito_credito'] : null,
-                                    (isset($data['nro_tarjeta'])) ? $data['nro_tarjeta'] : null
+                                    (isset($data['nro_tarjeta'])) ? $data['nro_tarjeta'] : null,
+                                    (isset($data['propina_usd'])) ? $data['propina_usd'] : 0.00,
+                                    (isset($data['propina_bsd'])) ? $data['propina_bsd'] : 0.00,
+                                    (isset($data['pro_ref_debito_credito'])) ? $data['pro_ref_debito_credito'] : null,
+                                    (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null,
+
                                 );
 
                             }

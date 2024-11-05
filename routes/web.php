@@ -24,6 +24,7 @@ use App\Models\PeriodoNomina;
 use App\Models\User;
 use App\Models\InventarioSucursal;
 use App\Models\Producto;
+use App\Models\TasaBcv;
 use Spatie\Browsershot\Browsershot;
 
 /*
@@ -302,7 +303,7 @@ Route::get('/reporte/nomina', function () {
 /**FIN GRUPO DE RUTAS------------------------------------------------------------------------------------------*/
 
 Route::get('/pp', function () {
-
+    dd(TasaBcv::all()->first()->tasa);
     $primera = '1'.date('mY');
     $segunda = '2'.date('mY');
 

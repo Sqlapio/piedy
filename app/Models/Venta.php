@@ -21,12 +21,16 @@ class Venta extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'cliente_id',
-        'empleado_id',
-        'producto_id',
-        'comision_id',
+        'cod_asignacion',
+        'total_venta',
         'fecha',
-        'total'
+        'responsable',
+        'forma_pago',
+        'metodo_pago_dolares',
+        'metodo_pago_bolivares',
+        'pago_usd',
+        'pago_bsd',
+        'tasa_bcv'
     ];
 
     // Una Venta pertenece a un Cliente

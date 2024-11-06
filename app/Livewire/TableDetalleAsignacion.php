@@ -3,6 +3,8 @@
 namespace App\Livewire;
 
 use App\Http\Controllers\AsignacionController;
+use App\Http\Controllers\GiftCardController;
+use App\Http\Controllers\UtilsController;
 use App\Http\Controllers\CajaController;
 use App\Models\Servicio;
 use App\Models\Producto;
@@ -35,6 +37,7 @@ use Filament\Forms\Set;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Fieldset;
 use Illuminate\Support\Str;
+use Filament\Notifications\Notification;
 use Closure;
 
 class TableDetalleAsignacion extends Component implements HasForms, HasTable
@@ -44,6 +47,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
 
     public $cod_asignacion;
     public $cliente_id;
+    public $valor_giftCard;
 
     public function mount($cod_asignacion, $cliente_id)
     {
@@ -130,6 +134,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                 $this->cod_asignacion,
                                 $this->cliente_id
                             );
+
                         }),
 
 
@@ -137,10 +142,10 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                         ->label('Facturar')
                         ->icon('heroicon-c-cog-8-tooth')
                         ->color('success')
-                        ->hidden((Disponible::where('cod_asignacion', $this->cod_asignacion)->where('sucursal_id', Auth::user()->sucursal_id)->first()->status == 'activo'))
+                        ->hidden((Auth::user()->rol_id < 3 ))
                         ->model(VentaServicio::class)
                         ->form([
-                            Section::make('Facturación')
+                            Section::make('Facturación: '.$this->cod_asignacion)
                                 ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
                                 ->icon('heroicon-o-shopping-cart')
                                 ->schema([
@@ -152,14 +157,42 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                                         ->label('Usa Metodo Prepagado?')
                                                         ->live(onBlur: true)
                                                         ->onColor('success')
+                                                        ->columnSpan('full')
                                                         ->offColor('danger'),
                                                     Select::make('metodo_pago_prepagado')
                                                         ->label('Metodo de pago Prepagado')
                                                         ->prefixIcon('heroicon-o-shopping-cart')
                                                         ->options(MetodoPrepago::all()->where('sucursal_id', Auth::user()->sucursal_id)->pluck('descripcion', 'id'))
                                                         ->searchable()
-                                                        ->columnSpan('full')
                                                         ->visible(fn(Get $get):bool => $get('is_prepagado')),
+                                                    TextInput::make('cod_gift_men')
+                                                        ->numeric()
+                                                        ->prefixIcon('heroicon-m-currency-dollar')
+                                                        ->label('Codigo GiftCard/Membresia')
+                                                        ->live(onBlur: true)
+                                                        ->visible(fn(Get $get):bool => $get('is_prepagado'))
+                                                        ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
+
+                                                            $valor = $this->validaGiftMem($state,  $get('metodo_pago_prepagado'));
+
+                                                            if($valor['status'] == 'true')
+                                                            {
+                                                                $set('pago_usd', $valor['valor']);
+
+                                                            }else{
+                                                                //Resetar el codigo ya que es erroneo
+                                                                $set('cod_gift_men', '',);
+
+                                                                return Notification::make()
+                                                                ->title('NOTIFICACIÓN')
+                                                                ->icon('heroicon-o-shield-check')
+                                                                ->iconColor('danger')
+                                                                ->body($valor['mensaje'])
+                                                                ->send();
+
+                                                            }
+                                                            // $set('pago_usd', $this->validaGiftMem($state,  $get('metodo_pago_prepagado')));
+                                                        })
                                                 ]),
 
                                             Select::make('metodo_pago')
@@ -167,10 +200,6 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                                 ->live(onBlur: true)
                                                 ->prefixIcon('heroicon-c-credit-card')
                                                 ->options(MetodoPago::all()->where('moneda', 'usd')->pluck('descripcion', 'id'))
-                                                // ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
-                                                //     $dolares = DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)->where('sucursal_id', Auth::user()->sucursal_id)->sum('costo');
-                                                //     $set('pago_usd', ($state == 1) ? $dolares : '');
-                                                // })
                                                 ->searchable(),
 
                                             Select::make('metodo_pago_dos')
@@ -189,7 +218,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                                     $set('pago_bsd', $this->calculo($state));
                                                 })
                                                 ->required()
-                                                ->helperText('Total en Dolares($): '.DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)->where('sucursal_id', Auth::user()->sucursal_id)->sum('costo')),
+                                                ->helperText('Total en Dolares($): '.($this->valor_giftCard == '') ? DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)->where('sucursal_id', Auth::user()->sucursal_id)->sum('costo') : $this->valor_giftCard),
 
                                             TextInput::make('pago_bsd')
                                                 ->label('Monto(Bs.)')
@@ -285,7 +314,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     (isset($data['propina_usd'])) ? $data['propina_usd'] : 0.00,
                                     (isset($data['propina_bsd'])) ? $data['propina_bsd'] : 0.00,
                                     (isset($data['pro_ref_debito_credito'])) ? $data['pro_ref_debito_credito'] : null,
-                                    (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null
+                                    (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null,
+                                    $metodoUsd = 'Usd'
 
                                 );
 
@@ -303,7 +333,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     (isset($data['propina_usd'])) ? $data['propina_usd'] : 0.00,
                                     (isset($data['propina_bsd'])) ? $data['propina_bsd'] : 0.00,
                                     (isset($data['pro_ref_debito_credito'])) ? $data['pro_ref_debito_credito'] : null,
-                                    (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null
+                                    (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null,
+                                    $data['pago_bsd'],
                                 );
 
                             }
@@ -386,10 +417,21 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->required(),
                                 ])
                         ])->action(function (array $data) {
-                            AsignacionController::cerrar_servicio(
+                            $cierre = AsignacionController::cerrar_servicio(
                                 $data['clave'],
                                 $this->cod_asignacion,
                             );
+
+                            if($cierre){
+                                return redirect()->route('cabinas');
+                            }else{
+                                Notification::make()
+                                ->title('NOTIFICACIÓN')
+                                ->icon('heroicon-o-shield-check')
+                                ->iconColor('danger')
+                                ->body('Clave incorrecta, por favor valide su clave e intente nuevamente.')
+                                ->send();
+                            }
                         })
                 ])
                 ->label('Menú')
@@ -418,6 +460,13 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
             // return number_format($total_bsd, 2);
             return number_format(($total_bsd), 2, ",", ".");
         }
+    }
+
+    public function validaGiftMem($codigo, $metodo_pago_prepagado)
+    {
+        $valor = GiftCardController::validaGiftCard($codigo, $this->cod_asignacion);
+        return $valor;
+        
     }
 
     public function render(): View

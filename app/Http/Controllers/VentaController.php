@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Disponible;
+use App\Models\MetodoPago;
 use App\Models\TasaBcv;
 use App\Models\Venta;
 use Filament\Notifications\Notification;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class VentaController extends Controller
 {
-    static function venta($cod_asignacion, $total_venta, $metodo_pago = null,  $metodo_pago_dolares = null)
+    static function venta($cod_asignacion, $total_venta, $metodo_pago, $metodo_pago_dos)
     {
 
         try {
@@ -21,8 +22,8 @@ class VentaController extends Controller
             $venta->total_venta             = $total_venta;
             $venta->fecha                   = now()->format('d-m-Y');
             $venta->responsable             = Auth::user()->name;
-            $venta->metodo_pago_dolares     = isset($metodo_pago_dolares) ? $metodo_pago_dolares : 'N/A';
-            $venta->metodo_pago_bolivares   = isset($metodo_pago_bolivares) ? $metodo_pago_bolivares : 'N/A';
+            $venta->metodo_pago_dolares     = $metodo_pago != 'N/A' ? MetodoPago::find($metodo_pago)->descripcion : $metodo_pago;
+            $venta->metodo_pago_bolivares   = $metodo_pago_dos != 'N/A' ? MetodoPago::find($metodo_pago_dos)->descripcion : $metodo_pago_dos;
             $venta->tasa_bcv                = TasaBcv::all()->first()->tasa;
             $venta->save();
 

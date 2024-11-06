@@ -13,6 +13,7 @@ use Exception;
 use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AsignacionController extends Controller
 {
@@ -58,6 +59,7 @@ class AsignacionController extends Controller
                 $detalle_asignacion->responsable     = Auth::user()->name;
                 $detalle_asignacion->sucursal_id     = Auth::user()->sucursal_id;
                 $detalle_asignacion->tipo            = 'servicio';
+                $detalle_asignacion->serv_asignacion = $servicio->asignacion;
                 $detalle_asignacion->save();
 
                 return true;
@@ -80,6 +82,8 @@ class AsignacionController extends Controller
 
             $tasaBcv = TasaBcv::all()->first()->tasa;
 
+            $servicio = Servicio::where('id', $servicio_id)->where('sucursal_id', Auth::user()->sucursal_id)->first();
+
             $info_servPrincipal = Disponible::where('cod_asignacion', $cod_asignacion)
             ->where('status', 'activo')
             ->where('sucursal_id', Auth::user()->sucursal_id)
@@ -87,7 +91,7 @@ class AsignacionController extends Controller
 
             $asigna_servicio = new DetalleAsignacion();
             $asigna_servicio->cod_asignacion     = $cod_asignacion;
-            $asigna_servicio->cod_prod_serv      = Servicio::where('id', $servicio_id)->where('sucursal_id', Auth::user()->sucursal_id)->first()->cod_servicio;
+            $asigna_servicio->cod_prod_serv      = $servicio->cod_servicio;
             $asigna_servicio->empleado_id        = Auth::user()->id;
             $asigna_servicio->cliente_id         = $info_servPrincipal->cliente_id;
 
@@ -109,6 +113,7 @@ class AsignacionController extends Controller
             $asigna_servicio->responsable        = Auth::user()->name;
             $asigna_servicio->sucursal_id        = Auth::user()->sucursal_id;
             $asigna_servicio->tipo               = 'servicio';
+            $asigna_servicio->serv_asignacion    = $servicio->asignacion;
             $asigna_servicio->save();
 
             //code...
@@ -162,24 +167,43 @@ class AsignacionController extends Controller
     {
         try {
 
-            $cerrar_disponible = Disponible::where('cod_asignacion', $cod_asignacion)
-            ->where('status', 'activo')
+            $user_id = Disponible::where('cod_asignacion', $cod_asignacion)
             ->where('sucursal_id', Auth::user()->sucursal_id)
-            ->first()
-            ->update([
-                'status' =>  'cerrado',
-            ]);
+            ->where('status', 'activo')
+            ->first()->empleado_id;
 
-            $cerrar_cabina = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
-            ->where('status', 1)
-            ->get();
+            if(Hash::check(($clave), User::find($user_id)->password)){
+                if(UtilsController::restriccion_serv_vip($cod_asignacion) == true)
+                {
+                    throw new Exception("No puede facturar dos(2) servicios VIP, por favor elimine uno de ellos y vuelva a intentar", 401);
+                }
 
-            foreach($cerrar_cabina as $item)
-            {
-                $item->update([
-                    'status' => 2,
-                    ]);
+                $cerrar_disponible = Disponible::where('cod_asignacion', $cod_asignacion)
+                ->where('status', 'activo')
+                ->where('sucursal_id', Auth::user()->sucursal_id)
+                ->first()
+                ->update([
+                    'status' =>  'cerrado',
+                ]);
+
+                $cerrar_cabina = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
+                ->where('status', 1)
+                ->get();
+
+                foreach($cerrar_cabina as $item)
+                {
+                    $item->update([
+                        'status' => 2,
+                        ]);
+                }
+
+                return true;
+
+            }else{
+                return false;
+
             }
+
 
             //code...
         } catch (\Throwable $th) {

@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CajaController extends Controller
 {
-    static function dolares($monto_usd, $metodo_pago, $cod_asignacion, $ref_zelle , $propina_usd , $propina_bsd , $pro_ref_debito_credito , $pro_nro_tarjeta ) {
+    static function dolares($monto_usd, $metodo_pago, $cod_asignacion, $ref_zelle , $propina_usd , $propina_bsd , $pro_ref_debito_credito , $pro_nro_tarjeta, $metodoUsd ) {
 
         try {
 
@@ -40,8 +40,8 @@ class CajaController extends Controller
                     $venta_producto->gerente_id         = Auth::user()->id;
                     $venta_producto->producto_id        = $producto->id;
                     $venta_producto->costo_producto     = $producto->precio_venta;
-                    $venta_producto->metodo_pago        = 'USD';
-                    $venta_producto->metodoUsd          = 'Efectivo Usd';
+                    $venta_producto->metodo_pago        = $metodoUsd;
+                    $venta_producto->metodoUsd          = MetodoPago::find($metodo_pago)->descripcion;
                     $venta_producto->comision_gerente   = (($valores['porcen_producto_gte'] * $producto->precio_venta) / 100) * $item->cantidad;
                     $venta_producto->comision_empleado  = (($valores['porcen_producto_emp'] * $producto->precio_venta) / 100) * $item->cantidad;
                     $venta_producto->fecha_venta        = now()->format('d-m-Y');
@@ -104,14 +104,14 @@ class CajaController extends Controller
                 );
 
                 //Asiento tabla de Venta
-                VentaController::venta($cod_asignacion, $valores['total_venta'], 1);
+                VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago, $metodo_pago_dos = 'N/A');
              }
 
              if(Servicio::find($valores['servicio_id'])->asignacion == 'general')
              {
                 //Calculo de Comision
                 $calculos = UtilsController::calculo_general(
-                    $valores['total_venta'],
+                    $valores['costo_total_servicios'],
                     $valores['porcen_vip_emp'],
                 );
 
@@ -130,7 +130,7 @@ class CajaController extends Controller
                 );
 
                 //Asiento tabla de Venta
-                VentaController::venta($cod_asignacion, $valores['total_venta'], 1);
+                VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago, $metodo_pago_dos = 'N/A');
 
              }
 
@@ -146,7 +146,7 @@ class CajaController extends Controller
         }
     }
 
-    static function bolivares($metodo_pago_dos, $cod_asignacion, $ref_pago_movil , $ref_debito_credito , $nro_tarjeta , $propina_usd , $propina_bsd , $pro_ref_debito_credito , $pro_nro_tarjeta ) {
+    static function bolivares($metodo_pago_dos, $cod_asignacion, $ref_pago_movil , $ref_debito_credito , $nro_tarjeta , $propina_usd , $propina_bsd , $pro_ref_debito_credito , $pro_nro_tarjeta, $monto_bsd ) {
 
         try {
             //Valores necesarios para realizar los asientos
@@ -169,8 +169,8 @@ class CajaController extends Controller
                     $venta_producto->gerente_id         = Auth::user()->id;
                     $venta_producto->producto_id        = $producto->id;
                     $venta_producto->costo_producto     = $producto->precio_venta;
-                    $venta_producto->metodo_pago        = 'USD';
-                    $venta_producto->metodoUsd          = 'Efectivo Usd';
+                    $venta_producto->metodo_pago        = 'Bsd';
+                    $venta_producto->metodoBsd          = MetodoPago::find($metodo_pago_dos)->descripcion;
                     $venta_producto->comision_gerente   = (($valores['porcen_producto_gte'] * $producto->precio_venta) / 100) * $item->cantidad;
                     $venta_producto->comision_empleado  = (($valores['porcen_producto_emp'] * $producto->precio_venta) / 100) * $item->cantidad;
                     $venta_producto->fecha_venta        = now()->format('d-m-Y');
@@ -235,15 +235,15 @@ class CajaController extends Controller
                 );
 
                 //Asiento tabla de Venta
-                VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago_dos);
+                VentaController::venta($cod_asignacion, $valores['total_venta'],$metodo_pago = 'N/A', $metodo_pago_dos);
              }
 
              if(Servicio::find($valores['servicio_id'])->asignacion == 'general')
              {
                 //Calculo de Comision
                 $calculos = UtilsController::calculo_general_bsd(
-                    $valores['total_venta'],
                     $valores['porcen_vip_emp'],
+                    $valores['costo_total_servicios'],
                 );
 
                 //Asiento en la tabla de ventas Servicios
@@ -264,7 +264,7 @@ class CajaController extends Controller
                 );
 
                 //Asiento tabla de Venta
-                VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago_dos);
+                VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago = 'N/A', $metodo_pago_dos);
 
              }
 
@@ -304,8 +304,9 @@ class CajaController extends Controller
                     $venta_producto->gerente_id         = Auth::user()->id;
                     $venta_producto->producto_id        = $producto->id;
                     $venta_producto->costo_producto     = $producto->precio_venta;
-                    $venta_producto->metodo_pago        = 'USD';
-                    $venta_producto->metodoUsd          = 'Efectivo Usd';
+                    $venta_producto->metodo_pago        = 'Multiple';
+                    $venta_producto->metodoUsd          = MetodoPago::find($metodo_pago)->descripcion;
+                    $venta_producto->metodoBsd          = MetodoPago::find($metodo_pago_dos)->descripcion;
                     $venta_producto->comision_gerente   = (($valores['porcen_producto_gte'] * $producto->precio_venta) / 100) * $item->cantidad;
                     $venta_producto->comision_empleado  = (($valores['porcen_producto_emp'] * $producto->precio_venta) / 100) * $item->cantidad;
                     $venta_producto->fecha_venta        = now()->format('d-m-Y');
@@ -389,6 +390,7 @@ class CajaController extends Controller
                     $monto_bsd,
                     $valores['total_venta'],
                     $valores['porcen_vip_emp'],
+                    $valores['costo_total_servicios'],
                 );
                 //Asiento en la tabla de ventas Servicios
                 VentaServicioController::venta_servicio_multiple(
@@ -413,7 +415,7 @@ class CajaController extends Controller
                 );
 
                 //Asiento tabla de Venta
-                VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago_dos);
+                VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago, $metodo_pago_dos);
 
              }
 

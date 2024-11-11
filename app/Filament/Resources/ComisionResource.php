@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ComisionResource\Pages;
 use App\Filament\Resources\ComisionResource\RelationManagers;
 use App\Models\Comision;
+use App\Models\Sucursal;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -65,7 +66,9 @@ class ComisionResource extends Resource
                     ->options([
                         '1' => 'Activo',
                         '2' => 'Inactivo',
-                    ])
+                    ]),
+                Select::make('sucursal_id')
+                    ->options(Sucursal::all()->pluck('nombre', 'id'))
             ]);
     }
 

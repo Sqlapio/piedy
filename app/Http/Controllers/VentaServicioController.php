@@ -10,6 +10,7 @@ use App\Models\Venta;
 use App\Models\VentaServicio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Filament\Notifications\Notification;
 
 class VentaServicioController extends Controller
 {
@@ -37,7 +38,12 @@ class VentaServicioController extends Controller
             $facturar->save();
 
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+            ->title('Notificacion: UtilsController::venta_servicio_usd()')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
         }
 
     }
@@ -70,7 +76,12 @@ class VentaServicioController extends Controller
             $facturar->save();
 
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+            ->title('Notificacion: UtilsController::venta_servicio_bsd()')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
         }
 
     }
@@ -107,7 +118,12 @@ class VentaServicioController extends Controller
             $facturar->save();
 
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+            ->title('Notificacion: UtilsController::venta_servicio_multiple()')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
         }
 
     }

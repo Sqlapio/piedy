@@ -36,7 +36,7 @@ class VentaServicioPropinasStats extends BaseWidget
                 end: now(),
             )
             ->perMonth()
-            ->count('cliente');
+            ->count('cliente_id');
 
         return [
 

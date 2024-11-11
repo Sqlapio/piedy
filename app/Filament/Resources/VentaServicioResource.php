@@ -45,11 +45,11 @@ class VentaServicioResource extends Resource
                 TextColumn::make('cod_asignacion')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('cliente')
+                TextColumn::make('cliente_id')
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('empleado')
+                TextColumn::make('empleado_id')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable()
                     ->sortable(),
@@ -70,7 +70,7 @@ class VentaServicioResource extends Resource
                         'giftCard'              => 'success',
                         'Efectivo Bsd'          => 'info',
                         'Pago movil'            => 'info',
-                        'transferencia'         => 'info',
+                        'Transferencia'         => 'info',
                         'Punto de venta'        => 'info',
                         'Anulado'               => 'danger',
                         'cliente especial'      => 'success',
@@ -90,7 +90,7 @@ class VentaServicioResource extends Resource
                         'Zelle'                 => 'success',
                         'Efectivo Bsd'          => 'info',
                         'Pago movil'            => 'info',
-                        'transferencia'         => 'info',
+                        'Transferencia'         => 'info',
                         'Punto de venta'        => 'info',
                         'Anulado'               => 'danger',
                         'cliente especial'      => 'success',

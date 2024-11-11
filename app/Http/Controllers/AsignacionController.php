@@ -21,7 +21,10 @@ class AsignacionController extends Controller
     {
         try {
 
-            $existe = Disponible::where('empleado_id', $user_id)->where('status', 'activo')->first();
+            $existe = Disponible::where('empleado_id', $user_id)
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->where('status', 'activo')
+            ->first();
 
             $tasaBcv = TasaBcv::all()->first()->tasa;
 
@@ -39,7 +42,8 @@ class AsignacionController extends Controller
                 $disponible->empleado_id     = $user_id;
                 $disponible->cod_prod_serv   = $servicio->cod_servicio;
                 $disponible->servicio_id     = $servicio_id;
-                $disponible->costo           = $servicio->costo;
+                $disponible->acu_servicios   = $servicio->costo;
+                $disponible->venta_total     += $servicio->costo;
                 $disponible->sucursal_id     = Auth::user()->sucursal_id;
                 $disponible->save();
 
@@ -53,8 +57,8 @@ class AsignacionController extends Controller
                 $detalle_asignacion->empleado_id     = $disponible->empleado_id;
                 $detalle_asignacion->cliente_id      = $disponible->cliente_id;
                 $detalle_asignacion->servicio_id     = $disponible->servicio_id;
-                $detalle_asignacion->costo           = $disponible->costo;
-                $detalle_asignacion->costo_bsd       = $disponible->costo * $tasaBcv;
+                $detalle_asignacion->costo           = $servicio->costo;
+                $detalle_asignacion->costo_bsd       = $servicio->costo * $tasaBcv;
                 $detalle_asignacion->fecha           = date('d-m-Y');
                 $detalle_asignacion->responsable     = Auth::user()->name;
                 $detalle_asignacion->sucursal_id     = Auth::user()->sucursal_id;
@@ -84,16 +88,22 @@ class AsignacionController extends Controller
 
             $servicio = Servicio::where('id', $servicio_id)->where('sucursal_id', Auth::user()->sucursal_id)->first();
 
-            $info_servPrincipal = Disponible::where('cod_asignacion', $cod_asignacion)
-            ->where('status', 'activo')
+            $serv_disponible = Disponible::where('cod_asignacion', $cod_asignacion)
+            ->where('cliente_id', $cliente_id)
             ->where('sucursal_id', Auth::user()->sucursal_id)
             ->first();
+
+            if($serv_disponible->status == 'activo'){
+                $asigna_status = 1;
+            }else{
+                $asigna_status = 2;
+            }
 
             $asigna_servicio = new DetalleAsignacion();
             $asigna_servicio->cod_asignacion     = $cod_asignacion;
             $asigna_servicio->cod_prod_serv      = $servicio->cod_servicio;
             $asigna_servicio->empleado_id        = Auth::user()->id;
-            $asigna_servicio->cliente_id         = $info_servPrincipal->cliente_id;
+            $asigna_servicio->cliente_id         = $serv_disponible->cliente_id;
 
             //Restriccion para servicios duplicados
             $existeServicio = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
@@ -107,14 +117,25 @@ class AsignacionController extends Controller
             }
 
             $asigna_servicio->servicio_id        = $servicio_id;
-            $asigna_servicio->costo              = $info_servPrincipal->costo;
-            $asigna_servicio->costo_bsd          = $info_servPrincipal->costo * $tasaBcv;
+            $asigna_servicio->costo              = $servicio->costo;
+            $asigna_servicio->costo_bsd          = $servicio->costo * $tasaBcv;
             $asigna_servicio->fecha              = date('d-m-Y');
             $asigna_servicio->responsable        = Auth::user()->name;
             $asigna_servicio->sucursal_id        = Auth::user()->sucursal_id;
             $asigna_servicio->tipo               = 'servicio';
             $asigna_servicio->serv_asignacion    = $servicio->asignacion;
+            $asigna_servicio->status             = $asigna_status;
             $asigna_servicio->save();
+
+            //Actualizo el monto total en la tabla de disponibles
+            $serv_disponible = Disponible::where('cod_asignacion', $cod_asignacion)
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->where('cliente_id', $cliente_id)
+            ->first();
+
+            $serv_disponible->acu_servicios   += $servicio->costo;
+            $serv_disponible->venta_total     = $serv_disponible->acu_servicios + $serv_disponible->acu_productos;
+            $serv_disponible->save();
 
             //code...
         } catch (\Throwable $th) {
@@ -131,6 +152,17 @@ class AsignacionController extends Controller
     public static function asigna_producto($producto_id, $cantidad, $cod_asignacion, $cliente_id)
     {
         try {
+
+            $serv_disponible = Disponible::where('cod_asignacion', $cod_asignacion)
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->where('cliente_id', $cliente_id)
+            ->first();
+
+            if($serv_disponible->status == 'activo'){
+                $asigna_status = 1;
+            }else{
+                $asigna_status = 2;
+            }
 
             $tasaBcv = TasaBcv::all()->first()->tasa;
 
@@ -149,7 +181,13 @@ class AsignacionController extends Controller
             $asigna_producto->sucursal_id      = Auth::user()->sucursal_id;
             $asigna_producto->tipo             = 'producto';
             $asigna_producto->cantidad         = $cantidad;
+            $asigna_producto->status           = $asigna_status;
             $asigna_producto->save();
+
+            //Actualizo el monto total de prodcutos en la tabla de disponibles
+            $serv_disponible->acu_productos += $producto->precio_venta * $cantidad;
+            $serv_disponible->venta_total   = $serv_disponible->acu_productos + $serv_disponible->acu_servicios;
+            $serv_disponible->save();
 
             //code...
         } catch (\Throwable $th) {
@@ -187,6 +225,7 @@ class AsignacionController extends Controller
                 ]);
 
                 $cerrar_cabina = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
+                ->where('sucursal_id', Auth::user()->sucursal_id)
                 ->where('status', 1)
                 ->get();
 

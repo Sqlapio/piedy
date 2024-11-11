@@ -84,6 +84,7 @@ class ServicioResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('cod_servicio')->searchable()->label('Código'),
+                TextColumn::make('sucursal.nombre')->searchable()->label('Sucursal'),
                 TextColumn::make('descripcion')->searchable(),
                 TextColumn::make('categoria')
                 ->badge()

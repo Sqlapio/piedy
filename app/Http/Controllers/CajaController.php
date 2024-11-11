@@ -105,6 +105,8 @@ class CajaController extends Controller
 
                 //Asiento tabla de Venta
                 VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago, $metodo_pago_dos = 'N/A');
+
+                return true;
              }
 
              if(Servicio::find($valores['servicio_id'])->asignacion == 'general')
@@ -132,11 +134,12 @@ class CajaController extends Controller
                 //Asiento tabla de Venta
                 VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago, $metodo_pago_dos = 'N/A');
 
+                return true;
+
              }
 
             //code...
         } catch (\Throwable $th) {
-            dd($th);
             Notification::make()
             ->title('Notificacion: CajaController::dolares() ')
             ->icon('heroicon-o-shield-check')
@@ -236,6 +239,8 @@ class CajaController extends Controller
 
                 //Asiento tabla de Venta
                 VentaController::venta($cod_asignacion, $valores['total_venta'],$metodo_pago = 'N/A', $metodo_pago_dos);
+
+                return true;
              }
 
              if(Servicio::find($valores['servicio_id'])->asignacion == 'general')
@@ -265,6 +270,8 @@ class CajaController extends Controller
 
                 //Asiento tabla de Venta
                 VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago = 'N/A', $metodo_pago_dos);
+
+                return true;
 
              }
 
@@ -380,6 +387,8 @@ class CajaController extends Controller
 
                 //Asiento tabla de Venta
                 VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago, $metodo_pago_dos);
+
+                return true;
              }
 
              if(Servicio::find($valores['servicio_id'])->asignacion == 'general')
@@ -416,6 +425,8 @@ class CajaController extends Controller
 
                 //Asiento tabla de Venta
                 VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago, $metodo_pago_dos);
+
+                return true;
 
              }
 

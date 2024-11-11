@@ -109,6 +109,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('servicios');
     })->name('servicios');
 
+    Route::get('/modal', function () {
+        return view('modal-agenda-filament');
+    })->name('modal');
+
     Route::get('/productos', function () {
         return view('productos');
     })->name('productos');

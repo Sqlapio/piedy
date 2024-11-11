@@ -75,16 +75,6 @@ class Sucursal extends Model
     }
 
     /**
-     * Get the servicio associated with the Sucursal
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function servicio(): HasOne
-    {
-        return $this->hasOne(Servicio::class, 'id', 'sucursal_id');
-    }
-
-    /**
      * Get the metodoPrepago that owns the Sucursal
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -92,6 +82,16 @@ class Sucursal extends Model
     public function metodoPrepago(): BelongsTo
     {
         return $this->belongsTo(MetodoPrepago::class);
+    }
+
+    /**
+     * Get the Servicio that owns the Sucursal
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function servicio(): BelongsTo
+    {
+        return $this->belongsTo(Servicio::class);
     }
 
 }

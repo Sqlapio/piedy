@@ -325,25 +325,38 @@ class UtilsController extends Controller
         }
     }
 
-    static function agenda($key, $mes)
+    static function agenda($mes, $opcion)
     {
+        if($opcion == 'semana'){
+            $inicio = now()->startOfWeek()->month($mes);
+            $fin = now()->endOfWeek()->month($mes);
+        }
+        if($opcion == 'mes'){
+            $inicio = now()->startOfMonth()->month($mes);
+            $fin = now()->endOfMonth()->month($mes);
+        }
+        if($opcion == 'dia'){
+            $inicio = now()->startOfDay()->month($mes);
+            $fin = now()->endOfDay()->month($mes);
+        }
 
         $data = Trend::model(Cita::class)
             ->between(
-                now()->startOfMonth()->month($mes),
-                now()->endOfMonth()->month($mes),
+                $inicio,
+                $fin,
             )
             ->perDay()
             ->count();
-        $array = $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray();
+        $array = $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->format('Y-m-d'))->toArray();
 
-        return $array[$key];
+        return $array;
     }
 
     static function comiEmple_ventaProducto($costo)
     {
         $comision = Comision::where('aplicacion', 'producto')
         ->where('beneficiario', 'empleado')
+        ->where('sucursal_id', Auth::user()->sucursal_id)
         ->where('accion', 'directa')
         ->first()
         ->porcentaje;
@@ -357,6 +370,7 @@ class UtilsController extends Controller
     {
         $comision = Comision::where('aplicacion', 'producto')
         ->where('beneficiario', 'gerente')
+        ->where('sucursal_id', Auth::user()->sucursal_id)
         ->where('accion', 'indirecta')
         ->first()
         ->porcentaje;
@@ -370,6 +384,7 @@ class UtilsController extends Controller
     {
         $comision = Comision::where('aplicacion', 'producto')
         ->where('beneficiario', 'gerente')
+        ->where('sucursal_id', Auth::user()->sucursal_id)
         ->where('accion', 'directa')
         ->first()
         ->porcentaje;
@@ -383,10 +398,12 @@ class UtilsController extends Controller
     {
         try {
 
-            $total_venta = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
+            //Total de la venta
+            //El query traera la venta total, sumatoria entre los productos y servicios asociados a la venta
+            $total_venta = Disponible::where('cod_asignacion', $cod_asignacion)
             ->where('sucursal_id', Auth::user()->sucursal_id)
-            ->where('status', 2)
-            ->sum('costo');
+            ->where('status', 'cerrado')
+            ->sum('venta_total');
 
             //Costo de la Quiropedia Basica
             $costo_quiropedia_basica = Servicio::where('sucursal_id', Auth::user()->sucursal_id)
@@ -398,45 +415,50 @@ class UtilsController extends Controller
             /**Porcentaje de comision para servicio vip para empleados */
             $porcen_vip_emp = Comision::where('aplicacion', 'servicio')
             ->where('beneficiario', 'empleado')
+            ->where('sucursal_id', Auth::user()->sucursal_id)
             ->first()
             ->porcentaje;
 
             /**Porcentaje de comision para servicio vip para gerentes */
             $porcen_vip_gte = Comision::where('aplicacion', 'vip')
             ->where('beneficiario', 'gerente')
+            ->where('sucursal_id', Auth::user()->sucursal_id)
             ->first()
             ->porcentaje;
 
             /**Porcentaje de comision para servicio adicionales para empleado */
             $porcen_adi_emp = Comision::where('aplicacion', 'servicio-adicional')
             ->where('beneficiario', 'empleado')
+            ->where('sucursal_id', Auth::user()->sucursal_id)
             ->first()
             ->porcentaje;
 
-            //3.- Costo total de todos los servicios
-            $costo_servicios = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
+            //3.- Costo total de todos los servicios asociados a la venta (solo los servicios)
+            $costo_servicios = Disponible::where('cod_asignacion', $cod_asignacion)
             ->where('sucursal_id', Auth::user()->sucursal_id)
-            ->where('tipo', 'servicio')
-            ->where('status', 2)
+            ->where('status', 'cerrado')
             // ->get();
             // dd($costo_servicios);
-            ->sum('costo');
+            ->sum('acu_servicios');
 
             //Comision Empleado 10%
             $porComEmp = Comision::where('aplicacion', 'producto')
-            ->where('beneficiario', 'empleado')
-            ->where('accion', 'directa')
-            ->where('status', '1')->first()
-            ->porcentaje;
+                ->where('beneficiario', 'empleado')
+                ->where('sucursal_id', Auth::user()->sucursal_id)
+                ->where('accion', 'directa')
+                ->where('status', '1')->first()
+                ->porcentaje;
 
             //Comision Empleado 5%
             $porComGte = Comision::where('aplicacion', 'producto')
                 ->where('beneficiario', 'gerente')
+                ->where('sucursal_id', Auth::user()->sucursal_id)
                 ->where('accion', 'indirecta')
                 ->where('status', '1')->first()
                 ->porcentaje;
 
             //Productos asignados en la venta
+            //El query traera todos los producto asociados a la venta
             $productos = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
                 ->where('sucursal_id', Auth::user()->sucursal_id)
                 ->where('tipo', 'producto')
@@ -472,7 +494,12 @@ class UtilsController extends Controller
             ];
 
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+            ->title('Notificacion: UtilsController::info()')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
         }
 
     }
@@ -485,7 +512,10 @@ class UtilsController extends Controller
 
         try {
 
-            $count_serv_vip = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)->where('sucursal_id', Auth::user()->sucursal_id)->get();
+            $count_serv_vip = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->where('serv_asignacion', 'vip')
+            ->get();
 
             if(count($count_serv_vip) > 1)
             {
@@ -497,7 +527,7 @@ class UtilsController extends Controller
             //code...
         } catch (\Throwable $th) {
             Notification::make()
-            ->title('NOTIFICACIÓN')
+            ->title('Notificacion: UtilsController::restriccion_serv_vip()')
             ->icon('heroicon-o-shield-check')
             ->iconColor('danger')
             ->body($th->getMessage())
@@ -528,7 +558,12 @@ class UtilsController extends Controller
             ];
                 //code...
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+            ->title('Notificacion: UtilsController::calculo_vip()')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
         }
 
     }
@@ -553,7 +588,12 @@ class UtilsController extends Controller
             ];
                 //code...
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+            ->title('Notificacion: UtilsController::calculo_vip_bsd()')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
         }
 
     }
@@ -612,7 +652,12 @@ class UtilsController extends Controller
             ];
                 //code...
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+            ->title('Notificacion: UtilsController::calculo_vip_multiple()')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
         }
 
     }
@@ -634,19 +679,23 @@ class UtilsController extends Controller
 
                 //code...
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+            ->title('Notificacion: UtilsController::calculo_general()')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
         }
 
     }
 
     static function calculo_general_bsd($porcen_comision_emp, $costo_total_servicios)
     {
-
         try {
 
             $tasa_bcv = TasaBcv::all()->first()->tasa;
 
-            $costo_srv_bolivares = $costo_total_servicios / $tasa_bcv;
+            $costo_srv_bolivares = $costo_total_servicios * $tasa_bcv;
 
             $comision_bolibares = ($porcen_comision_emp * $costo_srv_bolivares) / 100;
 
@@ -657,7 +706,12 @@ class UtilsController extends Controller
 
                 //code...
         } catch (\Throwable $th) {
-            dd('calculo_general_bsd',$th);
+            Notification::make()
+            ->title('Notificacion: UtilsController::calculo_general_bsd()')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
         }
 
     }
@@ -685,7 +739,12 @@ class UtilsController extends Controller
 
                 //code...
         } catch (\Throwable $th) {
-            dd($th);
+            Notification::make()
+            ->title('Notificacion: UtilsController::calculo_general_multiple()')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
         }
 
     }

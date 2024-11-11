@@ -28,7 +28,9 @@ class Disponible extends Model
         'empleado_id',
         'cod_prod_serv',
         'servicio_id',
-        'costo',
+        'acu_servicio',
+        'acu_productos',
+        'venta_total',
         'status',
     ];
 

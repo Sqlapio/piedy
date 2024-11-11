@@ -36,7 +36,7 @@ class VentaServicioComisionStats extends BaseWidget
                 end: now(),
             )
             ->perMonth()
-            ->count('cliente');
+            ->count('cliente_id');
 
         return [
 
@@ -60,20 +60,20 @@ class VentaServicioComisionStats extends BaseWidget
                         ->toArray()
                 ),
 
-            Stat::make('COMISION PRODUCTO ($)', $this->getPageTableQuery()->sum('comision_emp_venprod'))
-                ->description('Comisión total por pago en bolivares (40%)')
-                ->descriptionIcon('heroicon-m-user-group')
-                ->color('warnnig')
-                ->chart(
-                    $data
-                        ->map(fn (TrendValue $value) => $value->aggregate)
-                        ->toArray()
-                ),
+            // Stat::make('COMISION PRODUCTO ($)', $this->getPageTableQuery()->sum('comision_emp_venprod'))
+            //     ->description('Comisión total por pago en bolivares (40%)')
+            //     ->descriptionIcon('heroicon-m-user-group')
+            //     ->color('warnnig')
+            //     ->chart(
+            //         $data
+            //             ->map(fn (TrendValue $value) => $value->aggregate)
+            //             ->toArray()
+            //     ),
         ];
     }
 
     public function getColumns(): int
     {
-        return 3;
+        return 2;
     }
 }

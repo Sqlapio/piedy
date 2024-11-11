@@ -17,6 +17,9 @@
             <label class="opacity-60 mb-1 block text-sm font-medium text-italblue">Cliente</label>
             <label wire:click="mostrar_nuevo"class="mb-1 block text-MD font-medium text-green-600 cursor-pointer">NUEVO CLIENTE</label>
         </div>
+        <div class="flex justify-between">
+            @livewire('modal-agenda-filament')
+        </div>
         <x-select wire:model="cliente_id" placeholder="Seleccion" :async-data="route('api.clientes')" option-label="nombre" option-value="id" />
     </div>
     <div class="{{ $nuevo }} p-2">

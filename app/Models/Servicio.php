@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+
 class Servicio extends Model
 {
     use HasFactory;
@@ -56,14 +57,10 @@ class Servicio extends Model
         return $this->belongsTo(Rol::class);
     }
 
-    /**
-     * Get the sucursal that owns the Servicio
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function sucursal(): BelongsTo
+    public function sucursal(): HasOne
     {
-        return $this->belongsTo(Sucursal::class, 'sucursal_id', 'id');
+        return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
     }
+
 
 }

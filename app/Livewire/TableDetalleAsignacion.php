@@ -38,6 +38,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Fieldset;
 use Illuminate\Support\Str;
 use Filament\Notifications\Notification;
+use Filament\Forms\Components\Actions\Action as HintAction;
 use Closure;
 
 class TableDetalleAsignacion extends Component implements HasForms, HasTable
@@ -47,7 +48,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
 
     public $cod_asignacion;
     public $cliente_id;
-    public $valor_giftCard;
+    public int $valor_giftCard = 0;
 
     public function mount($cod_asignacion, $cliente_id)
     {
@@ -92,7 +93,29 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
             ->actions([
                 Action::make('eliminar')
                     ->requiresConfirmation()
-                    ->action(fn(DetalleAsignacion $record) => $record->delete())
+                    ->action(function (DetalleAsignacion $record) {
+
+                        $serv_disponible = Disponible::where('cod_asignacion', $record->cod_asignacion)
+                        ->where('cliente_id',  $record->cliente_id)
+                        ->where('sucursal_id', Auth::user()->sucursal_id)
+                        ->first();
+
+                        if($record->tipo == 'servicio'){
+                            $serv_disponible->acu_servicios = $serv_disponible->acu_servicios - $record->costo;
+                            $serv_disponible->venta_total   = $serv_disponible->venta_total - $record->costo;
+                            $serv_disponible->save();
+
+                        }
+
+                        if($record->tipo == 'producto'){
+                            $serv_disponible->acu_productos = $serv_disponible->acu_productos - $record->costo;
+                            $serv_disponible->venta_total   = $serv_disponible->venta_total - $record->costo;
+                            $serv_disponible->save();
+                        }
+
+                        $record->delete();
+
+                    })
                     ->icon('heroicon-c-trash')
                     ->color('danger')
                     //UI - Modal
@@ -171,28 +194,53 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                                         ->label('Codigo GiftCard/Membresia')
                                                         ->live(onBlur: true)
                                                         ->visible(fn(Get $get):bool => $get('is_prepagado'))
-                                                        ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
+                                                        ->hintAction(
+                                                            HintAction::make('Aplicar')
+                                                                ->icon('heroicon-m-clipboard')
+                                                                ->requiresConfirmation()
+                                                                ->action(function (Set $set, $state) {
 
-                                                            $valor = $this->validaGiftMem($state,  $get('metodo_pago_prepagado'));
+                                                                    $update_venta = Disponible::where('cod_asignacion', $this->cod_asignacion)
+                                                                    ->where('cliente_id',  $this->cliente_id)
+                                                                    ->where('sucursal_id', Auth::user()->sucursal_id)
+                                                                    ->where('status', 'cerrado')
+                                                                    ->first();
 
-                                                            if($valor['status'] == 'true')
-                                                            {
-                                                                $set('pago_usd', $valor['valor']);
+                                                                    $valor = GiftCardController::validaGiftCard($state, $this->cod_asignacion);
+                                                                    if($valor['status'] != 'error'){
 
-                                                            }else{
-                                                                //Resetar el codigo ya que es erroneo
-                                                                $set('cod_gift_men', '',);
+                                                                        if($valor['valor'] > 0){
+                                                                            $update_venta->venta_total = $valor['valor'];
+                                                                            $update_venta->save();
+                                                                        }
 
-                                                                return Notification::make()
-                                                                ->title('NOTIFICACIÓN')
-                                                                ->icon('heroicon-o-shield-check')
-                                                                ->iconColor('danger')
-                                                                ->body($valor['mensaje'])
-                                                                ->send();
+                                                                        if($valor['valor'] == 0){
+                                                                            $res = GiftCardController::ejecutar_pago($state, $this->cod_asignacion, $this->cliente_id);
+                                                                            if($res){
+                                                                                return redirect()->route('cabinas');
 
-                                                            }
-                                                            // $set('pago_usd', $this->validaGiftMem($state,  $get('metodo_pago_prepagado')));
-                                                        })
+                                                                            }else{
+                                                                                Notification::make()
+                                                                                ->title('NOTIFICACIÓN')
+                                                                                ->icon('heroicon-o-shield-check')
+                                                                                ->iconColor('danger')
+                                                                                ->body('Falla interna del sistema, por favor comuniquese con el administrador')
+                                                                                ->send();
+                                                                            }
+                                                                        }
+    
+                                                                    }else{
+                                                                        Notification::make()
+                                                                                ->title('NOTIFICACIÓN')
+                                                                                ->icon('heroicon-o-shield-check')
+                                                                                ->iconColor('danger')
+                                                                                ->body($valor['mensaje'])
+                                                                                ->send();
+                                                                    }
+
+                                                                    // $set('price', $state);
+                                                                })
+                                                        )
                                                 ]),
 
                                             Select::make('metodo_pago')
@@ -218,7 +266,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                                     $set('pago_bsd', $this->calculo($state));
                                                 })
                                                 ->required()
-                                                ->helperText('Total en Dolares($): '.($this->valor_giftCard == '') ? DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)->where('sucursal_id', Auth::user()->sucursal_id)->sum('costo') : $this->valor_giftCard),
+                                                ->helperText('Total en Dolares($): '.Disponible::where('cod_asignacion', $this->cod_asignacion)->where('sucursal_id', Auth::user()->sucursal_id)->first()->venta_total),
 
                                             TextInput::make('pago_bsd')
                                                 ->label('Monto(Bs.)')
@@ -414,6 +462,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->prefixIcon('heroicon-c-finger-print')
                                         ->password()
                                         ->revealable()
+                                        ->autofocus()
                                         ->required(),
                                 ])
                         ])->action(function (array $data) {
@@ -446,10 +495,10 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
     {
         $tasa_bcv = TasaBcv::all()->first()->tasa;
 
-        $total_usd = DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)
+        $total_usd = Disponible::where('cod_asignacion', $this->cod_asignacion)
         ->where('sucursal_id', Auth::user()->sucursal_id)
-        ->where('status', 2)
-        ->sum('costo');
+        ->where('status', 'cerrado')
+        ->sum('venta_total');
 
         $total_bsd = $total_usd * $tasa_bcv;
 

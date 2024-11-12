@@ -48,15 +48,14 @@
                 </div>
             </div>
         {{-- Citas agendadas --}}
-
-        <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7">
+        <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7 {{ $opcion == 'mes' || $opcion == 'semana' ? '' : 'hidden'}}">
             @foreach ($array as $key => $item)
-            <div class="flex rounded-lg {{ $largo }}  p-2 flex-col border-gray-500 border" >
-                <div class="flex items-center mb-1 p-2">
-                    <h2 class="text-black dark:text-black text-xs font-bold cursor-pointer" wire:click="mountAction('create', { id: {{$key}} , mes: {{$mes}} })">{{ $item.$key }}</h2>
+            <div class="flex rounded-lg {{ $largo }} p-2 flex-col border border-[#D9C3C1] bg-[#F2F2F2]" >
+                <div class="flex items-center mb-1 p-2 rounded-lg bg-[#7B9EA6] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+                    <h2 class="text-white text-sm font-bold cursor-pointer" wire:click="mountAction('create', { id: {{$key}} , mes: {{$mes}} })">{{ $item }}</h2>
                 </div>
                 <x-filament-actions::modals />
-                <div class="flex rounded-lg {{ $scroll }} flex-col zona overflow-x-auto overflow-y-auto">
+                <div class="flex rounded-lg {{ $scroll }} flex-col overflow-y-auto">
                     <div class="flex flex-col justify-between text-xs">
                         @foreach ($data_citas as $items)
                             <div class="max-w-md space-y-2 text-gray-700 list-inside dark:text-gray-400">
@@ -71,7 +70,49 @@
                                         <div class="text-black">
                                             <x-filament-actions::group
                                                 :actions="[
-                                                    $this->createAction,
+                                                    ($this->asignarAction)([
+                                                        'cita' => $items->id
+                                                    ]),
+                                                    ($this->eliminarAction)(['cita' => $items->id])
+                                                ]"
+                                                icon="heroicon-m-ellipsis-vertical"
+                                                color="colorOne"
+                                            />
+                                        </div>
+                                    </li>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        {{-- Horas del dia --}}
+        <div class="flex justify-start items-center overflow-y-auto {{ $opcion == 'dia' ? '' : 'hidden'}}">
+            @foreach ($horas as $hora)
+            <div class="flex rounded-lg w-80 h-screen p-2 flex-col border border-[#D9C3C1] bg-[#F2F2F2]" >
+                <div class="flex items-center mb-1 p-2 w-48 rounded-lg text-white bg-[#7B9EA6] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+                    <h2 class="text-white text-sm font-bold cursor-pointer">{{date("h:i a", strtotime($hora->hora))}}</h2>
+                </div>
+                <div class="flex rounded-lg flex-col zona">
+                    <div class="flex flex-col justify-between text-xs">
+                        @foreach ($data_citas_dia as $items)
+                            <div class="w-full space-y-2 text-gray-700 list-inside dark:text-gray-400">
+                                @if(date("h:i a", strtotime($items->hora)) == date("h:i a", strtotime($hora->hora)) )
+                                    <li class="flex justify-between items-center p-1 text-2xs border text-gray-600 font-extrabold rounded-lg bg-[#D9C3C1]" >
+                                        <div class="flex flex-col">
+                                            {{-- <span class="line-clamp-1">{{ App\Models\User::find($items->empleado_id)->name != null ? App\Models\User::find($items->empleado_id)->name != null : 'No Asignado' }}</span> --}}
+                                            <span class="line-clamp-1 uppercase">{{ $items->empleado }}</span>
+                                            <span class="line-clamp-1">{{ $items->cliente }}</span>
+                                            <span>Hora: {{$items->hora}}</span>
+                                        </div>
+                                        <div class="text-black">
+                                            <x-filament-actions::group
+                                                :actions="[
+                                                    ($this->asignarAction)([
+                                                        'cita' => $items->id
+                                                    ]),
                                                     ($this->eliminarAction)(['cita' => $items->id])
                                                 ]"
                                                 icon="heroicon-m-ellipsis-vertical"
@@ -92,46 +133,4 @@
         <div class="w-full h-28"></div> --}}
 
         <x-menu_table/>
-
-        <script>
-            const columns = document.querySelectorAll(".zona");
-            document.addEventListener("dragstart", (e) => {
-            e.target.classList.add("dragging");
-            });
-
-            document.addEventListener("dragend", (e) => {
-            e.target.classList.remove("dragging");
-            });
-
-            columns.forEach((item) => {
-            item.addEventListener("dragover", (e) => {
-            const dragging = document.querySelector(".dragging");
-            const applyAfter = getNewPosition(item, e.clientY);
-
-            if (applyAfter) {
-            console.log('estoy aqui');
-            applyAfter.insertAdjacentElement("afterend", dragging);
-            } else {
-
-            item.prepend(dragging);
-            }
-            });
-            });
-
-            function getNewPosition(column, posY) {
-            console.log('estoy aqui2');
-            const cards = column.querySelectorAll(".item:not(.dragging)");
-            let result;
-
-            for (let refer_card of cards) {
-            const box = refer_card.getBoundingClientRect();
-            const boxCenterY = box.y + box.height / 1;
-
-            if (posY >= boxCenterY) result = refer_card;
-            }
-
-            return result;
-            }
-
-        </script>
     </div>

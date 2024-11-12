@@ -110,4 +110,26 @@ class AgendaController extends Controller
                 ->send();
         }
     }
+
+    static function asignar_tecnico($cita_id, $empleado_id)
+    {
+
+        try {
+
+            $cita = Cita::find($cita_id);
+            $cita->empleado = User::find($empleado_id)->name;
+            $cita->save();
+
+            return true;
+
+            //code...
+        } catch (\Throwable $th) {
+            Notification::make()
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+        }
+    }
 }

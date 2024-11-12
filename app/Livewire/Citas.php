@@ -37,32 +37,13 @@ class Citas extends Component implements HasForms, HasActions
     use InteractsWithActions;
     use InteractsWithForms;
 
-    #[Rule('required')]
-    public $fecha;
-
-    #[Rule('required')]
-    public $hora;
-
-    #[Rule('required')]
-    public $cliente_id;
-
-    #[Rule('required')]
-    public $servicio_id;
-
     public $opcion, $inicio, $fin;
 
     public $mes;
     public $largo;
     public $scroll;
 
-    public Cita $cita;
-
-    public $ocultar = 'hidden';
-    public $botton_agendar_cita = '';
-
-    public bool $myModal = false;
-
-    public function mount()
+    public function mount(Cita $cita)
     {
         $this->mes = Carbon::now()->format('m');
         $this->opcion = 'mes';
@@ -72,33 +53,33 @@ class Citas extends Component implements HasForms, HasActions
     {
         return Action::make('create')
         ->modalHeading(false)
+        ->color('success')
         ->form([
             Section::make('Formulario de Citas')
                 ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
-                ->icon('heroicon-o-swatch')
+                ->icon('heroicon-s-calendar-days')
                 ->schema([
                     //Seleccion de servicio
                     Select::make('cliente_id')
-                        ->label('Seleccion del Tecnico')
-                        ->prefixIcon('heroicon-o-swatch')
+                        ->label('Seleccione el Cliente')
+                        ->prefixIcon('heroicon-c-users')
                         ->options(Cliente::all()->pluck('nombre', 'id'))
                         ->searchable()
                         ->required(),
                     Select::make('servicio_id')
-                        ->label('Seleccion del Tecnico')
+                        ->label('Seleccione el Servicio')
                         ->prefixIcon('heroicon-o-swatch')
                         ->options(Servicio::where('sucursal_id', Auth::user()->sucursal_id)->pluck('descripcion', 'id'))
                         ->searchable()
                         ->required(),
                     Select::make('user_id')
-                        ->label('Seleccion del Servicio')
-                        ->prefixIcon('heroicon-o-swatch')
+                        ->label('Seleccione el Tecnico')
+                        ->prefixIcon('heroicon-c-users')
                         ->options(User::where('sucursal_id', Auth::user()->sucursal_id)->whereBetween('rol_id', [1,2])->pluck('name', 'id'))
-                        ->searchable()
-                        ->required(),
+                        ->searchable(),
                     Select::make('horario')
                         ->label('Hora de la Cita')
-                        ->prefixIcon('heroicon-o-swatch')
+                        ->prefixIcon('heroicon-s-calendar-days')
                         ->options(Horario::all()->pluck('hora', 'id'))
                         ->searchable()
                         ->required(),
@@ -129,55 +110,41 @@ class Citas extends Component implements HasForms, HasActions
     public function AsignarAction(): Action
     {
         return Action::make('asignar')
+        ->icon('heroicon-c-user-plus')
         ->modalHeading(false)
+        ->color('success')
         ->form([
-            Section::make('Formulario de Citas')
+            Section::make('Asignar Tecnico')
                 ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
-                ->icon('heroicon-o-swatch')
+                ->icon('heroicon-c-user-plus')
                 ->schema([
                     //Seleccion de servicio
-                    Select::make('cliente_id')
-                        ->label('Seleccion del Tecnico')
-                        ->prefixIcon('heroicon-o-swatch')
-                        ->options(Cliente::all()->pluck('nombre', 'id'))
-                        ->searchable()
-                        ->required(),
-                    Select::make('servicio_id')
-                        ->label('Seleccion del Tecnico')
-                        ->prefixIcon('heroicon-o-swatch')
-                        ->options(Servicio::where('sucursal_id', Auth::user()->sucursal_id)->pluck('descripcion', 'id'))
-                        ->searchable()
-                        ->required(),
                     Select::make('user_id')
-                        ->label('Seleccion del Servicio')
-                        ->prefixIcon('heroicon-o-swatch')
+                        ->label('Seleccione el Tecnico')
+                        ->prefixIcon('heroicon-c-users')
                         ->options(User::where('sucursal_id', Auth::user()->sucursal_id)->whereBetween('rol_id', [1,2])->pluck('name', 'id'))
-                        ->searchable()
-                        ->required(),
-                    Select::make('horario')
-                        ->label('Hora de la Cita')
-                        ->prefixIcon('heroicon-o-swatch')
-                        ->options(Horario::all()->pluck('hora', 'id'))
-                        ->searchable()
-                        ->required(),
+                        ->searchable(),
                 ])
         ])
         ->action(function (array $arguments, array $data) {
 
-            $array = UtilsController::agenda($arguments['mes'], $this->opcion);
+            $res = AgendaController::asignar_tecnico($arguments['cita'], $data['user_id']);
 
-            $agendar = AgendaController::agendar_cita($data['cliente_id'], $data['servicio_id'], $data['user_id'], $array[$arguments['id']], $data['horario']);
-
-            if($agendar)
+            if($res)
             {
-                redirect(route('citas'));
-
+                Notification::make()
+                ->title('Notificacion')
+                ->icon('heroicon-m-check-circle')
+                ->iconColor('success')
+                ->color('success')
+                ->body('Tecnico asignado con exito!!!')
+                ->send();
             }else{
                 Notification::make()
                 ->title('Notificacion')
                 ->icon('heroicon-o-exclamation-triangle')
                 ->iconColor('danger')
-                ->body('No se pudo agendar la cita, por favor vuelva a intentarlo')
+                ->body('No se pudo asignar al tecnico, por favor vuelva a intentar')
                 ->send();
             }
 
@@ -187,114 +154,17 @@ class Citas extends Component implements HasForms, HasActions
     public function EliminarAction(): Action
     {
         return Action::make('eliminar')
+        ->color('danger')
+        ->icon('heroicon-s-trash')
         ->requiresConfirmation()
-        ->action(fn () => $this->cita->delete());
-    }
-
-    protected $messages = [
-        'fecha'         => 'Campo requerido',
-        'hora'          => 'Campo requerido',
-        'cliente_id'    => 'Campo requerido',
-        'servicio_id'   => 'Campo requerido',
-    ];
-
-    public function mostrar()
-    {
-        $this->ocultar = '';
-        $this->botton_agendar_cita = 'hidden';
-    }
-
-    public function asignar()
-    {
-        redirect()->to('/clientes');
-    }
-
-    public function store()
-    {
-
-        $this->validate();
-
-        try {
-
-            $user = Auth::user();
-
-            $cita = new Cita();
-            $cita->cod_cita     = 'Pci-'.random_int(11111, 99999);
-            $cita->fecha        = $this->fecha;
-            $cita->hora         = $this->hora;
-            $cita->cliente_id   = $this->cliente_id;
-            $cita->servicio_id  = $this->servicio_id;
-            $cita->responsable  = $user->id;
-
-            $citas = Cita::where('cliente_id', $cita->cliente_id)->latest()->first();
-
-            if($citas != null)
-            {
-                if ($citas->fecha == $this->fecha && $citas->hora == $this->hora) {
-
-                    Notification::make()
-                        ->title('Ya posee una cita')
-                        ->icon('heroicon-o-exclamation-triangle')
-                        ->iconColor('danger')
-                        ->body('Por favor intente agendar en horas diferentes.')
-                        ->send();
-
-                } else {
-                    $cita->save();
-
-                    $this->reset();
-
-                    $this->dialog()->success(
-                        $title = 'Cliente agendado',
-                        $description = 'El cliente fue agendado de forma exitosa'
-                    );
-
-                    $cliente = Cliente::where('id', $cita->cliente_id)->first();
-                    $type = 'cliente';
-
-                    $mailData = [
-                        'cliente_email'     => $cliente->email,
-                        'cliente_fullname'  => $cliente->nombre.' '.$cliente->apellido,
-                        'fecha_cita'        => Carbon::createFromFormat('Y-m-d', $cita->fecha)->format('d-m-Y'),
-                        'hora_cita'         => Carbon::createFromFormat('H:i', $cita->hora)->timezone('America/Caracas')->format('h:i A'),
-                        'servicio'          => $cita->servicio->descripcion,
-                        'costo'             => $cita->servicio->costo,
-                    ];
-
-                    NotificacionesController::notification($mailData, $type);
-
-                }
-            }else{
-
-                $cita->save();
-
-                $this->reset();
-
-                    $this->dialog()->success(
-                        $title = 'Cliente agendado',
-                        $description = 'El cliente fue agendado de forma exitosa'
-                    );
-
-                    $cliente = Cliente::where('id', $cita->cliente_id)->first();
-                    $type = 'cliente';
-
-                    $mailData = [
-                        'cliente_email'     => $cliente->email,
-                        'cliente_fullname'  => $cliente->nombre.' '.$cliente->apellido,
-                        'fecha_cita'        => $cita->fecha,
-                        'hora_cita'         => $cita->hora,
-                        // 'empleado_cita' => $cita->get_empleado->nombre.' '.$cita->get_empleado->apellido,
-                        'servicio'          => $cita->servicio->descripcion,
-                        'costo'             => $cita->servicio->costo,
-
-                    ];
-
-                    // NotificacionesController::notification($mailData, $type);
-            }
-
-        } catch (\Throwable $th) {
-            dd($th);
-        }
+        ->modalHeading('Eliminar Cita')
+        ->modalDescription('Esta seguro que desea eliminar la cita?')
+        ->modalSubmitActionLabel('Si, eliminar cita')
+        ->modalIcon('heroicon-o-trash')
+        ->action(function (array $arguments) {
+            $cita = Cita::find($arguments['cita']);
+            $cita?->delete();
+        });
     }
 
     public function filtro()
@@ -313,7 +183,8 @@ class Citas extends Component implements HasForms, HasActions
         }
     }
 
-    public function div_largo(){
+    public function div_largo()
+    {
         if($this->opcion == 'mes')
         {
             $this->largo = 'h-64';
@@ -344,7 +215,6 @@ class Citas extends Component implements HasForms, HasActions
         $end = $this->fin;
 
         $data_citas = Cita::where('status', 1)->where('fecha_formateada', 'like', '%'.$fecha.'%')->get();
-        // dd($data_citas);
         $datas = Trend::model(Cita::class)
                 ->between(
                     $start,
@@ -354,9 +224,14 @@ class Citas extends Component implements HasForms, HasActions
                 ->count();
         $array = $datas->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray();
 
+        $horario = Horario::all();
+        $data_citas_dia = Cita::where('status', 1)->where('fecha_formateada', date('Y-m-d'))->get();
+
         return view('livewire.citas', [
-            'array' => $array,
-            'data_citas' => $data_citas
+            'array'             => $array,
+            'data_citas'        => $data_citas,
+            'horas'             => $horario,
+            'data_citas_dia'    => $data_citas_dia
         ]);
     }
 }

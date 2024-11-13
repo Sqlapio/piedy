@@ -27,6 +27,7 @@
             </div>
         @endforeach
     </div>
+    <x-menu_table/>
 </div>
 
 

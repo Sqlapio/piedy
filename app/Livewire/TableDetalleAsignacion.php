@@ -39,6 +39,8 @@ use Filament\Forms\Components\Fieldset;
 use Illuminate\Support\Str;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\Actions\Action as HintAction;
+use Filament\Tables\Actions\BulkAction;
+use Illuminate\Database\Eloquent\Collection;
 use Closure;
 
 class TableDetalleAsignacion extends Component implements HasForms, HasTable
@@ -126,9 +128,9 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                 //
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    //
-                ]),
+                BulkAction::make('delete')
+                ->requiresConfirmation()
+                ->action(fn (Collection $records) => $records->each->delete())
             ])
             ->headerActions([
                 ActionGroup::make([

@@ -425,13 +425,7 @@ class FacturarCliente extends Component
             $this->atr_mem = '';
         }
 
-        return view('livewire.facturar-cliente',[
-            'data' => Disponible::Where('status', 'por facturar')
-            ->Where('servicio_asignacion', '!=', 'vip')
-            ->Where('cliente', 'like', "%{$this->buscar}%")
-            ->orderBy('id', 'desc')
-               ->paginate(4)
-       ]);
+        return view('livewire.facturar-cliente');
 
     }
 }

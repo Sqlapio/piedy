@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Http\Controllers\FacturacionMultipleController;
 use App\Models\Disponible;
+use App\Models\FacturacionMultiple;
 use Filament\Tables\Actions\BulkAction;
 use Illuminate\Database\Eloquent\Collection;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -21,6 +22,20 @@ class TableFacturacionMultiple extends Component implements HasForms, HasTable
 {
     use InteractsWithForms;
     use InteractsWithTable;
+
+    public $ver_tabla;
+
+    public function mount()
+    {
+        $total_facturas = FacturacionMultiple::count();
+        if($total_facturas >  0){
+            $this->ver_tabla = 'hidden';
+        }
+        if($total_facturas = 0){
+            $this->ver_tabla = '';
+        }
+
+    }
 
     #[On('delete-item')]
     public function truncateItems()

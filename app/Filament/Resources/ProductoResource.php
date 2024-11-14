@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductoResource\Pages;
 use App\Models\Producto;
+use App\Models\Categoria;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -15,6 +16,8 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Set;
+use Illuminate\Support\Str;
 
 class ProductoResource extends Resource
 {
@@ -31,43 +34,72 @@ class ProductoResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('cod_producto')->default('Ppro-'.random_int(11111, 99999)),
-                TextInput::make('descripcion')->required(),
+
+                TextInput::make('descripcion')
+                ->label('Descripción')
+                ->required(),
+
                 Select::make('categoria_id')
+                ->label('Categoría')
                     ->relationship('categoria', 'descripcion')
                     ->searchable()
                     ->preload()
                     ->createOptionForm([
                         TextInput::make('descripcion')
                             ->required(),
-                    ])
-                    ->required(),
+                            ])
+                            ->required()
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (Set $set, ?string $state) {
+                                $sigla = Categoria::find($state)->siglas;
+                                $set('cod_producto', 'Ppro-'.$sigla.'-'.random_int(11111, 99999));
+                            }),
+                TextInput::make('cod_producto')
+                ->label('Codigo del Producto'),
+
                 TextInput::make('precio_venta')
+                ->label('Precio de Venta')
+                    ->prefix('$')
+                    ->numeric()
+                    ->inputMode('decimal'),
+                TextInput::make('costo')
+                    ->label('Costo')
                     ->prefix('$')
                     ->numeric()
                     ->inputMode('decimal'),
                 TextInput::make('contenido_neto')
+                ->label('Contenido Neto')
                     ->required()
                     ->numeric(),
                 Select::make('unidad')
+                ->label('Unidad')
                     ->required()
                     ->options([
-                        'gr' => 'Gramos',
-                        'ml' => 'Mililitros',
-                        'oz' => 'Onzas ',
-                    ]),
-                Select::make('status')
-                    ->options([
-                        'activo' => 'Activo',
-                        'inactivo' => 'Inactivo',
+                        'gr'    => 'Gramos',
+                        'ml'    => 'Mililitros',
+                        'oz'    => 'Onzas',
+                        'par'   => 'Pares',
+                        'pzas'  => 'Piezas',
+                        'hojas' => 'Hojas',
+                        'und'   => 'Unidad',
                     ]),
                 Select::make('uso')
+                ->label('Uso')
                     ->options([
                         'consumo-interno' => 'Consumo Interno',
                         'venta' => 'Venta',
                     ])->required(),
-                TextInput::make('responsable')->default(Auth::user()->name),
+                TextInput::make('responsable')->default(Auth::user()->name)
+                ->label('Creado por:'),
+
+                Select::make('status')
+                ->label('Estatus')
+                    ->options([
+                        'activo' => 'Activo',
+                        'inactivo' => 'Inactivo',
+                    ]),
                 FileUpload::make('image')
+                ->label('Imagen del Producto')
                     ->imageEditor()
                     ->imageEditorAspectRatios([
                         '16:9',
@@ -105,6 +137,14 @@ class ProductoResource extends Resource
                     ->money('USD')
                     ->alignCenter()
                     ->searchable(),
+
+                TextColumn::make('costo')
+                    ->color('success')
+                    ->icon('heroicon-s-currency-dollar')
+                    ->money('USD')
+                    ->alignCenter()
+                    ->searchable(),
+
 
                 TextColumn::make('contenido_neto')
                     ->alignCenter()

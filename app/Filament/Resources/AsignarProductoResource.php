@@ -7,6 +7,7 @@ use App\Filament\Resources\AsignarProductoResource\RelationManagers;
 use App\Models\AsignarProducto;
 use App\Models\Producto;
 use App\Models\Sucursal;
+use App\Models\InventarioSucursal;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -36,7 +37,7 @@ class AsignarProductoResource extends Resource
             ->schema([
                 Select::make('producto_id')
                 ->label('Producto')
-                ->options(Producto::all()->where('uso', 'consumo-interno')->pluck('descripcion', 'id'))
+                ->options(InventarioSucursal::all()->where('uso', 'consumo-interno')->where('sucursal_id', Auth::user()->sucursal_id)->pluck('producto.descripcion', 'id'))
                 ->searchable()
                 ->required(),
                 TextInput::make('cantidad')->required(),

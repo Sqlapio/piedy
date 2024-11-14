@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Infolists\Components\Section;
 
 class CategoriaResource extends Resource
 {
@@ -29,6 +30,8 @@ class CategoriaResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('descripcion')
                     ->maxLength(100),
+                Forms\Components\TextInput::make('siglas')
+                    ->maxLength(100),
             ]);
     }
 
@@ -38,6 +41,10 @@ class CategoriaResource extends Resource
             ->query(Categoria::query()->orderBy('created_at', 'desc'))
             ->columns([
                 Tables\Columns\TextColumn::make('descripcion')
+                    ->color('colorOne')
+                    ->icon('heroicon-s-tag')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('siglas')
                     ->color('colorOne')
                     ->icon('heroicon-s-tag')
                     ->searchable(),

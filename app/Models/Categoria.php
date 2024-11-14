@@ -22,6 +22,7 @@ class Categoria extends Model
      */
     protected $fillable = [
         'descripcion',
+        'siglas'
     ];
 
     public function producto():HasOne

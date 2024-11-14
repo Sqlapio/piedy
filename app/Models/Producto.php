@@ -32,7 +32,11 @@ class Producto extends Model
         'image',
         'status',
         'responsable',
-        'uso'
+        'uso',
+        'costo',
+        'tipo_empaquetado',
+        'total_unidades',
+        'marca'
     ];
 
     public function comision():BelongsTo

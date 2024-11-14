@@ -15,10 +15,19 @@ class InventarioController extends Controller
 {
     public static function reposicion($inventario_id, $cantidad)
     {
+
         try {
+            $producto = Producto::where('id', Inventario::find($inventario_id)->producto_id)->first();
 
             if($cantidad <= 0){
                 throw new Exception("No puede realizar la reposición ya que el valor es igual a cero(0). Por favor vuelva a intentarlo colocando un numero mayor a cero(0).", 401);
+            }
+
+            $existencia = Inventario::where('producto_id', $producto->id)->first()->cantidad;
+            //Cantidad en inventario general
+            if($cantidad > $existencia)
+            {
+                throw new Exception("No puede realizar el movimiento ya que la cantidad solicitada es mayor a la existencia total. Por favor comuniquese con el Administrador", 401);
             }
 
             $inventario = Inventario::find($inventario_id);
@@ -60,6 +69,13 @@ class InventarioController extends Controller
                 throw new Exception("No puede realizar el movimiento ya que el inventario esta en 0. Por favor comuniquese con el Administrador", 401);
             }
 
+            $existencia = Inventario::where('producto_id', $producto->id)->first()->cantidad;
+            //Cantidad en inventario general
+            if($cantidad > $existencia)
+            {
+                throw new Exception("No puede realizar el movimiento ya que la cantidad solicitada es mayor a la existencia total. Por favor comuniquese con el Administrador", 401);
+            }
+
             //El prodducto ya exite en la sucursal?
             $inventario_sucursal = InventarioSucursal::where('producto_id', $producto->id)
             ->where('sucursal_id', $sucursal_id)
@@ -96,7 +112,6 @@ class InventarioController extends Controller
                 ->iconColor('success')
                 ->send();
 
-            //code...
         } catch (\Throwable $th) {
             Notification::make()
                 ->title('NOTIFICACIÓN')

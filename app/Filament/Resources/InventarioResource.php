@@ -126,6 +126,13 @@ class InventarioResource extends Resource
                                             ->searchable()
                                             ->required(),
 
+                                        // Select::make('sucursal_id')
+                                        //     ->label('Sucursal')
+                                        //     ->prefixIcon('heroicon-c-building-office-2')
+                                        //     ->options(Sucursal::all()->pluck('nombre', 'id'))
+                                        //     ->searchable()
+                                        //     ->required(),
+
                                         //Cantidad
                                         TextInput::make('cantidad')
                                             ->label('Cantidad')
@@ -166,7 +173,7 @@ class InventarioResource extends Resource
                                             ->numeric()
                                             ->required(),
 
-                                                //Responsable
+                                        //Responsable
                                         TextInput::make('responsable')
                                             ->label('Responsable del Movimiento')
                                             ->prefixIcon('heroicon-c-squares-plus')

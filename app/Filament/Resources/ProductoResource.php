@@ -67,6 +67,14 @@ class ProductoResource extends Resource
                     ->prefix('$')
                     ->numeric()
                     ->inputMode('decimal'),
+                Select::make('tipo_empaquetado')
+                ->label('Empaquetado en/por:')
+                    ->required()
+                    ->options([
+                        'caja'   => 'Caja',
+                        'inidad' => 'Unidad',
+                        'bulto'  => 'Bulto',
+                    ]),
                 TextInput::make('contenido_neto')
                 ->label('Contenido Neto')
                     ->required()
@@ -75,13 +83,16 @@ class ProductoResource extends Resource
                 ->label('Unidad')
                     ->required()
                     ->options([
-                        'gr'    => 'Gramos',
-                        'ml'    => 'Mililitros',
-                        'oz'    => 'Onzas',
-                        'par'   => 'Pares',
-                        'pzas'  => 'Piezas',
-                        'hojas' => 'Hojas',
-                        'und'   => 'Unidad',
+                        'gr'        => 'Gramos',
+                        'ml'        => 'Mililitros',
+                        'oz'        => 'Onzas',
+                        'par'       => 'Pares',
+                        'pzas'      => 'Piezas',
+                        'hojas'     => 'Hojas',
+                        'und'       => 'Unidad',
+                        'litros'    => 'Litros',
+                        'galon'     => 'Galon',
+                        'kl'        => 'Kilos',
                     ]),
                 Select::make('uso')
                 ->label('Uso')
@@ -145,12 +156,16 @@ class ProductoResource extends Resource
                     ->alignCenter()
                     ->searchable(),
 
-
                 TextColumn::make('contenido_neto')
                     ->alignCenter()
                     ->searchable(),
 
                 TextColumn::make('unidad')
+                    ->alignCenter()
+                    ->searchable(),
+
+                    TextColumn::make('tipo_empaquetado')
+                    ->label('Empaquetado en:')
                     ->alignCenter()
                     ->searchable(),
 

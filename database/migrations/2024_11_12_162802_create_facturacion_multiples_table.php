@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('facturacion_multiples', function (Blueprint $table) {
             $table->id();
-            $table->string('cod_asignacion');
-            $table->decimal('costo_usd', 8, 2)->defaule(0.00);
-            $table->decimal('costo_bsd', 8, 2)->defaule(0.00);
+            $table->json('cod_asignacion');
+            $table->string('cod_fac_multiple');
+            $table->decimal('venta_total_usd', 8, 2)->defaule(0.00);
+            $table->decimal('venta_total_bsd', 8, 2)->defaule(0.00);
+            $table->integer('sucursal_id');
             $table->timestamps();
         });
     }

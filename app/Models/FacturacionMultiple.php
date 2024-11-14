@@ -16,15 +16,9 @@ class FacturacionMultiple extends Model
      */
     protected $fillable = [
         'cod_asignacion',
-        'tipo',
-        'empleado_id',
-        'servicio_id',
+        'cod_fac_multiple',
+        'venta_total_usd',
+        'venta_total_bsd',
         'sucursal_id',
-        'producto_id',
-        'cliente_id',
-        'costo_usd',
-        'costo_bsd',
-        'cantidad',
-        'serv_asignacion',
     ];
 }

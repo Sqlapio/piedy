@@ -39,6 +39,7 @@ class AlmacenResource extends Resource
                     ->label('Almacen/Deposito')
                     ->color('colorOne')
                     ->icon('heroicon-s-home-modern')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha de Creación')

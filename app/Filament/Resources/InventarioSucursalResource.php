@@ -85,6 +85,9 @@ class InventarioSucursalResource extends Resource
                     ->icon('heroicon-m-user')
                     ->searchable(),
             ])
+            ->groups([
+                'sucursal.nombre',
+            ])
             ->filters([
                 //
             ])

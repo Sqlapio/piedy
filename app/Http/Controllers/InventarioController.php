@@ -17,18 +17,10 @@ class InventarioController extends Controller
     {
 
         try {
+            
             $producto = Producto::where('id', Inventario::find($inventario_id)->producto_id)->first();
 
-            if($cantidad <= 0){
-                throw new Exception("No puede realizar la reposición ya que el valor es igual a cero(0). Por favor vuelva a intentarlo colocando un numero mayor a cero(0).", 401);
-            }
-
             $existencia = Inventario::where('producto_id', $producto->id)->first()->cantidad;
-            //Cantidad en inventario general
-            if($cantidad > $existencia)
-            {
-                throw new Exception("No puede realizar el movimiento ya que la cantidad solicitada es mayor a la existencia total. Por favor comuniquese con el Administrador", 401);
-            }
 
             $inventario = Inventario::find($inventario_id);
             $inventario->cantidad += $cantidad;

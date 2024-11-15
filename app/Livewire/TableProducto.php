@@ -38,7 +38,10 @@ class TableProducto extends Component implements HasForms, HasTable
         return $table
             ->heading('Inventario de Productos')
             ->description('Inventarios de productos para la venta')
-            ->query(InventarioSucursal::query()->where('cantidad', '>', 0)->where('sucursal_id', $sucursal_id))
+            ->query(InventarioSucursal::query()
+            ->where('cantidad', '>', 0)
+            ->where('sucursal_id', $sucursal_id)
+            ->where('accepted_at', '!=', null))
             ->columns([
                 ImageColumn::make('producto.image')
                     ->square()
@@ -141,6 +144,28 @@ class TableProducto extends Component implements HasForms, HasTable
                 Tables\Actions\BulkActionGroup::make([
                     //
                 ]),
+            ])
+            ->headerActions([
+                Action::make('cerrar')
+                        ->label('Aceptacion de Inventario')
+                        ->icon('heroicon-c-document-plus')
+                        ->color('success')
+                        ->hidden(false)
+                        ->model(InventarioSucursal::class)
+                        ->action(function (array $data) {
+                            $array = InventarioSucursal::where('sucursal_id', Auth::user()->sucursal_id)
+                            ->where('uso', 'venta')
+                            ->where('accepted_at', null)
+                            ->get();
+
+                            foreach($array as $item)
+                            {
+
+                            }
+                            $accepted =
+
+                            dd($array);
+                        })
             ])
             ->striped()
             ->defaultPaginationPageOption(5);

@@ -43,10 +43,12 @@ class CategoriaResource extends Resource
                 Tables\Columns\TextColumn::make('descripcion')
                     ->color('colorOne')
                     ->icon('heroicon-s-tag')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('siglas')
                     ->color('colorOne')
                     ->icon('heroicon-s-tag')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha de Creación')

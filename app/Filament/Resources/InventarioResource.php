@@ -61,7 +61,7 @@ class InventarioResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->query(Inventario::query()->where('cantidad', '>', 0)->orderBy('created_at', 'desc'))
+            ->query(Inventario::query()->orderBy('created_at', 'desc'))
             ->columns([
                 Tables\Columns\ImageColumn::make('producto.image')
                     ->label('Imagen')
@@ -100,6 +100,9 @@ class InventarioResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->groups([
+                'almacen.nombre',
             ])
             ->filters([
                 //
@@ -161,7 +164,9 @@ class InventarioResource extends Resource
                         ->model(Inventario::class)
                         ->form([
                             Section::make('Formulario')
-                                ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
+                                ->description(function (Inventario $record) {
+                                    return 'Reposicion para el producto: '.$record;
+                                })
                                 ->icon('heroicon-s-clipboard-document-list')
                                 ->schema([
                                     Grid::make()

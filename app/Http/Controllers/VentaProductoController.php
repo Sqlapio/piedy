@@ -107,6 +107,14 @@ class VentaProductoController extends Controller
                         $codigoAsignacion,
                         'Venta',
                     );
+
+                    //Cargamos la venta en su tabla de ventas
+                    VentaController::venta_producto(
+                        $codigoAsignacion,
+                        $venta_producto->total_venta,
+                        $venta_producto->metodoUsd,
+                        'N/A',
+                    );
                 }
 
                 return true;
@@ -218,6 +226,14 @@ class VentaProductoController extends Controller
                     $venta_producto->sucursal_id,
                     $codigoAsignacion,
                     'Venta',
+                );
+
+                //Cargamos la venta en su tabla de ventas
+                VentaController::venta_producto(
+                    $codigoAsignacion,
+                    $venta_producto->total_venta,
+                    'N/A',
+                    $venta_producto->metodoBsd,
                 );
             }
 
@@ -342,6 +358,14 @@ class VentaProductoController extends Controller
                     $venta_producto->sucursal_id,
                     $codigoAsignacion,
                     'Venta',
+                );
+
+                //Cargamos la venta en su tabla de ventas
+                VentaController::venta_producto(
+                    $codigoAsignacion,
+                    $venta_producto->total_venta,
+                    $venta_producto->metodoUsd,
+                    $venta_producto->metodoBsd,
                 );
             }
 

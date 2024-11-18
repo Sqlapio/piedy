@@ -7,6 +7,7 @@ use App\Models\InventarioSucursal;
 use App\Models\TasaBcv;
 use App\Models\DetalleAsignacion;
 use App\Models\Disponible;
+use Carbon\Carbon;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables;
@@ -56,8 +57,11 @@ class TableProducto extends Component implements HasForms, HasTable
                     ->label('Precio Venta')
                     ->icon('heroicon-m-currency-dollar')
                     ->color('success')
-                    ->money('USD')
-                    ->sortable(),
+                    ->money('USD'),
+                TextColumn::make('cantidad')
+                    ->label('Exitencia actual')
+                    ->icon('heroicon-c-rectangle-stack')
+                    ->color('primary'),
                 TextInputColumn::make('pre_compra')
                     ->label('Cantidad'),
                 SelectColumn::make('cod_asignacion')
@@ -74,7 +78,7 @@ class TableProducto extends Component implements HasForms, HasTable
 
                     $tasa = TasaBcv::all()->first()->tasa;
 
-                    if($record->cantidad > 0)
+                    if($record->cantidad > 0 && $record->pre_compra < $record->cantidad)
                     {
                         if($record->cod_asignacion != 0)
                         {
@@ -118,7 +122,7 @@ class TableProducto extends Component implements HasForms, HasTable
 
                     }else{
                         Notification::make()
-                        ->title('La carga debe ser mayor a 1. Por favor vuelva a intentar.')
+                        ->title('La carga debe ser mayor a uno(1) ó la cantidad solicitada es mayor a la existencia. Por favor vuelva a intentar.')
                         ->icon('heroicon-o-document-text')
                         ->iconColor('danger')
                         ->send();
@@ -147,6 +151,7 @@ class TableProducto extends Component implements HasForms, HasTable
             ])
             ->headerActions([
                 Action::make('cerrar')
+                        ->requiresConfirmation()
                         ->label('Aceptacion de Inventario')
                         ->icon('heroicon-c-document-plus')
                         ->color('success')
@@ -160,11 +165,12 @@ class TableProducto extends Component implements HasForms, HasTable
 
                             foreach($array as $item)
                             {
-
+                                $item->accepted_at = Carbon::now();
+                                $item->aceptado_por = Auth::user()->name;
+                                $item->save();
                             }
-                            $accepted =
 
-                            dd($array);
+                            dd(1);
                         })
             ])
             ->striped()

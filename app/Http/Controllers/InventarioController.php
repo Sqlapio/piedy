@@ -17,7 +17,7 @@ class InventarioController extends Controller
     {
 
         try {
-            
+
             $producto = Producto::where('id', Inventario::find($inventario_id)->producto_id)->first();
 
             $existencia = Inventario::where('producto_id', $producto->id)->first()->cantidad;
@@ -76,6 +76,7 @@ class InventarioController extends Controller
             if($inventario_sucursal)
             {
                 $inventario_sucursal->cantidad += $cantidad;
+                $inventario_sucursal->accepted_at = null; //Esto forzara a que el gerente de la tienda deba aceptar la reposicion del inventario
                 $inventario_sucursal->save();
 
             }else{

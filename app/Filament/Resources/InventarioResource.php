@@ -115,7 +115,9 @@ class InventarioResource extends Resource
                         ->model(InventarioSucursal::class)
                         ->form([
                             Section::make('Formulario')
-                                ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
+                                ->description(function (Inventario $record) {
+                                    return 'Mover a sucursal: ' . $record->producto->descripcion;
+                                })
                                 ->icon('heroicon-s-clipboard-document-list')
                                 ->schema([
                                     Grid::make()
@@ -165,7 +167,7 @@ class InventarioResource extends Resource
                         ->form([
                             Section::make('Formulario')
                                 ->description(function (Inventario $record) {
-                                    return 'Reposicion para el producto: '.$record;
+                                    return 'Mover a sucursal: ' . $record->producto->descripcion;
                                 })
                                 ->icon('heroicon-s-clipboard-document-list')
                                 ->schema([

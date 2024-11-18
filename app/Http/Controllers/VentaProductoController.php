@@ -205,6 +205,12 @@ class VentaProductoController extends Controller
                 $productoSucursal->cantidad = $productoSucursal->cantidad - $item->cantidad;
                 $productoSucursal->save();
 
+                if($productoSucursal->cantidad == 0)
+                {
+                    $productoSucursal->accepted_at = null;
+                    $productoSucursal->save();
+                }
+
                 //Cargamos el movimiento de inventario en su tabla
                 MovimientoInventarioController::registrar_movimiento(
                     $producto->id,
@@ -322,6 +328,12 @@ class VentaProductoController extends Controller
                 $productoSucursal = InventarioSucursal::where('producto_id', $producto->id)->where('sucursal_id', Auth::user()->sucursal->id)->first();
                 $productoSucursal->cantidad = $productoSucursal->cantidad - $item->cantidad;
                 $productoSucursal->save();
+
+                if($productoSucursal->cantidad == 0)
+                {
+                    $productoSucursal->accepted_at = null;
+                    $productoSucursal->save();
+                }
 
                 //Cargamos el movimiento de inventario en su tabla
                 MovimientoInventarioController::registrar_movimiento(

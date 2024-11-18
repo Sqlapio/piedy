@@ -230,7 +230,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                                                                 ->send();
                                                                             }
                                                                         }
-    
+
                                                                     }else{
                                                                         Notification::make()
                                                                                 ->title('NOTIFICACIÓN')
@@ -429,7 +429,11 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     Select::make('producto_id')
                                         ->label('Productos')
                                         ->prefixIcon('heroicon-o-shopping-cart')
-                                        ->options(InventarioSucursal::all()->where('sucursal_id', Auth::user()->sucursal_id)->where('cantidad', '>', 0)->pluck('producto.descripcion', 'id'))
+                                        ->options(InventarioSucursal::all()
+                                        ->where('sucursal_id', Auth::user()->sucursal_id)
+                                        ->where('cantidad', '>', 0)
+                                        ->where('uso', 'venta')
+                                        ->pluck('producto.descripcion', 'producto_id'))
                                         ->searchable()
                                         ->required(),
                                     TextInput::make('cantidad')
@@ -517,7 +521,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
     {
         $valor = GiftCardController::validaGiftCard($codigo, $this->cod_asignacion);
         return $valor;
-        
+
     }
 
     public function render(): View

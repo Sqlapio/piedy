@@ -6,7 +6,7 @@ use App\Models\LogInventario as ModelsLogInventario;
 use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 
-class LogInventario extends Controller
+class LogInventarioController extends Controller
 {
     public static function log_inventario($user_id, $accion, $descripcion)
     {

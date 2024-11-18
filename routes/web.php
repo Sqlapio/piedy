@@ -25,6 +25,7 @@ use App\Models\User;
 use App\Models\InventarioSucursal;
 use App\Models\Producto;
 use App\Models\TasaBcv;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Browsershot\Browsershot;
 
 /*
@@ -368,6 +369,16 @@ Route::get('/pp', function () {
 });
 
 Route::get('/ex', function () {
+
+    $p = InventarioSucursal::where('sucursal_id', Auth::user()->sucursal_id)
+    ->where('cantidad', '>', 0)
+    ->where('uso', 'venta')
+    ->get();
+
+    $pp = Producto::find(3);
+
+    dd($p, $pp);
+
 
     // $p = Producto::find(1)->with('sucursal')->first();
     // $d = ServicioUser::where('user_id', 42)->with('servicio')->get()->toArray();

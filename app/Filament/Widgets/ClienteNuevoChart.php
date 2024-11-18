@@ -79,7 +79,7 @@ class ClienteNuevoChart extends ChartWidget
             )
             // ->perMonth()
             ->perDay()
-            ->count('cliente');
+            ->count('cliente_id');
 
         $data3 = DB::table('venta_productos')
         ->select(DB::raw('count(cantidad) as cantidad, producto_id'))

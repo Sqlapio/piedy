@@ -24,6 +24,7 @@ use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use App\Http\Controllers\LogInventarioController;
 
 class TableProducto extends Component implements HasForms, HasTable
 {
@@ -170,7 +171,9 @@ class TableProducto extends Component implements HasForms, HasTable
                                 $item->save();
                             }
 
-                            dd(1);
+                            $descripcion = 'El usuario '. Auth::user()->name .' acepto inventario';
+                            LogInventarioController::log_inventario(Auth::user()->id, 'Aceptacion de inventario', $descripcion);
+
                         })
             ])
             ->striped()

@@ -28,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
             'colorTree' => Color::hex('#BF9C99'),
             'colorFour' => Color::hex('#D9C3C1'),
             'colorFive' => Color::hex('#F2F2F2'),
+            'colorDisabled' => Color::hex('#A9A9A9'),
         ]);
     }
 }

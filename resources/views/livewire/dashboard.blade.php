@@ -94,9 +94,9 @@ use App\Models\TasaBcv as ModelsTasaBcv;
         </div>
 
         {{-- Segunda linea --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2 mb-2 px-3">
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-2 mb-2 px-3">
             {{-- Agenda --}}
-            <div wire:click="valida_tasa({{ 4 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/abstract-light-blue-background-hd-wallpaper_1000823-2469.jpg?size=626&ext=jpg&ga=GA1.1.1016474677.1696809600&semt=ais');background-size: cover;">
+            <div wire:click="valida_tasa({{ 4 }})" class="cursor-pointer p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/abstract-light-blue-background-hd-wallpaper_1000823-2469.jpg?size=626&ext=jpg&ga=GA1.1.1016474677.1696809600&semt=ais');background-size: cover;">
                 <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
@@ -111,8 +111,26 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                         </div>
                 </div>
             </div>
+
+            {{-- MANEJO DE INVENTARIO --}}
+            <a href="{{ route('inventario') }}" class="cursor-pointer p-6 rounded-lg" style="background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20201015/pngtree-modern-low-poly-background-with-red-and-blue-gradient-colors-image_417695.jpg');background-size: cover;">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 005.304 0l6.401-6.402M6.75 21A3.75 3.75 0 013 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 003.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008z" />
+                    </svg>
+                </div>
+                <div class="ml-12 text-right">
+                    <div class="mt-2 text-2xl text-black text- leading-7 font-bold">
+                        INVENTARIO
+                    </div>
+                    <div class="sm:hidden md:hidden lg:block mt-3 text-right text-xs font-semibold text-black">
+                        <div>Gestion de inventario</div>
+                    </div>
+                </div>
+            </a>
+
             {{-- Productos --}}
-            <div wire:click="valida_tasa({{ 5 }})" class="p-6 rounded-lg" style="background-image: url('https://cdn.pixabay.com/photo/2017/03/25/18/06/color-2174066_640.png'); background-size: cover;">
+            <a wire:click="valida_tasa({{ 5 }})" class="cursor-pointer p-6 rounded-lg" style="background-image: url('https://cdn.pixabay.com/photo/2017/03/25/18/06/color-2174066_640.png'); background-size: cover;">
                 <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
@@ -122,27 +140,12 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                     <div class="mt-2 text-2xl text-black leading-7 font-bold">
                         PRODUCTOS
                     </div>
-                        <div class="sm:hidden md:hidden lg:block mt-3 text-right text-xs font-semibold text-black">
-                            <div>Carga y gestion de productos</div>
-                        </div>
-                </div>
-            </div>
-            {{-- Servicios --}}
-            {{-- <div wire:click="valida_tasa({{ 6 }})" class="p-6 rounded-lg" style="background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20201015/pngtree-modern-low-poly-background-with-red-and-blue-gradient-colors-image_417695.jpg');background-size: cover;">
-                <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 005.304 0l6.401-6.402M6.75 21A3.75 3.75 0 013 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 003.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008z" />
-                    </svg>
-                </div>
-                <div class="ml-12 text-right">
-                    <div class="mt-2 text-2xl text-black text- leading-7 font-bold">
-                        SERVICIOS
+                    <div class="sm:hidden md:hidden lg:block mt-3 text-right text-xs font-semibold text-black">
+                        <div>Carga y gestion de productos</div>
                     </div>
-                        <div class="sm:hidden md:hidden lg:block mt-3 text-right text-xs font-semibold text-black">
-                            <div>Carga y gestion de servicios</div>
-                        </div>
                 </div>
-            </div> --}}
+            </a>
+
         </div>
 
         {{-- tercera linea --}}

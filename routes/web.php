@@ -200,6 +200,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/caja/producto', function () {
         return view('caja-producto');
     })->name('caja_producto');
+
+    Route::get('/inventario', function () {
+        return view('inventario');
+    })->name('inventario');
     /**********************************************/
 
     Route::get('/facturar/cliente', function () {

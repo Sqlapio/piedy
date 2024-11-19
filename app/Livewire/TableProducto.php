@@ -42,8 +42,8 @@ class TableProducto extends Component implements HasForms, HasTable
             ->description('Inventarios de productos para la venta')
             ->query(InventarioSucursal::query()
             ->where('cantidad', '>', 0)
-            ->where('sucursal_id', $sucursal_id)
-            ->where('accepted_at', '!=', null))
+            ->where('uso', 'venta')
+            ->where('sucursal_id', $sucursal_id))
             ->columns([
                 ImageColumn::make('producto.image')
                     ->square()
@@ -52,28 +52,60 @@ class TableProducto extends Component implements HasForms, HasTable
                 TextColumn::make('producto.descripcion')
                     ->label('Descripción')
                     ->icon('heroicon-c-clipboard-document-check')
-                    ->color('info')
+                    ->color(function (InventarioSucursal $record) { 
+                        if($record->accepted_at !== null){
+                            return 'info';
+                        }else{
+                            return 'colorDisabled';
+                        }
+                    } )
                     ->searchable(),
                 TextColumn::make('producto.precio_venta')
                     ->label('Precio Venta')
                     ->icon('heroicon-m-currency-dollar')
-                    ->color('success')
+                    ->color(function (InventarioSucursal $record) { 
+                        if($record->accepted_at !== null){
+                            return 'success';
+                        }else{
+                            return 'colorDisabled';
+                        }
+                    } )
                     ->money('USD'),
                 TextColumn::make('cantidad')
                     ->label('Exitencia actual')
                     ->icon('heroicon-c-rectangle-stack')
-                    ->color('primary'),
+                    ->color(function (InventarioSucursal $record) { 
+                        if($record->accepted_at !== null){
+                            return 'primary';
+                        }else{
+                            return 'colorDisabled';
+                        }
+                    } ),
                 TextInputColumn::make('pre_compra')
+                    ->disabled(function (InventarioSucursal $record) { 
+                        if($record->accepted_at !== null){
+                            return false;
+                        }else{
+                            return true;
+                        }
+                    })
                     ->label('Cantidad'),
-                SelectColumn::make('cod_asignacion')
-                    ->label('Codigo de Servicio')
-                    ->options(Disponible::where('status', 'activo')->pluck('cod_asignacion', 'cod_asignacion'))
+                // SelectColumn::make('cod_asignacion')
+                //     ->label('Codigo de Servicio')
+                //     ->options(Disponible::where('status', 'activo')->pluck('cod_asignacion', 'cod_asignacion'))
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Action::make('Añadir')
+                ->disabled(function (InventarioSucursal $record) {    
+                    if($record->accepted_at !== null){
+                        return false;
+                    }else{
+                        return true;
+                    }
+                })
                 ->requiresConfirmation()
                 ->action(function (InventarioSucursal $record) {
 
@@ -138,7 +170,13 @@ class TableProducto extends Component implements HasForms, HasTable
 
                 })
                 ->icon('heroicon-m-shopping-cart')
-                ->color('success')
+                ->color(function (InventarioSucursal $record) { 
+                    if($record->accepted_at !== null){
+                        return 'success';
+                    }else{
+                        return 'colorDisabled';
+                    }
+                } )
                 ->modalIcon('heroicon-m-shopping-cart')
                 ->modalHeading('Añadir Item')
                 ->modalDescription('Estas seguro que desea añadir el item a pre-facturacion')
@@ -151,30 +189,29 @@ class TableProducto extends Component implements HasForms, HasTable
                 ]),
             ])
             ->headerActions([
-                Action::make('cerrar')
-                        ->requiresConfirmation()
-                        ->label('Aceptacion de Inventario')
-                        ->icon('heroicon-c-document-plus')
-                        ->color('success')
-                        ->hidden(false)
-                        ->model(InventarioSucursal::class)
-                        ->action(function (array $data) {
-                            $array = InventarioSucursal::where('sucursal_id', Auth::user()->sucursal_id)
-                            ->where('uso', 'venta')
-                            ->where('accepted_at', null)
-                            ->get();
+                Action::make('aceptar') 
+                ->requiresConfirmation()
+                ->label('Aceptacion de Inventario')
+                ->icon('heroicon-c-document-plus')
+                ->color('success')
+                ->model(InventarioSucursal::class)
+                ->action(function (array $data) {
+                    $array = InventarioSucursal::where('sucursal_id', Auth::user()->sucursal_id)
+                    ->where('uso', 'venta')
+                    ->where('accepted_at', null)
+                    ->get();
 
-                            foreach($array as $item)
-                            {
-                                $item->accepted_at = Carbon::now();
-                                $item->aceptado_por = Auth::user()->name;
-                                $item->save();
-                            }
+                    foreach($array as $item)
+                    {
+                        $item->accepted_at = Carbon::now();
+                        $item->aceptado_por = Auth::user()->name;
+                        $item->save();
+                    }
 
-                            $descripcion = 'El usuario '. Auth::user()->name .' acepto inventario';
-                            LogInventarioController::log_inventario(Auth::user()->id, 'Aceptacion de inventario', $descripcion);
+                    $descripcion = 'El usuario '. Auth::user()->name .' acepto inventario';
+                    LogInventarioController::log_inventario(Auth::user()->id, 'Aceptacion de inventario', $descripcion);
 
-                        })
+                })
             ])
             ->striped()
             ->defaultPaginationPageOption(5);

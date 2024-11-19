@@ -59,26 +59,30 @@ class ProductoResource extends Resource
 
                 TextInput::make('precio_venta')
                 ->label('Precio de Venta')
-                    ->prefix('$')
-                    ->numeric()
-                    ->inputMode('decimal'),
+                ->prefix('$')
+                ->numeric()
+                ->inputMode('decimal'),
+
                 TextInput::make('costo')
-                    ->label('Costo')
-                    ->prefix('$')
-                    ->numeric()
-                    ->inputMode('decimal'),
+                ->label('Costo')
+                ->prefix('$')
+                ->numeric()
+                ->inputMode('decimal'),
+
                 Select::make('tipo_empaquetado')
                 ->label('Empaquetado en/por:')
-                    ->required()
-                    ->options([
-                        'caja'   => 'Caja',
-                        'inidad' => 'Unidad',
-                        'bulto'  => 'Bulto',
-                    ]),
+                ->required()
+                ->options([
+                    'caja'    => 'Caja',
+                    'unidad'  => 'Unidad',
+                    'bulto'   => 'Bulto',
+                    'paquete' => 'Paquete',
+                ]),
                 TextInput::make('contenido_neto')
                 ->label('Contenido Neto')
-                    ->required()
-                    ->numeric(),
+                ->required()
+                ->numeric(),
+                
                 Select::make('unidad')
                 ->label('Unidad')
                     ->required()
@@ -96,27 +100,22 @@ class ProductoResource extends Resource
                     ]),
                 Select::make('uso')
                 ->label('Uso')
-                    ->options([
-                        'consumo-interno' => 'Consumo Interno',
-                        'venta' => 'Venta',
-                    ])->required(),
+                ->options([
+                    'consumo-interno' => 'Consumo Interno',
+                    'venta' => 'Venta',
+                ])->required(),
+
                 TextInput::make('responsable')->default(Auth::user()->name)
                 ->label('Creado por:'),
 
-                Select::make('status')
-                ->label('Estatus')
-                    ->options([
-                        'activo' => 'Activo',
-                        'inactivo' => 'Inactivo',
-                    ]),
                 FileUpload::make('image')
                 ->label('Imagen del Producto')
-                    ->imageEditor()
-                    ->imageEditorAspectRatios([
-                        '16:9',
-                        '4:3',
-                        '1:1',
-                    ]),
+                ->imageEditor()
+                ->imageEditorAspectRatios([
+                    '16:9',
+                    '4:3',
+                    '1:1',
+                ]),
             ]);
     }
 

@@ -2,9 +2,9 @@
 
 namespace App\Livewire;
 
-use App\Models\CajaChica;
+use App\Http\Controllers\LogController;
 use App\Models\Cita;
-use App\Models\TasaBcv as ModelsTasaBcv;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use LivewireUI\Modal\ModalComponent;
@@ -25,44 +25,36 @@ class TasaBcv extends ModalComponent
     public function actualiza_tasa()
     {
 
-        $hoy = date('d-m-Y');
-
-        $tasa_actualizada = ModelsTasaBcv::first();
-
-        if($tasa_actualizada->fecha == $hoy)
-        {
-            $this->forceClose()->closeModal();
-
-            $this->dialog()->error(
-                $title = 'Error !!!',
-                $description = 'La tasa fue actualizada el dia de hoy, no puede repetir esta acción.'
-            );
-
-        }else{
+        try {
 
             DB::table('tasa_bcvs')
               ->where('id', 1)
               ->update([
                 'tasa'  => $this->tasa,
-                'fecha' => $hoy
+                'fecha' => now()->format('d-m-Y')
             ]);
 
             /**Logica que limpia las citas del dia anterior para evitar el colapso de la agenda */
-            $clen_citas = Cita::where('fecha_formateada', '<', date('Y-m-d'))->get();
-            foreach ($clen_citas as $value) {
+            $clean_citas = Cita::where('fecha_formateada', '<', date('Y-m-d'))->get();
+
+            foreach ($clean_citas as $value) {
                 $value->update([
                     'status' => '2'
                 ]);
             }
 
+            LogController::log_inventario(Auth::user()->id, 'Actualiza tasa BCV', 'El usuario actualizo la tasa BCV');
+
             $this->forceClose()->closeModal();
 
             redirect()->to('/dashboard');
-
+            //code...
+        } catch (\Throwable $th) {
+            dd($th);
         }
 
-
     }
+
     public function render()
     {
         return view('livewire.tasa-bcv');

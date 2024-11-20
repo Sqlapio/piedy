@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Mail\NotificacionesEmail;
+use App\Models\Cliente;
+use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -147,7 +149,84 @@ class NotificacionesController extends Controller
             curl_close($curl);
 
         } catch (\Throwable $th) {
-            //throw $th;
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-document-text')
+            ->iconColor('danger')
+            ->color('danger')
+            ->body($th->getMessage())
+            ->send();
         }
+    }
+
+    static function notificacion_masiva($image, $caption){
+
+        try {
+
+            $user_phone = Cliente::all();
+
+            foreach ($user_phone as $value) {
+
+                $params = array(
+                    'token' => env('TOKEN_API_WHATSAPP'),
+                    // 'to' => $value->telefono,
+                    'to' => '04127018390',
+                    'image' => env('APP_URL').'/storage/'.$image,
+                    'caption' => $caption
+                );
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => env('CURLOPT_URL_IMAGE'),
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => "",
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 30,
+                    CURLOPT_SSL_VERIFYHOST => 0,
+                    CURLOPT_SSL_VERIFYPEER => 0,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => "POST",
+                    CURLOPT_POSTFIELDS => http_build_query($params),
+                    CURLOPT_HTTPHEADER => array(
+                        "content-type: application/x-www-form-urlencoded"
+                    ),
+                ));
+
+                $response = curl_exec($curl);
+                if(isset($response)){
+                    Notification::make()
+                    ->title('NOTIFICACIÓN')
+                    ->icon('heroicon-o-document-text')
+                    ->iconColor('danger')
+                    ->color('danger')
+                    ->body('El mensaje masivo fue enviado de forma exitosa')
+                    ->send();
+
+                }else{
+                    $err = curl_error($curl);
+
+                    Notification::make()
+                    ->title('NOTIFICACIÓN')
+                    ->icon('heroicon-o-document-text')
+                    ->iconColor('danger')
+                    ->color('danger')
+                    ->body($err)
+                    ->send();
+
+                }
+
+                curl_close($curl);
+
+            }
+                //code...
+        } catch (\Throwable $th) {
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-document-text')
+            ->iconColor('danger')
+            ->color('danger')
+            ->body($th->getMessage())
+            ->send();
+        }
+
     }
 }

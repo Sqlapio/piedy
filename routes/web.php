@@ -374,21 +374,6 @@ Route::get('/pp', function () {
 
 Route::get('/ex', function () {
 
-    $p = InventarioSucursal::where('sucursal_id', Auth::user()->sucursal_id)
-    ->where('cantidad', '>', 0)
-    ->where('uso', 'venta')
-    ->get();
-
-    $pp = Producto::find(3);
-
-    dd($p, $pp);
-
-
-    // $p = Producto::find(1)->with('sucursal')->first();
-    // $d = ServicioUser::where('user_id', 42)->with('servicio')->get()->toArray();
-    dump( (Disponible::where('cod_asignacion', 'Pca-36432152')->first()->status == 'activo'));
-    //false
-    dd(! (Disponible::where('cod_asignacion', 'Pca-36432152')->first()->status == 'activo'));
-    //true
+return env('APP_URL').'/storage/01JD546BCP5C9R8VVJHPAQ398V.png';
 
 });

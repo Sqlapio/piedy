@@ -29,7 +29,7 @@ class InventarioController extends Controller
             if($inventario->save()){
 
                 $descripcion = 'Reposición. Producto: '.$inventario->producto->descripcion.' Cantidad: '.$cantidad;
-                LogInventario::log_inventario(Auth::user()->id, 'Reposición Almacen Principal', $descripcion);
+                LogController::log_inventario(Auth::user()->id, 'Reposición Almacen Principal', $descripcion);
 
                 Notification::make()
                     ->title('La Reposicion se realizo con éxito.')
@@ -96,7 +96,7 @@ class InventarioController extends Controller
             ]);
 
             $descripcion = 'Reposición. Producto: '.$producto->descripcion.', Sucursal: '. Sucursal::find($sucursal_id)->nombre .', Cantidad: '.$cantidad;
-            LogInventario::log_inventario(Auth::user()->id, 'Reposición en Sucursal', $descripcion);
+            LogController::log_inventario(Auth::user()->id, 'Reposición en Sucursal', $descripcion);
 
             Notification::make()
                 ->title('El Movimiento se realizo con éxito.')

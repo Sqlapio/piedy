@@ -61,51 +61,49 @@ class TableCliente extends Component implements HasForms, HasTable
                 //
             ])
             ->actions([
-                ActionGroup::make([
-                    Action::make('Asignar Servicio')
-                    ->icon('heroicon-s-wallet')
-                    ->color('colorOne')
-                    ->form([
-                        Select::make('user_id')
-                            ->label('Selección del Técnico')
-                            ->options(User::whereBetween('rol_id', [1,2])->where('status', 1)->pluck('name', 'id'))
-                            ->required()
-                            ->live()
-                            ->searchable(),
-                        Select::make('servicio_id')
-                            ->label('servicio')
-                            ->options(fn (Get $get): Collection => ServicioUser::query()
-                            ->where('user_id', $get('user_id'))
-                            ->pluck('descripcion', 'servicio_id'))
-                            // ->options(Servicio::orderBy('descripcion', 'asc')->pluck('descripcion', 'id'))
-                            ->required()
-                            ->searchable(),
-                    ])->action(function (Cliente $record, array $data) {
-                        //Controller para asignacion de servicio
-                        $res = AsignacionController::asignacion_servicio($record->id, $data['user_id'], $data['servicio_id']);
-
-                        if ($res) {
-                            Notification::make()
-                            ->title('NOTIFICACIÓN')
-                            ->icon('heroicon-o-shield-check')
-                            ->iconColor('success')
-                            ->body('El servicio fue asignado correctamente!')
-                            ->send();
-
-                        }else{
-                            Notification::make()
-                            ->title('NOTIFICACIÓN')
-                            ->icon('heroicon-s-exclamation-triangle')
-                            ->iconColor('danger')
-                            ->body('El tecnico ya posee un servicio abierto. Por favor realiza la facturación y vuelve a intentar!')
-                            ->send();
-
-                        }
-
-                    }),
-                ])
-                ->icon('heroicon-c-adjustments-horizontal')
+                Action::make('Asignar Servicio')
+                ->icon('heroicon-s-wallet')
                 ->color('colorOne')
+                ->form([
+                    Select::make('user_id')
+                        ->label('Selección del Técnico')
+                        ->options(User::whereBetween('rol_id', [1,2])->where('status', 1)->pluck('name', 'id'))
+                        ->required()
+                        ->live()
+                        ->searchable(),
+                    Select::make('servicio_id')
+                        ->label('servicio')
+                        ->options(fn (Get $get): Collection => ServicioUser::query()
+                        ->where('user_id', $get('user_id'))
+                        ->pluck('descripcion', 'servicio_id'))
+                        // ->options(Servicio::orderBy('descripcion', 'asc')->pluck('descripcion', 'id'))
+                        ->required()
+                        ->searchable(),
+                ])->action(function (Cliente $record, array $data) {
+                    //Controller para asignacion de servicio
+                    $res = AsignacionController::asignacion_servicio($record->id, $data['user_id'], $data['servicio_id']);
+
+                    if ($res) {
+                        Notification::make()
+                        ->title('NOTIFICACIÓN')
+                        ->icon('heroicon-o-shield-check')
+                        ->iconColor('success')
+                        ->body('El servicio fue asignado correctamente!')
+                        ->send();
+
+                    }else{
+                        Notification::make()
+                        ->title('NOTIFICACIÓN')
+                        ->icon('heroicon-s-exclamation-triangle')
+                        ->iconColor('danger')
+                        ->body('El tecnico ya posee un servicio abierto. Por favor realiza la facturación y vuelve a intentar!')
+                        ->send();
+
+                    }
+
+                })
+                ->icon('heroicon-s-swatch')
+                ->color('success')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -114,6 +112,7 @@ class TableCliente extends Component implements HasForms, HasTable
             ])
             ->headerActions([
                 CreateAction::make()
+                ->color('success')
                     ->model(Cliente::class)
                         ->form([
                             Section::make('Formulario')
@@ -127,7 +126,11 @@ class TableCliente extends Component implements HasForms, HasTable
                                         TextInput::make('nombre')
                                             ->label('Nombre y Apellido')
                                             ->prefixIcon('heroicon-c-users')
-                                            ->required(),
+                                            ->rules(['required', 'regex:/^[a-zA-Z]+$/u'])
+                                            ->validationMessages([
+                                                'required'  => 'Campo requerido',
+                                                'regex'    => 'Solo admite letras',
+                                            ]),
 
                                         //Cedula
                                         TextInput::make('cedula')
@@ -135,24 +138,36 @@ class TableCliente extends Component implements HasForms, HasTable
                                             ->prefixIcon('heroicon-c-credit-card')
                                             // ->helps('Ejemplo: 16007868')
                                             ->numeric()
-                                            ->required()
-                                            ->mask('99999999'),
+                                            ->mask('99999999')
+                                            ->rules(['required','numeric','unique:clientes,cedula'])
+                                            ->validationMessages([
+                                                'required'  => 'Campo requerido',
+                                                'numeric'    => 'Solo admite números',
+                                                'unique'    => 'El número de cédula esta duplicado',
+                                            ]),
 
                                         //Email
                                         TextInput::make('email')
                                             ->label('Correo Electrónico')
                                             ->prefixIcon('heroicon-c-at-symbol')
                                             ->email()
-                                            ->required(),
+                                            ->rules(['email','unique:clientes,email'])
+                                            ->validationMessages([
+                                                'email'     => 'El campo debe contener el (@)',
+                                                'unique'    => 'El correo esta duplicado',
+                                            ]),
 
                                         //Telefono
                                         TextInput::make('telefono')
                                             ->label('Teléfono')
                                             ->prefixIcon('heroicon-c-device-phone-mobile')
-                                            ->required()
                                             ->mask(RawJs::make(<<<'JS'
                                                 $input.startsWith('1') ? '19999999999' : '9999-9999999'
-                                            JS)),
+                                            JS))
+                                            ->rules(['required'])
+                                            ->validationMessages([
+                                                'required'    => 'Campo requerido',
+                                            ]),
 
                                     ]),
                                 ])

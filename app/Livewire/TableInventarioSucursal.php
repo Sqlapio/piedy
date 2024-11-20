@@ -77,29 +77,6 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                 ->icon('heroicon-c-rectangle-stack')
                 ->numeric(),
 
-                Tables\Columns\TextColumn::make('responsable')
-                ->icon('heroicon-m-user-circle')
-                ->color(function (InventarioSucursal $record) {
-                    if($record->accepted_at !== null){
-                        return 'colorTree';
-                    }else{
-                        return 'colorDisabled';
-                    }
-                })
-                    ->searchable(),
-
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Actualizado el:')
-                    ->color(function (InventarioSucursal $record) {
-                    if($record->accepted_at !== null){
-                        return 'colorTree';
-                    }else{
-                        return 'colorDisabled';
-                    }
-                })
-                    ->icon('heroicon-c-calendar-days')
-                    ->dateTime(),
-
                 Tables\Columns\TextColumn::make('accepted_at')
                     ->label('Aceptado el:')
                     ->color(function (InventarioSucursal $record) {
@@ -130,7 +107,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
             ])
             ->actions([
                 Action::make('asignar')
-                ->color('colorOne')
+                ->color('success')
                 ->visible(function (InventarioSucursal $record) {
                     if($record->uso == 'consumo-interno'){
                         return true;
@@ -138,7 +115,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                         return false;
                     }
                 })
-                ->label('Asignar')
+                ->label('Asignar Producto')
                 ->icon('heroicon-s-user-plus')
                     ->form([
                         Section::make('Formulario')

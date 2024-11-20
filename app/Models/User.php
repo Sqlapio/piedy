@@ -176,7 +176,7 @@ class User extends Authenticatable implements FilamentUser
      */
     public function logs(): HasMany
     {
-        return $this->hasMany(LogInventario::class, 'id', 'user_id');
+        return $this->hasMany(Log::class, 'id', 'user_id');
     }
 
     public function disponible(): HasOne

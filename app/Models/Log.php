@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class LogInventario extends Model
+class Log extends Model
 {
     use HasFactory;
 
-    protected $table = 'log_inventarios';
+    protected $table = 'logs';
 
     /**
      * The attributes that are mass assignable.
@@ -26,7 +26,7 @@ class LogInventario extends Model
     ];
 
     /**
-     * Get the user that owns the LogInventario
+     * Get the user that owns the Log
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

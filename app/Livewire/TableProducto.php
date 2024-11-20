@@ -24,7 +24,7 @@ use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\ToggleColumn;
-use App\Http\Controllers\LogInventarioController;
+use App\Http\Controllers\LogController;
 
 class TableProducto extends Component implements HasForms, HasTable
 {
@@ -43,6 +43,7 @@ class TableProducto extends Component implements HasForms, HasTable
             ->query(InventarioSucursal::query()
             ->where('cantidad', '>', 0)
             ->where('uso', 'venta')
+            ->where('accepted_at','!=',null)
             ->where('sucursal_id', $sucursal_id))
             ->columns([
                 ImageColumn::make('producto.image')
@@ -189,29 +190,29 @@ class TableProducto extends Component implements HasForms, HasTable
                 ]),
             ])
             ->headerActions([
-                Action::make('aceptar') 
-                ->requiresConfirmation()
-                ->label('Aceptacion de Inventario')
-                ->icon('heroicon-c-document-plus')
-                ->color('success')
-                ->model(InventarioSucursal::class)
-                ->action(function (array $data) {
-                    $array = InventarioSucursal::where('sucursal_id', Auth::user()->sucursal_id)
-                    ->where('uso', 'venta')
-                    ->where('accepted_at', null)
-                    ->get();
+                // Action::make('aceptar') 
+                // ->requiresConfirmation()
+                // ->label('Aceptacion de Inventario')
+                // ->icon('heroicon-c-document-plus')
+                // ->color('success')
+                // ->model(InventarioSucursal::class)
+                // ->action(function (array $data) {
+                //     $array = InventarioSucursal::where('sucursal_id', Auth::user()->sucursal_id)
+                //     ->where('uso', 'venta')
+                //     ->where('accepted_at', null)
+                //     ->get();
 
-                    foreach($array as $item)
-                    {
-                        $item->accepted_at = Carbon::now();
-                        $item->aceptado_por = Auth::user()->name;
-                        $item->save();
-                    }
+                //     foreach($array as $item)
+                //     {
+                //         $item->accepted_at = Carbon::now();
+                //         $item->aceptado_por = Auth::user()->name;
+                //         $item->save();
+                //     }
 
-                    $descripcion = 'El usuario '. Auth::user()->name .' acepto inventario';
-                    LogInventarioController::log_inventario(Auth::user()->id, 'Aceptacion de inventario', $descripcion);
+                //     $descripcion = 'El usuario '. Auth::user()->name .' acepto inventario';
+                //     LogController::log_inventario(Auth::user()->id, 'Aceptacion de inventario', $descripcion);
 
-                })
+                // })
             ])
             ->striped()
             ->defaultPaginationPageOption(5);

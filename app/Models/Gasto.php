@@ -24,8 +24,9 @@ class Gasto extends Model
         'monto_usd',
         'monto_bsd',
         'forma_pago',
-        'referencia',
-        'fecha',
+        'fecha_factura',
         'responsable',
+        'numero_factura',
+        'numero_factura_gasto'
     ];
 }

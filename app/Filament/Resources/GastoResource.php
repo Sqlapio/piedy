@@ -71,7 +71,7 @@ class GastoResource extends Resource
                     ->label('Monto en USD($)')
                     ->numeric()
                     ->hidden(function (Get $get) {
-                        if($get('forma_pago') == 'usd')
+                        if($get('forma_pago') == 'dolares')
                         {
                             return false;
                         }else{
@@ -82,7 +82,7 @@ class GastoResource extends Resource
                 Forms\Components\TextInput::make('monto_bsd')
                     ->label('Monto en BSD(Bs.)')
                     ->hidden(function (Get $get) {
-                        if($get('forma_pago') == 'bsd')
+                        if($get('forma_pago') == 'bolivares')
                         {
                             return false;
                         }else{

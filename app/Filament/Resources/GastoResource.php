@@ -22,7 +22,9 @@ class GastoResource extends Resource
 {
     protected static ?string $model = Gasto::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-c-arrow-trending-down';
+
+    protected static ?string $navigationGroup = 'Contabilidad';
 
     public static function form(Form $form): Form
     {
@@ -52,21 +54,25 @@ class GastoResource extends Resource
                         'required'  => 'Campo requerido',
                         'numeric'    => 'Solo admite números',
                     ]),
+
                 Forms\Components\DatePicker::make('fecha_factura')
                     ->label('Fecha de Factura del gasto')
                     ->format('d-m-Y'),
+
                 Forms\Components\TextInput::make('descripcion')
                     ->label('Descripción del gasto')
                     ->required()
                     ->maxLength(255),
+
                 Forms\Components\Select::make('forma_pago')
-                ->label('Forma de Pago')
-                ->required()
-                ->live()
-                    ->options([
-                        'dolares' => 'Dolares',
-                        'bolivares' => 'Bolivares',
-                    ]),
+                    ->label('Forma de Pago')
+                    ->required()
+                    ->live()
+                        ->options([
+                            'dolares' => 'Dolares',
+                            'bolivares' => 'Bolivares',
+                        ]),
+
                 Forms\Components\TextInput::make('monto_usd')
                     ->label('Monto en USD($)')
                     ->numeric()
@@ -79,6 +85,7 @@ class GastoResource extends Resource
                         }
                     })
                     ->default(0.00),
+
                 Forms\Components\TextInput::make('monto_bsd')
                     ->label('Monto en BSD(Bs.)')
                     ->hidden(function (Get $get) {

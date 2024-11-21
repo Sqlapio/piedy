@@ -19,7 +19,7 @@ class InventarioSucursalResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-building-office';
 
-    protected static ?string $navigationGroup = 'Movimientos de inventario';
+    protected static ?string $navigationGroup = 'Manejo de Inventario';
 
     protected static ?string $navigationLabel = 'Inventario Sucursales';
 

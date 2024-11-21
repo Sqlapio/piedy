@@ -19,7 +19,7 @@ class MovimientoInventarioResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-clipboard-document-list';
 
-    protected static ?string $navigationGroup = 'Movimientos de inventario';
+    protected static ?string $navigationGroup = 'Manejo de Inventario';
 
     protected static ?int $navigationSort = 6;
 

@@ -17,9 +17,11 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Navigation\NavigationGroup;
 
 class AdminPanelProvider extends PanelProvider
 {
+    protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-line';
 
     public function panel(Panel $panel): Panel
     {
@@ -65,6 +67,32 @@ class AdminPanelProvider extends PanelProvider
             //     'Ventas',
             //     'Sistema'
             // ])
+            ->navigationGroups([
+                NavigationGroup::make()
+                    ->label('Administración')
+                    ->icon('heroicon-m-building-office-2'),
+                NavigationGroup::make()
+                    ->label('Contabilidad')
+                    ->icon('heroicon-m-building-library'),
+                NavigationGroup::make()
+                    ->label('Ventas')
+                    ->icon('heroicon-m-presentation-chart-bar'),
+                NavigationGroup::make()
+                    ->label('Manejo de Inventario')
+                    ->icon('heroicon-s-square-3-stack-3d'),
+                NavigationGroup::make()
+                    ->label('Clientes')
+                    ->icon('heroicon-s-user-group'),
+                NavigationGroup::make()
+                    ->label('Sistema')
+                    ->icon('heroicon-m-tv'),
+                NavigationGroup::make()
+                    ->label('GiftCard')
+                    ->icon('heroicon-m-gift'),
+                NavigationGroup::make()
+                    ->label('Membresias')
+                    ->icon('heroicon-s-star'),
+            ])
             ->authMiddleware([
                 Authenticate::class,
             ]);

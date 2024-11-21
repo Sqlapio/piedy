@@ -19,7 +19,7 @@ class ClienteResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-user-group';
 
-    protected static ?string $navigationGroup = 'Tienda Sambil';
+    protected static ?string $navigationGroup = 'Clientes';
 
     public static function form(Form $form): Form
     {

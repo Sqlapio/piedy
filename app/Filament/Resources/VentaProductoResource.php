@@ -23,6 +23,8 @@ class VentaProductoResource extends Resource
 
     protected static ?string $navigationGroup = 'Ventas';
 
+    protected static ?string $navigationLabel = 'Dashboard de Productos';
+
     public static function form(Form $form): Form
     {
         return $form

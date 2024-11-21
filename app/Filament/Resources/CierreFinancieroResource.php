@@ -18,6 +18,8 @@ class CierreFinancieroResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-chart-bar-square';
 
+    protected static ?string $navigationGroup = 'Contabilidad';
+
     protected static ?string $navigationLabel = 'Dashboard Financiero';
 
     use ExposesTableToWidgets;

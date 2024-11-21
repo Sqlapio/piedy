@@ -28,13 +28,18 @@ class ProductoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-shopping-cart';
 
-    protected static ?string $navigationGroup = 'Movimientos de inventario';
+    protected static ?string $navigationGroup = 'Manejo de Inventario';
 
     protected static ?int $navigationSort = 3;
 
     public static function getNavigationBadge(): ?string
     {
         return 'Total: '.static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getModel()::count() > 10 ? 'success' : 'warning';
     }
 
     public static function form(Form $form): Form

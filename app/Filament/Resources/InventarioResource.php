@@ -28,7 +28,7 @@ class InventarioResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-square-3-stack-3d';
 
-    protected static ?string $navigationGroup = 'Movimientos de inventario';
+    protected static ?string $navigationGroup = 'Manejo de Inventario';
 
     protected static ?string $navigationLabel = 'Inventario General';
 

@@ -27,7 +27,7 @@ class CitaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-wallet';
 
-    protected static ?string $navigationGroup = 'Tienda Sambil';
+    protected static ?string $navigationGroup = 'Clientes';
 
     public static function form(Form $form): Form
     {

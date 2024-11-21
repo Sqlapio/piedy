@@ -18,7 +18,7 @@ class CategoriaResource extends Resource
 {
     protected static ?string $navigationLabel = 'Categotias';
 
-    protected static ?string $navigationGroup = 'Movimientos de inventario';
+    protected static ?string $navigationGroup = 'Manejo de Inventario';
 
     protected static ?string $model = Categoria::class;
 

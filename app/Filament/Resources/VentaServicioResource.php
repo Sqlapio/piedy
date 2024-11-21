@@ -33,7 +33,7 @@ class VentaServicioResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-chart-bar-square';
 
-    protected static ?string $navigationLabel = 'Dashboard Ventas';
+    protected static ?string $navigationLabel = 'Dashboard de Servicios';
 
     protected static ?string $navigationGroup = 'Ventas';
 

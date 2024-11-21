@@ -22,7 +22,7 @@ class CierreDiarioResource extends Resource
 
     protected static ?string $navigationLabel = 'Cierre diario';
 
-    protected static ?string $navigationGroup = 'Ventas';
+    protected static ?string $navigationGroup = 'Administración';
 
     public static function form(Form $form): Form
     {

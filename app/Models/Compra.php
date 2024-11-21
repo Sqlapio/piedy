@@ -22,12 +22,12 @@ class Compra extends Model
         'descripcion',
         'monto_usd',
         'monto_bsd',
-        'iva_id',
-        'monto_con_iva',
         'forma_pago',
         'fecha_compra',
         'responsable',
         'numero_factura_compra',
+        'observacion',
+        'metodo_pago'
     ];
 
     /**

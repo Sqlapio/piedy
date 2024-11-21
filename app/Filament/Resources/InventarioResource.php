@@ -32,6 +32,8 @@ class InventarioResource extends Resource
 
     protected static ?string $navigationLabel = 'Inventario General';
 
+    protected static ?int $navigationSort = 4;
+
     public static function form(Form $form): Form
     {
         return $form

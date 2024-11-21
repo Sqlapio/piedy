@@ -30,6 +30,13 @@ class ProductoResource extends Resource
 
     protected static ?string $navigationGroup = 'Movimientos de inventario';
 
+    protected static ?int $navigationSort = 3;
+
+    public static function getNavigationBadge(): ?string
+    {
+        return 'Total: '.static::getModel()::count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form

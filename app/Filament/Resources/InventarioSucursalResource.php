@@ -23,6 +23,8 @@ class InventarioSucursalResource extends Resource
 
     protected static ?string $navigationLabel = 'Inventario Sucursales';
 
+    protected static ?int $navigationSort = 5;
+
     public static function form(Form $form): Form
     {
         return $form

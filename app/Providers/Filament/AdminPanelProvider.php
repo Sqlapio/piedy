@@ -56,7 +56,15 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-
+            // ->navigationGroups([
+            //     'Administración',
+            //     'Movimientos de inventario',
+            //     'Tienda Sambil',
+            //     'Facturación',
+            //     'Contabilidad',
+            //     'Ventas',
+            //     'Sistema'
+            // ])
             ->authMiddleware([
                 Authenticate::class,
             ]);

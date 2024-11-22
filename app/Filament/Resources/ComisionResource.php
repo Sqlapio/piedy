@@ -76,10 +76,22 @@ class ComisionResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('cod_comision')->searchable()->label('Código'),
-                TextColumn::make('porcentaje')->searchable()->label('Porcentaje(%)'),
-                TextColumn::make('aplicacion')->searchable(),
-                TextColumn::make('beneficiario')->searchable(),
+                // TextColumn::make('cod_comision')->searchable()->label('Código'),
+                TextColumn::make('porcentaje')
+                ->searchable()
+                ->label('Porcentaje(%)')
+                ->color('success')
+                ->icon('heroicon-m-receipt-percent'),
+                
+                TextColumn::make('aplicacion')
+                ->icon('heroicon-o-document-check')
+                ->searchable(),
+                
+                TextColumn::make('beneficiario')
+                ->icon('heroicon-c-user-group')
+                ->color('colorTree')
+                ->searchable(),
+                
                 IconColumn::make('status')
                 ->options([
                     'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === '1',

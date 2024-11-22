@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class CierreDiario extends Model
 {
@@ -28,5 +29,17 @@ class CierreDiario extends Model
         'saldo_caja_chica',
         'fecha',
         'responsable',
+        'observaciones',
+        'sucursal_id'
     ];
+
+    /**
+     * Get the Servicio that owns the Sucursal
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function sucursal(): HasOne
+    {
+        return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
+    }
 }

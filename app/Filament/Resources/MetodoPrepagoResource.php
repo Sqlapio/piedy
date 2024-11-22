@@ -25,6 +25,8 @@ class MetodoPrepagoResource extends Resource
 
     protected static ?string $navigationLabel = 'Métodos Prepagados';
 
+    protected static ?int $navigationSort = 4;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -49,19 +51,28 @@ class MetodoPrepagoResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('descripcion')
-                    ->searchable(),
+                ->icon('heroicon-m-check-circle')
+                ->color('colorOne')
+                ->searchable(),
+                
                 Tables\Columns\TextColumn::make('moneda')
-                    ->searchable(),
+                ->badge()
+                ->searchable(),
+                    
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+                    
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+                    
                 Tables\Columns\TextColumn::make('sucursal.nombre')
-                    ->searchable(),
+                ->icon('heroicon-s-home')
+                ->color('colorTree')
+                ->searchable(),
             ])
             ->filters([
                 //

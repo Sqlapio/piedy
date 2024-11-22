@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CierreDiarioController extends Controller
 {
-    public static function cierreDiario($ref_debito, $monto_ref_debito, $ref_credito, $monto_ref_credito, $ref_visaMaster, $monto_ref_visaMaster)
+    public static function cierreDiario($ref_debito, $monto_ref_debito, $ref_credito, $monto_ref_credito, $ref_visaMaster, $monto_ref_visaMaster, $observaciones = null)
     {
 // dd($ref_debito, $monto_ref_debito, $ref_credito, $monto_ref_credito, $ref_visaMaster, $monto_ref_visaMaster);
         try {
@@ -69,6 +69,8 @@ class CierreDiarioController extends Controller
                 $cierre->saldo_caja_chica        = (isset($efectivo_caja_usd->saldo)) ? $efectivo_caja_usd->saldo : 0;
                 $cierre->fecha                   = date('d-m-Y');
                 $cierre->responsable             = $user->name;
+                $cierre->observaciones           = $observaciones;
+                $cierre->sucursal_id             = $user->sucursal_id;
                 $cierre->save();
 
                 /** Notificacion para el usuario cuando su servicio fue anulado */

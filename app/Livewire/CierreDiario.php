@@ -20,6 +20,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Grid;
 use Filament\Support\RawJs;
+use Filament\Forms\Components\Textarea;
 
 class CierreDiario extends Component implements HasForms, HasTable
 {
@@ -45,7 +46,7 @@ class CierreDiario extends Component implements HasForms, HasTable
                     ->money('USD')
                     ->icon('heroicon-m-currency-dollar')
                     ->color('success')
-                    ->label('Efectivo($) en Tienda')
+                    ->label('Efectivo($)')
                     ->sortable()
                     ->searchable(),
 
@@ -91,6 +92,12 @@ class CierreDiario extends Component implements HasForms, HasTable
                     ->searchable(),
 
                 TextColumn::make('responsable')
+                    ->icon('heroicon-s-user')
+                    ->color('colorOne')
+                    ->sortable()
+                    ->searchable(),
+                
+                TextColumn::make('observaciones')
                     ->icon('heroicon-s-user')
                     ->color('colorOne')
                     ->sortable()
@@ -167,6 +174,8 @@ class CierreDiario extends Component implements HasForms, HasTable
                                     JS)),
                                 // ...
                             ]),
+                        Textarea::make('observaciones')
+                        ->autosize()
 
                         ])
                 ])
@@ -177,7 +186,8 @@ class CierreDiario extends Component implements HasForms, HasTable
                         $data['ref_credito'],
                         $data['monto_ref_credito'],
                         $data['ref_visaMaster'],
-                        $data['monto_ref_visaMaster']);
+                        $data['monto_ref_visaMaster'],
+                        $data['observaciones']);
 
                 })
             ]);

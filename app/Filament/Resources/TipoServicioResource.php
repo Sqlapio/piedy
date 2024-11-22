@@ -25,6 +25,8 @@ class TipoServicioResource extends Resource
 
     protected static ?string $navigationLabel = 'Tipo servícios';
 
+    protected static ?int $navigationSort = 2;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -37,7 +39,10 @@ class TipoServicioResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('descripcion')->searchable(),
+                TextColumn::make('descripcion')
+                ->icon('heroicon-m-check-circle')
+                ->color('colorOne')
+                ->searchable(),
             ])
             ->filters([
                 //

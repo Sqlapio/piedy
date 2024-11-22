@@ -27,6 +27,10 @@ class ServicioResource extends Resource
 
     protected static ?string $navigationGroup = 'Administración';
 
+    protected static ?string $navigationLabel = 'Servícios';
+
+    protected static ?int $navigationSort = 1;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -84,8 +88,15 @@ class ServicioResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('cod_servicio')->searchable()->label('Código'),
-                TextColumn::make('sucursal.nombre')->searchable()->label('Sucursal'),
-                TextColumn::make('descripcion')->searchable(),
+                TextColumn::make('sucursal.nombre')
+                ->icon('heroicon-s-home')
+                ->color('colorTree')
+                ->searchable()
+                ->label('Sucursal'),
+                TextColumn::make('descripcion')
+                ->icon('heroicon-s-pencil')
+                ->color('colorOne')
+                ->searchable(),
                 TextColumn::make('categoria')
                 ->badge()
                 ->color(fn (string $state): string => match ($state) {
@@ -94,7 +105,11 @@ class ServicioResource extends Resource
                 })
                 ->searchable(),
                 TextColumn::make('rol.descripcion')->label('Tipo de servício')->searchable(),
-                TextColumn::make('costo')->money('USD')->searchable()->label('Costo($)'),
+                TextColumn::make('costo')
+                ->color('success')
+                ->money('USD')
+                ->searchable()
+                ->label('Costo($)'),
                 TextColumn::make('asignacion')
                 ->badge()
                 ->colors([

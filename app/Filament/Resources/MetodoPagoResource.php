@@ -26,6 +26,8 @@ class MetodoPagoResource extends Resource
 
     protected static ?string $navigationLabel = 'Métodos de pago';
 
+    protected static ?int $navigationSort = 3;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -43,8 +45,10 @@ class MetodoPagoResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->searchable(),
-                TextColumn::make('descripcion')->searchable(),
+                TextColumn::make('descripcion')
+                ->icon('heroicon-m-check-circle')
+                ->color('colorOne')
+                ->searchable(),
                 TextColumn::make('moneda')
                 ->label('Tipo de moneda')
                 ->badge()

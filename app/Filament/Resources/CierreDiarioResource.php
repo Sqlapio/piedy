@@ -24,6 +24,8 @@ class CierreDiarioResource extends Resource
 
     protected static ?string $navigationGroup = 'Administración';
 
+    protected static ?int $navigationSort = 5;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -36,41 +38,79 @@ class CierreDiarioResource extends Resource
     {
         return $table
         ->columns([
+            TextColumn::make('total_ventas')
+                ->money('USD')
+                ->label('Venta Total($)')
+                ->sortable()
+                ->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
+
             TextColumn::make('total_dolares_efectivo')
-            ->money('USD')
-            ->label('Efectivo($)')
-            ->sortable()
-            ->searchable(),
+                ->money('USD')
+                ->icon('heroicon-m-currency-dollar')
+                ->color('success')
+                ->label('Efectivo($)')
+                ->sortable()
+                ->searchable(),
+
             TextColumn::make('total_dolares_zelle')
-            ->money('USD')
-            ->label(_('Zelle($)'))
-            ->sortable()
-            ->searchable(),
+                ->money('USD')
+                ->icon('heroicon-m-credit-card')
+                ->color('success')
+                ->label('Zelle($)')
+                ->sortable()
+                ->searchable(),
+
             TextColumn::make('total_bolivares')
-            ->money('VES')
-            ->label(_('Bolivares(Bs)'))
-            ->sortable()
-            ->searchable(),
-            TextColumn::make('total_gastos')
-            ->label(_('Gastos'))
-            ->sortable()
-            ->searchable(),
-            TextColumn::make('venta_neta_dolares')
-            ->money('USD')
-            ->label(_('Efectivo($) en caja'))
-            ->sortable()
-            ->searchable(),
+                ->label('Bolivares(Bs)')
+                ->icon('heroicon-m-credit-card')
+                ->color('info')
+                ->money('VES')
+                ->sortable()
+                ->searchable(),
+
+            TextColumn::make('ref_debito')
+                ->label('Ref. Débito')
+                ->sortable()
+                ->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
+
+            TextColumn::make('ref_credito')
+                ->label('Ref. Credito')
+                ->sortable()
+                ->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
+
+            TextColumn::make('ref_visaMaster')
+                ->label('Ref. Visa/Master')
+                ->sortable()
+                ->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
+
             TextColumn::make('created_at')
-            ->label(_('Fecha de cierre'))
-            ->sortable()
-            ->searchable(),
+                ->label('Fecha de cierre')
+                ->icon('heroicon-s-calendar-days')
+                ->color('colorTree')
+                ->sortable()
+                ->searchable(),
+
             TextColumn::make('responsable')
-            ->sortable()
-            ->searchable(),
+                ->icon('heroicon-s-user')
+                ->color('colorOne')
+                ->sortable()
+                ->searchable(),
+            
             TextColumn::make('observaciones')
-            ->sortable()
-            ->searchable()
-            ->toggleable(isToggledHiddenByDefault: true),
+                ->icon('heroicon-s-user')
+                ->color('colorOne')
+                ->sortable()
+                ->searchable(),
+
+            TextColumn::make('sucursal.nombre')
+                ->icon('heroicon-s-home')
+                ->color('colorTree')
+                ->sortable()
+                ->searchable(),
         ])
             ->filters([
                 //

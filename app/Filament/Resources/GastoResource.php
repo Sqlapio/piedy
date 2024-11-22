@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\GastoResource\Pages;
 use App\Filament\Resources\GastoResource\RelationManagers;
 use App\Models\Gasto;
+use App\Models\Sucursal;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -30,81 +31,103 @@ class GastoResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('numero_factura')
-                    ->label('Nro. Factura Piedy')
-                    ->maxLength(255)
-                    ->default(function () {
-                        $ultimo_correlativo = Gasto::where('numero_factura', 'like', '%Pcf-%')->latest()->first();
-                        if(isset($ultimo_correlativo))
-                        {
-                            $parte_entera = intval(str_replace('Pcf-', '', $ultimo_correlativo->numero_factura));
-                            $sum_correlativo = $parte_entera + 1;
+                Forms\Components\Section::make('REGISTRO DE GASTOS')
+                ->description('Formulario de gastos')
+                ->icon('heroicon-m-arrow-trending-down')
+                ->schema([
+                    Forms\Components\TextInput::make('nro_referencia')
+                        ->label('Nro. de Referencia')
+                        ->prefixIcon('heroicon-c-tag')
+                        ->maxLength(255)
+                        ->default(function () {
+                            $ultimo_correlativo = Gasto::where('nro_referencia', 'like', '%Pcf-%')->latest()->first();
+                            if(isset($ultimo_correlativo))
+                            {
+                                $parte_entera = intval(str_replace('Pcf-', '', $ultimo_correlativo->nro_referencia));
+                                $sum_correlativo = $parte_entera + 1;
 
-                        }else{
-                            $sum_correlativo = 1;
-                        }
+                            }else{
+                                $sum_correlativo = 1;
+                            }
 
-                        $numero_factura = 'Pcf-'.str_pad($sum_correlativo, 6, '0', STR_PAD_LEFT);
-                        return $numero_factura;
-                    }),
-                Forms\Components\TextInput::make('numero_factura_gasto')
-                    ->label('Nro. de Factura del gasto')
-                    ->rules(['required','numeric'])
-                    ->validationMessages([
-                        'required'  => 'Campo requerido',
-                        'numeric'    => 'Solo admite números',
-                    ]),
+                            $nro_referencia = 'Pcf-'.str_pad($sum_correlativo, 6, '0', STR_PAD_LEFT);
+                            return $nro_referencia;
+                        }),
+                    
+                    Forms\Components\TextInput::make('numero_factura_gasto')
+                        ->label('Nro. Factura/Nota de Entrega')
+                        ->prefixIcon('heroicon-c-tag')
+                        ->rules(['required','numeric'])
+                        ->validationMessages([
+                            'required'  => 'Campo requerido',
+                            'numeric'    => 'Solo admite números',
+                        ]),
 
-                Forms\Components\DatePicker::make('fecha_factura')
-                    ->label('Fecha de Factura del gasto')
-                    ->format('d-m-Y'),
+                    Forms\Components\DatePicker::make('fecha_factura')
+                        ->label('Fecha de Factura del gasto')
+                        ->prefixIcon('heroicon-m-calendar-days')
+                        ->format('d-m-Y'),
 
-                Forms\Components\TextInput::make('descripcion')
-                    ->label('Descripción del gasto')
-                    ->required()
-                    ->maxLength(255),
+                    Forms\Components\TextInput::make('descripcion')
+                        ->label('Descripción del gasto')
+                        ->prefixIcon('heroicon-s-pencil')
+                        ->required()
+                        ->maxLength(255),
 
-                Forms\Components\Select::make('forma_pago')
-                    ->label('Forma de Pago')
-                    ->required()
-                    ->live()
+                    Forms\Components\Select::make('forma_pago')
+                        ->label('Forma de Pago')
+                        ->prefixIcon('heroicon-m-list-bullet')
+                        ->required()
+                        ->live()
                         ->options([
                             'dolares' => 'Dolares',
                             'bolivares' => 'Bolivares',
                         ]),
 
-                Forms\Components\TextInput::make('monto_usd')
-                    ->label('Monto en USD($)')
-                    ->numeric()
-                    ->hidden(function (Get $get) {
-                        if($get('forma_pago') == 'dolares')
-                        {
-                            return false;
-                        }else{
-                            return true;
-                        }
-                    })
-                    ->default(0.00),
+                    Forms\Components\TextInput::make('monto_usd')
+                        ->label('Monto en USD($)')
+                        ->prefixIcon('heroicon-s-currency-dollar')
+                        ->numeric()
+                        ->hidden(function (Get $get) {
+                            if($get('forma_pago') == 'dolares')
+                            {
+                                return false;
+                            }else{
+                                return true;
+                            }
+                        })
+                        ->default(0.00),
 
-                Forms\Components\TextInput::make('monto_bsd')
-                    ->label('Monto en BSD(Bs.)')
-                    ->hidden(function (Get $get) {
-                        if($get('forma_pago') == 'bolivares')
-                        {
-                            return false;
-                        }else{
-                            return true;
-                        }
-                    })
-                    ->numeric()
-                    ->default(0.00),
-                Forms\Components\TextInput::make('fecha')
-                    ->default(now()->format('d-m-Y'))
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('responsable')
-                    ->required()
-                    ->default(auth()->user()->name),
+                    Forms\Components\TextInput::make('monto_bsd')
+                        ->label('Monto en BSD(Bs.)')
+                        ->prefixIcon('heroicon-m-credit-card')
+                        ->hidden(function (Get $get) {
+                            if($get('forma_pago') == 'bolivares')
+                            {
+                                return false;
+                            }else{
+                                return true;
+                            }
+                        })
+                        ->numeric()
+                        ->default(0.00),
+                        
+                    Forms\Components\TextInput::make('fecha')
+                        ->default(now()->format('d-m-Y'))
+                        ->prefixIcon('heroicon-m-calendar-days')
+                        ->required()
+                        ->maxLength(255),
+                    
+                    Forms\Components\Select::make('sucursal_id')
+                        ->prefixIcon('heroicon-s-home')
+                        ->label('Sucursal')
+                        ->options(Sucursal::all()->pluck('nombre', 'id')),
+                        
+                    Forms\Components\TextInput::make('responsable')
+                        ->required()
+                        ->default(auth()->user()->name),
+                ])
+                ->columns(2),
             ]);
     }
 
@@ -150,6 +173,9 @@ class GastoResource extends Resource
                 Tables\Columns\TextColumn::make('fecha_factura')
                 ->label('Fecha Factura de Gasto')
                 ->icon('heroicon-m-calendar-days')
+                ->searchable(),
+
+                Tables\Columns\TextColumn::make('sucursal.nombre')
                 ->searchable(),
 
                 Tables\Columns\TextColumn::make('responsable')

@@ -114,4 +114,14 @@ class Sucursal extends Model
         return $this->belongsTo(Compra::class, 'id', 'sucursal_id');
     }
 
+    /**
+     * Get the Servicio that owns the Sucursal
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function gasto(): BelongsTo
+    {
+        return $this->belongsTo(Gasto::class, 'id', 'sucursal_id');
+    }
+
 }

@@ -21,6 +21,16 @@ class ClienteResource extends Resource
 
     protected static ?string $navigationGroup = 'Clientes';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getModel()::count() > 10 ? 'success' : 'warning';
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -33,11 +43,29 @@ class ClienteResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nombre')->searchable(),
-                Tables\Columns\TextColumn::make('apellido')->searchable(),
-                Tables\Columns\TextColumn::make('email')->searchable(),
-                Tables\Columns\TextColumn::make('telefono')->searchable(),
-                Tables\Columns\TextColumn::make('responsable')->searchable(),
+                Tables\Columns\TextColumn::make('nombre')
+                ->color('success')
+                ->icon('heroicon-s-user-circle')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('apellido')
+                ->icon('heroicon-s-user-circle')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('email')
+                ->color('primary')
+                ->icon('heroicon-c-at-symbol')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('telefono')
+                ->color('colorTree')
+                ->icon('heroicon-c-device-phone-mobile')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('visitas')
+                ->color('colorTree')
+                ->icon('heroicon-s-hand-thumb-up')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('responsable')
+                ->color('primary')
+                ->icon('heroicon-s-user-circle')
+                ->searchable(),
             ])
             ->filters([
                 //

@@ -30,17 +30,27 @@ class CategoriaResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('descripcion')
-                    ->maxLength(100),
-                Forms\Components\TextInput::make('siglas')
-                    ->maxLength(100),
+                Forms\Components\Section::make('REGISTRO DE CATEGORIAS')
+                ->description('Formulario de registro de categorias para el inventario')
+                ->icon('heroicon-m-list-bullet')
+                ->schema([
+                    Forms\Components\TextInput::make('descripcion')
+                        ->prefixIcon('heroicon-s-pencil')
+                        ->required()
+                        ->maxLength(100),
+                    Forms\Components\TextInput::make('siglas')
+                        ->prefixIcon('heroicon-s-pencil')
+                        ->required()
+                        ->maxLength(100),
+                ])
+                ->columns(2),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->query(Categoria::query()->orderBy('created_at', 'desc'))
+            ->query(Categoria::query()->orderBy('created_at', 'desc'))  
             ->columns([
                 Tables\Columns\TextColumn::make('descripcion')
                     ->color('colorOne')

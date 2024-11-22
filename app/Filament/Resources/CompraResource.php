@@ -140,15 +140,16 @@ class CompraResource extends Resource
                         ->prefixIcon('heroicon-m-calendar-days')
                         ->label('Fecha de Compra')
                         ->format('d-m-Y'),
+                        
+                    Forms\Components\Select::make('sucursal_id')
+                            ->prefixIcon('heroicon-s-home')
+                            ->label('Sucursal')
+                            ->options(Sucursal::all()->pluck('nombre', 'id')),
 
                     Forms\Components\TextInput::make('responsable')
                         ->prefixIcon('heroicon-c-user-circle')
                         ->default(auth()->user()->name),
 
-                    Forms\Components\Select::make('sucursal_id')
-                        ->prefixIcon('heroicon-s-home')
-                        ->label('Sucursal')
-                        ->options(Sucursal::all()->pluck('nombre', 'id')),
                     
                     Forms\Components\Section::make()
                         ->schema([
@@ -195,8 +196,39 @@ class CompraResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Filter::make('created_at')
+                ->form([
+                    DatePicker::make('desde'),
+                    DatePicker::make('hasta'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['desde'] ?? null,
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['hasta'] ?? null,
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+                })
+                ->indicateUsing(function (array $data): array {
+                    $indicators = [];
+                    if ($data['desde'] ?? null) {
+                        $indicators['desde'] = 'Venta desde ' . Carbon::parse($data['desde'])->toFormattedDateString();
+                    }
+                    if ($data['hasta'] ?? null) {
+                        $indicators['hasta'] = 'Venta hasta ' . Carbon::parse($data['hasta'])->toFormattedDateString();
+                    }
+
+                    return $indicators;
+                }),
             ])
+            ->filtersTriggerAction(
+                fn (Action $action) => $action
+                    ->button()
+                    ->label('Filtros'),
+            )
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])

@@ -38,25 +38,35 @@ class InventarioResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('producto_id')
-                    ->relationship('producto', 'descripcion')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
-                Select::make('almacen_id')
-                    ->relationship('almacen', 'nombre')
-                    ->searchable()
-                    ->preload()
-                    ->createOptionForm([
-                        TextInput::make('nombre')
-                            ->required(),
-                    ])
-                    ->required(),
-                TextInput::make('cantidad')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('responsable')
-                    ->default(Auth::user()->name)
+                Forms\Components\Section::make('CARGA DE INVENTARIO POR PRODUCTO')
+                ->description('Formulario de carga de inventario')
+                ->icon('heroicon-s-square-3-stack-3d')
+                ->schema([
+                    Select::make('producto_id')
+                        ->prefixIcon('heroicon-m-list-bullet')
+                        ->relationship('producto', 'descripcion')
+                        ->searchable()
+                        ->preload()
+                        ->required(),
+                    Select::make('almacen_id')
+                        ->prefixIcon('heroicon-m-list-bullet')
+                        ->relationship('almacen', 'nombre')
+                        ->searchable()
+                        ->preload()
+                        ->createOptionForm([
+                            TextInput::make('nombre')
+                                ->required(),
+                        ])
+                        ->required(),
+                    TextInput::make('cantidad')
+                        ->prefixIcon('heroicon-s-queue-list')
+                        ->required()
+                        ->numeric(),
+                    TextInput::make('responsable')
+                        ->prefixIcon('heroicon-c-user-circle')
+                        ->default(Auth::user()->name)
+                ])
+                ->columns(2),
             ]);
     }
 
@@ -132,13 +142,6 @@ class InventarioResource extends Resource
                                             ->options(Sucursal::all()->pluck('nombre', 'id'))
                                             ->searchable()
                                             ->required(),
-
-                                        // Select::make('sucursal_id')
-                                        //     ->label('Sucursal')
-                                        //     ->prefixIcon('heroicon-c-building-office-2')
-                                        //     ->options(Sucursal::all()->pluck('nombre', 'id'))
-                                        //     ->searchable()
-                                        //     ->required(),
 
                                         //Cantidad
                                         TextInput::make('cantidad')

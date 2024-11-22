@@ -165,7 +165,7 @@ class NotificacionesController extends Controller
 
             $user_phone = Cliente::all();
 
-            foreach ($user_phone as $value) {
+            // foreach ($user_phone as $value) {
 
                 $params = array(
                     'token' => env('TOKEN_API_WHATSAPP'),
@@ -193,6 +193,7 @@ class NotificacionesController extends Controller
 
                 $response = curl_exec($curl);
                 if(isset($response)){
+                    dd($response);
                     Notification::make()
                     ->title('NOTIFICACIÓN')
                     ->icon('heroicon-o-document-text')
@@ -203,6 +204,7 @@ class NotificacionesController extends Controller
 
                 }else{
                     $err = curl_error($curl);
+                    dd($err);
 
                     Notification::make()
                     ->title('NOTIFICACIÓN')
@@ -216,7 +218,7 @@ class NotificacionesController extends Controller
 
                 curl_close($curl);
 
-            }
+            // }
                 //code...
         } catch (\Throwable $th) {
             Notification::make()

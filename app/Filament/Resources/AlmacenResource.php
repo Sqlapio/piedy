@@ -27,9 +27,16 @@ class AlmacenResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nombre')
+                Forms\Components\Section::make('REGISTRO DE ALMACENES PRINCIPALES')
+                ->description('Formulario de registro')
+                ->icon('heroicon-m-arrow-trending-down')
+                ->schema([
+                    Forms\Components\TextInput::make('nombre')
+                    ->label('Nombre de Almacen')
+                    ->prefixIcon('heroicon-s-building-office-2')
                     ->required()
                     ->maxLength(255),
+                ])
             ]);
     }
 

@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Set;
 use Illuminate\Support\Str;
+use Filament\Forms\Components\Section;
 
 class ProductoResource extends Resource
 {
@@ -34,7 +35,7 @@ class ProductoResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return 'Total: '.static::getModel()::count();
+        return static::getModel()::count();
     }
 
     public static function getNavigationBadgeColor(): ?string
@@ -46,88 +47,110 @@ class ProductoResource extends Resource
     {
         return $form
             ->schema([
-
-                TextInput::make('descripcion')
-                ->label('Descripción')
-                ->required(),
-
-                Select::make('categoria_id')
-                ->label('Categoría')
-                    ->relationship('categoria', 'descripcion')
-                    ->searchable()
-                    ->preload()
-                    ->createOptionForm([
-                        TextInput::make('descripcion')
-                            ->required(),
-                            ])
-                            ->required()
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(function (Set $set, ?string $state) {
-                                $sigla = Categoria::find($state)->siglas;
-                                $set('cod_producto', 'Ppro-'.$sigla.'-'.random_int(11111, 99999));
-                            }),
-                TextInput::make('cod_producto')
-                ->label('Codigo del Producto'),
-
-                TextInput::make('precio_venta')
-                ->label('Precio de Venta')
-                ->prefix('$')
-                ->numeric()
-                ->inputMode('decimal'),
-
-                TextInput::make('costo')
-                ->label('Costo')
-                ->prefix('$')
-                ->numeric()
-                ->inputMode('decimal'),
-
-                Select::make('tipo_empaquetado')
-                ->label('Empaquetado en/por:')
-                ->required()
-                ->options([
-                    'caja'    => 'Caja',
-                    'unidad'  => 'Unidad',
-                    'bulto'   => 'Bulto',
-                    'paquete' => 'Paquete',
-                ]),
-                TextInput::make('contenido_neto')
-                ->label('Contenido Neto')
-                ->required()
-                ->numeric(),
-                
-                Select::make('unidad')
-                ->label('Unidad')
-                    ->required()
-                    ->options([
-                        'gr'        => 'Gramos',
-                        'ml'        => 'Mililitros',
-                        'oz'        => 'Onzas',
-                        'par'       => 'Pares',
-                        'pzas'      => 'Piezas',
-                        'hojas'     => 'Hojas',
-                        'und'       => 'Unidad',
-                        'litros'    => 'Litros',
-                        'galon'     => 'Galon',
-                        'kl'        => 'Kilos',
+                Section::make('REGISTRO DE PRODUCTOS')
+                ->description('Formulario de registro de productos para la venta y de consumo interno')
+                ->icon('heroicon-m-list-bullet')
+                ->schema([
+                    //Imagen del producto
+                    Section::make()
+                    ->schema([
+                        FileUpload::make('image')
+                        ->label('Imagen del Producto')
+                        ->imageEditor()
+                        ->imageEditorAspectRatios([
+                            '16:9',
+                            '4:3',
+                            '1:1',
+                        ]),
                     ]),
-                Select::make('uso')
-                ->label('Uso')
-                ->options([
-                    'consumo-interno' => 'Consumo Interno',
-                    'venta' => 'Venta',
-                ])->required(),
+                    
+                    TextInput::make('descripcion')
+                    ->prefixIcon('heroicon-s-pencil')
+                    ->label('Descripción')
+                    ->required(),
 
-                TextInput::make('responsable')->default(Auth::user()->name)
-                ->label('Creado por:'),
+                    Select::make('categoria_id')
+                    ->prefixIcon('heroicon-m-list-bullet')
+                        ->label('Categoría')
+                        ->relationship('categoria', 'descripcion')
+                        ->searchable()
+                        ->preload()
+                        ->createOptionForm([
+                            TextInput::make('descripcion')
+                            ->required(),
+                        ])
+                        ->required()
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(function (Set $set, ?string $state) {
+                            $sigla = Categoria::find($state)->siglas;
+                            $set('cod_producto', 'Ppro-'.$sigla.'-'.random_int(11111, 99999));
+                        }),
+                        
+                    TextInput::make('cod_producto')
+                        ->prefixIcon('heroicon-c-tag')
+                        ->label('Codigo del Producto'),
 
-                FileUpload::make('image')
-                ->label('Imagen del Producto')
-                ->imageEditor()
-                ->imageEditorAspectRatios([
-                    '16:9',
-                    '4:3',
-                    '1:1',
-                ]),
+                    TextInput::make('precio_venta')
+                        ->prefixIcon('heroicon-s-currency-dollar')
+                        ->label('Precio de Venta')
+                        ->prefix('$')
+                        ->numeric()
+                        ->inputMode('decimal'),
+
+                    TextInput::make('costo')
+                        ->prefixIcon('heroicon-s-currency-dollar')
+                        ->label('Costo')
+                        ->prefix('$')
+                        ->numeric()
+                        ->inputMode('decimal'),
+
+                    Select::make('tipo_empaquetado')
+                        ->prefixIcon('heroicon-m-list-bullet')
+                        ->label('Empaquetado en/por:')
+                        ->required()
+                        ->options([
+                            'caja'    => 'Caja',
+                            'unidad'  => 'Unidad',
+                            'bulto'   => 'Bulto',
+                            'paquete' => 'Paquete',
+                        ]),
+                        
+                    TextInput::make('contenido_neto')
+                        ->prefixIcon('heroicon-m-list-bullet')
+                        ->label('Contenido Neto')
+                        ->required()
+                        ->numeric(),
+                    
+                    Select::make('unidad')
+                        ->prefixIcon('heroicon-m-list-bullet')
+                        ->label('Unidad')
+                        ->required()
+                        ->options([
+                            'gr'        => 'Gramos',
+                            'ml'        => 'Mililitros',
+                            'oz'        => 'Onzas',
+                            'par'       => 'Pares',
+                            'pzas'      => 'Piezas',
+                            'hojas'     => 'Hojas',
+                            'und'       => 'Unidad',
+                            'litros'    => 'Litros',
+                            'galon'     => 'Galon',
+                            'kl'        => 'Kilos',
+                        ]),
+                        
+                    Select::make('uso')
+                        ->prefixIcon('heroicon-s-inbox-arrow-down')
+                        ->label('Uso')
+                        ->options([
+                            'consumo-interno' => 'Consumo Interno',
+                            'venta' => 'Venta',
+                        ])->required(),
+
+                    TextInput::make('responsable')->default(Auth::user()->name)
+                        ->prefixIcon('heroicon-c-user-circle')
+                        ->label('Creado por:'),
+                ])
+                ->columns(2),
             ]);
     }
 

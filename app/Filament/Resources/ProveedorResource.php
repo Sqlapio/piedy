@@ -23,14 +23,36 @@ class ProveedorResource extends Resource
 
     protected static ?string $navigationGroup = 'Contabilidad';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'success';
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('rif')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('nombre')
-                    ->maxLength(255),
+                Forms\Components\Section::make('REGISTRO DE PROVEEDORES')
+                ->description('Formulario para el Registro de Proveedores')
+                ->icon('heroicon-s-truck')
+                ->schema([
+                    Forms\Components\TextInput::make('rif')
+                    ->label('Registro Información Fiscal(RIF)')
+                        ->prefixIcon('heroicon-s-pencil')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('nombre')
+                    ->label('Nombre/Razón Social')
+                        ->prefixIcon('heroicon-s-pencil')
+                        ->required()
+                        ->maxLength(255),
+                ])
+                ->columns(2),
             ]);
     }
 

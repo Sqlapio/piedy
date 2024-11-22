@@ -7,6 +7,7 @@ use App\Filament\Resources\CompraResource\RelationManagers;
 use App\Models\Compra;
 use App\Models\MetodoPago;
 use App\Models\Iva;
+use App\Models\Sucursal;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -30,153 +31,132 @@ class CompraResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('cod_compra')
-                ->required()
-                ->maxLength(255)
-                ->default(function () {
-                    $ultimo_correlativo = Compra::where('cod_compra', 'like', '%Pcc-%')->latest()->first();
+                Forms\Components\Section::make('REGISTRO DE COMPRAS')
+                ->description('Formulario para el registro de compras')
+                ->icon('heroicon-s-receipt-percent')
+                ->schema([
+                    Forms\Components\TextInput::make('cod_compra')
+                        ->prefixIcon('heroicon-c-tag')
+                        ->required()
+                        ->maxLength(255)
+                        ->default(function () {
+                            $ultimo_correlativo = Compra::where('cod_compra', 'like', '%Pcc-%')->latest()->first();
 
-                    if(isset($ultimo_correlativo))
-                    {
-                        $parte_entera = intval(str_replace('Pcc-', '', $ultimo_correlativo->cod_compra));
-                        $sum_correlativo = $parte_entera + 1;
+                            if(isset($ultimo_correlativo))
+                            {
+                                $parte_entera = intval(str_replace('Pcc-', '', $ultimo_correlativo->cod_compra));
+                                $sum_correlativo = $parte_entera + 1;
 
-                    }else{
-                        $sum_correlativo = 1;
-                    }
+                            }else{
+                                $sum_correlativo = 1;
+                            }
 
-                    $numero_factura = 'Pcc-'.str_pad($sum_correlativo, 6, '0', STR_PAD_LEFT);
-                    return $numero_factura;
-                }),
+                            $numero_factura = 'Pcc-'.str_pad($sum_correlativo, 6, '0', STR_PAD_LEFT);
+                            return $numero_factura;
+                        }),
 
-                Forms\Components\TextInput::make('numero_factura_compra')
-                    ->label('Nro. Factura de Compra')
-                    ->required()
-                    ->maxLength(255),
+                    Forms\Components\TextInput::make('numero_factura_compra')
+                        ->prefixIcon('heroicon-s-document-check')
+                        ->label('Nro. Factura de Compra')
+                        ->required()
+                        ->maxLength(255),
 
-                Forms\Components\TextInput::make('descripcion')
-                    ->required()
-                    ->maxLength(255),
+                    Forms\Components\TextInput::make('descripcion')
+                        ->prefixIcon('heroicon-s-pencil')
+                        ->required()
+                        ->maxLength(255),
 
-                Forms\Components\Select::make('proveedor_id')
-                    ->relationship('proveedores', 'nombre')
-                    ->searchable()
-                    ->preload()
-                    ->createOptionForm([
-                        Forms\Components\TextInput::make('rif')
-                        ->label('Rif')
+                    Forms\Components\Select::make('proveedor_id')
+                        ->prefixIcon('heroicon-s-truck')
+                        ->relationship('proveedor', 'nombre')
+                        ->searchable()
+                        ->preload()
+                        ->createOptionForm([
+                            Forms\Components\TextInput::make('rif')
+                            ->label('Rif')
+                            ->required(),
+                            Forms\Components\TextInput::make('nombre')
+                            ->label('Nombre/Razon Social')
+                            ->required(),
+                        ])
                         ->required(),
-                        Forms\Components\TextInput::make('nombre')
-                        ->label('Nombre/Razon Social')
-                        ->required(),
-                    ])
-                    ->required(),
 
-                Forms\Components\Select::make('forma_pago')
-                ->label('Forma de Pago')
-                ->required()
-                ->options([
-                    'dolares' => 'Dolares',
-                    'bolivares' => 'Bolivares',
+                    Forms\Components\Select::make('forma_pago')
+                    ->prefixIcon('heroicon-s-truck')
+                        ->label('Forma de Pago')
+                        ->required()
+                        ->options([
+                            'dolares' => 'Dolares',
+                            'bolivares' => 'Bolivares',
+                        ])
+                        ->live(),
+
+                    Forms\Components\Select::make('metodo_pago')
+                        ->prefixIcon('heroicon-s-truck')
+                        ->label('Metodo de Pago')
+                        ->required()
+                        ->options(function (Get $get) {
+                            if($get('forma_pago') == 'dolares'){
+                                return MetodoPago::where('moneda', 'usd')->pluck('descripcion', 'id');
+                            }
+
+                            if($get('forma_pago') == 'bolivares'){
+                                return MetodoPago::where('moneda', 'bsd')->pluck('descripcion', 'id');
+                            }
+
+                        })
+                        ->live(),
+
+                    Forms\Components\TextInput::make('monto_usd')
+                        ->prefixIcon('heroicon-s-currency-dollar')
+                        ->label('Monto en USD($)')
+                        ->hint('Ejemplo: 1245.90($)')
+                        ->numeric()
+                        ->hidden(function (Get $get) {
+                            if($get('forma_pago') == 'dolares')
+                            {
+                                return false;
+                            }else{
+                                return true;
+                            }
+                        }),
+
+                    Forms\Components\TextInput::make('monto_bsd')
+                        ->prefixIcon('heroicon-m-credit-card')
+                        ->label('Monto en BSD(Bs.)')
+                        ->hint('Ejemplo: 120.78(Bs.)')
+                        ->numeric()
+                        ->hidden(function (Get $get) {
+                            if($get('forma_pago') == 'bolivares')
+                            {
+                                return false;
+                            }else{
+                                return true;
+                            }
+                        })
+                        ->live(),
+
+                    Forms\Components\DatePicker::make('fecha_compra')
+                        ->prefixIcon('heroicon-m-calendar-days')
+                        ->label('Fecha de Compra')
+                        ->format('d-m-Y'),
+
+                    Forms\Components\TextInput::make('responsable')
+                        ->prefixIcon('heroicon-c-user-circle')
+                        ->default(auth()->user()->name),
+
+                    Forms\Components\Select::make('sucursal_id')
+                        ->prefixIcon('heroicon-s-home')
+                        ->label('Sucursal')
+                        ->options(Sucursal::all()->pluck('nombre', 'id')),
+                    
+                    Forms\Components\Section::make()
+                        ->schema([
+                        Forms\Components\Textarea::make('observacion')
+                            ->label('Observaciones Relevante'),
+                        ])
                 ])
-                ->live(),
-
-                Forms\Components\Select::make('metodo_pago')
-                ->label('Metodo de Pago')
-                ->required()
-                ->options(function (Get $get) {
-                    if($get('forma_pago') == 'dolares'){
-                        return MetodoPago::where('moneda', 'usd')->pluck('descripcion', 'id');
-                    }
-
-                    if($get('forma_pago') == 'bolivares'){
-                        return MetodoPago::where('moneda', 'bsd')->pluck('descripcion', 'id');
-                    }
-
-                })
-                ->live(),
-
-                Forms\Components\TextInput::make('monto_usd')
-                ->label('Monto en USD($)')
-                ->hint('Ejemplo: 1245.90($)')
-                ->numeric()
-                ->hidden(function (Get $get) {
-                    if($get('forma_pago') == 'dolares')
-                    {
-                        return false;
-                    }else{
-                        return true;
-                    }
-                }),
-
-                Forms\Components\TextInput::make('monto_bsd')
-                    ->label('Monto en BSD(Bs.)')
-                    ->hint('Ejemplo: 120.78(Bs.)')
-                    ->numeric()
-                    ->hidden(function (Get $get) {
-                        if($get('forma_pago') == 'bolivares')
-                        {
-                            return false;
-                        }else{
-                            return true;
-                        }
-                    })
-                    ->live(),
-
-                // Forms\Components\Select::make('iva_id')
-                //     ->label('Maneja IVA?')
-                //     ->relationship('iva', 'iva')
-                //     ->searchable()
-                //     ->preload()
-                //     ->createOptionForm([
-                //         Forms\Components\TextInput::make('iva')
-                //             ->label('IVA(%)')
-                //             ->numeric()
-                //             ->required(),
-                //     ])
-                //     ->required()
-                //     ->hidden(function (Get $get) {
-                //         if ($get('forma_pago') == 'bolivares') {
-                //             return false;
-                //         } else {
-                //             return true;
-                //         }
-                //     })
-                //     ->live()
-                //     ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
-                //         $porcen = Iva::where('id', $get('iva_id'))->first()->iva;
-                //         $iva = ($get('monto_bsd') * $porcen) / 100;
-                //         $neto = ($get('monto_bsd')) + $iva;
-                //         $set('monto_con_iva', $neto);
-                //     }),
-
-                // Forms\Components\TextInput::make('monto_con_iva')
-                //     ->label('Neto (Bs.)')
-                //     ->hint(function (Get $get) {
-                //         $iva = $get('monto_con_iva') - $get('monto_bsd');
-                //         return 'Monto IVA: '. $iva .' Bs.';
-                //     })
-                //     ->hintIcon('heroicon-m-question-mark-circle')
-                //     ->visible(function (Get $get) {
-                //         if($get('forma_pago') == 'bolivares')
-                //         {
-                //             return true;
-                //         }else{
-                //             return false;
-                //         }
-                //     })
-                //     ->live(),
-
-                Forms\Components\DatePicker::make('fecha_compra')
-                    ->label('Fecha de Compra')
-                    ->format('d-m-Y'),
-                
-                Forms\Components\Textarea::make('observacion')
-                ->default(auth()->user()->name),
-
-                Forms\Components\TextInput::make('responsable')
-                    ->required()
-                    ->maxLength(255),
+                ->columns(2),
             ]);
     }
 
@@ -184,20 +164,16 @@ class CompraResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('cod_compra')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('proveedor_id')
+                Tables\Columns\TextColumn::make('proveedor.nombre')
+                    ->icon('heroicon-s-truck')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('descripcion')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('monto_usd')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('monto_bsd')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('iva.iva')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('monto_con_iva')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('forma_pago')
                     ->searchable(),
@@ -206,6 +182,8 @@ class CompraResource extends Resource
                 Tables\Columns\TextColumn::make('numero_factura_compra')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('responsable')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('sucursal.nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

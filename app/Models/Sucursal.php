@@ -104,4 +104,14 @@ class Sucursal extends Model
         return $this->belongsTo(cierreDiario::class, 'id', 'sucursal_id');
     }
 
+    /**
+     * Get the Servicio that owns the Sucursal
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function compra(): BelongsTo
+    {
+        return $this->belongsTo(Compra::class, 'id', 'sucursal_id');
+    }
+
 }

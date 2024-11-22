@@ -32,43 +32,49 @@ class ComisionResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('cod_comision')->default('Pco-'.random_int(11111, 99999)),
-                TextInput::make('porcentaje')
-                    ->prefix('%')
-                    ->numeric()
-                    ->minValue(1)
-                    ->maxValue(100)
-                    ->required(),
-                Select::make('aplicacion')
-                    ->options([
-                        'producto' => 'Producto',
-                        'servicio' => 'Servicio',
-                        'vip'      => 'VIP',
-                        'cupones'  => 'Cupones',
-                        'seguro'  => 'Seguro',
-                        'membresia'  => 'Membresia',
-                        'servicio-adicional'  => 'Servicio Adicional',
-                    ]),
-                Select::make('beneficiario')
-                    ->options([
-                        'gerente' => 'Gerente',
-                        'empleado' => 'Empleado',
-                        'cupones' => 'Cupones',
-                        'tudrencasa' => 'TuDrEnCasa',
-                    ]),
-                Select::make('accion')
-                ->label('Accion de Venta')
-                    ->options([
-                        'directa' => 'Directa',
-                        'indirecta' => 'Indirecta',
-                    ]),
-                Select::make('status')
-                    ->options([
-                        '1' => 'Activo',
-                        '2' => 'Inactivo',
-                    ]),
-                Select::make('sucursal_id')
-                    ->options(Sucursal::all()->pluck('nombre', 'id'))
+                Forms\Components\Section::make('FORMULARIO DE COMISIONES')
+                ->description('Registro y definición de comisones por venta de productos y servícios')
+                ->icon('heroicon-s-receipt-percent')
+                ->schema([
+                    TextInput::make('cod_comision')
+                        ->label('Codigo de Comisión')
+                        ->default('Pco-'.random_int(11111, 99999))
+                        ->disabled(),
+                    TextInput::make('porcentaje')
+                        ->prefix('%')
+                        ->numeric()
+                        ->minValue(1)
+                        ->maxValue(100)
+                        ->required(),
+                    Select::make('aplicacion')
+                        ->label('La Comisión se Aplica a:')
+                        ->options([
+                            'producto' => 'Producto',
+                            'servicio' => 'Servicio',
+                            'vip'      => 'VIP',
+                            'cupones'  => 'Cupones',
+                            'seguro'  => 'Seguro',
+                            'membresia'  => 'Membresia',
+                            'servicio-adicional'  => 'Servicio Adicional',
+                        ]),
+                    Select::make('beneficiario')
+                        ->options([
+                            'gerente' => 'Gerente',
+                            'empleado' => 'Empleado',
+                            'cupones' => 'Cupones',
+                            'tudrencasa' => 'TuDrEnCasa',
+                        ]),
+                    Select::make('accion')
+                        ->label('Afectación de venta')
+                        ->options([
+                            'directa' => 'Directa',
+                            'indirecta' => 'Indirecta',
+                        ]),
+                    Select::make('sucursal_id')
+                        ->options(Sucursal::all()->pluck('nombre', 'id'))
+                    
+                ])
+                ->columns(2),
             ]);
     }
 

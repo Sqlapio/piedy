@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Compra extends Model
 {
@@ -27,7 +28,8 @@ class Compra extends Model
         'responsable',
         'numero_factura_compra',
         'observacion',
-        'metodo_pago'
+        'metodo_pago',
+        'sucursal_id'
     ];
 
     /**
@@ -35,18 +37,19 @@ class Compra extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function proveedores(): HasMany
+    public function proveedor(): BelongsTo
     {
-        return $this->hasMany(Proveedor::class);
+        return $this->belongsTo(Proveedor::class);
     }
 
     /**
-     * Get all of the proveedores for the Compra
+     * Get the compra that owns the Proveedor
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function iva(): HasOne
+    public function sucursal(): HasOne
     {
-        return $this->hasOne(Iva::class, 'id', 'iva_id');
+        return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
     }
+
 }

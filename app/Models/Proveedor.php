@@ -20,8 +20,8 @@ class Proveedor extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function compra(): BelongsTo
+    public function compras(): HasMany
     {
-        return $this->belongsTo(Compra::class, 'foreign_key', 'other_key');
+        return $this->hasMany(Compra::class);
     }
 }

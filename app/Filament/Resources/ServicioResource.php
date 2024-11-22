@@ -35,51 +35,57 @@ class ServicioResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('cod_servicio')->default('Sco-'.random_int(11111, 99999)),
-                TextInput::make('descripcion')->required(),
-                Select::make('categoria')
-                    ->options([
-                        'principal' => 'Principal',
-                        'adicional' => 'Adicional',
-                    ]),
-                Select::make('rol_id')
-                ->label('A qué rol pertenece?')
-                    ->options(Rol::whereBetween('id', [1,2])->pluck('descripcion', 'id'))
-                    ->searchable()
-                    ->preload()
-                    ->createOptionForm([
-                        TextInput::make('descripcion')
-                            ->required(),
-                    ])
-                    ->required(),
-                TextInput::make('costo')
-                    ->prefix('$')
-                    ->numeric()
-                    ->minValue(1)
-                    ->maxValue(100)
-                    ->required(),
-                    Select::make('asignacion')
-                    ->options([
-                        'general' => 'General',
-                        'vip' => 'VIP',
-                        'membresia' => 'Membresia',
-                    ])
-                    ->required(),
-                Select::make('status')
-                    ->options([
-                        'activo' => 'Activo',
-                        'inactivo' => 'Inactivo',
-                    ])
-                    ->required(),
-                Select::make('sucursal_id')
-                    ->relationship('sucursal', 'nombre')
-                    ->searchable()
-                    ->preload()
-                    ->createOptionForm([
-                        TextInput::make('descripcion')
-                            ->required(),
-                    ])
-                    ->required(),
+                Forms\Components\Section::make('FORMULARIO DE SERVICIOS')
+                ->description('Registro y definición de servicios para la plataforma')
+                ->icon('heroicon-s-receipt-percent')
+                ->schema([
+                    TextInput::make('cod_servicio')->default('Sco-'.random_int(11111, 99999)),
+                    TextInput::make('descripcion')->required(),
+                    Select::make('categoria')
+                        ->options([
+                            'principal' => 'Principal',
+                            'adicional' => 'Adicional',
+                        ]),
+                    Select::make('rol_id')
+                        ->label('A qué rol pertenece?')
+                        ->options(Rol::whereBetween('id', [1,2])->pluck('descripcion', 'id'))
+                        ->searchable()
+                        ->preload()
+                        ->createOptionForm([
+                            TextInput::make('descripcion')
+                                ->required(),
+                        ])
+                        ->required(),
+                    TextInput::make('costo')
+                        ->prefix('$')
+                        ->numeric()
+                        ->minValue(1)
+                        ->maxValue(100)
+                        ->required(),
+                        Select::make('asignacion')
+                        ->options([
+                            'general' => 'General',
+                            'vip' => 'VIP',
+                            'membresia' => 'Membresia',
+                        ])
+                        ->required(),
+                    Select::make('status')
+                        ->options([
+                            'activo' => 'Activo',
+                            'inactivo' => 'Inactivo',
+                        ])
+                        ->required(),
+                    Select::make('sucursal_id')
+                        ->relationship('sucursal', 'nombre')
+                        ->searchable()
+                        ->preload()
+                        ->createOptionForm([
+                            TextInput::make('descripcion')
+                                ->required(),
+                        ])
+                        ->required(),
+                ])
+                ->columns(2),
             ]);
     }
 

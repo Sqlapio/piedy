@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\EntradaInventario;
+use App\Models\Inventario;
+use Filament\Notifications\Notification;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class EntradaInventarioController extends Controller
+{
+    public static function crear_entrada($inventario_id, $cantidad, $movimiento)
+    {
+        try{
+
+            $info = Inventario::find($inventario_id)->first();
+
+            $entrada = new EntradaInventario();
+            $entrada->cod_movimiento     = 'Psi-'.random_int(11111, 99999);
+            $entrada->producto_id        = $info->producto_id;
+            $entrada->almacen_id         = $info->almacen_id;
+            $entrada->cantidad           = $cantidad;
+            $entrada->tipo_movimiento    = $movimiento;
+            $entrada->responsable        = Auth::user()->name;
+            $entrada->save();
+
+            //escribimos en el log del sistema
+            $descripcion = 'Realizo '.$movimiento;
+            LogController::log_inventario(Auth::user()->id, $movimiento, $descripcion);
+
+        }catch (\Throwable $th) {
+            Notification::make()
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-c-x-circle')
+                ->color('danger')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+        }
+
+    }
+}

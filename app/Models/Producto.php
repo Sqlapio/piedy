@@ -36,7 +36,9 @@ class Producto extends Model
         'costo',
         'tipo_empaquetado',
         'total_unidades',
-        'marca'
+        'marca',
+        'nivel_min',
+        'nivel_max'
     ];
 
     public function comision():BelongsTo

@@ -291,42 +291,42 @@ class TableTotalizar extends Component implements HasForms, HasTable
                         }
 
                         // //Pago en Bolivares metodos 2 - 4 - 5 - 7
-                        // if ($data['metodo_pago_dos'] != '' &&  $data['metodo_pago'] == '') {
-                        //     CajaController::bolivares(
-                        //         $data['metodo_pago_dos'],
-                        //         $data_fm[$i],
-                        //         (isset($data['ref_pago_movil'])) ? $data['ref_pago_movil'] : null,
-                        //         (isset($data['ref_debito_credito'])) ? $data['ref_debito_credito'] : null,
-                        //         (isset($data['nro_tarjeta'])) ? $data['nro_tarjeta'] : null,
-                        //         (isset($data['propina_usd'])) ? $data['propina_usd'] : 0.00,
-                        //         (isset($data['propina_bsd'])) ? $data['propina_bsd'] : 0.00,
-                        //         (isset($data['pro_ref_debito_credito'])) ? $data['pro_ref_debito_credito'] : null,
-                        //         (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null,
-                        //         $data['pago_bsd'],
-                        //     );
-                        // }
+                            if ($data['metodo_pago_dos'] != '' &&  $data['metodo_pago'] == '') {
+                                CajaController::bolivares(
+                                    $data['metodo_pago_dos'],
+                                    $data_fm[$i],
+                                    (isset($data['ref_pago_movil'])) ? $data['ref_pago_movil'] : null,
+                                    (isset($data['ref_debito_credito'])) ? $data['ref_debito_credito'] : null,
+                                    (isset($data['nro_tarjeta'])) ? $data['nro_tarjeta'] : null,
+                                    (isset($data['propina_usd'])) ? $data['propina_usd'] : 0.00,
+                                    (isset($data['propina_bsd'])) ? $data['propina_bsd'] : 0.00,
+                                    (isset($data['pro_ref_debito_credito'])) ? $data['pro_ref_debito_credito'] : null,
+                                    (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null,
+                                    $data['pago_bsd'],
+                                );
+                            }
 
                         // //Pago en Bolivares metodos 2 - 4 - 5 - 7
-                        // if ($data['metodo_pago'] != '' && $data['metodo_pago_dos'] != '') {
-                        //     $monto_bsd = Str::replace(',', '.', (Str::replace('.', '', $data['pago_bsd'])));
+                        if ($data['metodo_pago'] != '' && $data['metodo_pago_dos'] != '') {
+                            $monto_bsd = Str::replace(',', '.', (Str::replace('.', '', $data['pago_bsd'])));
 
-                        //     CajaController::multiple(
-                        //         $data['pago_usd'],
-                        //         $monto_bsd,
-                        //         $data_fm[$i],
-                        //         $data['metodo_pago'],
-                        //         $data['metodo_pago_dos'],
-                        //         (isset($data['ref_zelle'])) ? $data['ref_zelle'] : null,
-                        //         (isset($data['ref_pago_movil'])) ? $data['ref_pago_movil'] : null,
-                        //         (isset($data['ref_debito_credito'])) ? $data['ref_debito_credito'] : null,
-                        //         (isset($data['nro_tarjeta'])) ? $data['nro_tarjeta'] : null,
-                        //         (isset($data['propina_usd'])) ? $data['propina_usd'] : 0.00,
-                        //         (isset($data['propina_bsd'])) ? $data['propina_bsd'] : 0.00,
-                        //         (isset($data['pro_ref_debito_credito'])) ? $data['pro_ref_debito_credito'] : null,
-                        //         (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null,
+                            CajaController::multiple(
+                                $data['pago_usd'],
+                                $monto_bsd,
+                                $data_fm[$i],
+                                $data['metodo_pago'],
+                                $data['metodo_pago_dos'],
+                                (isset($data['ref_zelle'])) ? $data['ref_zelle'] : null,
+                                (isset($data['ref_pago_movil'])) ? $data['ref_pago_movil'] : null,
+                                (isset($data['ref_debito_credito'])) ? $data['ref_debito_credito'] : null,
+                                (isset($data['nro_tarjeta'])) ? $data['nro_tarjeta'] : null,
+                                (isset($data['propina_usd'])) ? $data['propina_usd'] : 0.00,
+                                (isset($data['propina_bsd'])) ? $data['propina_bsd'] : 0.00,
+                                (isset($data['pro_ref_debito_credito'])) ? $data['pro_ref_debito_credito'] : null,
+                                (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null,
 
-                        //     );
-                        // }
+                            );
+                        }
 
                         }
                     }),

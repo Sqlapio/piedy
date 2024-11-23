@@ -6,6 +6,7 @@ use App\Models\Inventario;
 use App\Models\InventarioSucursal;
 use App\Models\Producto;
 use App\Models\Sucursal;
+use App\Models\SalidaInventario;
 use Exception;
 use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
@@ -27,6 +28,11 @@ class InventarioController extends Controller
             $inventario->save();
 
             if($inventario->save()){
+
+                //Escribimos en la tabla de entradas
+                //la cantidad que fue movida del inventario principal al
+                //inventario de la sucursal
+                EntradaInventarioController::crear_entrada($inventario_id, $cantidad, 'reposicion');
 
                 $descripcion = 'Reposición. Producto: '.$inventario->producto->descripcion.' Cantidad: '.$cantidad;
                 LogController::log_inventario(Auth::user()->id, 'Reposición Almacen Principal', $descripcion);
@@ -75,11 +81,20 @@ class InventarioController extends Controller
 
             if($inventario_sucursal)
             {
+                //Si el producto exite en la sucursal
+                //asignamos la cantidad y actualizamos el inventario
                 $inventario_sucursal->cantidad += $cantidad;
                 $inventario_sucursal->accepted_at = null; //Esto forzara a que el gerente de la tienda deba aceptar la reposicion del inventario
                 $inventario_sucursal->save();
 
+                //Escribimos en la tabla de salidas
+                //la cantidad que fue movida del inventario principal al
+                //inventario de la sucursal
+                SalidaInventarioController::crear_salida($inventario_id, $sucursal_id, $cantidad, 'envio-sucursal');
+
             }else{
+                //Si el producto no exite en la sucursal
+                //creamos un nuevo inventario
                 $movimientoInv = new InventarioSucursal();
                 $movimientoInv->producto_id = $producto->id;
                 $movimientoInv->sucursal_id = $sucursal_id;
@@ -88,13 +103,21 @@ class InventarioController extends Controller
                 $movimientoInv->responsable = Auth::user()->name;
                 $movimientoInv->save();
 
+                //Escribimos en la tabla de salidas
+                //la cantidad que fue movida del inventario principal al
+                //inventario de la sucursal
+                SalidaInventarioController::crear_salida($movimientoInv->id, $sucursal_id, $cantidad, 'envio-sucursal');
+
+
             }
 
+            //actualizamos la exitencia en el almacen principal
             $restaExistencia = Inventario::where('producto_id', $producto->id)->first();
             $restaExistencia->update([
                 'cantidad' => $restaExistencia->cantidad - $cantidad
             ]);
 
+            //escribimos en el log del sistema
             $descripcion = 'Reposición. Producto: '.$producto->descripcion.', Sucursal: '. Sucursal::find($sucursal_id)->nombre .', Cantidad: '.$cantidad;
             LogController::log_inventario(Auth::user()->id, 'Reposición en Sucursal', $descripcion);
 

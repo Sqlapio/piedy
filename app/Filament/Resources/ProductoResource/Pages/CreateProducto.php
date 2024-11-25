@@ -23,4 +23,19 @@ class CreateProducto extends CreateRecord
             ->title('Producto Registrado')
             ->body('El producto fue creado con exito.');
     }
+
+    protected function beforeCreate(): void
+    {
+        if($this->data['max'] == $this->data['min'])
+        {
+            Notification::make()
+            ->warning()
+            ->title('Notificacion')
+            ->body('La cantidad minima y maxima del producto no pueden ser iguales')
+            ->send();
+    
+            $this->halt();
+        }
+    }
+
 }

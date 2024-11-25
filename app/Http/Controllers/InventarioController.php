@@ -34,9 +34,6 @@ class InventarioController extends Controller
                 //inventario de la sucursal
                 EntradaInventarioController::crear_entrada($inventario_id, $cantidad, 'reposicion');
 
-                $descripcion = 'Reposición. Producto: '.$inventario->producto->descripcion.' Cantidad: '.$cantidad;
-                LogController::log_inventario(Auth::user()->id, 'Reposición Almacen Principal', $descripcion);
-
                 Notification::make()
                     ->title('La Reposicion se realizo con éxito.')
                     ->color('success')
@@ -116,10 +113,6 @@ class InventarioController extends Controller
             $restaExistencia->update([
                 'cantidad' => $restaExistencia->cantidad - $cantidad
             ]);
-
-            //escribimos en el log del sistema
-            $descripcion = 'Reposición. Producto: '.$producto->descripcion.', Sucursal: '. Sucursal::find($sucursal_id)->nombre .', Cantidad: '.$cantidad;
-            LogController::log_inventario(Auth::user()->id, 'Reposición en Sucursal', $descripcion);
 
             Notification::make()
                 ->title('El Movimiento se realizo con éxito.')

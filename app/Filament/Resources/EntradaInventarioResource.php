@@ -19,6 +19,12 @@ class EntradaInventarioResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Manejo de Inventario';
+
+    protected static ?string $navigationLabel = 'Entradas';
+
+    protected static ?int $navigationSort = 6;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -45,33 +51,37 @@ class EntradaInventarioResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('almacen_id')
+                Tables\Columns\TextColumn::make('almacen.nombre')
+                    ->icon('heroicon-s-building-office-2')
+                    ->color('colorOne')
                     ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('producto_id')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('producto.descripcion')
+                    ->icon('heroicon-m-document-check')
+                    ->color('colorOne')
                     ->numeric()
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('cantidad')
+                    ->icon('heroicon-c-document-plus')
+                    ->color('success')
                     ->numeric()
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('tipo_movimiento')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('responsable')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->icon('heroicon-m-calendar-days')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -37,8 +37,8 @@ class Producto extends Model
         'tipo_empaquetado',
         'total_unidades',
         'marca',
-        'nivel_min',
-        'nivel_max'
+        'min',
+        'max'
     ];
 
     public function comision():BelongsTo
@@ -119,6 +119,26 @@ class Producto extends Model
     public function detalleAsignacion(): HasOne
     {
         return $this->hasOne(DetalleAsignacion::class, 'id', 'producto_id');
+    }
+
+    /**
+     * Get the entradaInventario that owns the Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function entradaInventario(): BelongsTo
+    {
+        return $this->belongsTo(EntradaInventario::class, 'producto_id', 'id');
+    }
+
+    /**
+     * Get the entradaInventario that owns the Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function salidaInventario(): BelongsTo
+    {
+        return $this->belongsTo(SalidaInventario::class, 'producto_id', 'id');
     }
 
 

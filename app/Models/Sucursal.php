@@ -124,4 +124,14 @@ class Sucursal extends Model
         return $this->belongsTo(Gasto::class, 'id', 'sucursal_id');
     }
 
+    /**
+     * Get the entradaInventario that owns the Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function salidaInventario(): BelongsTo
+    {
+        return $this->belongsTo(SalidaInventario::class, 'sucursal_id', 'id');
+    }
+
 }

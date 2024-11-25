@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class LogController extends Controller
 {
-    public static function log_inventario($user_id, $accion, $descripcion)
+    public static function log($user_id, $accion, $descripcion)
     {
         try {
 

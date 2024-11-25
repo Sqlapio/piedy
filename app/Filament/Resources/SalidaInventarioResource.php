@@ -3,21 +3,24 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SalidaInventarioResource\Pages;
-use App\Filament\Resources\SalidaInventarioResource\RelationManagers;
 use App\Models\SalidaInventario;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SalidaInventarioResource extends Resource
 {
     protected static ?string $model = SalidaInventario::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $navigationGroup = 'Manejo de Inventario';
+
+    protected static ?string $navigationLabel = 'Salidas';
+
+    protected static ?int $navigationSort = 7;
 
     public static function form(Form $form): Form
     {
@@ -48,36 +51,42 @@ class SalidaInventarioResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('almacen_id')
+                Tables\Columns\TextColumn::make('almacen.nombre')
+                    ->icon('heroicon-s-building-office-2')
+                    ->color('colorOne')
                     ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('producto_id')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('producto.descripcion')
+                    ->icon('heroicon-m-document-check')
+                    ->color('colorOne')
                     ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('sucursal_id')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('sucursal.nombre')
+                    ->icon('heroicon-s-building-office-2')
+                    ->color('colorTree')
                     ->numeric()
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('cantidad')
+                    ->icon('heroicon-c-document-minus')
+                    ->color('danger')
                     ->numeric()
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('tipo_movimiento')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('responsable')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->icon('heroicon-m-calendar-days')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -98,7 +107,7 @@ class SalidaInventarioResource extends Resource
         return [
             'index' => Pages\ListSalidaInventarios::route('/'),
             'create' => Pages\CreateSalidaInventario::route('/create'),
-            'edit' => Pages\EditSalidaInventario::route('/{record}/edit'),
+            // 'edit' => Pages\EditSalidaInventario::route('/{record}/edit'),
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EntradaInventario;
 use App\Models\Inventario;
+use App\Models\Producto;
 use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,9 +14,9 @@ class EntradaInventarioController extends Controller
     public static function crear_entrada($inventario_id, $cantidad, $movimiento)
     {
         try{
-
-            $info = Inventario::find($inventario_id)->first();
-
+            
+            $info = Inventario::find($inventario_id);
+            
             $entrada = new EntradaInventario();
             $entrada->cod_movimiento     = 'Psi-'.random_int(11111, 99999);
             $entrada->producto_id        = $info->producto_id;
@@ -24,10 +25,10 @@ class EntradaInventarioController extends Controller
             $entrada->tipo_movimiento    = $movimiento;
             $entrada->responsable        = Auth::user()->name;
             $entrada->save();
-
+            
             //escribimos en el log del sistema
-            $descripcion = 'Realizo '.$movimiento;
-            LogController::log_inventario(Auth::user()->id, $movimiento, $descripcion);
+            $descripcion = 'Reposición. Producto: '.Producto::find($entrada->producto_id)->descripcion.', Cantidad: '.$cantidad;
+            LogController::log(Auth::user()->id, $movimiento, $descripcion);
 
         }catch (\Throwable $th) {
             Notification::make()

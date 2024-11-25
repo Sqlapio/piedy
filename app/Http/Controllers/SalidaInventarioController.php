@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Inventario;
 use App\Models\SalidaInventario;
+use App\Models\Producto;
+use App\Models\Sucursal;
 use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +17,7 @@ class SalidaInventarioController extends Controller
     {
         try{
 
-            $info = Inventario::find($inventario_id)->first();
+            $info = Inventario::find($inventario_id);
 
             $salida = new SalidaInventario();
             $salida->cod_movimiento     = 'Psi-'.random_int(11111, 99999);
@@ -28,8 +30,8 @@ class SalidaInventarioController extends Controller
             $salida->save();
 
             //escribimos en el log del sistema
-            $descripcion = 'Realizo '.$movimiento;
-            LogController::log_inventario(Auth::user()->id, $movimiento, $descripcion);
+            $descripcion = 'Envio a sucursal. Producto: '.Producto::find($salida->producto_id)->descripcion.', Sucursal: '. Sucursal::find($sucursal_id)->nombre .', Cantidad: '.$cantidad;
+            LogController::log(Auth::user()->id, $movimiento, $descripcion);
 
         }catch (\Throwable $th) {
             Notification::make()

@@ -21,7 +21,7 @@ class MovimientoInventarioResource extends Resource
 
     protected static ?string $navigationGroup = 'Manejo de Inventario';
 
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 8;
 
     public static function table(Table $table): Table
     {

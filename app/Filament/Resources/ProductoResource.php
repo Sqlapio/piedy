@@ -62,7 +62,7 @@ class ProductoResource extends Resource
                             '4:3',
                             '1:1',
                         ]),
-                    ]),
+                    ])->columns(2),
                     
                     TextInput::make('descripcion')
                     ->prefixIcon('heroicon-s-pencil')
@@ -100,7 +100,6 @@ class ProductoResource extends Resource
                     TextInput::make('costo')
                         ->prefixIcon('heroicon-s-currency-dollar')
                         ->label('Costo')
-                        ->prefix('$')
                         ->numeric()
                         ->inputMode('decimal'),
 
@@ -149,8 +148,22 @@ class ProductoResource extends Resource
                     TextInput::make('responsable')->default(Auth::user()->name)
                         ->prefixIcon('heroicon-c-user-circle')
                         ->label('Creado por:'),
-                ])
-                ->columns(2),
+                ])->columns(2),
+                
+                Section::make('MANEJO DE INVENTARIO')
+                ->description('Informacion para el manejo de las cantiddes maximas y minimas de inventario')
+                ->icon('heroicon-m-list-bullet')
+                ->schema([
+                    TextInput::make('max')
+                        ->prefixIcon('heroicon-s-pencil')
+                        ->label('Cantidad Maxima en existencia')
+                        ->numeric(),
+                        
+                    TextInput::make('min')
+                        ->prefixIcon('heroicon-s-pencil')
+                        ->label('Cantidad Minima en existencia')
+                        ->numeric(),
+                ])->columns(2),
             ]);
     }
 

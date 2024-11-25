@@ -18,6 +18,20 @@ class EditProducto extends EditRecord
         ];
     }
 
+    protected function beforeSave(): void
+    {
+        if($this->data['max'] == $this->data['min'])
+        {
+            Notification::make()
+            ->warning()
+            ->title('Notificacion')
+            ->body('La cantidad maxima y minima de existencia del producto no pueden ser iguales')
+            ->send();
+    
+            $this->halt();
+        }
+    }
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
@@ -30,4 +44,6 @@ class EditProducto extends EditRecord
         ->title('Producto editado')
         ->body('El producto fue editado con exito.');
     }
+
+    
 }

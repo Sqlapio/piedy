@@ -16,10 +16,61 @@ class AgendaController extends Controller
 {
     static function agendar_cita($cliente_id, $servicio_id, $empleado_id, $fecha_formateada, $hora_id)
     {
-
+// dd($cliente_id, $servicio_id, $empleado_id, $fecha_formateada, $hora_id);
         try {
 
             $hora = Horario::find($hora_id)->hora;
+            $hora_formateada = date('h:i a', strtotime($hora));
+
+            //Mismo cliente, misma hora, misma fecha
+            $cita = Cita::where('cliente_id', $cliente_id)
+            ->where('fecha_formateada', $fecha_formateada)
+            ->where('hora', $hora_formateada)
+            ->where('empleado_id', $empleado_id)
+            ->first();
+
+            // dd($cita);
+
+            if(isset($cita)){
+                throw new Exception("No puede agendar citas al mismo cliente a la misma hora con el mismo técnico. Valide la información y vuelva a intentar");
+            }
+
+            //Clientes diferentes a la misma hora
+            
+
+            //Mismo tecnico, misma fecha, misma hora
+            
+
+            // dd(1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
 
             // $dia = UtilsController::agenda($mes, $opcion);
             $citas = new Cita();

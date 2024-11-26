@@ -9,6 +9,7 @@
                 <div class="">
                   <x-select wire:change="$emit('selected', $event.target.value)" wire:model.live="mes" placeholder="Seleccion" :async-data="route('api.meses')" option-label="mes" option-value="numero" />
                 </div>
+                {{-- {{ $opcion }} {{ $largo }} {{ $inicio }} {{ $fin }} {{ $mes }} --}}
                 <div class="flex flex-row gap-2">
                     <ul class="flex border border-[#D9C3C1] bg-[#F2F2F2] rounded-xl">
                         <li>
@@ -60,24 +61,32 @@
                         @foreach ($data_citas as $items)
                             <div class="max-w-md space-y-2 text-gray-700 list-inside dark:text-gray-400">
                                 @if($items->fecha == $item )
-                                    <li class="flex justify-between items-center p-1 text-2xs border text-gray-600 font-extrabold rounded-lg bg-[#D9C3C1]" >
+                                    <li class=" group h-14 hover:-translate-y-1 hover:h-40 hover:bg-indigo-500 duration-300 flex justify-between items-center p-1 text-2xs border text-gray-700 font-extrabold rounded-lg bg-[#D9C3C1]" >
                                         <div class="flex flex-col">
-                                            {{-- <span class="line-clamp-1">{{ App\Models\User::find($items->empleado_id)->name != null ? App\Models\User::find($items->empleado_id)->name != null : 'No Asignado' }}</span> --}}
-                                            <span class="line-clamp-1 uppercase">{{ $items->empleado }}</span>
+                                            <span class="hidden group-hover:block line-clamp-1 uppercase">{{ $items->empleado_id == null ? '.....' : $items->empleado->name }}</span>
+                                            <span class="hidden group-hover:block line-clamp-1">{{ $items->servicio_id }}</span>
                                             <span class="line-clamp-1">{{ $items->cliente }}</span>
                                             <span>Hora: {{$items->hora}}</span>
                                         </div>
                                         <div class="text-black">
-                                            <x-filament-actions::group
-                                                :actions="[
-                                                    ($this->asignarAction)([
-                                                        'cita' => $items->id
-                                                    ]),
-                                                    ($this->eliminarAction)(['cita' => $items->id])
-                                                ]"
-                                                icon="heroicon-m-ellipsis-vertical"
-                                                color="colorOne"
-                                            />
+                                            @if($items->empleado_id == null)
+                                                <x-filament-actions::group
+                                                    :actions="[
+                                                        ($this->asignarAction)(['cita' => $items->id]),
+                                                        ($this->eliminarAction)(['cita' => $items->id])
+                                                    ]"
+                                                    icon="heroicon-m-ellipsis-vertical"
+                                                    color="colorOne"
+                                                />
+                                            @else
+                                                <x-filament-actions::group
+                                                    :actions="[
+                                                        ($this->eliminarAction)(['cita' => $items->id])
+                                                    ]"
+                                                    icon="heroicon-m-ellipsis-vertical"
+                                                    color="colorOne"
+                                                />
+                                            @endif
                                         </div>
                                     </li>
                                 @endif
@@ -103,21 +112,29 @@
                                     <li class="flex justify-between items-center p-1 text-2xs border text-gray-600 font-extrabold rounded-lg bg-[#D9C3C1]" >
                                         <div class="flex flex-col">
                                             {{-- <span class="line-clamp-1">{{ App\Models\User::find($items->empleado_id)->name != null ? App\Models\User::find($items->empleado_id)->name != null : 'No Asignado' }}</span> --}}
-                                            <span class="line-clamp-1 uppercase">{{ $items->empleado }}</span>
+                                            <span class="line-clamp-1">{{ $items->empleado_id == null ? '.....' : $items->empleado->name }}</span>
                                             <span class="line-clamp-1">{{ $items->cliente }}</span>
                                             <span>Hora: {{$items->hora}}</span>
                                         </div>
                                         <div class="text-black">
-                                            <x-filament-actions::group
-                                                :actions="[
-                                                    ($this->asignarAction)([
-                                                        'cita' => $items->id
-                                                    ]),
-                                                    ($this->eliminarAction)(['cita' => $items->id])
-                                                ]"
-                                                icon="heroicon-m-ellipsis-vertical"
-                                                color="colorOne"
-                                            />
+                                            @if($items->empleado_id == null)
+                                                <x-filament-actions::group
+                                                    :actions="[
+                                                        ($this->asignarAction)(['cita' => $items->id]),
+                                                        ($this->eliminarAction)(['cita' => $items->id])
+                                                    ]"
+                                                    icon="heroicon-m-ellipsis-vertical"
+                                                    color="colorOne"
+                                                />
+                                            @else
+                                                <x-filament-actions::group
+                                                    :actions="[
+                                                        ($this->eliminarAction)(['cita' => $items->id])
+                                                    ]"
+                                                    icon="heroicon-m-ellipsis-vertical"
+                                                    color="colorOne"
+                                                />
+                                            @endif
                                         </div>
                                     </li>
                                 @endif
@@ -129,8 +146,8 @@
             @endforeach
         </div>
 
-        {{-- div para separacion ene le diseno
-        <div class="w-full h-28"></div> --}}
+        {{-- div para separacion ene le diseno --}}
+        <div class="w-full h-28"></div>
 
         <x-menu_table/>
     </div>

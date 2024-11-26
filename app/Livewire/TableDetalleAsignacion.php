@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Http\Controllers\AsignacionController;
 use App\Http\Controllers\GiftCardController;
-use App\Http\Controllers\UtilsController;
 use App\Http\Controllers\CajaController;
 use App\Models\Servicio;
 use App\Models\Producto;
@@ -41,7 +40,6 @@ use Filament\Notifications\Notification;
 use Filament\Forms\Components\Actions\Action as HintAction;
 use Filament\Tables\Actions\BulkAction;
 use Illuminate\Database\Eloquent\Collection;
-use Closure;
 
 class TableDetalleAsignacion extends Component implements HasForms, HasTable
 {
@@ -167,7 +165,28 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                         ->label('Facturar')
                         ->icon('heroicon-c-cog-8-tooth')
                         ->color('success')
-                        ->hidden((Auth::user()->rol_id < 3 ))
+                        ->hidden(function () {
+                            
+                            //Logica para ocultar la accion de facturar
+                            $servicio = Disponible::where('cod_asignacion', $this->cod_asignacion)
+                            ->where('sucursal_id', Auth::user()->sucursal_id)
+                            ->first();
+                            
+                            if ($servicio->status == 'activo') {
+                                //Servicio activo (Oculto)
+                                return true;
+                                
+                            }elseif($servicio->status == 'cerrado' && Auth::user()->rol_id < 3)
+                            {
+                                //Servicio cerrado, el usuario no es gerente (Oculto)
+                                return true;
+                                
+                            }else{
+                                //Servicio cerrado, el usuario es gerente (Visible)
+                                return false;
+                            }
+
+                        })
                         ->model(VentaServicio::class)
                         ->form([
                             Section::make('Facturación: '.$this->cod_asignacion)

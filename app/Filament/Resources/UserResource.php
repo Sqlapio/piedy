@@ -103,10 +103,15 @@ class UserResource extends Resource
                     ->required(),
 
                 Select::make('servicios')
-                    ->options(Servicio::all()->pluck('descripcion', 'id'))
+                //     ->options(Servicio::all()->pluck('descripcion', 'id'))
+                //     ->preload()
+                //     ->multiple()
+                //     ->searchable(),
+
+                ->multiple()
+                    ->relationship(name: 'servicios', titleAttribute: 'descripcion')
+                    ->searchable()
                     ->preload()
-                    ->multiple()
-                    ->searchable(),
             ]);
     }
 

@@ -32,6 +32,7 @@ class Disponible extends Model
         'acu_productos',
         'venta_total',
         'status',
+        'status_fac_multiple'
     ];
 
 

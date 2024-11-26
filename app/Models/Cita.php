@@ -30,6 +30,7 @@ class Cita extends Model
         'hora',
         'responsable',
         'status',
+        'empleado_id'
     ];
 
     public function cliente(): BelongsTo
@@ -37,9 +38,9 @@ class Cita extends Model
         return $this->BelongsTo(Cliente::class, 'cliente_id', 'id');
     }
 
-    public function get_empleado(): BelongsTo
+    public function empleado(): BelongsTo
     {
-        return $this->belongsTo(Empleado::class, 'empleado_id');
+        return $this->belongsTo(User::class, 'empleado_id', 'id');
     }
 
     public function servicio(): BelongsTo

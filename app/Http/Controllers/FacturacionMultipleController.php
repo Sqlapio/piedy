@@ -57,6 +57,7 @@ class FacturacionMultipleController extends Controller
 
             //code...
         } catch (\Throwable $th) {
+            dd($th);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')

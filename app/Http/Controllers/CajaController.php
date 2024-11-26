@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comision;
-use Illuminate\Http\Request;
-use App\Models\DetalleAsignacion;
-use App\Models\Disponible;
 use App\Models\InventarioSucursal;
 use App\Models\MetodoPago;
 use App\Models\Producto;

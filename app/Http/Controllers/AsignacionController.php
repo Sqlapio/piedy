@@ -221,7 +221,8 @@ class AsignacionController extends Controller
                 ->where('sucursal_id', Auth::user()->sucursal_id)
                 ->first()
                 ->update([
-                    'status' =>  'cerrado',
+                    'status'                =>  'cerrado',
+                    'status_fac_multiple'   =>  1,
                 ]);
 
                 $cerrar_cabina = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)

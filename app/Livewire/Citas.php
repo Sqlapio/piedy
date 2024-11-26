@@ -2,7 +2,6 @@
 
 namespace App\Livewire;
 
-use App\Http\Controllers\NotificacionesController;
 use App\Http\Controllers\UtilsController;
 use App\Http\Controllers\AgendaController;
 use App\Models\Cita;
@@ -12,10 +11,8 @@ use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Rule;
 use WireUi\Traits\Actions;
 use Carbon\Carbon;
-use App\Models\Agenda;
 use App\Models\Servicio;
 use App\Models\User;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -83,7 +80,7 @@ class Citas extends Component implements HasForms, HasActions
                         ->options(Horario::all()->pluck('hora', 'id'))
                         ->searchable()
                         ->required(),
-                ])
+                ])->columns(2)
         ])
         ->action(function (array $arguments, array $data) {
 
@@ -170,14 +167,17 @@ class Citas extends Component implements HasForms, HasActions
     public function filtro()
     {
         if($this->opcion == 'semana'){
+            // dump(now()->startOfWeek()->month(11), now()->endOfWeek());
             $this->inicio = now()->startOfWeek()->month($this->mes);
-            $this->fin = now()->endOfWeek()->month($this->mes);
+            $this->fin = now()->endOfWeek();
         }
         if($this->opcion == 'mes'){
+            // dump(2);
             $this->inicio = now()->startOfMonth()->month($this->mes);
             $this->fin = now()->endOfMonth()->month($this->mes);
         }
         if($this->opcion == 'dia'){
+            // dump(3);
             $this->inicio = now()->startOfDay()->month($this->mes);
             $this->fin = now()->endOfDay()->month($this->mes);
         }
@@ -193,8 +193,8 @@ class Citas extends Component implements HasForms, HasActions
 
         if($this->opcion == 'semana')
         {
-            $this->largo = 'h-[450px]';
-            $this->scroll = 'h-[450px]';
+            $this->largo = 'h-96';
+            $this->scroll = 'h-96';
         }
 
         if($this->opcion == 'dia')
@@ -223,7 +223,7 @@ class Citas extends Component implements HasForms, HasActions
                 ->perDay()
                 ->count();
         $array = $datas->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray();
-
+        // dump($array);
         $horario = Horario::all();
         $data_citas_dia = Cita::where('status', 1)->where('fecha_formateada', date('Y-m-d'))->get();
 

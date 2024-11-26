@@ -329,7 +329,7 @@ class UtilsController extends Controller
     {
         if($opcion == 'semana'){
             $inicio = now()->startOfWeek()->month($mes);
-            $fin = now()->endOfWeek()->month($mes);
+            $fin = now()->endOfWeek();
         }
         if($opcion == 'mes'){
             $inicio = now()->startOfMonth()->month($mes);

@@ -84,10 +84,6 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Cliente::class, 'user_id');
     }
 
-    public function citas(): HasMany
-    {
-        return $this->hasMany(Cita::class, 'user_id');
-    }
 
     /**
      * Get the user that owns the User
@@ -204,6 +200,16 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsToMany(Servicio::class, 'servicio_users')
         ->using(ServicioUser::class) 
         ->withPivot(['descripcion']);
+    }
+
+    /**
+     * Get all of the comments for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function citas(): HasMany
+    {
+        return $this->hasMany(Cita::class, 'empleado_id', 'id');
     }
 
 }

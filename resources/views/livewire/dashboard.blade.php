@@ -29,38 +29,13 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                         <div class="text-sm text-black font-bold dark:text-gray-400">GIFTCARD/MEMBRESIA</div>
                     </div>
             </div>
-            {{-- <div wire:click="cierre_general()"
-                class="flex items-center border cursor-pointer p-4 rounded-xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]"
-                style="background-image: url('https://media.istockphoto.com/id/624878906/es/foto/fondo-abstracto-triangular.jpg?b=1&s=170667a&w=0&k=20&c=UTL2PU75t1yyJB_C9ORFOsA7LgkvxIZncxK7A44gGGA='); background-size: cover;">
-                    <div class="ml-1 titulos">
-                        <div class="text-sm text-black font-bold dark:text-gray-400">CIERRE GENERAL</div>
-                    </div>
-            </div> --}}
 
         </div>
 
         {{-- Primera linea --}}
         <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-2 mb-2 px-3">
-            {{-- Empleados --}}
-            {{-- @if(Auth::user()->tipo_usuario == 'gerente')
-                <div wire:click="valida_tasa({{ 1 }})" class="p-6 rounded-lg" style="background-image: url('https://img.favpng.com/0/11/4/polygon-geometry-plane-desktop-wallpaper-png-favpng-e7CGay7DssGUF8FwFkeWviuCM.jpg'); background-size: cover;">
-                    <div class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-20">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
-                        </svg>
-                    </div>
-                    <div class="ml-12 text-right">
-                        <div class="mt-2 text-2xl text-black leading-7 font-bold">
-                            Empleados
-                        </div>
-                        <div class="sm:hidden md:hidden lg:block mt-3 text-right text-xs font-semibold text-black">
-                            <div>Registro y gestion de Empleados</div>
-                        </div>
-                    </div>
-                </div>
-            @endif --}}
             {{-- Clientes --}}
-            <div wire:click="valida_tasa({{ 2 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/abstract-light-blue-background-geometry-pattern-hd-wallpaper_1000823-2187.jpg'); background-size: cover;">
+            <div wire:click="valida_tasa({{ 2 }})" class="cursor-pointer p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/abstract-light-blue-background-geometry-pattern-hd-wallpaper_1000823-2187.jpg'); background-size: cover;">
                 <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
@@ -76,7 +51,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 </div>
             </div>
             {{-- Cabinas --}}
-            <div wire:click="valida_tasa({{ 3 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/primer-plano-fondo-abstracto-colorido-triangulos-ai-generativo_561855-19933.jpg');background-size: cover;">
+            <div wire:click="valida_tasa({{ 3 }})" class="cursor-pointer p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/primer-plano-fondo-abstracto-colorido-triangulos-ai-generativo_561855-19933.jpg');background-size: cover;">
                 <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 01-1.125-1.125v-3.75zM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-8.25zM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-2.25z" />
@@ -152,7 +127,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2 px-3">
 
             {{-- Ventas --}}
-            <div wire:click="valida_tasa({{ 7 }})" class="p-6 rounded-lg" style="background-image: url('https://static.vecteezy.com/system/resources/previews/000/406/488/original/background-wallpaper-with-polygons-in-gradient-colors-vector.jpg');background-size: cover;">
+            <div wire:click="valida_tasa({{ 7 }})" class="cursor-pointer p-6 rounded-lg" style="background-image: url('https://static.vecteezy.com/system/resources/previews/000/406/488/original/background-wallpaper-with-polygons-in-gradient-colors-vector.jpg');background-size: cover;">
                 <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
@@ -184,7 +159,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 </div>
             </div> --}}
             {{-- Cierre diario --}}
-            <div wire:click="valida_tasa({{ 9 }})" class="p-6 rounded-lg" style="background-image: url('https://elucubracion.com/wp-content/uploads/2014/05/fondo-abstracto-1.png');background-size: cover;">
+            <div wire:click="valida_tasa({{ 9 }})" class="cursor-pointer p-6 rounded-lg" style="background-image: url('https://elucubracion.com/wp-content/uploads/2014/05/fondo-abstracto-1.png');background-size: cover;">
                 <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
@@ -207,7 +182,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
         {{-- tercera linea --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2 px-3">
             {{-- Empleados --}}
-            <div wire:click="valida_tasa({{ 1 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg'); background-size: cover;">
+            <div wire:click="valida_tasa({{ 1 }})" class="cursor-pointer p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg'); background-size: cover;">
                 <div class="flex items-center w-24 h-24"></div>
                 <div class="ml-12 text-right">
                     <div class="mt-2 text-4xl text-white leading-7 font-bold">
@@ -219,7 +194,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 </div>
             </div>
             {{-- Nomina --}}
-            <div wire:click="valida_tasa({{ 10 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
+            <div wire:click="valida_tasa({{ 10 }})" class="cursor-pointer p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
                 <div class="flex items-center w-24 h-24"></div>
                 <div class="ml-12 text-right">
                     <div class="sm:hidden md:hidden lg:block mt-2 text-4xl text-white text- leading-7 font-bold">
@@ -231,7 +206,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 </div>
             </div>
             {{-- Reportes --}}
-            <div wire:click="valida_tasa({{ 11 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
+            <div wire:click="valida_tasa({{ 11 }})" class="cursor-pointer p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
                 <div class="flex items-center w-24 h-24"></div>
                 <div class="ml-12 text-right">
                     <div class="sm:hidden md:hidden lg:block mt-2 text-4xl text-white text- leading-7 font-bold">
@@ -243,7 +218,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 </div>
             </div>
             {{-- Reportes General --}}
-            <div wire:click="valida_tasa({{ 12 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
+            <div wire:click="valida_tasa({{ 12 }})" class="cursor-pointer p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
                 <div class="flex items-center w-24 h-24"></div>
                 <div class="ml-12 text-right">
                     <div class="sm:hidden md:hidden lg:block mt-2 text-4xl text-white text- leading-7 font-bold">
@@ -255,7 +230,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
                 </div>
             </div>
             {{-- Cierre Financiero --}}
-            <div wire:click="valida_tasa({{ 14 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
+            <div wire:click="valida_tasa({{ 14 }})" class="cursor-pointer p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg');background-size: cover;">
                 <div class="flex items-center w-24 h-24"></div>
                 <div class="ml-12 text-right">
                     <div class="sm:hidden md:hidden lg:block mt-2 text-4xl text-white text- leading-7 font-bold">
@@ -274,7 +249,7 @@ use App\Models\TasaBcv as ModelsTasaBcv;
         {{-- tercera linea --}}
         <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-2 px-3">
             {{-- Empleados --}}
-            <div wire:click="valida_tasa({{ 13 }})" class="p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg'); background-size: cover;">
+            <div wire:click="valida_tasa({{ 13 }})" class="cursor-pointer p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/fondo-abstracto-poligonal-azul_706163-3266.jpg'); background-size: cover;">
                 <div class="flex items-center w-24 h-24"></div>
                 <div class="ml-12 text-right">
                     <div class="mt-2 text-4xl text-white leading-7 font-bold">

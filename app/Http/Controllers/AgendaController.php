@@ -9,8 +9,8 @@ use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Filament\Notifications\Notification;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AgendaController extends Controller
 {
@@ -22,103 +22,42 @@ class AgendaController extends Controller
             $hora = Horario::find($hora_id)->hora;
             $hora_formateada = date('h:i a', strtotime($hora));
 
-            //Mismo cliente, misma hora, misma fecha
-            $cita = Cita::where('cliente_id', $cliente_id)
+            $cita = DB::table('citas')
+            ->select('cliente_id', 'empleado_id')
             ->where('fecha_formateada', $fecha_formateada)
             ->where('hora', $hora_formateada)
-            ->where('empleado_id', $empleado_id)
-            ->first();
-
-            // dd($cita);
-
-            if(isset($cita)){
-                throw new Exception("No puede agendar citas al mismo cliente a la misma hora con el mismo técnico. Valide la información y vuelva a intentar");
+            ->get();
+            
+            //Restriccion de la agenda
+            if(count($cita) > 0)
+            {
+                if($cita[0]->cliente_id == $cliente_id)
+                {
+                    throw new Exception("No puede agendar citas al mismo cliente a la misma hora y en la misma fecha. Valide la información y vuelva a intentar");
+                    
+                }elseif($cita[0]->empleado_id == $empleado_id)
+                {
+                    throw new Exception("No puede agendar citas al cliente con el mismo tecnico a la misma hora y en la misma fecha. Valide la información y vuelva a intentar");
+                }
             }
 
-            //Clientes diferentes a la misma hora
-            
-
-            //Mismo tecnico, misma fecha, misma hora
-            
-
-            // dd(1);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
+            $cliente = Cliente::find($cliente_id);
 
             // $dia = UtilsController::agenda($mes, $opcion);
             $citas = new Cita();
             $citas->cod_cita = 'Pci-'.random_int(11111, 99999);
-            $cliente_existe = Cita::where('cliente_id', $cliente_id)->where('fecha_formateada', $fecha_formateada)->first();
-            // dd($cliente_existe, $cliente_existe->fecha_formateada, $fecha_formateada);
-            /**Restriccion para dia anterior */
-            if($fecha_formateada < date('Y-m-d')){
-
-                throw new Exception("No puede agendar citas en días anteriores a la fecha actual. Por favor intente con otro dia");
-            }
-            // date("h:i a", strtotime($hora))
-            if(isset($cliente_existe) && $cliente_existe->fecha_formateada == $fecha_formateada){
-                throw new Exception("No puede agendar citas al mismo cliente a la misma hora. Debe agendar en otra hora");
-
-            }else{
-
-                $cliente = Cliente::find($cliente_id);
-                $citas->cliente_id = $cliente->id;
-                $citas->correo = $cliente->email;
-                $citas->telefono = $cliente->telefono;
-                $citas->cliente = $cliente->nombre.' '.$cliente->apellido;
-                $citas->hora = date("h:i a", strtotime($hora));
-                $citas->fecha = Carbon::parse($fecha_formateada)->isoFormat('dddd, D MMM');
-                $citas->fecha_formateada = $fecha_formateada;
-                $citas->responsable = Auth::user()->name;
-                $citas->empleado = User::find($empleado_id)->name;
-                $citas->status = 1;
-                $citas->save();
-            }
-
-            if(!isset($cliente_existe)){
-
-                $cliente = Cliente::find($cliente_id);
-                $citas->cliente_id = $cliente->id;
-                $citas->correo = $cliente->email;
-                $citas->telefono = $cliente->telefono;
-                $citas->cliente = $cliente->nombre.' '.$cliente->apellido;
-                $citas->hora = date("h:i a", strtotime($hora));
-                $citas->fecha = Carbon::parse($fecha_formateada)->isoFormat('dddd, D MMM');
-                $citas->fecha_formateada = $fecha_formateada;
-                $citas->responsable = Auth::user()->name;
-                $citas->empleado = User::find($empleado_id)->name;
-                $citas->status = 1;
-                $citas->save();
-
-            }
-
+            $citas->cliente_id = $cliente->id;
+            $citas->correo = $cliente->email;
+            $citas->telefono = $cliente->telefono;
+            $citas->cliente = $cliente->nombre;
+            $citas->hora = date("h:i a", strtotime($hora));
+            $citas->fecha = Carbon::parse($fecha_formateada)->isoFormat('dddd, D MMM');
+            $citas->fecha_formateada = $fecha_formateada;
+            $citas->responsable = Auth::user()->name;
+            $citas->empleado_id = $empleado_id;
+            $citas->status = 1;
+            $citas->save();
+           
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-shield-check')

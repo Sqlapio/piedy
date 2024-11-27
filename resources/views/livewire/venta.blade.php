@@ -1,12 +1,6 @@
 <div>
     <div class="border rounded-lg mb-5">
-
-        {{ $this->table }}
-    </div>
-
-    <div class="border rounded-lg mb-5 mt-10">
-
-        @livewire('tabla-facturas-multiples')
+        @livewire('table-venta')
     </div>
 
     {{-- div para separacion ene le diseno --}}

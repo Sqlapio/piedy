@@ -112,6 +112,16 @@ class Producto extends Model
     }
 
     /**
+     * Get all of the movimientos_inventarios for the Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function recepcionInventarios(): HasMany
+    {
+        return $this->hasMany(RecepcionInventario::class, 'id', 'producto_id');
+    }
+
+    /**
      * Get the detalleAsignacion associated with the Producto
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

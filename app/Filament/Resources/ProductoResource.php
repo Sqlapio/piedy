@@ -185,6 +185,10 @@ class ProductoResource extends Resource
                     ->icon('heroicon-s-shopping-bag')
                     ->searchable(),
 
+                TextColumn::make('uso')
+                    ->icon('heroicon-s-shopping-bag')
+                    ->searchable(),
+
                 TextColumn::make('categoria.descripcion')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),

@@ -6,11 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class InventarioSucursal extends Model
+class RecepcionInventario extends Model
 {
     use HasFactory;
-
-    protected $table = 'inventario_sucursals';
 
     /**
      * The attributes that are mass assignable.
@@ -18,10 +16,13 @@ class InventarioSucursal extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'inventario_id',
         'producto_id',
         'sucursal_id',
         'cantidad',
         'responsable',
+        'status',
+        'accepted_at',
         'uso'
     ];
 
@@ -44,5 +45,4 @@ class InventarioSucursal extends Model
     {
         return $this->belongsTo(Sucursal::class, 'sucursal_id', 'id');
     }
-
 }

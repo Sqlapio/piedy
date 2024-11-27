@@ -55,6 +55,16 @@ class Sucursal extends Model
     }
 
     /**
+     * Get all of the movimientos_inventarios for the Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function recepcionInventarios(): HasMany
+    {
+        return $this->hasMany(RecepcionInventario::class, 'id', 'sucursal_id');
+    }
+
+    /**
      * Get the asignacionProducto that owns the Sucursal
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -3,28 +3,19 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\VentaServicioResource\Pages;
-use App\Filament\Resources\VentaServicioResource\RelationManagers;
-use App\Filament\Resources\VentaServicioResource\Widgets\StatsVenta;
 use App\Filament\Resources\VentaServicioResource\Widgets\VentaServicioComisionStats;
 use App\Filament\Resources\VentaServicioResource\Widgets\VentaServicioStats;
 use App\Models\VentaServicio;
 use Carbon\Carbon;
-use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TrashedFilter;
-use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 
 
 class VentaServicioResource extends Resource
@@ -33,7 +24,7 @@ class VentaServicioResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-chart-bar-square';
 
-    protected static ?string $navigationLabel = 'Dashboard de Servicios';
+    protected static ?string $navigationLabel = 'Servícios';
 
     protected static ?string $navigationGroup = 'Ventas';
 
@@ -45,100 +36,56 @@ class VentaServicioResource extends Resource
                 TextColumn::make('cod_asignacion')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                    
                 TextColumn::make('cliente_id')
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->searchable()
                     ->sortable(),
+                    
                 TextColumn::make('empleado_id')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable()
                     ->sortable(),
+                    
                 TextColumn::make('created_at')->searchable()
                     ->label('Fecha de venta')
                     ->toggleable(isToggledHiddenByDefault: false),
+                    
                 TextColumn::make('metodo_pago')
-                    ->toggleable(isToggledHiddenByDefault: false)
                     ->label('Metodo Pago($)')
+                    ->description(fn (VentaServicio $record): string => $record->metodo_pago_dos)
                     ->alignCenter()
-                    ->searchable()
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'Facturación multiple'  => 'warning',
-                        'Multiple'              => 'warning',
-                        'Efectivo Usd'          => 'success',
-                        'Zelle'                 => 'success',
-                        'giftCard'              => 'success',
-                        'Efectivo Bsd'          => 'info',
-                        'Pago movil'            => 'info',
-                        'Transferencia'         => 'info',
-                        'Punto de venta'        => 'info',
-                        'Anulado'               => 'danger',
-                        'cliente especial'      => 'success',
-                        'giftcard'              => 'success',
-                        'N/A'                   => 'gray',
-                    }),
-                TextColumn::make('metodo_pago_dos')
-                    ->toggleable(isToggledHiddenByDefault: false)
-                    ->label('Metodo Pago(Bs.)')
-                    ->alignCenter()
-                    ->searchable()
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'Facturación multiple'  => 'warning',
-                        'Multiple'              => 'warning',
-                        'Efectivo Usd'          => 'success',
-                        'Zelle'                 => 'success',
-                        'Efectivo Bsd'          => 'info',
-                        'Pago movil'            => 'info',
-                        'Transferencia'         => 'info',
-                        'Punto de venta'        => 'info',
-                        'Anulado'               => 'danger',
-                        'cliente especial'      => 'success',
-                        'Membresia'             => 'success',
-                        'N/A'                   => 'gray',
-                    }),
-                TextColumn::make('metodo_pago_prepagado')
-                    ->toggleable(isToggledHiddenByDefault: false)
-                    ->label('Metodo Prepagado')
-                    ->alignCenter()
-                    ->searchable()
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'Giftcard'      => 'warning',
-                        'Membresia'     => 'warning',
-                        'N/A'           => 'gray',
-                    }),
-                TextColumn::make('membresia_exp')
-                ->label('Membresia EXP')
-                ->searchable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
 
-                TextColumn::make('referencia')
-                ->toggleable(isToggledHiddenByDefault: false)
-                ->searchable(),
+                TextColumn::make('membresia_exp')
+                    ->label('Membresia EXP')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
 
                 TextColumn::make('total_USD')
-                ->toggleable(isToggledHiddenByDefault: false)
-                    ->label(('Servicio($)'))
+                    ->label(('Costo de Servício($)'))
                         ->summarize(Sum::make()
                         ->label(('Total'))
                         ->money('USD'))
+                        ->alignCenter()
                     ->searchable(),
 
                 TextColumn::make('pago_usd')->money('USD')
-                ->toggleable(isToggledHiddenByDefault: false)
                     ->label(('Pagos($)'))
                     ->summarize(Sum::make()
                         ->label(('Total'))
                         ->money('USD'))
+                        ->alignCenter()
                     ->searchable(),
 
                 TextColumn::make('pago_bsd')
-                ->toggleable(isToggledHiddenByDefault: false)
-                    ->label(('Pagos(Bs.)'))
-                    ->summarize(Sum::make()
-                        ->label(('Total')))
-                    ->searchable(),
+                    ->toggleable(isToggledHiddenByDefault: false)
+                        ->label(('Pagos(Bs.)'))
+                        ->summarize(Sum::make()
+                            ->label(('Total')))
+                            ->alignCenter()
+                        ->searchable(),
 
                 TextColumn::make('comision_gerente')->money('USD')
                     ->label(('Comision Gte.($)'))

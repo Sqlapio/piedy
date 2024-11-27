@@ -43,7 +43,6 @@ class TableProducto extends Component implements HasForms, HasTable
             ->query(InventarioSucursal::query()
             ->where('cantidad', '>', 0)
             ->where('uso', 'venta')
-            ->where('accepted_at','!=',null)
             ->where('sucursal_id', $sucursal_id))
             ->columns([
                 ImageColumn::make('producto.image')
@@ -53,60 +52,30 @@ class TableProducto extends Component implements HasForms, HasTable
                 TextColumn::make('producto.descripcion')
                     ->label('Descripción')
                     ->icon('heroicon-c-clipboard-document-check')
-                    ->color(function (InventarioSucursal $record) { 
-                        if($record->accepted_at !== null){
-                            return 'info';
-                        }else{
-                            return 'colorDisabled';
-                        }
-                    } )
+                    ->color('info')
                     ->searchable(),
+                    
                 TextColumn::make('producto.precio_venta')
                     ->label('Precio Venta')
                     ->icon('heroicon-m-currency-dollar')
-                    ->color(function (InventarioSucursal $record) { 
-                        if($record->accepted_at !== null){
-                            return 'success';
-                        }else{
-                            return 'colorDisabled';
-                        }
-                    } )
+                    ->color('success')
                     ->money('USD'),
+                    
                 TextColumn::make('cantidad')
                     ->label('Exitencia actual')
                     ->icon('heroicon-c-rectangle-stack')
-                    ->color(function (InventarioSucursal $record) { 
-                        if($record->accepted_at !== null){
-                            return 'primary';
-                        }else{
-                            return 'colorDisabled';
-                        }
-                    } ),
+                    ->color('primary'),
+                    
                 TextInputColumn::make('pre_compra')
-                    ->disabled(function (InventarioSucursal $record) { 
-                        if($record->accepted_at !== null){
-                            return false;
-                        }else{
-                            return true;
-                        }
-                    })
                     ->label('Cantidad'),
-                // SelectColumn::make('cod_asignacion')
-                //     ->label('Codigo de Servicio')
-                //     ->options(Disponible::where('status', 'activo')->pluck('cod_asignacion', 'cod_asignacion'))
+
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Action::make('Añadir')
-                ->disabled(function (InventarioSucursal $record) {    
-                    if($record->accepted_at !== null){
-                        return false;
-                    }else{
-                        return true;
-                    }
-                })
+                ->color('success')
                 ->requiresConfirmation()
                 ->action(function (InventarioSucursal $record) {
 

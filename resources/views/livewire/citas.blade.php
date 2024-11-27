@@ -3,13 +3,9 @@
         @livewire('notifications')
         <h1 class="text-2xl mb-4 font-bold text-[#bd9c95]">Agenda de Citas</h1>
             <div class="p-2 flex justify-between items-center">
-                {{-- <h1 class="text-lg font-bold leading-6 text-black uppercase">
-                    {{ Carbon::parse(date('d-m-Y'))->isoFormat('dddd, D MMMM Y ') }}
-                </h1> --}}
                 <div class="">
                   <x-select wire:change="$emit('selected', $event.target.value)" wire:model.live="mes" placeholder="Seleccion" :async-data="route('api.meses')" option-label="mes" option-value="numero" />
                 </div>
-                {{-- {{ $opcion }} {{ $largo }} {{ $inicio }} {{ $fin }} {{ $mes }} --}}
                 <div class="flex flex-row gap-2">
                     <ul class="flex border border-[#D9C3C1] bg-[#F2F2F2] rounded-xl">
                         <li>
@@ -18,9 +14,6 @@
                                 <div class="block px-4">
                                     <div class="w-full text-md font-semibold">Día</div>
                                 </div>
-                                {{-- <svg class="w-5 h-5 ms-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                                </svg> --}}
                             </label>
                         </li>
                         <li>
@@ -29,9 +22,6 @@
                                 <div class="block px-4">
                                     <div class="w-full text-md font-semibold">Semana</div>
                                 </div>
-                                {{-- <svg class="w-5 h-5 ms-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                                </svg> --}}
                             </label>
                         </li>
                         <li>
@@ -40,9 +30,6 @@
                                 <div class="block px-4">
                                     <div class="w-full text-md font-semibold">Mes</div>
                                 </div>
-                                {{-- <svg class="w-5 h-5 ms-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                                </svg> --}}
                             </label>
                         </li>
                     </ul>
@@ -61,10 +48,10 @@
                         @foreach ($data_citas as $items)
                             <div class="max-w-md space-y-2 text-gray-700 list-inside dark:text-gray-400">
                                 @if($items->fecha == $item )
-                                    <li class=" group h-14 hover:-translate-y-1 hover:h-40 hover:bg-indigo-500 duration-300 flex justify-between items-center p-1 text-2xs border text-gray-700 font-extrabold rounded-lg bg-[#D9C3C1]" >
-                                        <div class="flex flex-col">
+                                    <li class=" flex justify-between items-center p-1 text-2xs border text-gray-700 font-extrabold rounded-lg bg-[#D9C3C1]" >
+                                        <div class="hover:flex flex-col group">
                                             <span class="hidden group-hover:block line-clamp-1 uppercase">{{ $items->empleado_id == null ? '.....' : $items->empleado->name }}</span>
-                                            <span class="hidden group-hover:block line-clamp-1">{{ $items->servicio_id }}</span>
+                                            <span class="hidden group-hover:block line-clamp-1">{{ $items->servicio->descripcion }}</span>
                                             <span class="line-clamp-1">{{ $items->cliente }}</span>
                                             <span>Hora: {{$items->hora}}</span>
                                         </div>
@@ -81,6 +68,7 @@
                                             @else
                                                 <x-filament-actions::group
                                                     :actions="[
+                                                        ($this->activarAction)(['cita' => $items->id]),
                                                         ($this->eliminarAction)(['cita' => $items->id])
                                                     ]"
                                                     icon="heroicon-m-ellipsis-vertical"
@@ -110,9 +98,9 @@
                             <div class="w-full space-y-2 text-gray-700 list-inside dark:text-gray-400">
                                 @if(date("h:i a", strtotime($items->hora)) == date("h:i a", strtotime($hora->hora)) )
                                     <li class="flex justify-between items-center p-1 text-2xs border text-gray-600 font-extrabold rounded-lg bg-[#D9C3C1]" >
-                                        <div class="flex flex-col">
-                                            {{-- <span class="line-clamp-1">{{ App\Models\User::find($items->empleado_id)->name != null ? App\Models\User::find($items->empleado_id)->name != null : 'No Asignado' }}</span> --}}
-                                            <span class="line-clamp-1">{{ $items->empleado_id == null ? '.....' : $items->empleado->name }}</span>
+                                        <div class="hover:flex flex-col group">
+                                            <span class="hidden group-hover:block line-clamp-1 uppercase">{{ $items->empleado_id == null ? '.....' : $items->empleado->name }}</span>
+                                            <span class="hidden group-hover:block line-clamp-1">{{ $items->servicio->descripcion }}</span>
                                             <span class="line-clamp-1">{{ $items->cliente }}</span>
                                             <span>Hora: {{$items->hora}}</span>
                                         </div>
@@ -129,6 +117,7 @@
                                             @else
                                                 <x-filament-actions::group
                                                     :actions="[
+                                                        ($this->activarAction)(['cita' => $items->id]),
                                                         ($this->eliminarAction)(['cita' => $items->id])
                                                     ]"
                                                     icon="heroicon-m-ellipsis-vertical"

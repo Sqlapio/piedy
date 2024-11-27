@@ -3,16 +3,13 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CierreDiarioResource\Pages;
-use App\Filament\Resources\CierreDiarioResource\RelationManagers;
 use App\Models\CierreDiario;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\Summarizers\Sum;
 
 class CierreDiarioResource extends Resource
 {
@@ -22,9 +19,9 @@ class CierreDiarioResource extends Resource
 
     protected static ?string $navigationLabel = 'Cierre diario';
 
-    protected static ?string $navigationGroup = 'Administración';
+    protected static ?string $navigationGroup = 'Contabilidad';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -38,13 +35,13 @@ class CierreDiarioResource extends Resource
     {
         return $table
         ->columns([
-            TextColumn::make('total_ventas')
-                ->money('USD')
-                ->label('Venta Total($)')
-                ->sortable()
-                ->searchable()
-                ->toggleable(isToggledHiddenByDefault: true),
 
+            TextColumn::make('sucursal.nombre')
+                ->icon('heroicon-s-home')
+                ->color('colorTree')
+                ->sortable()
+                ->searchable(),
+            
             TextColumn::make('total_dolares_efectivo')
                 ->money('USD')
                 ->icon('heroicon-m-currency-dollar')
@@ -68,23 +65,29 @@ class CierreDiarioResource extends Resource
                 ->money('VES')
                 ->sortable()
                 ->searchable(),
-
-            TextColumn::make('ref_debito')
-                ->label('Ref. Débito')
+            
+            Tables\Columns\TextColumn::make('monto_ref_debito')
+                ->color('info')
+                ->description(fn (CierreDiario $record): string => 'Lote: '.$record->ref_debito)
+                ->label('Monto Debito')
+                ->money('VES')
                 ->sortable()
-                ->searchable()
                 ->toggleable(isToggledHiddenByDefault: true),
 
-            TextColumn::make('ref_credito')
-                ->label('Ref. Credito')
+            Tables\Columns\TextColumn::make('monto_ref_credito')
+                ->color('info')
+                ->description(fn (CierreDiario $record): string => 'Lote: '.$record->ref_credito)
+                ->label('Monto Crédito')
+                ->money('VES')
                 ->sortable()
-                ->searchable()
                 ->toggleable(isToggledHiddenByDefault: true),
 
-            TextColumn::make('ref_visaMaster')
-                ->label('Ref. Visa/Master')
+            Tables\Columns\TextColumn::make('monto_ref_visaMaster')
+                ->color('info')
+                ->description(fn (CierreDiario $record): string => 'Lote: '.$record->ref_visaMaster)
+                ->label('Monto Debito')
+                ->money('VES')
                 ->sortable()
-                ->searchable()
                 ->toggleable(isToggledHiddenByDefault: true),
 
             TextColumn::make('created_at')
@@ -94,29 +97,46 @@ class CierreDiarioResource extends Resource
                 ->sortable()
                 ->searchable(),
 
+            Tables\Columns\TextColumn::make('total_cierre_usd')
+                ->color('success')
+                ->label('Total del Dia($)')
+                ->summarize(Sum::make()
+                        ->money('USD')
+                        ->label('Total($)'))
+                    ->searchable()
+                ->sortable(),
+
+            Tables\Columns\TextColumn::make('total_cierre_bsd')
+                ->color('success')
+                ->money('VES')
+                ->label('Total del Dia(Bs.)')
+                ->summarize(Sum::make()
+                        ->money('VES')
+                        ->label('Total($)'))
+                    ->searchable()
+                ->sortable(),
+
             TextColumn::make('responsable')
                 ->icon('heroicon-s-user')
                 ->color('colorOne')
                 ->sortable()
-                ->searchable(),
+                ->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
             
             TextColumn::make('observaciones')
                 ->icon('heroicon-s-user')
                 ->color('colorOne')
                 ->sortable()
-                ->searchable(),
+                ->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
 
-            TextColumn::make('sucursal.nombre')
-                ->icon('heroicon-s-home')
-                ->color('colorTree')
-                ->sortable()
-                ->searchable(),
+
         ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

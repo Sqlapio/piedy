@@ -42,11 +42,6 @@ class Servicio extends Model
         return $this->belongsTo(Disponible::class);
     }
 
-    public function cita(): HasOne
-    {
-        return $this->hasOne(Cita::class);
-    }
-
     /**
      * Get the tipo_servicio associated with the Servicio
      *
@@ -60,6 +55,16 @@ class Servicio extends Model
     public function sucursal(): HasOne
     {
         return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
+    }
+
+    /**
+     * Get all of the comments for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function citas(): HasMany
+    {
+        return $this->hasMany(Cita::class, 'servicio_id', 'id');
     }
 
 

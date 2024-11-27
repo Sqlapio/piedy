@@ -18,5 +18,6 @@ class NotificacionMasiva extends Model
         'image',
         'caption',
         'responsable',
+        'fecha_programacion'
     ];
 }

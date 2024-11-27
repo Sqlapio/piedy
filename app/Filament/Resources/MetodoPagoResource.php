@@ -38,6 +38,11 @@ class MetodoPagoResource extends Resource
                         'usd' => 'Usd',
                         'bsd' => 'Bsd',
                     ]),
+                Select::make('modalidad')
+                    ->options([
+                        'post-pago' => 'Post Pago',
+                        'pre-pago'  => 'Pre Pago',
+                    ]),
             ]);
     }
 
@@ -46,18 +51,26 @@ class MetodoPagoResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('descripcion')
-                ->icon('heroicon-m-check-circle')
-                ->color('colorOne')
-                ->searchable(),
+                    ->icon('heroicon-m-check-circle')
+                    ->color('colorOne')
+                    ->searchable(),
                 TextColumn::make('moneda')
-                ->label('Tipo de moneda')
-                ->badge()
-                ->color(fn (string $state): string => match ($state) {
-                    'usd' => 'success',
-                    'bsd' => 'info',
-                    'multiple' => 'warning',
-                })
-                ->searchable(),
+                    ->label('Tipo de moneda')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'usd' => 'success',
+                        'bsd' => 'info',
+                        'multiple' => 'warning',
+                    })
+                    ->searchable(),
+                TextColumn::make('modalidad')
+                    ->label('Modalidad de Pago')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'post-pago' => 'success',
+                        'pre-pago'  => 'info',
+                    })
+                    ->searchable(),
             ])
             ->filters([
                 //

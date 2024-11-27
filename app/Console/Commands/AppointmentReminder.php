@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Console\Commands;
-
-use App\Models\Agenda;
+ 
 use App\Models\Cita;
 use App\Models\Cliente;
 use Illuminate\Console\Command;

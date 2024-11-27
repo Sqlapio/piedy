@@ -8,6 +8,7 @@ use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\InventarioSucursalController;
 use App\Models\Inventario;
 use App\Models\Sucursal;
+use App\Models\Producto;
 use App\Models\InventarioSucursal;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
@@ -21,6 +22,8 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 
 class InventarioResource extends Resource
 {
@@ -47,6 +50,19 @@ class InventarioResource extends Resource
                         ->relationship('producto', 'descripcion')
                         ->searchable()
                         ->preload()
+                        ->required()
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(function (Set $set, ?string $state) {
+                            $uso = Producto::find($state)->uso;
+                            $set('uso', $uso);
+                        }),
+                    TextInput::make('uso')
+                        ->prefixIcon('heroicon-s-queue-list')
+                        ->required(),
+                    TextInput::make('min')
+                    ->label('Exitencia Minima en Almacen')
+                        ->prefixIcon('heroicon-s-queue-list')
+                        ->numeric()
                         ->required(),
                     Select::make('almacen_id')
                         ->prefixIcon('heroicon-m-list-bullet')
@@ -80,6 +96,17 @@ class InventarioResource extends Resource
                     ->circular(),
                 Tables\Columns\TextColumn::make('producto.descripcion')
                     ->icon('heroicon-s-shopping-bag')
+                    ->numeric()
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('uso')
+                    ->icon('heroicon-s-shopping-bag')
+                    ->numeric()
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('min')
+                    ->label('Exitencia Minima')
+                    ->icon('heroicon-o-square-3-stack-3d')
                     ->numeric()
                     ->searchable()
                     ->sortable(),

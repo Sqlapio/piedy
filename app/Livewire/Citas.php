@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Http\Controllers\UtilsController;
+use App\Http\Controllers\AsignacionController;
 use App\Http\Controllers\AgendaController;
 use App\Models\Cita;
 use App\Models\Cliente;
@@ -148,6 +149,47 @@ class Citas extends Component implements HasForms, HasActions
         });
     }
 
+    public function ActivarAction(): Action
+    {
+        return Action::make('activar')
+        ->icon('heroicon-c-power')
+        ->color('colorOne')
+        ->requiresConfirmation()
+        ->modalHeading('Activar Servicio')
+        ->modalDescription('Esta seguro que desea activar el servício?')
+        ->modalSubmitActionLabel('Si, activar servício')
+        ->modalIcon('heroicon-c-power')
+        ->action(function (array $arguments) {
+
+            $info_cita = Cita::find($arguments)->first();
+            
+            //Controller para asignacion de servicio
+            $res = AsignacionController::asignacion_servicio($info_cita->cliente_id, $info_cita->empleado_id, $info_cita->servicio_id);
+
+            if ($res) {
+                
+                $info_cita->status = 2;
+                $info_cita->save();
+                
+                Notification::make()
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('success')
+                ->body('El servicio fue asignado correctamente!')
+                ->send();
+
+            }else{
+                Notification::make()
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-s-exclamation-triangle')
+                ->iconColor('danger')
+                ->body('El tecnico ya posee un servicio abierto. Por favor realiza la facturación y vuelve a intentar!')
+                ->send();
+
+            }
+        });
+    }
+
     public function EliminarAction(): Action
     {
         return Action::make('eliminar')
@@ -167,17 +209,14 @@ class Citas extends Component implements HasForms, HasActions
     public function filtro()
     {
         if($this->opcion == 'semana'){
-            // dump(now()->startOfWeek()->month(11), now()->endOfWeek());
             $this->inicio = now()->startOfWeek()->month($this->mes);
             $this->fin = now()->endOfWeek();
         }
         if($this->opcion == 'mes'){
-            // dump(2);
             $this->inicio = now()->startOfMonth()->month($this->mes);
             $this->fin = now()->endOfMonth()->month($this->mes);
         }
         if($this->opcion == 'dia'){
-            // dump(3);
             $this->inicio = now()->startOfDay()->month($this->mes);
             $this->fin = now()->endOfDay()->month($this->mes);
         }
@@ -214,7 +253,11 @@ class Citas extends Component implements HasForms, HasActions
         $start = $this->inicio;
         $end = $this->fin;
 
-        $data_citas = Cita::where('status', 1)->where('fecha_formateada', 'like', '%'.$fecha.'%')->get();
+        $data_citas = Cita::where('status', 1)
+        ->where('fecha_formateada', 'like', '%'.$fecha.'%')
+        ->where('sucursal_id', Auth::user()->sucursal_id)
+        ->get();
+        
         $datas = Trend::model(Cita::class)
                 ->between(
                     $start,
@@ -222,10 +265,15 @@ class Citas extends Component implements HasForms, HasActions
                 )
                 ->perDay()
                 ->count();
+                
         $array = $datas->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray();
-        // dump($array);
+
         $horario = Horario::all();
-        $data_citas_dia = Cita::where('status', 1)->where('fecha_formateada', date('Y-m-d'))->get();
+        
+        $data_citas_dia = Cita::where('status', 1)
+        ->where('sucursal_id', Auth::user()->sucursal_id)
+        ->where('fecha_formateada', date('Y-m-d'))
+        ->get();
 
         return view('livewire.citas', [
             'array'             => $array,

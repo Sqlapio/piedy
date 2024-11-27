@@ -20,6 +20,8 @@ class MetodoPago extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'descripcion'
+        'descripcion',
+        'modalidad',
+        'moneda'
     ];
 }

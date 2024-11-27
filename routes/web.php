@@ -1,32 +1,33 @@
 <?php
 
-use App\Http\Controllers\ApiClientesController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\NotificacionesController;
-use App\Livewire\Login;
-use App\Models\CierreGeneral;
-use App\Models\ServicioUser;
-use App\Models\DetalleAsignacion;
-use App\Models\VentaServicio;
-use Illuminate\Support\Facades\Route;
 use Carbon\Carbon;
-use Flowframe\Trend\Trend;
-use Flowframe\Trend\TrendValue;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\NotificacionesEmail;
-use App\Models\AsignarProducto;
 use App\Models\Cita;
-use App\Models\Disponible;
-use App\Models\Membresia;
-use App\Models\MovimientoMembresia;
-use App\Models\PeriodoNomina;
 use App\Models\User;
-use App\Models\InventarioSucursal;
-use App\Models\Producto;
+use App\Livewire\Login;
 use App\Models\TasaBcv;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Producto;
+use App\Models\Membresia;
+use App\Models\Disponible;
+use Flowframe\Trend\Trend;
+use App\Models\ServicioUser;
+use App\Models\CierreGeneral;
+use App\Models\PeriodoNomina;
+use App\Models\VentaServicio;
+use App\Models\AsignarProducto;
+use Flowframe\Trend\TrendValue;
+use App\Mail\NotificacionesEmail;
+use App\Models\DetalleAsignacion;
+use App\Models\InventarioSucursal;
+use App\Models\NotificacionMasiva;
+use Illuminate\Support\Facades\DB;
+use App\Models\MovimientoMembresia;
 use Spatie\Browsershot\Browsershot;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ApiClientesController;
+use App\Http\Controllers\NotificacionesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -299,81 +300,40 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/{record}/edit', function () {
         return view('clientes');
     })->name('cliente.edit');
-
 });
 
-// Route::get('reporte/nomina/{id}/{periodo}', function ($id, $periodo) {
-//     return view('pdf.reporte', compact('id', 'periodo'));
 
 Route::get('/reporte/nomina', function () {
-        return view('pdf.reporte');
-    })->name('reporte');
+    return view('pdf.reporte');
+})->name('reporte');
 
 /**FIN GRUPO DE RUTAS------------------------------------------------------------------------------------------*/
 
-Route::get('/pp', function () {
-    dd(TasaBcv::all()->first()->tasa);
-    $primera = '1'.date('mY');
-    $segunda = '2'.date('mY');
-
-    $periodo1 = PeriodoNomina::where('status', '0')->where('cod_quincena', $primera)->first();
-    $periodo2 = PeriodoNomina::where('status', '0')->where('cod_quincena', $segunda)->first();
-
-    dd($primera, $segunda, $periodo1, $periodo2);
-
-    // $type = 'membresia-activada';
-    // $info_cliente = Cliente::where('id', 1610)->first();
-
-    // $mailData = [
-    //         'codigo_seguridad'  => '34656545367567568745',
-    //         'pm'                => '2356',
-    //         'cliente'           => $info_cliente->nombre.' '.$info_cliente->apellido,
-    //         'barcode'           => '23432533453.jpg',
-    //         'user_email'        => 'gusta.acp@gmail.com',
-    //     ];
-
-    // NotificacionesController::notification($mailData, $type);
-
-    // return 'listo';
-    //Total de ventas por empleado
-    // $products = DB::select('call nomina_quincenal(?, ?)', array('2024-06-01', '2024-06-14'));
-
-    $gerente = User::where('status', '1')->where('tipo_servicio_id', '3')->get(['name']);
-
-    foreach($gerente as $value){
-        $_comision_gte = VentaServicio::where('responsable', 'Supergerente')->SUM('comision_gerente');
-    }
-
-    //Total de membresias atendidas por empleado
-    $user_info = DB::table('movimiento_membresias')
-                 ->select('empleado', DB::raw('count(*) as total'))
-                 ->where('descripcion', '=', 'consumo en tienda')
-                 ->groupBy('empleado')
-                 ->get();
-
-    //Total de membresias vendidas
-    $membresias = Membresia::all()->SUM('monto');
-
-    //Suma total de membresias atendias por los empleados
-    $sum_membresia = MovimientoMembresia::where('descripcion', '=', 'consumo en tienda')->count();
-
-    $empleados = User::whereBetween('tipo_servicio_id',['1', '2'])->where('status', '1')->get();
-    $user_quiro = DB::table('venta_servicios')
-                 ->select(
-                    'empleado', DB::raw('count(*) as total'),
-                    DB::raw('SUM(comision_dolares) as Dolares'),
-                    DB::raw('SUM(comision_bolivares) as Bolivares')
-                    )
-                 ->whereBetween('created_at',['2024-06-01 00:00:00', '2024-06-14 23:59:59'])
-                 ->groupBy('empleado')
-                 ->get();
-    dd($empleados, $user_quiro);
-    dd($_comision_gte, $gerente, $user_info, 'Monto total de Membresias activas-> '.$membresias, 'Monto total de Membresias atendidas por los empleados-> '.$sum_membresia);
-
-});
-
 Route::get('/ex', function () {
 
-return env('APP_URL').'/storage/01JD546BCP5C9R8VVJHPAQ398V.png';
+    // dd(Cita::where('hora', '09:00 am')->whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->count());
+    //Ruta de prueba
+    $array_hrs = [
+        '09:00 am',
+        '10:00 am',
+        '11:00 am',
+        '12:00 am',
+        '01:00 pm',
+        '02:00 pm',
+        '04:00 pm',
+        '06:00 pm',
+        '07:00 pm',
+        '08:00 pm',
+        '09:00 pm',
+    ];
 
+    $nro_citas_agendadas = [];
+
+    for ($i=0; $i < count($array_hrs); $i++) { 
+        # code...
+        $count = Cita::where('hora', $array_hrs[$i])->whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->count();
+        array_push($nro_citas_agendadas, $count);
+    }
+
+    dd($nro_citas_agendadas);
 });

@@ -52,8 +52,6 @@ class ComisionResource extends Resource
                             'producto' => 'Producto',
                             'servicio' => 'Servicio',
                             'vip'      => 'VIP',
-                            'cupones'  => 'Cupones',
-                            'seguro'  => 'Seguro',
                             'membresia'  => 'Membresia',
                             'servicio-adicional'  => 'Servicio Adicional',
                         ]),
@@ -61,8 +59,6 @@ class ComisionResource extends Resource
                         ->options([
                             'gerente' => 'Gerente',
                             'empleado' => 'Empleado',
-                            'cupones' => 'Cupones',
-                            'tudrencasa' => 'TuDrEnCasa',
                         ]),
                     Select::make('accion')
                         ->label('Afectación de venta')

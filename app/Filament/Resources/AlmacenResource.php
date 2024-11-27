@@ -21,6 +21,8 @@ class AlmacenResource extends Resource
 
     protected static ?string $navigationGroup = 'Manejo de Inventario';
 
+    protected static ?string $navigationLabel = 'Almacenes';
+
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form

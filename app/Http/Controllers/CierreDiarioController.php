@@ -5,20 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\CajaChica;
 use App\Models\CierreDiario;
 use App\Models\DetalleAsignacion;
-use App\Models\Gasto;
 use App\Models\TasaBcv;
 use App\Models\VentaProducto;
 use App\Models\VentaServicio;
 use Exception;
 use Filament\Notifications\Notification;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CierreDiarioController extends Controller
 {
     public static function cierreDiario($ref_debito, $monto_ref_debito, $ref_credito, $monto_ref_credito, $ref_visaMaster, $monto_ref_visaMaster, $observaciones = null)
     {
-// dd($ref_debito, $monto_ref_debito, $ref_credito, $monto_ref_credito, $ref_visaMaster, $monto_ref_visaMaster);
+
         try {
 
             $query = CierreDiario::where('fecha', date('d-m-Y'))->count();
@@ -30,9 +28,7 @@ class CierreDiarioController extends Controller
 
                 /** Responsable del cierre */
                 $user = Auth::user();
-
-                /** totales en la tabla de ventas */
-                $total_venta = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('total_USD');
+                
 
                 /** totales de pagos en Dolares*/
                 $total_efectivo_usd = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Efectivo Usd')->sum('pago_usd');
@@ -56,7 +52,6 @@ class CierreDiarioController extends Controller
                 }
 
                 $cierre = new CierreDiario();
-                $cierre->total_ventas            = $total_venta;
                 $cierre->total_dolares_efectivo  = $total_efectivo_usd + $total_efectivo_usd_productos;
                 $cierre->total_dolares_zelle     = $total_zelle + $total_zelle_productos;
                 $cierre->total_bolivares         = $total_bs + $total_bsd_productos;
@@ -66,11 +61,13 @@ class CierreDiarioController extends Controller
                 $cierre->monto_ref_credito       = (str_replace(',', '.', str_replace('.', '', $monto_ref_credito))) == null ? 0.00 : str_replace(',', '.', str_replace('.', '', $monto_ref_credito));
                 $cierre->ref_visaMaster          = $ref_visaMaster;
                 $cierre->monto_ref_visaMaster    = (str_replace(',', '.', str_replace('.', '', $monto_ref_visaMaster))) == null ? 0.00 : str_replace(',', '.', str_replace('.', '', $monto_ref_visaMaster));
-                $cierre->saldo_caja_chica        = (isset($efectivo_caja_usd->saldo)) ? $efectivo_caja_usd->saldo : 0;
                 $cierre->fecha                   = date('d-m-Y');
                 $cierre->responsable             = $user->name;
                 $cierre->observaciones           = $observaciones;
                 $cierre->sucursal_id             = $user->sucursal_id;
+                //Totales en dolares y bolivares
+                $cierre->total_cierre_usd        = $cierre->total_dolares_efectivo + $cierre->total_dolares_zelle;
+                $cierre->total_cierre_bsd        = $cierre->total_bolivares + $cierre->monto_ref_debito + $cierre->monto_ref_credito + $cierre->monto_ref_visaMaster;
                 $cierre->save();
 
                 /** Notificacion para el usuario cuando su servicio fue anulado */

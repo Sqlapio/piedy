@@ -8,13 +8,17 @@ use App\Models\Compra;
 use App\Models\MetodoPago;
 use App\Models\Iva;
 use App\Models\Sucursal;
+use Carbon\Carbon;
+use Filament\Tables\Actions\Action;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -25,6 +29,8 @@ class CompraResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-m-shopping-cart';
 
     protected static ?string $navigationGroup = 'Contabilidad';
+
+    protected static ?int $navigationSort = 1;
 
 
     public static function form(Form $form): Form

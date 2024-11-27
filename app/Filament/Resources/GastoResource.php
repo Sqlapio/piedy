@@ -27,6 +27,8 @@ class GastoResource extends Resource
 
     protected static ?string $navigationGroup = 'Contabilidad';
 
+    protected static ?int $navigationSort = 2;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -35,12 +37,12 @@ class GastoResource extends Resource
                 ->description('Formulario de gastos')
                 ->icon('heroicon-m-arrow-trending-down')
                 ->schema([
-                    Forms\Components\TextInput::make('nro_referencia')
+                    Forms\Components\TextInput::make('numero_factura')
                         ->label('Nro. de Referencia')
                         ->prefixIcon('heroicon-c-tag')
                         ->maxLength(255)
                         ->default(function () {
-                            $ultimo_correlativo = Gasto::where('nro_referencia', 'like', '%Pcf-%')->latest()->first();
+                            $ultimo_correlativo = Gasto::where('numero_factura', 'like', '%Pcf-%')->latest()->first();
                             if(isset($ultimo_correlativo))
                             {
                                 $parte_entera = intval(str_replace('Pcf-', '', $ultimo_correlativo->nro_referencia));
@@ -118,6 +120,21 @@ class GastoResource extends Resource
                         ->required()
                         ->maxLength(255),
                     
+                    Forms\Components\Select::make('proveedor_id')
+                        ->prefixIcon('heroicon-s-truck')
+                        ->relationship('proveedor', 'nombre')
+                        ->searchable()
+                        ->preload()
+                        ->createOptionForm([
+                            Forms\Components\TextInput::make('rif')
+                            ->label('Rif')
+                            ->required(),
+                            Forms\Components\TextInput::make('nombre')
+                            ->label('Nombre/Razon Social')
+                            ->required(),
+                        ])
+                        ->required(),
+                    
                     Forms\Components\Select::make('sucursal_id')
                         ->prefixIcon('heroicon-s-home')
                         ->label('Sucursal')
@@ -148,6 +165,11 @@ class GastoResource extends Resource
 
                 Tables\Columns\TextColumn::make('descripcion')
                 ->label('Descripcion del Gasto')
+                ->icon('heroicon-m-document-check')
+                ->searchable(),
+
+                Tables\Columns\TextColumn::make('proveedor_id')
+                ->label('Proveedor')
                 ->icon('heroicon-m-document-check')
                 ->searchable(),
 

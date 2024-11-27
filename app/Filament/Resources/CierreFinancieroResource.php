@@ -22,6 +22,8 @@ class CierreFinancieroResource extends Resource
 
     protected static ?string $navigationLabel = 'Dashboard Financiero';
 
+    protected static ?int $navigationSort = 4;
+
     use ExposesTableToWidgets;
 
     public static function form(Form $form): Form

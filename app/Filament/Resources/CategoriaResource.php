@@ -16,7 +16,7 @@ use Filament\Infolists\Components\Section;
 
 class CategoriaResource extends Resource
 {
-    protected static ?string $navigationLabel = 'Categotias';
+    protected static ?string $navigationLabel = 'Categorías';
 
     protected static ?string $navigationGroup = 'Manejo de Inventario';
 

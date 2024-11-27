@@ -10,46 +10,46 @@ use Illuminate\Support\Facades\Mail;
 
 class NotificacionesController extends Controller
 {
-    static function notification($mailData, $type, $asunto=null)
-	{
+    static function notification($mailData, $type, $asunto = null)
+    {
 
-		try {
+        try {
 
-			if ($type == 'cliente') {
-				$view = 'emails.cliente';
+            if ($type == 'cliente') {
+                $view = 'emails.cliente';
                 $subject = 'Cliente Piedy';
-				Mail::to($mailData['cliente_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
-			}
+                Mail::to($mailData['cliente_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
+            }
 
-			if ($type == 'servicio') {
-				$view = 'emails.servicio_facturado';
+            if ($type == 'servicio') {
+                $view = 'emails.servicio_facturado';
                 $subject = 'Servicio Facturado';
-				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
-			}
+                Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
+            }
 
             if ($type == 'reseteo_password') {
-				$view = 'emails.reseteo_password';
+                $view = 'emails.reseteo_password';
                 $subject = 'Reseteo de password';
-				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
-			}
+                Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
+            }
 
             if ($type == 'servicio_anulado') {
-				$view = 'emails.servicio_anulado';
+                $view = 'emails.servicio_anulado';
                 $subject = 'Servicio Anulado';
-				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
-			}
+                Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
+            }
 
             if ($type == 'cierre_diario') {
-				$view = 'emails.cierre_diario';
+                $view = 'emails.cierre_diario';
                 $subject = 'Cierre Diario';
-				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
-			}
+                Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
+            }
 
             if ($type == 'cierre_general') {
-				$view = 'emails.cierre_general';
+                $view = 'emails.cierre_general';
                 $subject = 'Cierre General';
-				Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
-			}
+                Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
+            }
 
             if ($type == 'gift-card') {
                 $view = 'emails.gift-card';
@@ -59,13 +59,13 @@ class NotificacionesController extends Controller
 
             if ($type == 'gift-card-creada') {
                 $view = 'emails.gift-card-creada';
-                $subject = 'operación: '.$asunto;
+                $subject = 'operación: ' . $asunto;
                 Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
             }
 
             if ($type == 'gift-card-usada') {
                 $view = 'emails.gift-card-usada';
-                $subject = 'Fecha de Uso: '.date('d-m-Y');
+                $subject = 'Fecha de Uso: ' . date('d-m-Y');
                 Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
             }
 
@@ -89,16 +89,14 @@ class NotificacionesController extends Controller
 
             if ($type == 'membresia-activada') {
                 $view = 'emails.membresia-activada';
-                $subject = 'Membresia '.$asunto;
+                $subject = 'Membresia ' . $asunto;
                 Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
             }
-
-
-		} catch (\Throwable $th) {
-			$message = $th->getMessage();
-			dd('Error UtilsController.send_mail()', $message);
-		}
-	}
+        } catch (\Throwable $th) {
+            $message = $th->getMessage();
+            dd('Error UtilsController.send_mail()', $message);
+        }
+    }
 
     static function notificacion_cita_wp(array $data)
     {
@@ -147,19 +145,19 @@ class NotificacionesController extends Controller
             $err = curl_error($curl);
 
             curl_close($curl);
-
         } catch (\Throwable $th) {
             Notification::make()
-            ->title('NOTIFICACIÓN')
-            ->icon('heroicon-o-document-text')
-            ->iconColor('danger')
-            ->color('danger')
-            ->body($th->getMessage())
-            ->send();
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-o-document-text')
+                ->iconColor('danger')
+                ->color('danger')
+                ->body($th->getMessage())
+                ->send();
         }
     }
 
-    static function notificacion_masiva($image, $caption){
+    static function notificacion_masiva($image, $caption)
+    {
 
         try {
 
@@ -170,8 +168,7 @@ class NotificacionesController extends Controller
                 $params = array(
                     'token' => env('TOKEN_API_WHATSAPP'),
                     'to' => $value->telefono,
-                    // 'to' => '04127018390',
-                    'image' => env('APP_URL').'/storage/'.$image,
+                    'image' => env('APP_URL') . '/storage/' . $image,
                     'caption' => $caption
                 );
                 $curl = curl_init();
@@ -192,40 +189,18 @@ class NotificacionesController extends Controller
                 ));
 
                 $response = curl_exec($curl);
-                if(isset($response)){
-                    Notification::make()
-                    ->title('NOTIFICACIÓN')
-                    ->icon('heroicon-o-document-text')
-                    ->iconColor('danger')
-                    ->color('danger')
-                    ->body('El mensaje masivo fue enviado de forma exitosa')
-                    ->send();
-
-                }else{
-                    $err = curl_error($curl);
-                    Notification::make()
-                    ->title('NOTIFICACIÓN')
-                    ->icon('heroicon-o-document-text')
-                    ->iconColor('danger')
-                    ->color('danger')
-                    ->body($err)
-                    ->send();
-
-                }
+                $err = curl_error($curl);
 
                 curl_close($curl);
 
+                if ($err) {
+                    echo "cURL Error #:" . $err;
+                } else {
+                    echo $response;
+                }
             }
-                //code...
+            //code...
         } catch (\Throwable $th) {
-            Notification::make()
-            ->title('NOTIFICACIÓN')
-            ->icon('heroicon-o-document-text')
-            ->iconColor('danger')
-            ->color('danger')
-            ->body($th->getMessage())
-            ->send();
         }
-
     }
 }

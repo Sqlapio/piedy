@@ -23,6 +23,8 @@ class ProveedorResource extends Resource
 
     protected static ?string $navigationGroup = 'Contabilidad';
 
+    protected static ?int $navigationSort = 5;
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();

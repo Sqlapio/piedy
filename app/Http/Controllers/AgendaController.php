@@ -16,7 +16,6 @@ class AgendaController extends Controller
 {
     static function agendar_cita($cliente_id, $servicio_id, $empleado_id, $fecha_formateada, $hora_id)
     {
-// dd($cliente_id, $servicio_id, $empleado_id, $fecha_formateada, $hora_id);
         try {
 
             $hora = Horario::find($hora_id)->hora;
@@ -55,6 +54,8 @@ class AgendaController extends Controller
             $citas->fecha_formateada = $fecha_formateada;
             $citas->responsable = Auth::user()->name;
             $citas->empleado_id = $empleado_id;
+            $citas->servicio_id = $servicio_id;
+            $citas->sucursal_id = Auth::user()->sucursal_id;
             $citas->status = 1;
             $citas->save();
            

@@ -60,7 +60,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
     {
         return $table
             ->heading('Asignaciones')
-            ->query(DetalleAsignacion::query()->where('cod_asignacion', $this->cod_asignacion))
+            ->query(DetalleAsignacion::query()
+            ->where('cod_asignacion', $this->cod_asignacion))
             ->columns([
                 Tables\Columns\TextColumn::make('tipo')
                     ->label('Tipo de Asiganción')

@@ -35,10 +35,15 @@ class NotificacionMasivaResource extends Resource
                     ->label('Imagen de promocion')
                     ->image()
                     ->required(),
+                    
                 Forms\Components\TextInput::make('caption')
                     ->label('Eslogan de la Promocion')
                     ->required()
                     ->maxLength(255),
+                    
+                Forms\Components\DatePicker::make('fecha_programacion')
+                    ->label('Programar para el:'),
+                    
                 Forms\Components\TextInput::make('responsable')
                     ->default(Auth::user()->name),
             ]);

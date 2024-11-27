@@ -24,6 +24,8 @@ class Inventario extends Model
         'almacen_id',
         'cantidad',
         'responsable',
+        'uso',
+        'min'
     ];
 
     /**

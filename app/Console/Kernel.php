@@ -28,6 +28,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('app:expira-giftcard')
         ->dailyAt('9:30')
         ->emailOutputTo('gusta.acp@gmail.com');
+
+        $schedule->command('app:ejecuta-notificacion-masiva')
+        ->dailyAt('9:30')
+        ->emailOutputTo('gusta.acp@gmail.com');
     }
 
     /**

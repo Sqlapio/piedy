@@ -6,7 +6,6 @@ use App\Http\Controllers\CierreDiarioController;
 use App\Models\CierreDiario as ModelsCierreDiario;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -17,7 +16,6 @@ use WireUi\Traits\Actions;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Grid;
 use Filament\Support\RawJs;
 use Filament\Forms\Components\Textarea;
@@ -33,7 +31,9 @@ class CierreDiario extends Component implements HasForms, HasTable
         return $table
             ->heading('CIERRE DIARIO')
             ->description('Tabla de cierre diario por turno')
-            ->query(ModelsCierreDiario::query()->whereDate('created_at', now()->toDateString()))
+            ->query(ModelsCierreDiario::query()
+            ->whereDate('created_at', now()->toDateString())
+            ->where('sucursal_id', auth()->user()->sucursal_id))
             ->columns([
                 TextColumn::make('total_ventas')
                     ->money('USD')

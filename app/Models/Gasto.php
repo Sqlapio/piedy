@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Gasto extends Model
 {
@@ -29,7 +30,8 @@ class Gasto extends Model
         'responsable',
         'numero_factura',
         'numero_factura_gasto',
-        'sucursal_id'
+        'sucursal_id',
+        'proveedor_id'
     ];
 
     /**
@@ -40,5 +42,15 @@ class Gasto extends Model
     public function sucursal(): HasOne
     {
         return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
+    }
+
+        /**
+     * Get all of the proveedores for the Compra
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function proveedor(): BelongsTo
+    {
+        return $this->belongsTo(Proveedor::class);
     }
 }

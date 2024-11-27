@@ -25,6 +25,7 @@ class VentaController extends Controller
             $venta->metodo_pago_dolares     = $metodo_pago != 'N/A' ? MetodoPago::find($metodo_pago)->descripcion : $metodo_pago;
             $venta->metodo_pago_bolivares   = $metodo_pago_dos != 'N/A' ? MetodoPago::find($metodo_pago_dos)->descripcion : $metodo_pago_dos;
             $venta->tasa_bcv                = TasaBcv::all()->first()->tasa;
+            $venta->sucursal_id             = auth()->user()->sucursal_id;
             $venta->save();
 
             $servicio_disponible = Disponible::where('cod_asignacion', $cod_asignacion)
@@ -56,14 +57,15 @@ class VentaController extends Controller
             $venta->total_venta             = $total_venta;
             $venta->fecha                   = now()->format('d-m-Y');
             $venta->responsable             = Auth::user()->name;
-            $venta->metodo_pago_dolares     = $metodo_pago != 'N/A' ? MetodoPago::find($metodo_pago)->descripcion : $metodo_pago;
-            $venta->metodo_pago_bolivares   = $metodo_pago_dos != 'N/A' ? MetodoPago::find($metodo_pago_dos)->descripcion : $metodo_pago_dos;
+            $venta->metodo_pago_dolares     = $metodo_pago != 'N/A' ? $metodo_pago : 'N/A';
+            $venta->metodo_pago_bolivares   = $metodo_pago_dos != 'N/A' ? $metodo_pago_dos : 'N/A';
             $venta->tasa_bcv                = TasaBcv::all()->first()->tasa;
+            $venta->sucursal_id             = auth()->user()->sucursal_id;
             $venta->save();
 
         } catch (\Throwable $th) {
             Notification::make()
-            ->title('Notificacion: VentaController::venta() ')
+            ->title('Notificacion: VentaController::venta_producto() ')
             ->icon('heroicon-o-shield-check')
             ->iconColor('danger')
             ->body($th->getMessage())

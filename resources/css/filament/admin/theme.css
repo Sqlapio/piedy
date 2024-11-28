@@ -1,0 +1,44 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+
+/* .fi-wi-stats-overview-stat {
+    @apply bg-black !important;
+} */
+
+.fi-sidebar-group-icon {
+    @apply text-[#7B95A6] !important;
+}
+
+.fi-ta-header-cell {
+    @apply bg-[#7B95A6] !important;
+}
+
+.fi-sidebar-item-label {
+    @apply text-[#D9C3C1] !important;
+    @apply font-extrabold ;
+}
+
+.fi-sidebar-header .fi-topbar {
+    @apply bg-[#F2F2F2] !important;
+}
+
+.fi-sidebar-group-label {
+    @apply text-black !important;
+}
+
+.bg-gray-50 > th {
+    @apply bg-[#7B95A6] !important;
+}
+
+.fi-ta-header-cell-sort-icon {
+    @apply text-white !important;
+}
+
+.fi-dropdown-trigger {
+    @apply text-[#7B95A6] !important;
+}
+
+.relative > svg {
+    @apply text-[#7B95A6] !important;
+}

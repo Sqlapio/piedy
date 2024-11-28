@@ -24,17 +24,17 @@ class StatsGeneral extends BaseWidget
 
     protected function getStats(): array
     {
-        if($this->filters['activar'] == false)
-        {
-            $rangeStartDate = now()->startOfYear();
-            $rangeEndDate = now()->endOfYear();
-            $rango = date('d-m-Y', strtotime($rangeStartDate)).' al '.date('d-m-Y', strtotime($rangeEndDate));
+        // if($this->filters['activar'] == false)
+        // {
+        //     $rangeStartDate = now()->startOfYear();
+        //     $rangeEndDate = now()->endOfYear();
+        //     $rango = date('d-m-Y', strtotime($rangeStartDate)).' al '.date('d-m-Y', strtotime($rangeEndDate));
 
-        }else{
-            $rangeStartDate = $this->filters['startDate'].' 00:00:00.000';
-            $rangeEndDate = $this->filters['endDate'].'. 23:59:59.000';
-            $rango = date('d-m-Y', strtotime($rangeStartDate)).' al '.date('d-m-Y', strtotime($rangeEndDate));
-        }
+        // }else{
+        //     $rangeStartDate = $this->filters['startDate'].' 00:00:00.000';
+        //     $rangeEndDate = $this->filters['endDate'].'. 23:59:59.000';
+        //     $rango = date('d-m-Y', strtotime($rangeStartDate)).' al '.date('d-m-Y', strtotime($rangeEndDate));
+        // }
 
         /**
          * CALCULO PARA LA ULITIDAD NETA:
@@ -267,17 +267,17 @@ class StatsGeneral extends BaseWidget
              * -----------
              */
             Stat::make('UTILIDAD NETA', '$ '.number_format($utilidad_neta, 2, '.', ','))
-                ->description($rango)
+                ->description('hola')
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
             Stat::make('INGRESOS TOTALES', '$ '.number_format($ingresos_totales, 2, '.', ','))
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
             Stat::make('SERVICIOS', $total_servicio_realizados)
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
@@ -288,17 +288,17 @@ class StatsGeneral extends BaseWidget
              * -----------
              */
             Stat::make('I.U.R.H', '% '.number_format($utilidad_neta, 2, '.', ','))
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
             Stat::make('INGRESOS DIVISAS', '$ '.number_format($ingresos_divisas, 2, '.', ','))
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
             Stat::make('PROMEDIO VENTA SERVICIOS', '$ '.number_format($promedio_venta_servicios, 2, '.', ','))
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
@@ -309,17 +309,17 @@ class StatsGeneral extends BaseWidget
              * -----------
              */
             Stat::make('TASA RETENCIÓN CLIENTES', '% '.number_format($tasa_retencion_clientes, 2, '.', ','))
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
             Stat::make('% OCUPACIÓN CITAS', '% '.number_format($ocupacion_citas, 2, '.', ','))
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
             Stat::make('CLIENTES NUEVOS', $clientes_nuevos)
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
@@ -330,17 +330,17 @@ class StatsGeneral extends BaseWidget
              * -----------
              */
             Stat::make('INGRESO EN BOLIVARES', 'Bs. '.number_format($ingresos_bolivares, 2, '.', ','))
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
             Stat::make('SERVICIOS VIP', $servicios_vip)
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
             Stat::make('GATOS TOTALES', $gastos_totales)
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
@@ -351,17 +351,17 @@ class StatsGeneral extends BaseWidget
              * -----------
              */
             Stat::make('TASA AUSENCIA DE CLIENTE', '% '.number_format($tasa_aucencia_clientes, 2, '.', ','))
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
             Stat::make('NIVEL SATISFACCION DEL CLIENTE', '% '.number_format($tasa_satisfaccion_clientes, 2, '.', ','))
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
             Stat::make('C.U.P.I.Q.', $total_servicio_realizados)
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
@@ -372,17 +372,17 @@ class StatsGeneral extends BaseWidget
              * -----------
              */
             Stat::make('VENTA PRODUCTOS', '$ '.number_format($venta_productos, 2, '.', ','))
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
             Stat::make('INVENTARIO PRODUCTOS', '$ '.number_format($ingresos_totales, 2, '.', ','))
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
             Stat::make('COMISIONES', $total_servicio_realizados)
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
                 
@@ -393,7 +393,7 @@ class StatsGeneral extends BaseWidget
              * -----------
              */
             Stat::make('UC.U.P.I.M', '$ '.number_format($utilidad_neta, 2, '.', ','))
-                ->description($rango)
+                // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success'),
 

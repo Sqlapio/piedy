@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
+use Filament\Support\Assets\Css;
+use Filament\Support\Facades\FilamentAsset;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -30,5 +32,11 @@ class AppServiceProvider extends ServiceProvider
             'colorFive' => Color::hex('#F2F2F2'),
             'colorDisabled' => Color::hex('#A9A9A9'),
         ]);
+
+        FilamentAsset::register([
+            Css::make('custom-stylesheet', __DIR__ . '/../../resources/css/custom-stylesheet.css'),
+        ]);
     }
+
+    //Filament: Style customization using css hook classes not working?
 }

@@ -49,15 +49,17 @@ class VentaServicioChart extends ChartWidget
         //     $rangeStartDate = now()->subMonthNoOverflow()->startOfYear();
         //     $rangeEndDate = now()->endOfYear();
         // }
-        $start = $this->filters['startDate'];
-        $end = $this->filters['endDate'];
+        // $start = $this->filters['startDate'];
+        // $end = $this->filters['endDate'];
 
         $data = Trend::model(VentaServicio::class)
             ->between(
+                start: now()->startOfMonth(),
+                end: now()->endOfMonth(),
                 // start: $rangeStartDate ? $rangeStartDate : now()->startOfMonth(),
                 // end: $rangeEndDate ? $rangeEndDate : now()->endOfMonth(),
-                start: (isset($start)) ? Carbon::parse($start) : now()->startOfMonth(),
-                end: (isset($end)) ? Carbon::parse($end) : now()->endOfMonth(),
+                // start: (isset($start)) ? Carbon::parse($start) : now()->startOfMonth(),
+                // end: (isset($end)) ? Carbon::parse($end) : now()->endOfMonth(),
             )
             // ->perMonth()
             ->perDay()

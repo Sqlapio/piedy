@@ -40,8 +40,8 @@ class ClienteNuevoChart extends ChartWidget
 
     protected function getData(): array
     {
-        $start = $this->filters['startDate'];
-        $end = $this->filters['endDate'];
+        // $start = $this->filters['startDate'];
+        // $end = $this->filters['endDate'];
 
         // $activeFilter = $this->filter;
 
@@ -61,10 +61,10 @@ class ClienteNuevoChart extends ChartWidget
 
         $data1 = Trend::model(Frecuencia::class)
             ->between(
-                start: (isset($start)) ? Carbon::parse($start) : now()->startOfMonth(),
-                end: (isset($end)) ? Carbon::parse($end) : now()->endOfMonth(),
-                // start: now()->startOfMonth(),
-                // end: now()->endOfMonth(),
+                // start: (isset($start)) ? Carbon::parse($start) : now()->startOfMonth(),
+                // end: (isset($end)) ? Carbon::parse($end) : now()->endOfMonth(),
+                start: now()->startOfMonth(),
+                end: now()->endOfMonth(),
             )
 
             ->perDay()

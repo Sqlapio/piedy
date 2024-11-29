@@ -31,7 +31,8 @@ class Gasto extends Model
         'numero_factura',
         'numero_factura_gasto',
         'sucursal_id',
-        'proveedor_id'
+        'proveedor_id',
+        'fecha'
     ];
 
     /**

@@ -28,7 +28,7 @@
         </p>
         @foreach($mailData['detalle'] as $item)
         <h2 style="text-align: justify; margin-left: 20px;">
-            - {{ $item->servicio }}
+            - {{ $item->servicio->descripcion }}
             <br>
         </h2>
         @endforeach

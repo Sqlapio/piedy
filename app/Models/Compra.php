@@ -1,4 +1,4 @@
-<?php
+metodo<?php
 
 namespace App\Models;
 

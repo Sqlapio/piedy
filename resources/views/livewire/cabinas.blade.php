@@ -1,7 +1,7 @@
 
 <div>
     @livewire('notifications')
-    <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 mb-4 mt-4 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 mb-4 mt-4 gap-4">
         @foreach ($data as $item)
             <div id="accordion-collapse" data-accordion="collapse" class="w-full">
                 <h2 id="accordion-collapse-heading-{{ $item->id }}">

@@ -53,4 +53,24 @@ class DetalleAsignacion extends Model
     {
         return $this->belongsTo(Producto::class, 'producto_id', 'id');
     }
+
+    /**
+     * Get the user that owns the Disponible
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'empleado_id', 'id');
+    }
+
+    /**
+     * Get the user that owns the Disponible
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function disponible(): BelongsTo
+    {
+        return $this->belongsTo(Disponible::class, 'cod_asignacion', 'cod_asignacion');
+    }
 }

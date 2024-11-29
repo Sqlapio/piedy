@@ -68,7 +68,7 @@ class TableCliente extends Component implements HasForms, HasTable
                         ->live()
                         ->searchable(),
                     Select::make('servicio_id')
-                        ->label('servicio')
+                        ->label('Seleccione el Servício')
                         ->options(fn (Get $get): Collection => ServicioUser::query()
                         ->where('user_id', $get('user_id'))
                         ->pluck('descripcion', 'servicio_id'))

@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\NotificacionesEmail;
 use App\Models\Cliente;
-use Filament\Notifications\Notification;
+use App\Models\Disponible;
 use Illuminate\Http\Request;
+use App\Mail\NotificacionesEmail;
 use Illuminate\Support\Facades\Mail;
+use Filament\Notifications\Notification;
 
 class NotificacionesController extends Controller
 {
@@ -93,6 +94,7 @@ class NotificacionesController extends Controller
                 Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
             }
         } catch (\Throwable $th) {
+            dd($th);
             $message = $th->getMessage();
             dd('Error UtilsController.send_mail()', $message);
         }

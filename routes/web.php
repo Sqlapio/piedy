@@ -310,30 +310,22 @@ Route::get('/reporte/nomina', function () {
 /**FIN GRUPO DE RUTAS------------------------------------------------------------------------------------------*/
 
 Route::get('/ex', function () {
+    $servicios = Disponible::where('cod_asignacion', 'Pca-82592394')
+    ->with('detalleAsignaciones', 'user', 'cliente')
+    ->first();
 
-    // dd(Cita::where('hora', '09:00 am')->whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->count());
-    //Ruta de prueba
-    $array_hrs = [
-        '09:00 am',
-        '10:00 am',
-        '11:00 am',
-        '12:00 am',
-        '01:00 pm',
-        '02:00 pm',
-        '04:00 pm',
-        '06:00 pm',
-        '07:00 pm',
-        '08:00 pm',
-        '09:00 pm',
+    $type = 'servicio';
+    $mailData = [
+        'codigo'           => 'Pca-82592394',
+        'user_email'       => $servicios->user->email,
+        'user_fullname'    => $servicios->user->name,
+        'cliente_fullname' => $servicios->cliente->nombre,
+        'fecha_venta'      => $servicios->update_at,
+        'detalle'          => $servicios->detalleAsignaciones,
     ];
 
-    $nro_citas_agendadas = [];
+    // dd($mailData);
 
-    for ($i=0; $i < count($array_hrs); $i++) { 
-        # code...
-        $count = Cita::where('hora', $array_hrs[$i])->whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->count();
-        array_push($nro_citas_agendadas, $count);
-    }
+    NotificacionesController::notification($mailData, $type);
 
-    dd($nro_citas_agendadas);
 });

@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cliente;
-use App\Models\DetalleAsignacion;
-use App\Models\Disponible;
-use App\Models\Servicio;
+use Exception;
 use App\Models\User;
+use App\Models\Cliente;
 use App\Models\TasaBcv;
 use App\Models\Producto;
-use Exception;
-use Filament\Notifications\Notification;
+use App\Models\Servicio;
+use App\Models\Disponible;
 use Illuminate\Http\Request;
+use App\Models\DetalleAsignacion;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Filament\Notifications\Notification;
+use App\Http\Controllers\NotificacionesController;
 
 class AsignacionController extends Controller
 {
@@ -236,6 +237,28 @@ class AsignacionController extends Controller
                         'status' => 2,
                         ]);
                 }
+
+                /**
+                 * @param $cod_asignacion
+                 * Notificacion al empleado via email
+                 * ------------------------------------
+                 */
+                $servicios = Disponible::where('cod_asignacion', $cod_asignacion)
+                ->with('detalleAsignaciones', 'user', 'cliente')
+                ->first();
+
+                $type = 'servicio';
+                $mailData = [
+                    'codigo'           => $cod_asignacion ,
+                    'user_email'       => $servicios->user->email,
+                    'user_fullname'    => $servicios->user->name,
+                    'cliente_fullname' => $servicios->cliente->nombre,
+                    'fecha_venta'      => $servicios->update_at,
+                    'detalle'          => $servicios->detalleAsignaciones,
+                ];
+
+                NotificacionesController::notification($mailData, $type);
+                /*-------------------------------------------------------------------*/
 
                 return true;
 

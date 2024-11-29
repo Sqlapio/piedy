@@ -61,4 +61,26 @@ class Disponible extends Model
     {
         return $this->belongsTo(User::class, 'empleado_id', 'id');
     }
+
+    /**
+     * Get the user that owns the Disponible
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'empleado_id', 'id');
+    }
+
+    /**
+     * Get all of the detalles de asignaciones for the Disponible
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function detalleAsignaciones(): HasMany
+    {
+        return $this->hasMany(DetalleAsignacion::class, 'cod_asignacion', 'cod_asignacion');
+    }
+
+    
 }

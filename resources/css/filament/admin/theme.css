@@ -6,12 +6,39 @@
     @apply bg-black !important;
 } */
 
+/* Color de los iconos */
+/* #7B95A6 */
+
+/* Color de los label */
+/* [#D9C3C1] */
+
+
+
 .fi-sidebar-group-icon {
+    @apply text-[#7B95A6] !important;
+}
+
+.fi-dropdown-list-item-icon {
     @apply text-[#7B95A6] !important;
 }
 
 .fi-ta-header-cell {
     @apply bg-[#7B95A6] !important;
+}
+
+.fi-dropdown-list-item-label {
+    @apply text-[#D9C3C1] !important;
+    @apply font-extrabold ;
+}
+
+.fi-dropdown-header-label {
+    @apply text-black !important;
+    @apply font-bold ;
+}
+
+.fi-sidebar-group-label {
+    @apply text-black !important;
+    @apply font-bold ;
 }
 
 .fi-sidebar-item-label {
@@ -42,3 +69,7 @@
 .relative > svg {
     @apply text-[#7B95A6] !important;
 }
+
+/* .fi-btn {
+    @apply bg-[#F2F2F2] !important;
+} */

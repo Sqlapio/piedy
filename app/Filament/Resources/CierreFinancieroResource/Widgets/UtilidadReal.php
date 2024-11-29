@@ -45,7 +45,7 @@ class UtilidadReal extends BaseWidget
                 end: now(),
             )
             ->perMonth()
-            ->count('cliente');
+            ->count('cliente_id');
 
         $data_financiera = CierreFinanciero::latest()->first();
 

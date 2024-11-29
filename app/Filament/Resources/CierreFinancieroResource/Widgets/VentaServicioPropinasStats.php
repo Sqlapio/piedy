@@ -40,7 +40,7 @@ class VentaServicioPropinasStats extends BaseWidget
                 end: now(),
             )
             ->perMonth()
-            ->count('cliente');
+            ->count('cliente_id');
 
         $data_financiera = CierreFinanciero::latest()->first();
         $periodo = $data_financiera->fecha_ini.' '.$data_financiera->fecha_fin;

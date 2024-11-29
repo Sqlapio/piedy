@@ -93,4 +93,14 @@ class Cliente extends Model
     {
         return $this->hasMany(GiftCard::class, 'id', 'cliente_id');
     }
+
+    /**
+     * Get the user that owns the Cliente
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function ventaServicio(): BelongsTo
+    {
+        return $this->belongsTo(VentaServicio::class, 'cliente_id', 'id');
+    }
 }

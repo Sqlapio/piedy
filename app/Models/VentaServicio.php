@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class VentaServicio extends Model
 {
@@ -46,6 +47,16 @@ class VentaServicio extends Model
     public function detalle_asignacions():HasMany
     {
         return $this->hasMany(DetalleAsignacion::class, 'cod_asignacion', 'cod_asignacion');
+    }
+
+    /**
+     * Get the membresia associated with the Cliente
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function cliente(): HasOne
+    {
+        return $this->hasOne(Cliente::class, 'id', 'cliente_id');
     }
 
 }

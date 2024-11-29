@@ -4,6 +4,7 @@ use Carbon\Carbon;
 use App\Models\Cita;
 use App\Models\User;
 use App\Livewire\Login;
+use App\Models\Cliente;
 use App\Models\TasaBcv;
 use App\Models\Producto;
 use App\Models\Membresia;
@@ -310,22 +311,38 @@ Route::get('/reporte/nomina', function () {
 /**FIN GRUPO DE RUTAS------------------------------------------------------------------------------------------*/
 
 Route::get('/ex', function () {
-    $servicios = Disponible::where('cod_asignacion', 'Pca-82592394')
-    ->with('detalleAsignaciones', 'user', 'cliente')
-    ->first();
+    
+    $user_phone = Cliente::all();
 
-    $type = 'servicio';
-    $mailData = [
-        'codigo'           => 'Pca-82592394',
-        'user_email'       => $servicios->user->email,
-        'user_fullname'    => $servicios->user->name,
-        'cliente_fullname' => $servicios->cliente->nombre,
-        'fecha_venta'      => $servicios->update_at,
-        'detalle'          => $servicios->detalleAsignaciones,
-    ];
+        foreach ($user_phone as $value) {
 
-    // dd($mailData);
+            $params = array(
+                'token' => env('TOKEN_API_WHATSAPP'),
+                'to' => $value->telefono,
+                'image' => env('IMAGE_PROMOCION'),
+                'caption' => '¡Celebremos juntos el 1er Aniversario de Piedy!'
+            );
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('CURLOPT_URL_IMAGE'),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_SSL_VERIFYHOST => 0,
+                CURLOPT_SSL_VERIFYPEER => 0,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => http_build_query($params),
+                CURLOPT_HTTPHEADER => array(
+                    "content-type: application/x-www-form-urlencoded"
+                ),
+            ));
 
-    NotificacionesController::notification($mailData, $type);
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            curl_close($curl);
+        }
 
 });

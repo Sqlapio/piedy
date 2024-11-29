@@ -37,12 +37,12 @@ class VentaServicioResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                     
-                TextColumn::make('cliente_id')
+                TextColumn::make('cliente.nombre')
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->searchable()
                     ->sortable(),
                     
-                TextColumn::make('empleado_id')
+                TextColumn::make('user.name')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable()
                     ->sortable(),

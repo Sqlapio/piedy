@@ -2,7 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Models\FacturacionMUltiple;
+use App\Models\FacturacionMultiple;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables;
@@ -44,9 +44,9 @@ class TableTotalizar extends Component implements HasForms, HasTable
 
     public function mount()
     {
-        if(isset(FacturacionMultiple::where('sucursal_id', Auth::user()->sucursal_id)->first()->venta_total_usd)){
+        if (isset(FacturacionMultiple::where('sucursal_id', Auth::user()->sucursal_id)->first()->venta_total_usd)) {
             $this->valor = FacturacionMultiple::where('sucursal_id', Auth::user()->sucursal_id)->first()->venta_total_usd;
-        }else{
+        } else {
             $this->valor = 0;
         }
     }
@@ -188,7 +188,7 @@ class TableTotalizar extends Component implements HasForms, HasTable
                                                 $set('pago_bsd', $this->calculo($codigo, $state));
                                             })
                                             ->required()
-                                            ->helperText('Total en Dolares($): ' .$this->valor),
+                                            ->helperText('Total en Dolares($): ' . $this->valor),
 
                                         TextInput::make('pago_bsd')
                                             ->label('Monto(Bs.)')
@@ -275,36 +275,34 @@ class TableTotalizar extends Component implements HasForms, HasTable
                         $data_fm = json_decode($record->cod_asignacion);
                         for ($i = 0; $i < count($data_fm); $i++) {
                             //Dolares
-                        if ($data['metodo_pago'] != '' &&  $data['metodo_pago_dos'] == '') {
-                            $fm_dolares = CajaController::dolares(
-                                $data['pago_usd'],
-                                $data['metodo_pago'],
-                                $data_fm[$i],
-                                (isset($data['ref_zelle'])) ? $data['ref_zelle'] : null,
-                                (isset($data['propina_usd'])) ? $data['propina_usd'] : 0.00,
-                                (isset($data['propina_bsd'])) ? $data['propina_bsd'] : 0.00,
-                                (isset($data['pro_ref_debito_credito'])) ? $data['pro_ref_debito_credito'] : null,
-                                (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null,
-                                $metodoUsd = 'Usd'
-                            );
-                            
-                            if ($fm_dolares) {
-                                FacturacionMultiple::truncate();
-                                Notification::make()
-                                ->title('Notificacion:')
-                                ->icon('heroicon-o-shield-check')
-                                ->iconColor('success')
-                                ->body('La facturacion '.$data_fm[$i].' fue realizada con exito.')
-                                ->send();
-                                $this->redirectRoute('cabinas');
-                                
+                            if ($data['metodo_pago'] != '' &&  $data['metodo_pago_dos'] == '') {
+                                $fm_dolares = CajaController::dolares(
+                                    $data['pago_usd'],
+                                    $data['metodo_pago'],
+                                    $data_fm[$i],
+                                    (isset($data['ref_zelle'])) ? $data['ref_zelle'] : null,
+                                    (isset($data['propina_usd'])) ? $data['propina_usd'] : 0.00,
+                                    (isset($data['propina_bsd'])) ? $data['propina_bsd'] : 0.00,
+                                    (isset($data['pro_ref_debito_credito'])) ? $data['pro_ref_debito_credito'] : null,
+                                    (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null,
+                                    $metodoUsd = 'Usd'
+                                );
+
+                                if ($fm_dolares) {
+                                    FacturacionMultiple::truncate();
+                                    Notification::make()
+                                        ->title('Notificacion:')
+                                        ->icon('heroicon-o-shield-check')
+                                        ->iconColor('success')
+                                        ->body('La facturacion ' . $data_fm[$i] . ' fue realizada con exito.')
+                                        ->send();
+                                    $this->redirectRoute('cabinas');
+                                }
                             }
 
-                        }
-
-                        // //Pago en Bolivares metodos 2 - 4 - 5 - 7
+                            // //Pago en Bolivares metodos 2 - 4 - 5 - 7
                             if ($data['metodo_pago_dos'] != '' &&  $data['metodo_pago'] == '') {
-                                $fm_bolivares =CajaController::bolivares(
+                                $fm_bolivares = CajaController::bolivares(
                                     $data['metodo_pago_dos'],
                                     $data_fm[$i],
                                     (isset($data['ref_pago_movil'])) ? $data['ref_pago_movil'] : null,
@@ -320,48 +318,47 @@ class TableTotalizar extends Component implements HasForms, HasTable
                                 if ($fm_bolivares) {
                                     FacturacionMultiple::truncate();
                                     Notification::make()
-                                    ->title('Notificacion:')
-                                    ->icon('heroicon-o-shield-check')
-                                    ->iconColor('success')
-                                    ->body('La facturacion '.$data_fm[$i].' fue realizada con exito.')
-                                    ->send();
+                                        ->title('Notificacion:')
+                                        ->icon('heroicon-o-shield-check')
+                                        ->iconColor('success')
+                                        ->body('La facturacion ' . $data_fm[$i] . ' fue realizada con exito.')
+                                        ->send();
                                     $this->redirectRoute('cabinas');
                                 }
                             }
 
-                        // //Pago en Bolivares metodos 2 - 4 - 5 - 7
-                        if ($data['metodo_pago'] != '' && $data['metodo_pago_dos'] != '') {
-                            $monto_bsd = Str::replace(',', '.', (Str::replace('.', '', $data['pago_bsd'])));
+                            // //Pago en Bolivares metodos 2 - 4 - 5 - 7
+                            if ($data['metodo_pago'] != '' && $data['metodo_pago_dos'] != '') {
+                                $monto_bsd = Str::replace(',', '.', (Str::replace('.', '', $data['pago_bsd'])));
 
-                            $fm_multiMoneda =CajaController::multiple(
-                                $data['pago_usd'],
-                                $monto_bsd,
-                                $data_fm[$i],
-                                $data['metodo_pago'],
-                                $data['metodo_pago_dos'],
-                                (isset($data['ref_zelle'])) ? $data['ref_zelle'] : null,
-                                (isset($data['ref_pago_movil'])) ? $data['ref_pago_movil'] : null,
-                                (isset($data['ref_debito_credito'])) ? $data['ref_debito_credito'] : null,
-                                (isset($data['nro_tarjeta'])) ? $data['nro_tarjeta'] : null,
-                                (isset($data['propina_usd'])) ? $data['propina_usd'] : 0.00,
-                                (isset($data['propina_bsd'])) ? $data['propina_bsd'] : 0.00,
-                                (isset($data['pro_ref_debito_credito'])) ? $data['pro_ref_debito_credito'] : null,
-                                (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null,
+                                $fm_multiMoneda = CajaController::multiple(
+                                    $data['pago_usd'],
+                                    $monto_bsd,
+                                    $data_fm[$i],
+                                    $data['metodo_pago'],
+                                    $data['metodo_pago_dos'],
+                                    (isset($data['ref_zelle'])) ? $data['ref_zelle'] : null,
+                                    (isset($data['ref_pago_movil'])) ? $data['ref_pago_movil'] : null,
+                                    (isset($data['ref_debito_credito'])) ? $data['ref_debito_credito'] : null,
+                                    (isset($data['nro_tarjeta'])) ? $data['nro_tarjeta'] : null,
+                                    (isset($data['propina_usd'])) ? $data['propina_usd'] : 0.00,
+                                    (isset($data['propina_bsd'])) ? $data['propina_bsd'] : 0.00,
+                                    (isset($data['pro_ref_debito_credito'])) ? $data['pro_ref_debito_credito'] : null,
+                                    (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null,
 
-                            );
+                                );
 
-                            if ($fm_multiMoneda) {
-                                FacturacionMultiple::truncate();
-                                Notification::make()
-                                    ->title('Notificacion:')
-                                    ->icon('heroicon-o-shield-check')
-                                    ->iconColor('success')
-                                    ->body('La facturacion '.$data_fm[$i].' fue realizada con exito.')
-                                    ->send();
-                                $this->redirectRoute('cabinas');
+                                if ($fm_multiMoneda) {
+                                    FacturacionMultiple::truncate();
+                                    Notification::make()
+                                        ->title('Notificacion:')
+                                        ->icon('heroicon-o-shield-check')
+                                        ->iconColor('success')
+                                        ->body('La facturacion ' . $data_fm[$i] . ' fue realizada con exito.')
+                                        ->send();
+                                    $this->redirectRoute('cabinas');
+                                }
                             }
-                        }
-
                         }
                     }),
 
@@ -403,8 +400,8 @@ class TableTotalizar extends Component implements HasForms, HasTable
 
         //Total de la venta en dolares
         $total_usd = FacturacionMultiple::where('cod_fac_multiple', $codigo)
-        ->where('sucursal_id', Auth::user()->sucursal_id)
-        ->first()->venta_total_usd;
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->first()->venta_total_usd;
 
         $total_bsd = $total_usd * $tasa_bcv;
 
@@ -421,7 +418,6 @@ class TableTotalizar extends Component implements HasForms, HasTable
     {
         $valor = GiftCardController::validaGiftCard($codigo, $this->cod_asignacion);
         return $valor;
-
     }
 
     public function render(): View

@@ -18,12 +18,11 @@ use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
 
-class StatsGeneral extends BaseWidget
+class StatsGeneralDos extends BaseWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?int $sort = 1;
-
+    protected static ?int $sort = 3;
 
     protected function getStats(): array
     {
@@ -70,44 +69,8 @@ class StatsGeneral extends BaseWidget
         
         //----------------------------------------------------------------------------------------------------------------------------------
 
-        
-        //Ingresos totales
-        $ingresos_totales   = $ventas;
 
-        //Total de servicios realizado, tabla detalle_asignations
-        $total_servicio_realizados = DetalleAsignacion::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->count();
 
-        
-        /**
-         * Calculo del ingreso en divisas
-         * -----------------------------------------
-         * -----------------------------------------
-         */
-        //servicios: este calculo incluye el efectivo usd y el zelle
-        $serv_usd = VentaServicio::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('pago_usd');
-
-        //productos: este calculo incluye el efectivo usd y el zelle
-        $prod_usd = VentaProducto::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('montoUsd');
-
-        //Total
-        $ingresos_divisas = $serv_usd + $prod_usd;
-        //------------------------------------------------------------------------------------------------------------------
-
-        
-        /**
-         * Calculo del promedio venta servicios
-         * -----------------------------------------
-         * -----------------------------------------
-         */
-        //Numero de clientes
-        $total_clientes = VentaServicio::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])
-        ->groupBy('cliente_id')
-        ->count();
-
-        //Promedio de ventas por cliente
-        $promedio_venta_servicios = $ingresos_totales / 1;
-
-        //------------------------------------------------------------------------------------------------------------------
 
         
         /**
@@ -167,51 +130,6 @@ class StatsGeneral extends BaseWidget
         $clientes_nuevos = Cliente::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->count();
         //------------------------------------------------------------------------------------------------------------------
 
-
-        /**
-         * INGRESOS EN BOLIVARES
-         * -----------------------------------------
-         * -----------------------------------------
-         */
-        //Ingreso en bolivares por servicios
-        $ingresos_serv_bsd = VentaServicio::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('pago_bsd');
-
-        //Ingreso en bolivares por productos
-        $ingresos_prod_bsd = VentaProducto::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('montoBsd');
-
-        //Total
-        $ingresos_bolivares = $ingresos_serv_bsd + $ingresos_prod_bsd;
-        //------------------------------------------------------------------------------------------------------------------
-
-        /**
-         * SERVICIOS VIP
-         * -----------------------------------------
-         * -----------------------------------------
-         */
-        $servicios_vip = Disponible::whereBetween('servicio_id',[2,3,4,5,6,7,8])->count();
-        //------------------------------------------------------------------------------------------------------------------
-        
-
-        /**
-         * GASTOS TOTALES
-         * -----------------------------------------
-         * -----------------------------------------
-         */
-        //Calculo de los gastos registrados en la tabla de gastos
-        $gastos_usd = Gasto::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('monto_usd');
-        $gastos_bsd = Gasto::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('monto_bsd');
-
-        //Calculo de los gastos registrados en la tabla de compras
-        $gastos_cmp_usd = Gasto::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('monto_usd');
-        $gastos_cmp_bsd = Gasto::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('monto_bsd');
-
-        //Comisiones de gastos de bolivares a dolares
-        $conver_gastos_bsd_usd = $gastos_bsd / $tasa;
-        $conver_gastos_cmp_bsd = $gastos_cmp_bsd / $tasa;
-
-        $gastos_totales = $gastos_usd + $conver_gastos_bsd_usd + $conver_gastos_cmp_bsd;
-        //------------------------------------------------------------------------------------------------------------------
-
         
         /**
          * TASA DE AUSENCIA DE LOS CLIENTES
@@ -242,16 +160,6 @@ class StatsGeneral extends BaseWidget
 
 
         /**
-         * VENTA PRODUCTOS
-         * -----------------------------------------
-         * -----------------------------------------
-         */
-        //cantidad de clientes que estan por sobre el promedio de visitas
-        $venta_productos = VentaProducto::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('total_venta');
-        //------------------------------------------------------------------------------------------------------------------
-
-
-        /**
          * INVENTARIO PRODUCTOS
          * -----------------------------------------
          * -----------------------------------------
@@ -266,10 +174,10 @@ class StatsGeneral extends BaseWidget
         return [
 
             /**
-             * GRUPO 1:
+             * GRUPO 5:
              * -----------
              */
-            Stat::make('SERVICIOS', $total_servicio_realizados)
+            Stat::make('CLIENTES NUEVOS', $clientes_nuevos)
                 // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success')
@@ -277,7 +185,7 @@ class StatsGeneral extends BaseWidget
                     'class' => 'border-2 border-[#7B9EA6]',
                 ]),
 
-            Stat::make('SERVICIOS VIP', $servicios_vip)
+            Stat::make('TASA AUSENCIA DE CLIENTE', '% '.number_format($tasa_aucencia_clientes, 2, '.', ','))
                 // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success')
@@ -285,37 +193,7 @@ class StatsGeneral extends BaseWidget
                     'class' => 'border-2 border-[#7B9EA6]',
                 ]),
 
-            Stat::make('PROMEDIO VENTA SERVICIOS', '$ '.number_format($promedio_venta_servicios, 2, '.', ','))
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
-                
-            //--------------------------------------------------------------------------------------
-
-            /**
-             * GRUPO 2:
-             * -----------
-             */
-            Stat::make('INGRESOS DIVISAS', '$ '.number_format($ingresos_divisas, 2, '.', ','))
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
-
-            Stat::make('INGRESO EN BOLIVARES', 'Bs. '.number_format($ingresos_bolivares, 2, '.', ','))
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
-
-            Stat::make('INGRESOS TOTALES', '$ '.number_format($ingresos_totales, 2, '.', ','))
+            Stat::make('% OCUPACIÓN CITAS', '% '.number_format($ocupacion_citas, 2, '.', ','))
                 // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success')
@@ -326,10 +204,10 @@ class StatsGeneral extends BaseWidget
             //--------------------------------------------------------------------------------------
             
             /**
-             * GRUPO 3:
+             * GRUPO 6:
              * -----------
              */
-            Stat::make('VENTA PRODUCTOS', '$ '.number_format($venta_productos, 2, '.', ','))
+            Stat::make('I.U.R.H', '% '.number_format($utilidad_neta, 2, '.', ','))
                 // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success')
@@ -337,7 +215,7 @@ class StatsGeneral extends BaseWidget
                     'class' => 'border-2 border-[#7B9EA6]',
                 ]),
 
-            Stat::make('COMISIONES', $total_servicio_realizados)
+            Stat::make('TASA RETENCIÓN CLIENTES', '% '.number_format($tasa_retencion_clientes, 2, '.', ','))
                 // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success')
@@ -345,7 +223,7 @@ class StatsGeneral extends BaseWidget
                     'class' => 'border-2 border-[#7B9EA6]',
                 ]),
 
-            Stat::make('GATOS TOTALES', $gastos_totales)
+            Stat::make('NIVEL SATISFACCION DEL CLIENTE', '% '.number_format($tasa_satisfaccion_clientes, 2, '.', ','))
                 // ->description($rango)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success')
@@ -355,6 +233,36 @@ class StatsGeneral extends BaseWidget
                 
             //--------------------------------------------------------------------------------------
 
+            /**
+             * GRUPO :
+             * -----------
+             */
+            Stat::make('INVENTARIO PRODUCTOS', 0)
+                // ->description($rango)
+                ->descriptionIcon('heroicon-m-presentation-chart-line')
+                ->color('success')
+                ->extraAttributes([
+                    'class' => 'border-2 border-[#7B9EA6]',
+                ]),
+
+            Stat::make('C.U.P.I.Q.', 0)
+                // ->description($rango)
+                ->descriptionIcon('heroicon-m-presentation-chart-line')
+                ->color('success')
+                ->extraAttributes([
+                    'class' => 'border-2 border-[#7B9EA6]',
+                ]),
+
+            Stat::make('U.C.U.P.I.M', '$ '.number_format($utilidad_neta, 2, '.', ','))
+                // ->description($rango)
+                ->descriptionIcon('heroicon-m-presentation-chart-line')
+                ->color('success')
+                ->extraAttributes([
+                    'class' => 'border-2 border-[#7B9EA6]',
+                ]),
+
+                
+            //--------------------------------------------------------------------------------------
         ];
     }
 

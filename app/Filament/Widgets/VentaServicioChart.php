@@ -15,9 +15,12 @@ class VentaServicioChart extends ChartWidget
 
     protected static ?string $heading = 'Ventas';
 
-    protected static ?string $maxHeight = '300px';
+    // protected static ?string $maxHeight = '300px';
 
-    protected int | string | array $columnSpan = 'full';
+    // protected int | string | array $columnSpan = '3';
+
+    protected static ?int $sort = 4;
+
 
     // public ?string $filter = 'today';
 

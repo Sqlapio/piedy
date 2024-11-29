@@ -20,9 +20,9 @@ class ClienteNuevoChart extends ChartWidget
 
     protected static ?string $heading = 'Clientes Registrados(Nuevos) / Clientes Atendidos';
 
-    protected static ?string $maxHeight = '300px';
+    // protected static ?string $maxHeight = '300px';
 
-    protected int | string | array $columnSpan = 'full';
+    // protected int | string | array $columnSpan = '3';
 
     protected static ?int $sort = 4;
 
@@ -90,25 +90,25 @@ class ClienteNuevoChart extends ChartWidget
 
         return [
             'datasets' => [
-                // [
-                //     'label' => 'Clientes Nuevos',
-                //     'data' => $data1->map(fn (TrendValue $value) => $value->aggregate),
-                //     'backgroundColor' => '#22c55e',
-                //     'borderColor' => '#22c55e',
-                // ],
-                // [
-                //     'label' => 'Clientes Atendidos',
-                //     'data' => $data2->map(fn (TrendValue $value) => $value->aggregate),
-                //     'backgroundColor' => '#36A2EB',
-                //     'borderColor' => '#36A2EB',
-                // ],
-
                 [
-                    'label' => 'Ventas',
-                    'data' => $data3->map(fn ($data3) => $data3->cantidad),
+                    'label' => 'Clientes Nuevos',
+                    'data' => $data1->map(fn (TrendValue $value) => $value->aggregate),
+                    'backgroundColor' => '#22c55e',
+                    'borderColor' => '#22c55e',
+                ],
+                [
+                    'label' => 'Clientes Atendidos',
+                    'data' => $data2->map(fn (TrendValue $value) => $value->aggregate),
                     'backgroundColor' => '#36A2EB',
                     'borderColor' => '#36A2EB',
                 ],
+
+                // [
+                //     'label' => 'Ventas',
+                //     'data' => $data3->map(fn ($data3) => $data3->cantidad),
+                //     'backgroundColor' => '#36A2EB',
+                //     'borderColor' => '#36A2EB',
+                // ],
             ],
             'labels' => ($data3->map(fn ($data3) => $data3->producto_id)),
 

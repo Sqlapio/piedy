@@ -28,13 +28,12 @@ class TableFacturacionMultiple extends Component implements HasForms, HasTable
     public function mount()
     {
         $total_facturas = FacturacionMultiple::count();
-        if($total_facturas >  0){
+        if ($total_facturas >  0) {
             $this->ver_tabla = 'hidden';
         }
-        if($total_facturas = 0){
+        if ($total_facturas = 0) {
             $this->ver_tabla = '';
         }
-
     }
 
     #[On('delete-item')]
@@ -49,37 +48,37 @@ class TableFacturacionMultiple extends Component implements HasForms, HasTable
             ->heading('SERVICIOS POR FACTURAR')
             ->description('Tabla de servicios cerrados listo para facturar')
             ->query(Disponible::query()
-            ->where('sucursal_id', Auth::user()->sucursal_id)
-            ->where('status', 'cerrado')
-            ->where('status_fac_multiple', 1))
+                ->where('sucursal_id', Auth::user()->sucursal_id)
+                ->where('status', 'cerrado')
+                ->where('status_fac_multiple', 1))
             ->columns([
                 Tables\Columns\TextColumn::make('cod_asignacion')
-                ->label('Codigo de Asigancion')
-                ->icon('heroicon-o-hashtag')
-                ->color('colorOne')
-                ->searchable(),
+                    ->label('Codigo de Asigancion')
+                    ->icon('heroicon-o-hashtag')
+                    ->color('colorOne')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.nombre')
-                ->numeric()
-                ->sortable(),
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('empleado.name')
-                ->numeric()
-                ->sortable(),
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('acu_servicios')
-                ->label('Total Servicios($)')
-                ->color('colorTree')
-                ->money('USD')
-                ->sortable(),
+                    ->label('Total Servicios($)')
+                    ->color('colorTree')
+                    ->money('USD')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('acu_productos')
-                ->label('Total Productos($)')
-                ->color('colorOne')
-                ->money('USD')
-                ->sortable(),
+                    ->label('Total Productos($)')
+                    ->color('colorOne')
+                    ->money('USD')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('venta_total')
-                ->label('Total a Pagar')
-                ->icon('heroicon-c-currency-dollar')
-                ->color('success')
-                ->money('USD')
-                ->sortable(),
+                    ->label('Total a Pagar')
+                    ->icon('heroicon-c-currency-dollar')
+                    ->color('success')
+                    ->money('USD')
+                    ->sortable(),
             ])
             ->filters([
                 //
@@ -89,15 +88,15 @@ class TableFacturacionMultiple extends Component implements HasForms, HasTable
             ])
             ->bulkActions([
                 BulkAction::make('facturar')
-                ->label('Facturar')
-                ->icon('heroicon-c-cog-8-tooth')
-                ->color('success')
-                ->action(function (Collection $records) {
-                    $res = FacturacionMultipleController::totalizar_fac_multiple($records);
-                    if($res){
-                        $this->redirectRoute('facturar_cliente');
-                    }
-                }),
+                    ->label('Facturar')
+                    ->icon('heroicon-c-cog-8-tooth')
+                    ->color('success')
+                    ->action(function (Collection $records) {
+                        $res = FacturacionMultipleController::totalizar_fac_multiple($records);
+                        if ($res) {
+                            $this->redirectRoute('facturar_cliente');
+                        }
+                    }),
             ]);
     }
 

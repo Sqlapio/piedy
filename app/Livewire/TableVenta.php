@@ -21,16 +21,14 @@ class TableVenta extends Component implements HasForms, HasTable
     {
         return $table
             ->heading('VENTA DIARIA')
-            ->description('Tabla de ventas diarias. Las misma refleja ventas tanto de productos como servicios')
-            ->query(Venta::query())
+            ->description('Tabla de ventas diarias. Fecha: ' . date('d-m-Y'))
+            ->query(Venta::query()->whereBetween('created_at', [now()->startOfDay(), now()->endOfDay()]))
             ->columns([
                 Tables\Columns\TextColumn::make('cod_asignacion')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('total_venta')
-                    ->numeric()
+                    ->money('USD')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('fecha')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -41,12 +39,11 @@ class TableVenta extends Component implements HasForms, HasTable
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('responsable')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('metodo_pago_dolares')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('metodo_pago_bolivares')
+                    Tables\Columns\TextColumn::make('metodo_pago_dolares')
+                    ->description(fn (Venta $record): string => $record->metodo_pago_bolivares)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tasa_bcv')
-                    ->numeric()
+                    ->money('VES')
                     ->sortable(),
             ])
             ->filters([
@@ -59,7 +56,8 @@ class TableVenta extends Component implements HasForms, HasTable
                 Tables\Actions\BulkActionGroup::make([
                     //
                 ]),
-            ]);
+            ])
+            ->striped();
     }
 
     public function render(): View

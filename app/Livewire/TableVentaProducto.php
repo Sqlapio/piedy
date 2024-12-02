@@ -2,16 +2,17 @@
 
 namespace App\Livewire;
 
-use App\Models\VentaProducto;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
+use Carbon\Carbon;
 use Filament\Tables;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
 use Livewire\Component;
+use Filament\Tables\Table;
+use App\Models\VentaProducto;
 use Illuminate\Contracts\View\View;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
 
 class TableVentaProducto extends Component implements HasForms, HasTable
 {
@@ -22,8 +23,8 @@ class TableVentaProducto extends Component implements HasForms, HasTable
     {
         return $table
             ->heading('VENTA DE PRODUCTOS')
-            ->description('Tabla de ventas diarias. Las misma refleja ventas tanto de productos como servicios')
-            ->query(VentaProducto::query())
+            ->description('Tabla de venta de productos')
+            ->query(VentaProducto::query()->whereBetween('created_at', [now()->startOfDay(), now()->endOfDay()]))
             ->columns([
                 Tables\Columns\TextColumn::make('cod_asignacion')
                     ->searchable(),
@@ -100,7 +101,8 @@ class TableVentaProducto extends Component implements HasForms, HasTable
                 Tables\Actions\BulkActionGroup::make([
                     //
                 ]),
-            ]);
+            ])
+            ->striped();
     }
 
     public function render(): View

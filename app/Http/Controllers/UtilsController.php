@@ -749,4 +749,36 @@ class UtilsController extends Controller
 
     }
 
+    static function array_servicios($cod_asignacion) {
+        
+        try {
+
+            //Array de servicios
+            $array_servicios = [];
+            
+            //Servicios realizados por el tecnico
+            $servicios = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->where('status', 2)
+            ->get();
+            
+            for($i = 0; $i < count($servicios); $i++)
+            {
+                $descrip_serv = Servicio::find($servicios[$i]->servicio_id)->descripcion;
+                array_push($array_servicios, $descrip_serv);
+            }
+
+            return json_encode($array_servicios);
+            
+        } catch (\Throwable $th) {
+            Notification::make()
+            ->title('Notificacion: UtilsController::venta_servicio_usd()')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
+        }
+
+    }
+
 }

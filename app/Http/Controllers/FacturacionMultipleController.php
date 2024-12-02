@@ -14,7 +14,7 @@ class FacturacionMultipleController extends Controller
     {
         try {
 
-            $array_codigos = [];
+            
             $array_costos_usd = [];
             $tasa_bcv = TasaBcv::first()->tasa;
             for($i = 0; $i < count($records); $i++)
@@ -29,7 +29,7 @@ class FacturacionMultipleController extends Controller
                 ->first();
 
                 $update_status->status_fac_multiple = 2;
-                $update_status->save();
+                $update_status->save();$array_codigos = [];
             }
 
             $factura = new FacturacionMultiple();

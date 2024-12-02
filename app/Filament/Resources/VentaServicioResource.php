@@ -2,20 +2,21 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\VentaServicioResource\Pages;
-use App\Filament\Resources\VentaServicioResource\Widgets\VentaServicioComisionStats;
-use App\Filament\Resources\VentaServicioResource\Widgets\VentaServicioStats;
-use App\Models\VentaServicio;
 use Carbon\Carbon;
-use Filament\Forms\Components\DatePicker;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Columns\TextColumn;
+use App\Models\VentaServicio;
+use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\DatePicker;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Support\Enums\VerticalAlignment;
+use App\Filament\Resources\VentaServicioResource\Pages;
+use App\Filament\Resources\VentaServicioResource\Widgets\VentaServicioStats;
+use App\Filament\Resources\VentaServicioResource\Widgets\VentaServicioComisionStats;
 
 
 class VentaServicioResource extends Resource
@@ -56,6 +57,16 @@ class VentaServicioResource extends Resource
                     ->description(fn (VentaServicio $record): string => $record->metodo_pago_dos)
                     ->alignCenter()
                     ->searchable(),
+
+                TextColumn::make('servicios')
+                    ->label('Servicios')
+                    ->getStateUsing(function (VentaServicio $record) {
+                        // dd(json_decode($record->servicios))
+                        $array = json_decode($record->servicios);
+                        return $array;
+                    })
+                    ->alignCenter()
+                    ->listWithLineBreaks(),
 
                 TextColumn::make('membresia_exp')
                     ->label('Membresia EXP')

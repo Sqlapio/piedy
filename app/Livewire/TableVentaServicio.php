@@ -22,8 +22,8 @@ class TableVentaServicio extends Component implements HasForms, HasTable
     {
         return $table
             ->heading('VENTA DE SERVICIOS')
-            ->description('Tabla de ventas diarias. Las misma refleja ventas tanto de productos como servicios')
-            ->query(VentaServicio::query())
+            ->description('Tabla de venta de servicios')
+            ->query(VentaServicio::query()->whereBetween('created_at', [now()->startOfDay(), now()->endOfDay()]))
             ->columns([
                 Tables\Columns\TextColumn::make('cod_asignacion')
                     ->searchable(),
@@ -78,7 +78,8 @@ class TableVentaServicio extends Component implements HasForms, HasTable
                 Tables\Actions\BulkActionGroup::make([
                     //
                 ]),
-            ]);
+            ])
+            ->striped();
     }
 
     public function render(): View

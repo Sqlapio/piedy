@@ -1,4 +1,4 @@
-metodo<?php
+<?php
 
 namespace App\Models;
 
@@ -10,46 +10,46 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Compra extends Model
 {
-    use HasFactory;
+use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+/**
+* The attributes that are mass assignable.
+*
+* @var array<int, string>
+    */
     protected $fillable = [
-        'cod_compra',
-        'proveedor_id',
-        'descripcion',
-        'monto_usd',
-        'monto_bsd',
-        'forma_pago',
-        'fecha_compra',
-        'responsable',
-        'numero_factura_compra',
-        'observacion',
-        'metodo_pago',
-        'sucursal_id'
+    'cod_compra',
+    'proveedor_id',
+    'descripcion',
+    'monto_usd',
+    'monto_bsd',
+    'forma_pago',
+    'fecha_compra',
+    'responsable',
+    'numero_factura_compra',
+    'observacion',
+    'metodo_pago',
+    'sucursal_id'
     ];
 
     /**
-     * Get all of the proveedores for the Compra
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
+    * Get all of the proveedores for the Compra
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    */
     public function proveedor(): BelongsTo
     {
-        return $this->belongsTo(Proveedor::class);
+    return $this->belongsTo(Proveedor::class);
     }
 
     /**
-     * Get the compra that owns the Proveedor
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
+    * Get the compra that owns the Proveedor
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+    */
     public function sucursal(): HasOne
     {
-        return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
+    return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
     }
 
-}
+    }

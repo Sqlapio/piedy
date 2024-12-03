@@ -243,7 +243,6 @@ class CompraResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()
-                        ->withFilename(date('d-m-Y') . '-export-compras')
                 ]),
             ]);
     }

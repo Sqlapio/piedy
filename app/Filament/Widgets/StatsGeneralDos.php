@@ -28,8 +28,8 @@ class StatsGeneralDos extends BaseWidget
     {
         if($this->filters['activar'] == false)
         {
-            $rangeStartDate = now()->startOfMount();
-            $rangeEndDate = now()->endOfMount();
+            $rangeStartDate = now()->startOfMonth();
+            $rangeEndDate = now()->endOfMonth();
             $rango = date('d-m-Y', strtotime($rangeStartDate)).' al '.date('d-m-Y', strtotime($rangeEndDate));
 
         }else{

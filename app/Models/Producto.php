@@ -151,5 +151,15 @@ class Producto extends Model
         return $this->belongsTo(SalidaInventario::class, 'producto_id', 'id');
     }
 
+    /**
+     * Get all of the almacenes for the Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function almacenes(): HasMany
+    {
+        return $this->hasMany(Almacen::class);
+    }
+
 
 }

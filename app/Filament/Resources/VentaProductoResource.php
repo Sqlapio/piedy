@@ -2,18 +2,27 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\VentaProductoResource\Pages;
-use App\Filament\Resources\VentaProductoResource\RelationManagers;
-use App\Models\VentaProducto;
+use Carbon\Carbon;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\Summarizers\Sum;
-use Filament\Tables\Columns\TextColumn;
+use App\Models\Sucursal;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\VentaProducto;
+use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Columns\Summarizers\Sum;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\VentaProductoResource\Pages;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\VentaProductoResource\RelationManagers;
+
 
 class VentaProductoResource extends Resource
 {
@@ -24,6 +33,8 @@ class VentaProductoResource extends Resource
     protected static ?string $navigationGroup = 'Ventas';
 
     protected static ?string $navigationLabel = 'Productos';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -37,10 +48,10 @@ class VentaProductoResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('cod_asignacion')
-                ->label('Códido')
-                ->searchable()
-                    ->sortable(),
+                // TextColumn::make('cod_asignacion')
+                // ->label('Códido')
+                // ->searchable()
+                //     ->sortable(),
                 TextColumn::make('producto.descripcion')
                     ->icon('heroicon-s-shopping-bag')
                     ->numeric()
@@ -53,11 +64,15 @@ class VentaProductoResource extends Resource
                     ->numeric()
                     ->searchable()
                     ->sortable(),
-
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha de Venta')
                     ->icon('heroicon-s-calendar-days')
                     ->dateTime()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('costo_producto')
+                    ->label('Costo')
+                    ->money('USD')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('cantidad')
@@ -67,21 +82,14 @@ class VentaProductoResource extends Resource
                     ->numeric()
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('costo_producto')
-                    ->label('Costo')
-                    ->searchable()
-                    ->sortable(),
                 TextColumn::make('total_venta')
                     ->label('Total de venta')
-                    ->icon('heroicon-m-currency-dollar')
-                    ->color('success')
                     ->money('USD')
                         ->summarize(Sum::make()
                             ->money('USD')
                             ->label('Total($)')
                         )
                     ->sortable(),
-
                 //Campos Ocultos
                 TextColumn::make('metodo_pago')
                     ->label('Metodo de Pago')
@@ -100,7 +108,6 @@ class VentaProductoResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('comision_empleado')
                     ->label(('Comision Empleado($)'))
-                    ->icon('heroicon-m-currency-dollar')
                     ->color('colorTwo')
                     ->money('USD')
                     ->summarize(Sum::make()
@@ -111,7 +118,6 @@ class VentaProductoResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('comision_gerente')
                     ->label(('Comision Gerente($)'))
-                    ->icon('heroicon-m-currency-dollar')
                     ->color('colorTwo')
                     ->money('USD')
                     ->summarize(Sum::make()
@@ -159,14 +165,50 @@ class VentaProductoResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('desde'),
+                        DatePicker::make('hasta'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['desde'] ?? null,
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['hasta'] ?? null,
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['desde'] ?? null) {
+                            $indicators['desde'] = 'Venta desde ' . Carbon::parse($data['desde'])->toFormattedDateString();
+                        }
+                        if ($data['hasta'] ?? null) {
+                            $indicators['hasta'] = 'Venta hasta ' . Carbon::parse($data['hasta'])->toFormattedDateString();
+                        }
+
+                        return $indicators;
+                    }),      
             ])
+            ->filtersTriggerAction(
+                fn (Action $action) => $action
+                    ->button()
+                    ->label('Filtros'),
+            )
             ->actions([
                 // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                    ->exports([
+                        // Pass a string
+                        ExcelExport::make()->withFilename(date('d-m-Y') . '-ventas-productos'),
+                    ])
                 ]),
             ]);
     }

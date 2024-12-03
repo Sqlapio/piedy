@@ -2,28 +2,29 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\InventarioResource\Pages;
-use App\Filament\Resources\InventarioResource\RelationManagers;
-use App\Http\Controllers\InventarioController;
-use App\Http\Controllers\InventarioSucursalController;
-use App\Models\Inventario;
-use App\Models\Sucursal;
-use App\Models\Producto;
-use App\Models\InventarioSucursal;
 use Filament\Forms;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Table;
-use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use App\Models\Producto;
+use App\Models\Sucursal;
+use Filament\Forms\Form;
+use App\Models\Inventario;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Models\InventarioSucursal;
+use Filament\Forms\Components\Grid;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Tables\Actions\ActionGroup;
+use App\Http\Controllers\InventarioController;
+use App\Filament\Resources\InventarioResource\Pages;
+use App\Http\Controllers\InventarioSucursalController;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\InventarioResource\RelationManagers;
 
 class InventarioResource extends Resource
 {
@@ -56,11 +57,13 @@ class InventarioResource extends Resource
                             $uso = Producto::find($state)->uso;
                             $set('uso', $uso);
                         }),
+                        
                     TextInput::make('uso')
                         ->prefixIcon('heroicon-s-queue-list')
                         ->required(),
+                        
                     TextInput::make('min')
-                    ->label('Exitencia Minima en Almacen')
+                        ->label('Exitencia Minima en Almacen')
                         ->prefixIcon('heroicon-s-queue-list')
                         ->numeric()
                         ->required(),
@@ -230,9 +233,10 @@ class InventarioResource extends Resource
                 ])
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                ]),
             ]);
     }
 

@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\EntradaInventarioResource\Pages;
-use App\Filament\Resources\EntradaInventarioResource\RelationManagers;
-use App\Models\EntradaInventario;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Models\EntradaInventario;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\EntradaInventarioResource\Pages;
+use App\Filament\Resources\EntradaInventarioResource\RelationManagers;
 
 class EntradaInventarioResource extends Resource
 {
@@ -86,6 +87,8 @@ class EntradaInventarioResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                    ->withFilename(date('d-m-Y') . '-export-Entradas-Inv')
                 ]),
             ]);
     }

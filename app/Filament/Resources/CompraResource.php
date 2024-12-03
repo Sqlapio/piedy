@@ -2,25 +2,26 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CompraResource\Pages;
-use App\Filament\Resources\CompraResource\RelationManagers;
-use App\Models\Compra;
-use App\Models\MetodoPago;
-use App\Models\Iva;
-use App\Models\Sucursal;
 use Carbon\Carbon;
-use Filament\Tables\Actions\Action;
+use App\Models\Iva;
 use Filament\Forms;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
+use App\Models\Compra;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use App\Models\Sucursal;
+use Filament\Forms\Form;
+use App\Models\MetodoPago;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\CompraResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\CompraResource\RelationManagers;
 
 class CompraResource extends Resource
 {
@@ -241,6 +242,8 @@ class CompraResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                        ->withFilename(date('d-m-Y') . '-export-compras')
                 ]),
             ]);
     }

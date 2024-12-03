@@ -33,9 +33,6 @@ class AppServiceProvider extends ServiceProvider
             'colorDisabled' => Color::hex('#A9A9A9'),
         ]);
 
-        FilamentAsset::register([
-            Css::make('custom-stylesheet', __DIR__ . '/../../resources/css/custom-stylesheet.css'),
-        ]);
     }
 
     //Filament: Style customization using css hook classes not working?

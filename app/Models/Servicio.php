@@ -67,5 +67,15 @@ class Servicio extends Model
         return $this->hasMany(Cita::class, 'servicio_id', 'id');
     }
 
+    /**
+     * Get all of the comments for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function detalles(): HasMany
+    {
+        return $this->hasMany(DetalleAsignacion::class, 'servicio_id', 'id');
+    }
+
 
 }

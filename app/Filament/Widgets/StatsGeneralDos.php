@@ -26,17 +26,17 @@ class StatsGeneralDos extends BaseWidget
 
     protected function getStats(): array
     {
-        // if($this->filters['activar'] == false)
-        // {
-        //     $rangeStartDate = now()->startOfYear();
-        //     $rangeEndDate = now()->endOfYear();
-        //     $rango = date('d-m-Y', strtotime($rangeStartDate)).' al '.date('d-m-Y', strtotime($rangeEndDate));
+        if($this->filters['activar'] == false)
+        {
+            $rangeStartDate = now()->startOfMount();
+            $rangeEndDate = now()->endOfMount();
+            $rango = date('d-m-Y', strtotime($rangeStartDate)).' al '.date('d-m-Y', strtotime($rangeEndDate));
 
-        // }else{
-        //     $rangeStartDate = $this->filters['startDate'].' 00:00:00.000';
-        //     $rangeEndDate = $this->filters['endDate'].'. 23:59:59.000';
-        //     $rango = date('d-m-Y', strtotime($rangeStartDate)).' al '.date('d-m-Y', strtotime($rangeEndDate));
-        // }
+        }else{
+            $rangeStartDate = $this->filters['startDate'].' 00:00:00.000';
+            $rangeEndDate = $this->filters['endDate'].'. 23:59:59.000';
+            $rango = date('d-m-Y', strtotime($rangeStartDate)).' al '.date('d-m-Y', strtotime($rangeEndDate));
+        }
 
         /**
          * CALCULO PARA LA ULITIDAD NETA:
@@ -44,23 +44,23 @@ class StatsGeneralDos extends BaseWidget
          * -------------------------------
          */
         $tasa   = TasaBcv::first()->tasa;
-        $ventas = Venta::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('total_venta');
+        $ventas = Venta::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->sum('total_venta');
 
         //Comisiones almacenadas por la venta de servicios
-        $comisiones_serv_usd      = VentaServicio::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('comision_dolares');
-        $comisiones_serv_usd_gte  = VentaServicio::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('comision_gerente');
-        $comisiones_serv_bsd      = VentaServicio::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('comision_bolivares');
+        $comisiones_serv_usd      = VentaServicio::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->sum('comision_dolares');
+        $comisiones_serv_usd_gte  = VentaServicio::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->sum('comision_gerente');
+        $comisiones_serv_bsd      = VentaServicio::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->sum('comision_bolivares');
 
         //Conversion de los bolivares a dolares
         $conver_comisiones_serv_bsd_usd = $comisiones_serv_bsd / $tasa;
 
         //Comisiones almacenadas por la venta de productos
-        $comisiones_prod_emp_usd  = VentaProducto::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('comision_empleado');
-        $comisiones_prod_gte_usd  = VentaProducto::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('comision_gerente');
+        $comisiones_prod_emp_usd  = VentaProducto::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->sum('comision_empleado');
+        $comisiones_prod_gte_usd  = VentaProducto::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->sum('comision_gerente');
 
         //Calculo de los gastos
-        $gastos_usd = Gasto::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('monto_usd');
-        $gastos_bsd = Gasto::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->sum('monto_bsd');
+        $gastos_usd = Gasto::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->sum('monto_usd');
+        $gastos_bsd = Gasto::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->sum('monto_bsd');
 
         //Comisiones de gastos de bolivares a dolares
         $conver_gastos_bsd_usd = $gastos_bsd / $tasa;
@@ -114,7 +114,7 @@ class StatsGeneralDos extends BaseWidget
     
         for ($i=0; $i < count($array_hrs); $i++) { 
             # code...
-            $count = Cita::where('hora', $array_hrs[$i])->whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->count();
+            $count = Cita::where('hora', $array_hrs[$i])->whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->count();
             array_push($nro_citas_agendadas, $count);
         }
         
@@ -127,7 +127,7 @@ class StatsGeneralDos extends BaseWidget
          * -----------------------------------------
          * -----------------------------------------
          */
-        $clientes_nuevos = Cliente::whereBetween('created_at',[now()->startOfDay(), now()->endOfDay()])->count();
+        $clientes_nuevos = Cliente::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->count();
         //------------------------------------------------------------------------------------------------------------------
 
         

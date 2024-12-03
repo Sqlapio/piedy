@@ -2,18 +2,37 @@
 
 namespace App\Filament\Resources\VentaResource\Pages;
 
-use App\Filament\Resources\VentaResource;
 use Filament\Actions;
+use App\Filament\Resources\VentaResource;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Pages\Concerns\ExposesTableToWidgets;
 
 class ListVentas extends ListRecords
 {
+    use ExposesTableToWidgets;
+    
     protected static string $resource = VentaResource::class;
+
+    protected ?string $heading = 'Dashboard de Ventas';
+
+    protected int | string | array $columnSpan = [
+        'md' => 2,
+        'xl' => 2,
+    ];
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            // Actions\CreateAction::make(),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            VentaResource\Widgets\StatsVentas::class,
+            VentaResource\Widgets\ServiciosChart::class,
+            VentaResource\Widgets\ProductosChart::class,
         ];
     }
 }

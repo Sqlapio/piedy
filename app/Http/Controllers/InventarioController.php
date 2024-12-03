@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Inventario;
-use App\Models\InventarioSucursal;
-use App\Models\Producto;
-use App\Models\RecepcionInventario;
-use App\Models\Sucursal;
-use App\Models\SalidaInventario;
 use Exception;
-use Filament\Notifications\Notification;
+use App\Models\Producto;
+use App\Models\Sucursal;
+use App\Models\Inventario;
 use Illuminate\Http\Request;
+use App\Models\SalidaInventario;
+use App\Models\EntradaInventario;
+use App\Models\InventarioSucursal;
+use App\Models\RecepcionInventario;
 use Illuminate\Support\Facades\Auth;
+use Filament\Notifications\Notification;
 
 class InventarioController extends Controller
 {
@@ -45,7 +46,7 @@ class InventarioController extends Controller
 
         } catch (\Throwable $th) {
             Notification::make()
-                ->title('NOTIFICACIÓN')
+                ->title('NOTIFICACIÓN: InventarioController(reposicion)')
                 ->icon('heroicon-c-x-circle')
                 ->color('danger')
                 ->iconColor('danger')
@@ -78,7 +79,6 @@ class InventarioController extends Controller
             $recepcion = new RecepcionInventario();
             $recepcion->inventario_id = $inventario_id;
             $recepcion->producto_id = $producto->id;
-            $recepcion->sucursal_id = $sucursal_id;
             $recepcion->cantidad    = $cantidad;
             $recepcion->uso         = $producto->uso;
             $recepcion->responsable = Auth::user()->name;
@@ -103,9 +103,57 @@ class InventarioController extends Controller
 
 
         } catch (\Throwable $th) {
-            dd($th);
             Notification::make()
-                ->title('NOTIFICACIÓN')
+                ->title('NOTIFICACIÓN: InventarioController(asigancion_sucursal)')
+                ->icon('heroicon-c-x-circle')
+                ->color('danger')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+        }
+
+    }
+
+    public static function entrada_directa($producto_id, $uso, $min, $almacen_id, $cantidad)
+    {
+
+        try {
+
+            //Si el producto no exite en la sucursal
+            //creamos un nuevo inventario
+            $inventario = new Inventario();
+            $inventario->producto_id = $producto_id;
+            $inventario->almacen_id  = $almacen_id;
+            $inventario->cantidad    = $cantidad;
+            $inventario->uso         = $uso;
+            $inventario->min         = $min;
+            $inventario->responsable = Auth::user()->name;
+            $inventario->save();
+
+
+            //Creamos la entrada en la tabla de inventario
+            $entrada = new EntradaInventario();
+            $entrada->cod_movimiento    = 'Psi-'.random_int(11111, 99999);
+            $entrada->almacen_id        = $almacen_id;
+            $entrada->producto_id       = $producto_id;
+            $entrada->cantidad          = $cantidad;
+            $entrada->tipo_movimiento   = 'primera carga';
+            $entrada->responsable       = Auth::user()->name;
+            $entrada->save();
+
+            if($inventario->save() && $entrada->save()) {
+                Notification::make()
+                    ->title('El carga directa se realizo con éxito.')
+                    ->color('success')
+                    ->icon('heroicon-o-document-text')
+                    ->iconColor('success')
+                    ->send();
+            }
+
+
+        } catch (\Throwable $th) {
+            Notification::make()
+                ->title('NOTIFICACIÓN: InventarioController(entrada_directa)')
                 ->icon('heroicon-c-x-circle')
                 ->color('danger')
                 ->iconColor('danger')

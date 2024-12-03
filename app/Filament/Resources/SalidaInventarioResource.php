@@ -2,13 +2,15 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\SalidaInventarioResource\Pages;
-use App\Models\SalidaInventario;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\SalidaInventario;
+use Filament\Resources\Resource;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\SalidaInventarioResource\Pages;
 
 class SalidaInventarioResource extends Resource
 {
@@ -91,6 +93,11 @@ class SalidaInventarioResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                    ->exports([
+                        // Pass a string
+                        ExcelExport::make()->withFilename(date('d-m-Y') . '-ventas-servicios'),
+                    ])
                 ]),
             ]);
     }

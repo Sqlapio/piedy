@@ -51,4 +51,14 @@ class Almacen extends Model
     {
         return $this->belongsTo(SalidaInventario::class, 'almacen_id', 'id');
     }
+
+    /**
+     * Get the producto that owns the Almacen
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function producto(): BelongsTo
+    {
+        return $this->belongsTo(Producto::class);
+    }
 }

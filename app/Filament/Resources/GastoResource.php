@@ -2,22 +2,23 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\GastoResource\Pages;
-use App\Filament\Resources\GastoResource\RelationManagers;
-use App\Models\Gasto;
-use App\Models\Sucursal;
+use Carbon\Carbon;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
+use App\Models\Gasto;
 use Filament\Forms\Get;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Models\Sucursal;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
-use Carbon\Carbon;
-use Filament\Tables\Actions\Action;
+use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\GastoResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\GastoResource\RelationManagers;
 
 class GastoResource extends Resource
 {
@@ -244,6 +245,8 @@ class GastoResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                        ->withFilename(date('d-m-Y') . '-export-gastos')
                 ]),
             ]);
     }

@@ -2,16 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\MovimientoInventarioResource\Pages;
-use App\Filament\Resources\MovimientoInventarioResource\RelationManagers;
-use App\Models\MovimientoInventario;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Models\MovimientoInventario;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\MovimientoInventarioResource\Pages;
+use App\Filament\Resources\MovimientoInventarioResource\RelationManagers;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
+
 
 class MovimientoInventarioResource extends Resource
 {
@@ -78,9 +81,14 @@ class MovimientoInventarioResource extends Resource
                 // // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                    ->exports([
+                        // Pass a string
+                        ExcelExport::make()->withFilename(date('d-m-Y') . '-mov-inventario'),
+                    ])
+                ]),
             ]);
     }
 

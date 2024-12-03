@@ -17,6 +17,8 @@ use Filament\Support\Enums\VerticalAlignment;
 use App\Filament\Resources\VentaServicioResource\Pages;
 use App\Filament\Resources\VentaServicioResource\Widgets\VentaServicioStats;
 use App\Filament\Resources\VentaServicioResource\Widgets\VentaServicioComisionStats;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 
 class VentaServicioResource extends Resource
@@ -28,6 +30,8 @@ class VentaServicioResource extends Resource
     protected static ?string $navigationLabel = 'Servícios';
 
     protected static ?string $navigationGroup = 'Ventas';
+
+    protected static ?int $navigationSort = 2;
 
     public static function table(Table $table): Table
     {
@@ -208,6 +212,13 @@ class VentaServicioResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                    ->exports([
+                        // Pass a string
+                        ExcelExport::make()->withFilename(date('d-m-Y') . '-ventas-servicios'),
+                    ])
+                        // ->withFilename(date('d-m-Y') . '-export-VentaServicios')
+
                 ]),
             ])
             ->striped();

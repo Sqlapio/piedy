@@ -2,23 +2,32 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProductoResource\Pages;
-use App\Models\Producto;
-use App\Models\Categoria;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
-use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Set;
+use App\Models\Producto;
+use Filament\Forms\Form;
+use App\Models\Categoria;
+use App\Models\Inventario;
+use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Grid;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Columns\ImageColumn;
+// use Filament\Tables\Columns\Layout\Grid;
+use Filament\Forms\Components\FileUpload;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use App\Http\Controllers\InventarioController;
+use App\Filament\Resources\ProductoResource\Pages;
+use AnourValar\EloquentSerialize\Tests\Models\Post;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class ProductoResource extends Resource
 {
@@ -250,14 +259,64 @@ class ProductoResource extends Resource
                 'unidad'
             ])
             ->filters([
+                
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Action::make('Entrada')
+                    ->icon('heroicon-s-calendar-days')
+                    ->model(Producto::class)
+                        ->form([
+                            Section::make('Formulario')
+                                ->description(function (Producto $record) {
+                                    return 'Mover a sucursal: ' . $record->descripcion;
+                                })
+                                ->icon('heroicon-s-clipboard-document-list')
+                                ->schema([
+                                    Grid::make()
+                                    ->schema([
+                                        TextInput::make('min')
+                                            ->label('Exitencia Minima en Almacen')
+                                            ->prefixIcon('heroicon-s-queue-list')
+                                            ->numeric()
+                                            ->required(),
+                                        Select::make('almacen_id')
+                                            ->prefixIcon('heroicon-m-list-bullet')
+                                            ->relationship('almacenes', 'nombre')
+                                            ->searchable()
+                                            ->preload()
+                                            ->createOptionForm([
+                                                TextInput::make('nombre')
+                                                    ->required(),
+                                            ])
+                                            ->required(),
+                                        TextInput::make('cantidad')
+                                            ->prefixIcon('heroicon-s-queue-list')
+                                            ->required()
+                                            ->numeric(),
+                                    ]),
+                                ])
+                        ])->action(function (Producto $record, array $data) {
+                            InventarioController::entrada_directa(
+                                $record->id,
+                                $record->uso,
+                                $data['min'],
+                                $data['almacen_id'],
+                                $data['cantidad']
+                            );
+                        })
+                    
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                    ->exports([
+                        ExcelExport::make()->withFilename(date('d-m-Y') . '-ventas-servicios'),
+                    ])
                 ]),
             ])
             ->emptyStateActions([

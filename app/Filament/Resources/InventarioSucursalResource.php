@@ -2,16 +2,23 @@
 
 namespace App\Filament\Resources;
 
+use Carbon\Carbon;
+use Filament\Forms;
+use Filament\Tables;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Models\InventarioSucursal;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
+use Illuminate\Database\Eloquent\Builder;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\InventarioSucursalResource\Pages;
 use App\Filament\Resources\InventarioSucursalResource\RelationManagers;
-use App\Models\InventarioSucursal;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 
 class InventarioSucursalResource extends Resource
 {
@@ -91,15 +98,51 @@ class InventarioSucursalResource extends Resource
                 'sucursal.nombre',
             ])
             ->filters([
-                //
-            ])
-            ->actions([
+                Filter::make('created_at')
+                ->form([
+                    DatePicker::make('desde'),
+                    DatePicker::make('hasta'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['desde'] ?? null,
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['hasta'] ?? null,
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+                })
+                ->indicateUsing(function (array $data): array {
+                    $indicators = [];
+                    if ($data['desde'] ?? null) {
+                        $indicators['desde'] = 'Venta desde ' . Carbon::parse($data['desde'])->toFormattedDateString();
+                    }
+                    if ($data['hasta'] ?? null) {
+                        $indicators['hasta'] = 'Venta hasta ' . Carbon::parse($data['hasta'])->toFormattedDateString();
+                    }
 
+                    return $indicators;
+                }),
+            ])
+            ->filtersTriggerAction(
+                fn (Action $action) => $action
+                    ->button()
+                    ->label('Filtros'),
+            )
+            ->actions([
+                
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                    ->exports([
+                        // Pass a string
+                        ExcelExport::make()->withFilename(date('d-m-Y') . '-inv-sucursales'),
+                    ])
+                ]),
             ]);
     }
 

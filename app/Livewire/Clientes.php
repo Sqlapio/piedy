@@ -92,7 +92,7 @@ class Clientes extends Component
 
 
             Notification::make()
-                ->title('Cliente creado con éxito')
+                ->title('La entrega del bolso fue registrada con exito!!!')
                 ->success()
                 ->send();
 
@@ -107,6 +107,40 @@ class Clientes extends Component
             ->send();
         }
 
+    }
+
+    public function control($id) {
+
+        try {
+
+            $cliente = Cliente::find($id);
+
+            if($cliente->control == 1){
+                throw new Exception("El obsequio ya fue otorgado al dicho cliente", 401);
+            }else{
+                $cliente->control = 1;
+                $cliente->save();
+                
+            }
+    
+            Notification::make()
+            ->title('Cliente creado con éxito')
+            ->success()
+            ->send();
+    
+            $this->reset();
+            //code...
+        } catch (\Throwable $th) {
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-shield-check')
+            ->color('primary')
+            ->body($th->getMessage())
+            ->send();
+        }
+
+
+        
     }
 
     public function inicio(){

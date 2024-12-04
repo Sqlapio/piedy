@@ -314,9 +314,6 @@ class ProductoResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()
-                    ->exports([
-                        ExcelExport::make()->withFilename(date('d-m-Y') . '-ventas-servicios'),
-                    ])
                 ]),
             ])
             ->emptyStateActions([

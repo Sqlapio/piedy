@@ -6,9 +6,11 @@ use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Gasto;
+use App\Models\TasaBcv;
 use Filament\Forms\Get;
 use App\Models\Sucursal;
 use Filament\Forms\Form;
+use App\Models\MetodoPago;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
@@ -38,8 +40,9 @@ class GastoResource extends Resource
                 ->description('Formulario de gastos')
                 ->icon('heroicon-m-arrow-trending-down')
                 ->schema([
+
                     Forms\Components\TextInput::make('numero_factura')
-                        ->label('Nro. de Referencia')
+                        ->label('Nro. de Referencia del Gasto')
                         ->prefixIcon('heroicon-c-tag')
                         ->maxLength(255)
                         ->default(function () {
@@ -86,6 +89,22 @@ class GastoResource extends Resource
                             'dolares' => 'Dolares',
                             'bolivares' => 'Bolivares',
                         ]),
+                    
+                    Forms\Components\Select::make('metodo_pago')
+                        ->prefixIcon('heroicon-s-truck')
+                        ->label('Metodo de Pago')
+                        ->required()
+                        ->options(function (Get $get) {
+                            if($get('forma_pago') == 'dolares'){
+                                return MetodoPago::where('moneda', 'usd')->pluck('descripcion', 'id');
+                            }
+
+                            if($get('forma_pago') == 'bolivares'){
+                                return MetodoPago::where('moneda', 'bsd')->pluck('descripcion', 'id');
+                            }
+
+                        })
+                        ->live(),
 
                     Forms\Components\TextInput::make('monto_usd')
                         ->label('Monto en USD($)')
@@ -135,6 +154,10 @@ class GastoResource extends Resource
                             ->required(),
                         ])
                         ->required(),
+
+                    Forms\Components\TextInput::make('tasa_bcv')
+                        ->required()
+                        ->default(TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa),
                     
                     Forms\Components\Select::make('sucursal_id')
                         ->prefixIcon('heroicon-s-home')
@@ -144,6 +167,12 @@ class GastoResource extends Resource
                     Forms\Components\TextInput::make('responsable')
                         ->required()
                         ->default(auth()->user()->name),
+
+                    Forms\Components\Section::make()
+                        ->schema([
+                        Forms\Components\Textarea::make('observacion')
+                            ->label('Observaciones Relevante'),
+                        ])
                 ])
                 ->columns(2),
             ]);

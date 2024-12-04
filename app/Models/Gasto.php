@@ -32,7 +32,10 @@ class Gasto extends Model
         'numero_factura_gasto',
         'sucursal_id',
         'proveedor_id',
-        'fecha'
+        'fecha',
+        'metodo_pago',
+        'observacion',
+        'tasa_bcv'
     ];
 
     /**
@@ -53,5 +56,15 @@ class Gasto extends Model
     public function proveedor(): BelongsTo
     {
         return $this->belongsTo(Proveedor::class);
+    }
+
+    /**
+     * Get the resumen that owns the Gasto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function resumen_contables(): BelongsTo
+    {
+        return $this->belongsTo(ResumenContable::class, 'gasto_id', 'id');
     }
 }

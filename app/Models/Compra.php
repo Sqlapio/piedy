@@ -29,7 +29,8 @@ use HasFactory;
     'numero_factura_compra',
     'observacion',
     'metodo_pago',
-    'sucursal_id'
+    'sucursal_id',
+    'tasa_bcv'
     ];
 
     /**
@@ -39,7 +40,7 @@ use HasFactory;
     */
     public function proveedor(): BelongsTo
     {
-    return $this->belongsTo(Proveedor::class);
+        return $this->belongsTo(Proveedor::class);
     }
 
     /**
@@ -49,7 +50,17 @@ use HasFactory;
     */
     public function sucursal(): HasOne
     {
-    return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
+        return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
     }
 
+    /**
+     * Get the resumen that owns the Gasto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function resumen_contables(): BelongsTo
+    {
+        return $this->belongsTo(ResumenContable::class, 'compra_id', 'id');
     }
+
+}

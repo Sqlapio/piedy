@@ -2,14 +2,15 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CierreDiarioResource\Pages;
-use App\Models\CierreDiario;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\CierreDiario;
+use Filament\Resources\Resource;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\Summarizers\Sum;
+use App\Filament\Resources\CierreDiarioResource\Pages;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class CierreDiarioResource extends Resource
 {
@@ -141,6 +142,7 @@ class CierreDiarioResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
                 ]),
             ]);
     }

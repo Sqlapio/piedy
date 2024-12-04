@@ -7,12 +7,14 @@ use App\Models\Iva;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Compra;
+use App\Models\TasaBcv;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use App\Models\Sucursal;
 use Filament\Forms\Form;
 use App\Models\MetodoPago;
 use Filament\Tables\Table;
+use Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
@@ -147,6 +149,10 @@ class CompraResource extends Resource
                         ->prefixIcon('heroicon-m-calendar-days')
                         ->label('Fecha de Compra')
                         ->format('d-m-Y'),
+                    
+                    Forms\Components\TextInput::make('tasa_bcv')
+                        ->required()
+                        ->default(TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa),
                         
                     Forms\Components\Select::make('sucursal_id')
                             ->prefixIcon('heroicon-s-home')
@@ -171,6 +177,7 @@ class CompraResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Compra::query()->orderBy('created_at', 'desc'))
             ->columns([
                 Tables\Columns\TextColumn::make('proveedor.nombre')
                     ->icon('heroicon-s-truck')
@@ -180,8 +187,10 @@ class CompraResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('monto_usd')
+                    ->money('USD')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('monto_bsd')
+                    ->money('VES')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('forma_pago')
                     ->searchable(),

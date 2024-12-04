@@ -7,9 +7,9 @@ use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Filament\Actions\Action;
 use App\Models\ResumenContable;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,6 +24,10 @@ class ResumenContableResource extends Resource
     protected static ?string $model = ResumenContable::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $navigationGroup = '';
+
+    protected static ?int $navigationSort = 5;
 
     public static function table(Table $table): Table
     {

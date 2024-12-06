@@ -23,7 +23,9 @@ class TableVentaServicio extends Component implements HasForms, HasTable
         return $table
             ->heading('VENTA DE SERVICIOS')
             ->description('Tabla de venta de servicios')
-            ->query(VentaServicio::query()->whereBetween('created_at', [now()->startOfDay(), now()->endOfDay()]))
+            ->query(VentaServicio::query()
+            ->whereBetween('created_at', [now()->startOfDay(), now()->endOfDay()])
+            ->orderBy('created_at', 'desc'))
             ->columns([
                 Tables\Columns\TextColumn::make('cod_asignacion')
                     ->searchable(),
@@ -33,7 +35,9 @@ class TableVentaServicio extends Component implements HasForms, HasTable
                 Tables\Columns\TextColumn::make('metodo_pago')
                     ->description(fn (VentaServicio $record): string => $record->metodo_pago_dos)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('fecha_venta')
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Fecha')
+                    ->dateTime()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('total_USD')
                     ->label('Total Venta')

@@ -16,7 +16,10 @@ class FacturacionMultipleController extends Controller
 
             
             $array_costos_usd = [];
+            $array_codigos = [];
+            
             $tasa_bcv = TasaBcv::first()->tasa;
+            
             for($i = 0; $i < count($records); $i++)
             {
                 array_push($array_codigos, $records[$i]->cod_asignacion);
@@ -27,11 +30,12 @@ class FacturacionMultipleController extends Controller
                 ->where('status', 'cerrado')
                 ->where('status_fac_multiple', 1)
                 ->first();
-
+                
                 $update_status->status_fac_multiple = 2;
-                $update_status->save();$array_codigos = [];
+                $update_status->save();
             }
 
+            
             $factura = new FacturacionMultiple();
             $factura->cod_fac_multiple  = 'PFm-'.random_int(11111111, 99999999);
             $factura->cod_asignacion    = json_encode($array_codigos);

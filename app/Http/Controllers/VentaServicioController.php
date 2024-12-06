@@ -40,7 +40,6 @@ class VentaServicioController extends Controller
             $facturar->save();
 
         } catch (\Throwable $th) {
-            dd($th);
             Notification::make()
             ->title('Notificacion: VentaServicioController::venta_servicio_usd()')
             ->icon('heroicon-o-shield-check')

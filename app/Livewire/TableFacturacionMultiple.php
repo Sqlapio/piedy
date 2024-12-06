@@ -92,7 +92,9 @@ class TableFacturacionMultiple extends Component implements HasForms, HasTable
                     ->icon('heroicon-c-cog-8-tooth')
                     ->color('success')
                     ->action(function (Collection $records) {
+                        
                         $res = FacturacionMultipleController::totalizar_fac_multiple($records);
+                        
                         if ($res) {
                             $this->redirectRoute('facturar_cliente');
                         }

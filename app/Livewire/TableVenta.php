@@ -22,28 +22,40 @@ class TableVenta extends Component implements HasForms, HasTable
         return $table
             ->heading('VENTA DIARIA')
             ->description('Tabla de ventas diarias. Fecha: ' . date('d-m-Y'))
-            ->query(Venta::query()->whereBetween('created_at', [now()->startOfDay(), now()->endOfDay()]))
+            ->query(Venta::query()->whereBetween('created_at', [now()->startOfDay(), now()->endOfDay()])
+            ->orderBy('created_at', 'desc'))
             ->columns([
                 Tables\Columns\TextColumn::make('cod_asignacion')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('total_venta')
-                    ->money('USD')
-                    ->sortable(),
+                
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Fecha')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
+                    
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                    
                 Tables\Columns\TextColumn::make('responsable')
-                    ->searchable(),
-                    Tables\Columns\TextColumn::make('metodo_pago_dolares')
+                    ->label('Responsable')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
+                Tables\Columns\TextColumn::make('metodo_pago_dolares')
+                    ->label('Metodos de Pago')
                     ->description(fn (Venta $record): string => $record->metodo_pago_bolivares)
                     ->searchable(),
+                    
                 Tables\Columns\TextColumn::make('tasa_bcv')
+                    ->label('Tasa BCV')
                     ->money('VES')
+                    ->sortable(),
+                    
+                Tables\Columns\TextColumn::make('total_venta')
+                    ->label('Total de Venta')
+                    ->money('USD')
                     ->sortable(),
             ])
             ->filters([

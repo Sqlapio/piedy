@@ -122,7 +122,7 @@ class TableCliente extends Component implements HasForms, HasTable
                                         TextInput::make('nombre')
                                             ->label('Nombre y Apellido')
                                             ->prefixIcon('heroicon-c-users')
-                                            ->rules(['required', 'regex:/^[a-zA-Z]+$/u'])
+                                            ->rules(['required', 'regex:/^[A-Za-z0-9\s]+$/u'])
                                             ->validationMessages([
                                                 'required'  => 'Campo requerido',
                                                 'regex'    => 'Solo admite letras',

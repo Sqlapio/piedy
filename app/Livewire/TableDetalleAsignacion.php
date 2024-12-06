@@ -302,24 +302,28 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                                         ->schema([
                                                             TextInput::make('ref_zelle')
                                                                 ->numeric()
+                                                                ->mask('99999999')
                                                                 ->label('Referencia Zelle($)')
                                                                 ->prefixIcon('heroicon-s-hashtag')
                                                                 ->visible(fn(Get $get):bool => $get('metodo_pago') == 3)
                                                                 ->required(fn(Get $get): bool => ($get('metodo_pago') == 3) ? true : false),
                                                             TextInput::make('ref_pago_movil')
                                                                 ->numeric()
+                                                                ->mask('99999999')
                                                                 ->label('Referencia Pago Movil(Bs.)')
                                                                 ->prefixIcon('heroicon-s-hashtag')
                                                                 ->visible(fn(Get $get):bool => $get('metodo_pago_dos') == 5)
                                                                 ->required(fn(Get $get): bool => ($get('metodo_pago_dos') == 5) ? true : false),
                                                             TextInput::make('ref_debito_credito')
                                                                 ->numeric()
+                                                                ->mask('99999999')
                                                                 ->label('Referencia Debito/Credito')
                                                                 ->prefixIcon('heroicon-s-hashtag')
                                                                 ->visible(fn(Get $get):bool => $get('metodo_pago_dos') == 7)
                                                                 ->required(fn(Get $get): bool => ($get('metodo_pago_dos') == 7) ? true : false),
                                                             TextInput::make('nro_tarjeta')
                                                                 ->numeric()
+                                                                ->mask('99999999')
                                                                 ->label('Nro. Tarjeta Debito/Credito')
                                                                 ->prefixIcon('heroicon-s-hashtag')
                                                                 ->visible(fn(Get $get):bool => $get('metodo_pago_dos') == 7)
@@ -355,6 +359,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
 
                                                     TextInput::make('pro_ref_debito_credito')
                                                         ->numeric()
+                                                        ->mask('99999999')
                                                         ->label('Referencia Debito/Credito')
                                                         ->prefixIcon('heroicon-s-hashtag')
                                                         ->visible(fn(Get $get):bool => $get('is_bsd'))
@@ -362,6 +367,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
 
                                                     TextInput::make('pro_nro_tarjeta')
                                                         ->numeric()
+                                                        ->mask('99999999')
                                                         ->label('Nro. Tarjeta Debito/Credito')
                                                         ->prefixIcon('heroicon-s-hashtag')
                                                         ->visible(fn(Get $get):bool => $get('is_bsd'))
@@ -376,7 +382,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                             //Dolares
                             if($data['metodo_pago'] != '' &&  $data['metodo_pago_dos'] == '')
                             {
-                                CajaController::dolares(
+                                $dolares = CajaController::dolares(
                                     $data['pago_usd'],
                                     $data['metodo_pago'],
                                     $this->cod_asignacion,
@@ -389,12 +395,29 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
 
                                 );
 
+                                if($dolares){
+                                    Notification::make()
+                                    ->title('Notificacion')
+                                    ->icon('heroicon-o-shield-check')
+                                    ->iconColor('success')
+                                    ->body('Facturacion Exitosa. Codigo: '.$this->cod_asignacion)
+                                    ->send();
+                                    $this->redirectRoute('cabinas');
+                                }else{
+                                    Notification::make()
+                                    ->title('Notificacion')
+                                    ->icon('heroicon-o-shield-check')
+                                    ->iconColor('danger')
+                                    ->body('Error al facturar, favor comuniquese con el administrador del Sistema')
+                                    ->send();
+                                }
+
                             }
 
                             //Pago en Bolivares metodos 2 - 4 - 5 - 7
                             if($data['metodo_pago_dos'] != '' &&  $data['metodo_pago'] == '')
                             {
-                                CajaController::bolivares(
+                                $bolivares = CajaController::bolivares(
                                     $data['metodo_pago_dos'],
                                     $this->cod_asignacion,
                                     (isset($data['ref_pago_movil'])) ? $data['ref_pago_movil'] : null,
@@ -407,6 +430,23 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     $data['pago_bsd'],
                                 );
 
+                                if($bolivares){
+                                    Notification::make()
+                                    ->title('Notificacion')
+                                    ->icon('heroicon-o-shield-check')
+                                    ->iconColor('success')
+                                    ->body('Facturacion Exitosa. Codigo: '.$this->cod_asignacion)
+                                    ->send();
+                                    $this->redirectRoute('cabinas');
+                                }else{
+                                    Notification::make()
+                                    ->title('Notificacion')
+                                    ->icon('heroicon-o-shield-check')
+                                    ->iconColor('danger')
+                                    ->body('Error al facturar, favor comuniquese con el administrador del Sistema')
+                                    ->send();
+                                }
+
                             }
 
                             //Pago en Bolivares metodos 2 - 4 - 5 - 7
@@ -414,7 +454,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                             {
                                 $monto_bsd = Str::replace(',', '.', (Str::replace('.', '', $data['pago_bsd'])));
 
-                                CajaController::multiple(
+                                $multiple = CajaController::multiple(
                                     $data['pago_usd'],
                                     $monto_bsd,
                                     $this->cod_asignacion,
@@ -430,6 +470,23 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null,
 
                                 );
+
+                                if($multiple){
+                                    Notification::make()
+                                    ->title('Notificacion')
+                                    ->icon('heroicon-o-shield-check')
+                                    ->iconColor('success')
+                                    ->body('Facturacion Exitosa. Codigo: '.$this->cod_asignacion)
+                                    ->send();
+                                    $this->redirectRoute('cabinas');
+                                }else{
+                                    Notification::make()
+                                    ->title('Notificacion')
+                                    ->icon('heroicon-o-shield-check')
+                                    ->iconColor('danger')
+                                    ->body('Error al facturar, favor comuniquese con el administrador del Sistema')
+                                    ->send();
+                                }
 
                             }
 

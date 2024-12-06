@@ -33,11 +33,11 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
-        'tipo_usuario',
-        'area_trabajo',
-        'tipo_servicio_id',
         'salario',
-        'sucursal_id'
+        'sucursal_id',
+        'rol_id',
+        'cedula',
+        'telefono'
     ];
 
     /**
@@ -187,7 +187,7 @@ class User extends Authenticatable implements FilamentUser
      */
     public function rol(): HasOne
     {
-        return $this->hasOne(Rol::class, 'rol_id', 'id');
+        return $this->hasOne(Rol::class, 'id', 'rol_id');
     }
 
     /**

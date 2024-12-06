@@ -64,17 +64,20 @@ class VentaProductoResource extends Resource
                     ->numeric()
                     ->searchable()
                     ->sortable(),
+                    
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha de Venta')
                     ->icon('heroicon-s-calendar-days')
                     ->dateTime()
                     ->searchable()
                     ->sortable(),
+                    
                 TextColumn::make('costo_producto')
                     ->label('Costo')
                     ->money('USD')
                     ->searchable()
                     ->sortable(),
+
                 Tables\Columns\TextColumn::make('cantidad')
                     ->label('Cantidad')
                     ->icon('heroicon-o-square-3-stack-3d')
@@ -82,6 +85,13 @@ class VentaProductoResource extends Resource
                     ->numeric()
                     ->searchable()
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('sucursal.nombre')
+                    ->icon('heroicon-s-building-office-2')
+                    ->color('colorTree')
+                    ->numeric()
+                    ->searchable(),
+
                 TextColumn::make('total_venta')
                     ->label('Total de venta')
                     ->money('USD')

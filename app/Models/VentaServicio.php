@@ -59,4 +59,14 @@ class VentaServicio extends Model
         return $this->hasOne(Cliente::class, 'id', 'cliente_id');
     }
 
+    /**
+     * Get the sucursal associated with the VentaProducto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function sucursal(): HasOne
+    {
+        return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
+    }
+
 }

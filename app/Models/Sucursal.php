@@ -154,4 +154,34 @@ class Sucursal extends Model
         return $this->belongsTo(ResumenContable::class, 'id', 'sucursal_id');
     }
 
+    /**
+     * Get the entradaInventario that owns the Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function venta(): BelongsTo
+    {
+        return $this->belongsTo(Venta::class, 'sucursal_id', 'id');
+    }
+
+    /**
+     * Get the user that owns the Sucursal
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function ventaProducto(): BelongsTo
+    {
+        return $this->belongsTo(VentaProducto::class, 'sucursal_id', 'id');
+    }
+
+    /**
+     * Get the user that owns the Sucursal
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function ventaServicio(): BelongsTo
+    {
+        return $this->belongsTo(VentaServicio::class, 'sucursal_id', 'id');
+    }
+
 }

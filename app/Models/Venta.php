@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Venta extends Model
 {
@@ -30,7 +31,8 @@ class Venta extends Model
         'metodo_pago_bolivares',
         'pago_usd',
         'pago_bsd',
-        'tasa_bcv'
+        'tasa_bcv',
+        'sucursal_id'
     ];
 
     // Una Venta pertenece a un Cliente
@@ -54,6 +56,14 @@ class Venta extends Model
     {
         return $this->belongsTo(Comision::class, 'comision_id', 'id');
     }
+
+    /**
+     * Get the user associated with the Venta
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function sucursal(): HasOne
+    {
+        return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
+    }
 }
-
-

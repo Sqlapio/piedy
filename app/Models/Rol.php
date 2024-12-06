@@ -23,7 +23,7 @@ class Rol extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id', 'rol_id');
+        return $this->belongsTo(User::class, 'rol_id', 'id');
     }
 
     /**

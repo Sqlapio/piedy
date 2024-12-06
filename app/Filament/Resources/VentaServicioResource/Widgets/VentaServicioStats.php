@@ -2,21 +2,12 @@
 
 namespace App\Filament\Resources\VentaServicioResource\Widgets;
 
-use App\Filament\Resources\VentaServicioResource;
 use App\Filament\Resources\VentaServicioResource\Pages\ListVentaServicios;
-use App\Models\Cliente;
-use App\Models\Disponible;
-use App\Models\Producto;
 use App\Models\VentaServicio;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Form;
 use Filament\Widgets\Concerns\InteractsWithPageTable;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Flowframe\Trend\Trend;
-use Flowframe\Trend\TrendValue;
-use Illuminate\Support\Facades\DB;
 
 class VentaServicioStats extends BaseWidget
 {

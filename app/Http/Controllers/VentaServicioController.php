@@ -40,8 +40,9 @@ class VentaServicioController extends Controller
             $facturar->save();
 
         } catch (\Throwable $th) {
+            dd($th);
             Notification::make()
-            ->title('Notificacion: UtilsController::venta_servicio_usd()')
+            ->title('Notificacion: VentaServicioController::venta_servicio_usd()')
             ->icon('heroicon-o-shield-check')
             ->iconColor('danger')
             ->body($th->getMessage())
@@ -81,7 +82,7 @@ class VentaServicioController extends Controller
 
         } catch (\Throwable $th) {
             Notification::make()
-            ->title('Notificacion: UtilsController::venta_servicio_bsd()')
+            ->title('Notificacion: VentaServicioController::venta_servicio_bsd()')
             ->icon('heroicon-o-shield-check')
             ->iconColor('danger')
             ->body($th->getMessage())
@@ -125,7 +126,7 @@ class VentaServicioController extends Controller
 
         } catch (\Throwable $th) {
             Notification::make()
-            ->title('Notificacion: UtilsController::venta_servicio_multiple()')
+            ->title('Notificacion: VentaServicioController::venta_servicio_multiple()')
             ->icon('heroicon-o-shield-check')
             ->iconColor('danger')
             ->body($th->getMessage())

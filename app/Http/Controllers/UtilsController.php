@@ -761,10 +761,10 @@ class UtilsController extends Controller
             ->where('sucursal_id', Auth::user()->sucursal_id)
             ->where('status', 2)
             ->get();
-            
+
             for($i = 0; $i < count($servicios); $i++)
             {
-                $descrip_serv = Servicio::find($servicios[$i]->servicio_id)->descripcion;
+                $descrip_serv = Servicio::where('id', $servicios[$i]->servicio_id)->first()->descripcion;
                 array_push($array_servicios, $descrip_serv);
             }
 
@@ -772,7 +772,7 @@ class UtilsController extends Controller
             
         } catch (\Throwable $th) {
             Notification::make()
-            ->title('Notificacion: UtilsController::venta_servicio_usd()')
+            ->title('Notificacion: UtilsController::array_servicios()')
             ->icon('heroicon-o-shield-check')
             ->iconColor('danger')
             ->body($th->getMessage())

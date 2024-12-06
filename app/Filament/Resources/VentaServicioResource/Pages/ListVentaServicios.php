@@ -50,10 +50,10 @@ class ListVentaServicios extends ListRecords
 
         return [
 
-            'Todo' => ListRecords\Tab::make('Todo'),
+            'Todo' => ListRecords\Tab::make('Todo')->query(fn ($query) => $query->orderBy('created_at', 'desc')),
             'Mes' => Tab::make()
-                ->query(fn ($query) => $query->whereBetween('created_at', [$desde_mes, $hasta_mes]))
-                ->badge(VentaServicio::query()->whereBetween('created_at',[$desde_mes, $hasta_mes])->count()),
+                ->query(fn ($query) => $query->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]))
+                ->badge(VentaServicio::query()->whereBetween('created_at',[now()->startOfMonth(), now()->endOfMonth()])->count()),
             'Hoy' => Tab::make()
                 ->query(fn ($query) => $query->whereDate('created_at', now()->toDateString()))
                 ->badge(VentaServicio::query()->whereDate('created_at', now()->toDateString())->count()),

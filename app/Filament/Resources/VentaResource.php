@@ -35,6 +35,7 @@ class VentaResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Venta::query()->orderBy('created_at', 'desc'))
             ->columns([
                 Tables\Columns\TextColumn::make('cod_asignacion')
                 ->label('Codigo Asignacion')

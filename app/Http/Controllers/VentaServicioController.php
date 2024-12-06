@@ -36,6 +36,7 @@ class VentaServicioController extends Controller
             $facturar->pro_ref_debito_credito   = isset($pro_ref_debito_credito) ? $pro_ref_debito_credito : 'N/A';
             $facturar->pro_nro_tarjeta          = isset($pro_nro_tarjeta) ? $pro_nro_tarjeta : 'N/A';
             $facturar->servicios                = UtilsController::array_servicios($cod_asignacion);
+            $facturar->sucursal_id              = Auth::user()->sucursal_id;
             $facturar->save();
 
         } catch (\Throwable $th) {
@@ -75,6 +76,7 @@ class VentaServicioController extends Controller
             $facturar->pro_ref_debito_credito   = isset($pro_ref_debito_credito) ? $pro_ref_debito_credito : 'N/A';
             $facturar->pro_nro_tarjeta          = isset($pro_nro_tarjeta) ? $pro_nro_tarjeta : 'N/A';
             $facturar->servicios                = UtilsController::array_servicios($cod_asignacion);
+            $facturar->sucursal_id              = Auth::user()->sucursal_id;
             $facturar->save();
 
         } catch (\Throwable $th) {
@@ -118,6 +120,7 @@ class VentaServicioController extends Controller
             $facturar->pro_ref_debito_credito   = isset($pro_ref_debito_credito) ? $pro_ref_debito_credito : 'N/A';
             $facturar->pro_nro_tarjeta          = isset($pro_nro_tarjeta) ? $pro_nro_tarjeta : 'N/A';
             $facturar->servicios                = UtilsController::array_servicios($cod_asignacion);
+            $facturar->sucursal_id              = Auth::user()->sucursal_id;
             $facturar->save();
 
         } catch (\Throwable $th) {

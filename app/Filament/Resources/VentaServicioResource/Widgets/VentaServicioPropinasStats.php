@@ -43,22 +43,13 @@ class VentaServicioPropinasStats extends BaseWidget
             Stat::make('PROPINAS EN DOLARES ($)', $this->getPageTableQuery()->sum('propina_usd'))
                 ->description('Total acumulado propinas en dolares')
                 ->descriptionIcon('heroicon-m-user-group')
-                ->color('success')
-                ->chart(
-                    $data
-                        ->map(fn (TrendValue $value) => $value->aggregate)
-                        ->toArray()
-                ),
+                ->color('success'),
 
             Stat::make('PROPINAS EN BOLIVARES (BS.)', $this->getPageTableQuery()->sum('propina_bsd'))
                 ->description('Total acumulado propinas en bolivares')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('info')
-                ->chart(
-                    $data
-                        ->map(fn (TrendValue $value) => $value->aggregate)
-                        ->toArray()
-                ),
+                
         ];
     }
 

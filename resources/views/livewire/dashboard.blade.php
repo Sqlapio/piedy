@@ -250,8 +250,8 @@ use App\Models\TasaBcv as ModelsTasaBcv;
     <!-- Menu para los empleados -->
     @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 2)
         {{-- Cabinas --}}
-        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-2 px-3">
-            <div wire:click="valida_tasa({{ 3 }})" class="cursor-pointer p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/primer-plano-fondo-abstracto-colorido-triangulos-ai-generativo_561855-19933.jpg');background-size: cover;">
+        <div class="px-3 max-w-96">
+            <div wire:click="valida_tasa({{ 3 }})" class="max-w-96 cursor-pointer p-6 rounded-lg" style="background-image: url('https://img.freepik.com/fotos-premium/primer-plano-fondo-abstracto-colorido-triangulos-ai-generativo_561855-19933.jpg');background-size: cover;">
                 <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 01-1.125-1.125v-3.75zM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-8.25zM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-2.25z" />

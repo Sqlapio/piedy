@@ -36,7 +36,7 @@ class VentaServicioResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            // ->query(VentaServicio::query()->where('status', '1'))
+            ->query(VentaServicio::query()->orderBy('created_at', 'desc'))
             ->columns([
                 TextColumn::make('cod_asignacion')
                     ->sortable()

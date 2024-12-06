@@ -27,7 +27,11 @@
             </div>
         @endforeach
     </div>
-    <x-menu_table/>
+    @if(Auth::user()->rol_id != 1 || Auth::user()->rol_id != 2)
+        <x-menu-tecnico/>
+    @else
+        <x-menu_table/>
+    @endif
 </div>
 
 

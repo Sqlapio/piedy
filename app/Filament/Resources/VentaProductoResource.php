@@ -47,6 +47,7 @@ class VentaProductoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(VentaProducto::query()->orderBy('created_at', 'desc'))
             ->columns([
                 // TextColumn::make('cod_asignacion')
                 // ->label('Códido')

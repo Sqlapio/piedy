@@ -161,5 +161,10 @@ class Producto extends Model
         return $this->hasMany(Almacen::class);
     }
 
+    public function asignarProducto():BelongsTo
+    {
+        return $this->belongsTo(AsignarProducto::class, 'producto_id', 'id');
+    }
+
 
 }

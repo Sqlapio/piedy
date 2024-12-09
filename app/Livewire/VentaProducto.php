@@ -133,6 +133,9 @@ class VentaProducto extends Component
 
                 $this->dispatch('truncate-item-car');
 
+                //Evento para actualizar la tabla de productos
+                $this->dispatch('update-table-productos');
+
                 $this->notification_success('La venta se realizo de forma exitosa');
 
             }else{
@@ -187,6 +190,9 @@ class VentaProducto extends Component
 
                 $this->dispatch('truncate-item-car');
 
+                //Evento para actualizar la tabla de productos
+                $this->dispatch('update-table-productos');
+
                 $this->notification_success('La venta se realizo de forma exitosa');
 
             }else{
@@ -239,6 +245,9 @@ class VentaProducto extends Component
                 $this->reset();
 
                 $this->dispatch('truncate-item-car');
+
+                //Evento para actualizar la tabla de productos
+                $this->dispatch('update-table-productos');
 
                 $this->notification_success('La venta se realizo de forma exitosa');
 

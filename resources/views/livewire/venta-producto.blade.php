@@ -67,11 +67,11 @@
                         <div class="grid grid-cols-2 gap-2 {{ ($metodoUsd != '' || $metodoBsd != '') ? 'block' : 'hidden' }}">
                             <div class="py-2">
                                 <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Monto en Dolares($)</p>
-                                <x-inputs.currency icon="currency-dollar" wire:keydown.enter="calculo($event.target.value)" wire:model.live="montoUsd" value="" placeholder="0.00" />
+                                <x-inputs.currency  wire:keydown.enter="calculo($event.target.value)" wire:model.live="montoUsd" value="" placeholder="0.00" />
                             </div>
                             <div class="py-2">
                                 <p class="text-sm font-normal text-gray-500 dark:text-gray-400 ">Monto en Bolivares(Bs)</p>
-                                <x-input icon="calculator" wire:model.live="montoBsd" value="{{ $montoBsd }}" placeholder="0.00" disabled/>
+                                <x-input  wire:model.live="montoBsd" value="{{ $montoBsd }}" placeholder="0.00" disabled/>
                             </div>
                         </div>
 

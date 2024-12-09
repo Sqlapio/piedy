@@ -6,7 +6,6 @@
     <p class="text-sm mb-2 font-normal text-gray-500 dark:text-gray-400">Costo del Dolar en Bolivares</p>
                 <div>
                     <x-inputs.currency
-                        prefix="Bs"
                         thousands="."
                         decimal=","
                         precision="4"

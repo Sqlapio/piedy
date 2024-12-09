@@ -147,6 +147,13 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     })->name('cierre_diario');
 
     /**
+     * Rutas para Materiales
+     */
+    Route::get('/material', function () {
+        return view('asignar-material');
+    })->name('material');
+
+    /**
      * Ruta para cierre general
      * ejecutado solo por el gerente de la tienda
      */

@@ -2,44 +2,45 @@
 
 namespace App\Livewire;
 
-use App\Http\Controllers\AsignacionController;
-use App\Http\Controllers\GiftCardController;
-use App\Http\Controllers\CajaController;
-use App\Models\Servicio;
-use App\Models\Producto;
-use App\Models\DetalleAsignacion;
-use App\Models\Disponible;
-use App\Models\VentaServicio;
-use App\Models\MetodoPago;
-use App\Models\TasaBcv;
-use App\Models\MetodoPrepago;
-use App\Models\InventarioSucursal;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
+use Closure;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
-use Livewire\Component;
-use Illuminate\Contracts\View\View;
-use Filament\Forms\Components\Select;
-use Filament\Tables\Actions\ActionGroup;
-use Illuminate\Support\Facades\Auth;
-use Filament\Support\Enums\ActionSize;
-use Filament\Tables\Columns\Summarizers\Sum;
-use Filament\Forms\Components\Grid;
+use App\Models\TasaBcv;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Fieldset;
+use Livewire\Component;
+use App\Models\Producto;
+use App\Models\Servicio;
+use App\Models\Disponible;
+use App\Models\MetodoPago;
+use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use Filament\Notifications\Notification;
-use Filament\Forms\Components\Actions\Action as HintAction;
+use App\Models\MetodoPrepago;
+use App\Models\VentaServicio;
+use App\Models\DetalleAsignacion;
+use App\Models\InventarioSucursal;
+use Filament\Forms\Components\Grid;
+use Filament\Tables\Actions\Action;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Support\Enums\ActionSize;
+use Filament\Forms\Components\Fieldset;
 use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Contracts\HasTable;
+use App\Http\Controllers\CajaController;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Tables\Actions\ActionGroup;
+use App\Http\Controllers\GiftCardController;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Illuminate\Database\Eloquent\Collection;
+use App\Http\Controllers\AsignacionController;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Forms\Components\Actions\Action as HintAction;
 
 class TableDetalleAsignacion extends Component implements HasForms, HasTable
 {
@@ -512,12 +513,60 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->where('uso', 'venta')
                                         ->pluck('producto.descripcion', 'producto_id'))
                                         ->searchable()
-                                        ->required(),
+                                        ->required()
+                                        ->live(),
                                     TextInput::make('cantidad')
                                         ->label('Cantidad')
                                         ->prefixIcon('heroicon-o-shopping-cart')
                                         ->numeric()
-                                        ->required(),
+                                        ->required()
+                                        ->hint(function(Get $get) {
+                                            $id = $get('producto_id');
+                                            if(isset($id)){
+                                                $existencia = InventarioSucursal::where('producto_id', $get('producto_id'))
+                                                ->where('sucursal_id', Auth::user()->sucursal_id)
+                                                ->where('uso', 'venta')
+                                                ->first()
+                                                ->cantidad;
+                                                return 'Existencia: '.$existencia;
+                                                
+                                            }else{
+                                                return 'Existencia: 0';
+                                            }
+                                        })
+                                        ->hintIcon('heroicon-m-square-3-stack-3d')
+                                        ->hintColor(function(Get $get) {
+                                            $id = $get('producto_id');
+                                            if(isset($id)){
+                                                
+                                                $existencia = InventarioSucursal::where('producto_id', $get('producto_id'))
+                                                ->where('sucursal_id', Auth::user()->sucursal_id)
+                                                ->where('uso', 'venta')
+                                                ->first()
+                                                ->cantidad;
+                                                
+                                                if($existencia < 6){
+                                                    return 'danger';
+                                                }else{
+                                                    return 'success';  
+                                                }
+                                                
+                                            }else{
+                                                return 'primary';
+                                            }
+                                        })
+                                        //Regla ara validar que la cantidad introducida por el usuario es menor a la existencia total
+                                        ->rules([
+                                            fn (Get $get): Closure => function (string $attribute, $value, Closure $fail) use ($get) {
+                                                if ($value > InventarioSucursal::where('producto_id', $get('producto_id'))
+                                                            ->where('sucursal_id', Auth::user()->sucursal_id)
+                                                            ->where('uso', 'venta')
+                                                            ->first()
+                                                            ->cantidad) {
+                                                    $fail("La cabtidad es mayor a la existencia.");
+                                                }
+                                            },
+                                        ])
                                 ])->columns(2)
                         ])->action(function (array $data) {
                             AsignacionController::asigna_producto(

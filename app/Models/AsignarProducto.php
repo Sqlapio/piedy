@@ -32,10 +32,10 @@ class AsignarProducto extends Model
         'responsable',
     ];
 
-    public function producto():BelongsTo
-    {
-        return $this->belongsTo(Producto::class, 'producto_id', 'id');
-    }
+    // public function producto():BelongsTo
+    // {
+    //     return $this->belongsTo(Producto::class, 'producto_id', 'id');
+    // }
 
     /**
      * Get the user that owns the AsignarProducto
@@ -55,6 +55,16 @@ class AsignarProducto extends Model
     public function sucursal(): HasMany
     {
         return $this->hasMany(Sucursal::class, 'id', 'sucursal_id');
+    }
+
+    /**
+     * Get the user associated with the AsignarProducto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function producto(): HasOne
+    {
+        return $this->hasOne(Producto::class, 'id', 'producto_id');
     }
 
 

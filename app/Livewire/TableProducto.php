@@ -2,34 +2,42 @@
 
 namespace App\Livewire;
 
-use App\Models\CarProducto;
-use App\Models\InventarioSucursal;
-use App\Models\TasaBcv;
-use App\Models\DetalleAsignacion;
-use App\Models\Disponible;
 use Carbon\Carbon;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Tables;
-use Filament\Tables\Columns\TextInputColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
+use App\Models\TasaBcv;
+use Filament\Forms\Get;
 use Livewire\Component;
-use Illuminate\Contracts\View\View;
+use App\Models\Disponible;
+use Filament\Tables\Table;
+use App\Models\CarProducto;
+use Livewire\Attributes\On;
+use App\Models\DetalleAsignacion;
+use App\Models\InventarioSucursal;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Notifications\Notification;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Contracts\HasForms;
+use App\Http\Controllers\LogController;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Notifications\Notification;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\ToggleColumn;
-use App\Http\Controllers\LogController;
+use Filament\Tables\Columns\TextInputColumn;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
 
 class TableProducto extends Component implements HasForms, HasTable
 {
     use InteractsWithForms;
     use InteractsWithTable;
+
+    #[On('update-table-productos')]
+    public function updateTable()
+    {
+        $this->reset();
+    }
 
     public function table(Table $table): Table
     {
@@ -63,8 +71,15 @@ class TableProducto extends Component implements HasForms, HasTable
                     
                 TextColumn::make('cantidad')
                     ->label('Exitencia actual')
-                    ->icon('heroicon-c-rectangle-stack')
-                    ->color('primary'),
+                    ->alignCenter()
+                    ->icon('heroicon-m-square-3-stack-3d')
+                    ->color(function(InventarioSucursal $record) {
+                        if($record->cantidad < 6){
+                            return 'danger';
+                        }else{
+                            return 'success';
+                        }
+                    }),
                     
                 TextInputColumn::make('pre_compra')
                     ->label('Cantidad'),

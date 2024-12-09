@@ -108,14 +108,6 @@
                     <td>Efectivo($) en caja</td>
                     <td>{{ $mailData['efectivo_caja_usd'] }}</td>
                 </tr>
-                <tr>
-                    <td>Gastos($)</td>
-                    <td>{{ round($mailData['gastos']) }}</td>
-                </tr>
-                <tr>
-                    <td>Saldo Caja Chica($)</td>
-                    <td>{{ $mailData['efectivo_caja_chica'] }}</td>
-                </tr>
             </table>
         </div>
         <p style="text-align: justify; margin-left: 20px;">

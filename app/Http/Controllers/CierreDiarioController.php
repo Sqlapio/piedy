@@ -16,7 +16,6 @@ class CierreDiarioController extends Controller
 {
     public static function cierreDiario($ref_debito, $monto_ref_debito, $ref_credito, $monto_ref_credito, $ref_visaMaster, $monto_ref_visaMaster, $observaciones = null)
     {
-
         try {
 
             $query = CierreDiario::where('fecha', date('d-m-Y'))->count();
@@ -29,7 +28,6 @@ class CierreDiarioController extends Controller
                 /** Responsable del cierre */
                 $user = Auth::user();
                 
-
                 /** totales de pagos en Dolares*/
                 $total_efectivo_usd = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Efectivo Usd')->sum('pago_usd');
                 $total_efectivo_usd_productos = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'USD')->where('metodoUSD', 'Efectivo Usd')->sum('montoUsd');
@@ -91,7 +89,6 @@ class CierreDiarioController extends Controller
                         'monto_ref_visaMaster' => $monto_ref_visaMaster,
                         'conversion' => $cierre->total_bolivares / $tasa,
                         'efectivo_caja_usd' => $cierre->total_dolares_efectivo,
-                        'efectivo_caja_chica' => $cierre->saldo_caja_chica,
                         'fecha' => $cierre->created_at,
                         'user_email' => $correo,
                         'responsable' => $cierre->responsable,

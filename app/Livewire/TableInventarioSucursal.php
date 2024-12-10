@@ -31,75 +31,32 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->heading('INVENTARIO')
-            ->description('Tabla de gestion del inventario de ventas y de consumo interno')
+            ->heading('INVENTARIO GENERAL')
+            ->description('Tabla de inventario para los productos de venta y de consumo interno')
             ->query(InventarioSucursal::query()
             ->where('sucursal_id', Auth::user()->sucursal_id))
             // ->where('accepted_at', null))
             ->columns([
                 Tables\Columns\TextColumn::make('producto.descripcion')
-                    ->numeric()
-                    ->color(function (InventarioSucursal $record) {
-                        if($record->accepted_at !== null){
-                            return 'success';
-                        }else{
-                            return 'colorDisabled';
-                        }
-                    })
-                    ->icon(function (InventarioSucursal $record) {
-                        if($record->accepted_at !== null){
-                            return 'heroicon-s-document-check';
-                        }else{
-                            return 'heroicon-m-lock-closed';
-                        }
-                    }),
+                ->icon('heroicon-s-truck')
+                ->searchable(),
 
                 Tables\Columns\TextColumn::make('uso')
                 ->icon('heroicon-s-megaphone')
-                ->color(function (InventarioSucursal $record) {
-                    if($record->accepted_at !== null){
-                        return 'colorOne';
-                    }else{
-                        return 'colorDisabled';
-                    }
-                })
                 ->searchable(),
 
                 Tables\Columns\TextColumn::make('cantidad')
-                ->label('Existencia')
-                ->color(function (InventarioSucursal $record) {
-                    if($record->accepted_at !== null){
-                        return 'warning';
-                    }else{
-                        return 'colorDisabled';
-                    }
-                })
-                ->icon('heroicon-c-rectangle-stack')
-                ->numeric(),
+                    ->label('Exitencia actual')
+                    ->alignCenter()
+                    ->icon('heroicon-m-square-3-stack-3d')
+                    ->color(function(InventarioSucursal $record) {
+                        if($record->cantidad < 6){
+                            return 'danger';
+                        }else{
+                            return 'success';
+                        }
+                    }),
 
-                Tables\Columns\TextColumn::make('accepted_at')
-                    ->label('Aceptado el:')
-                    ->color(function (InventarioSucursal $record) {
-                    if($record->accepted_at !== null){
-                        return 'colorTree';
-                    }else{
-                        return 'colorDisabled';
-                    }
-                })
-                    ->date()
-                    ->icon('heroicon-c-calendar-days'),
-
-                Tables\Columns\TextColumn::make('aceptado_por')
-                ->label('Aceptado por:')
-                ->searchable()
-                ->color(function (InventarioSucursal $record) {
-                    if($record->accepted_at !== null){
-                        return 'colorTree';
-                    }else{
-                        return 'colorDisabled';
-                    }
-                })
-                ->icon('heroicon-m-user-circle'),
             ])
             ->defaultGroup('uso')
             ->filters([
@@ -155,23 +112,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                             $record->producto_id
                         );
                     })
-            ])
-            ->bulkActions([
-                BulkAction::make('aceptar')
-                ->requiresConfirmation()
-                ->deselectRecordsAfterCompletion()
-                ->label('Aceptación de Inventario')
-                ->icon('heroicon-c-cog-8-tooth')
-                ->color('success')
-                ->action(function (Collection $records) {
-                    foreach ($records as $record) {
-                        $aceptado = InventarioSucursal::find($record->id);
-                        $aceptado->accepted_at = now();
-                        $aceptado->aceptado_por = auth()->user()->name;
-                        $aceptado->save();
-                    }
-                }),
-            ]);
+                ]);
     }
 
     public function render(): View

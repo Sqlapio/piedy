@@ -38,7 +38,6 @@ class CierreDiario extends Component implements HasForms, HasTable
                 TextColumn::make('total_ventas')
                     ->money('USD')
                     ->label('Venta Total($)')
-                    ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
@@ -47,7 +46,6 @@ class CierreDiario extends Component implements HasForms, HasTable
                     ->icon('heroicon-m-currency-dollar')
                     ->color('success')
                     ->label('Efectivo($)')
-                    ->sortable()
                     ->searchable(),
 
                 TextColumn::make('total_dolares_zelle')
@@ -55,32 +53,55 @@ class CierreDiario extends Component implements HasForms, HasTable
                     ->icon('heroicon-m-credit-card')
                     ->color('success')
                     ->label('Zelle($)')
-                    ->sortable()
                     ->searchable(),
 
                 TextColumn::make('total_bolivares')
-                    ->label('Bolivares(Bs)')
+                    ->label('Total Bolivares(Bs)')
                     ->icon('heroicon-m-credit-card')
                     ->color('info')
                     ->money('VES')
-                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('total_efectivo_bsd')
+                    ->label('Efectivo(Bs)')
+                    ->icon('heroicon-m-credit-card')
+                    ->color('info')
+                    ->money('VES')
+                    ->searchable(),
+
+                TextColumn::make('total_pago_movil_bsd')
+                    ->label('Pago Movil(Bs)')
+                    ->icon('heroicon-m-credit-card')
+                    ->color('info')
+                    ->money('VES')
+                    ->searchable(),
+
+                TextColumn::make('total_punto_venta_bsd')
+                    ->label('Punto Venta(Bs)')
+                    ->icon('heroicon-m-credit-card')
+                    ->color('info')
+                    ->money('VES')
+                    ->searchable(),
+
+                TextColumn::make('total_transferencia_bsd')
+                    ->label('Transferencia(Bs.)')
+                    ->icon('heroicon-m-credit-card')
+                    ->color('info')
+                    ->money('VES')
                     ->searchable(),
 
                 TextColumn::make('ref_debito')
                     ->label('Ref. Débito')
-                    ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('ref_credito')
                     ->label('Ref. Credito')
-                    ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('ref_visaMaster')
                     ->label('Ref. Visa/Master')
-                    ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
@@ -88,19 +109,16 @@ class CierreDiario extends Component implements HasForms, HasTable
                     ->label('Fecha de cierre')
                     ->icon('heroicon-s-calendar-days')
                     ->color('colorTree')
-                    ->sortable()
                     ->searchable(),
 
                 TextColumn::make('responsable')
                     ->icon('heroicon-s-user')
                     ->color('colorOne')
-                    ->sortable()
                     ->searchable(),
                 
                 TextColumn::make('observaciones')
                     ->icon('heroicon-s-user')
                     ->color('colorOne')
-                    ->sortable()
                     ->searchable(),
             ])
             ->groups([

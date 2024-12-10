@@ -2,26 +2,32 @@
 
 namespace App\Livewire;
 
-use App\Models\RecepcionInventario;
-use App\Models\InventarioSucursal;
-use App\Http\Controllers\InventarioSucursalController;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
+use id;
+use Carbon\Carbon;
 use App\Models\User;
+use Filament\Tables;
 use Livewire\Component;
-use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Table;
+use App\Models\InventarioSucursal;
+use App\Models\RecepcionInventario;
 use Filament\Forms\Components\Grid;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Filters\Filter;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Forms\Components\DatePicker;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
+use App\Http\Controllers\InventarioSucursalController;
 
 class TableRecepcionInventario extends Component implements HasForms, HasTable
 {
@@ -31,17 +37,19 @@ class TableRecepcionInventario extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->heading('INVENTARIO')
-            ->description('Tabla de gestion del inventario de ventas y de consumo interno')
-            ->query(RecepcionInventario::query())
+            ->heading('RECEPCION DE INVENTARIO')
+            ->description('Recepcion de inventario asigando tanto para ventas como de consumo interno')
+            ->query(RecepcionInventario::query()
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->orderBy('created_at', 'desc'))
             ->columns([
                 Tables\Columns\TextColumn::make('producto.descripcion')
                     ->numeric()
                     ->color(function (RecepcionInventario $record) {
                         if($record->accepted_at !== null){
-                            return 'success';
-                        }else{
                             return 'colorDisabled';
+                        }else{
+                            return 'success';
                         }
                     })
                     ->icon(function (RecepcionInventario $record) {
@@ -55,9 +63,9 @@ class TableRecepcionInventario extends Component implements HasForms, HasTable
                     ->icon('heroicon-s-megaphone')
                     ->color(function (RecepcionInventario $record) {
                         if($record->accepted_at !== null){
-                            return 'colorOne';
-                        }else{
                             return 'colorDisabled';
+                        }else{
+                            return 'colorOne';
                         }
                     })
                     ->searchable(),
@@ -65,84 +73,81 @@ class TableRecepcionInventario extends Component implements HasForms, HasTable
                     ->label('Existencia')
                     ->color(function (RecepcionInventario $record) {
                         if($record->accepted_at !== null){
-                            return 'warning';
-                        }else{
                             return 'colorDisabled';
+                        }else{
+                            return 'success';
                         }
                     })
                     ->icon('heroicon-c-rectangle-stack'),
 
                 Tables\Columns\TextColumn::make('responsable')
                     ->label('Asignado por:')
-                    ->color('success')
+                    ->color(function (RecepcionInventario $record) {
+                        if($record->accepted_at !== null){
+                            return 'colorDisabled';
+                        }else{
+                            return 'success';
+                        }
+                    })
+                    ->icon('heroicon-c-user-circle'),
+
+                Tables\Columns\TextColumn::make('user_accepted')
+                    ->label('Aceptado por:')
+                    ->color(function (RecepcionInventario $record) {
+                        if($record->accepted_at !== null){
+                            return 'colorDisabled';
+                        }else{
+                            return 'success';
+                        }
+                    })
                     ->icon('heroicon-c-user-circle'),
                     
                 Tables\Columns\TextColumn::make('accepted_at')
                     ->label('Aceptado el:')
                     ->color(function (RecepcionInventario $record) {
                         if($record->accepted_at !== null){
-                            return 'colorTree';
-                        }else{
                             return 'colorDisabled';
+                        }else{
+                            return 'colorTree';
                         }
                     })
                     ->date()
                     ->icon('heroicon-c-calendar-days'),
             ])
             ->filters([
-                //
-            ])
-            ->actions([
-                Action::make('asignar')
-                ->color('success')
-                ->visible(function (RecepcionInventario $record) {
-                    if($record->uso == 'consumo-interno'){
-                        return true;
-                    }else{
-                        return false;
-                    }
-                })
-                ->label('Asignar Producto')
-                ->icon('heroicon-s-user-plus')
-                    ->form([
-                        Section::make('Formulario')
-                                ->description(function (RecepcionInventario $record) {
-                                    return 'Producto para asignar: ' . $record->producto->descripcion;
-                                })
-                                ->icon('heroicon-s-clipboard-document-list')
-                                ->schema([
-                                    Grid::make()
-                                    ->schema([
-                                        Select::make('user_id')
-                                        ->label('Selección del Técnico')
-                                        ->prefixIcon('heroicon-c-users')
-                                        ->options(User::whereBetween('rol_id', [1,2])->where('status', 1)->pluck('name', 'id'))
-                                        ->rules(['required'])
-                                        ->validationMessages([
-                                            'required' => 'Debe selecionar un tecnico',
-                                        ])
-                                        ->searchable(),
-                                        TextInput::make('cantidad')
-                                        ->label('Cantidad asignada')
-                                        ->prefixIcon('heroicon-c-credit-card')
-                                        ->hint('Nota: solo números enteros')
-                                        ->rules(['required', 'numeric', 'integer'])
-                                        ->validationMessages([
-                                            'required' => 'Debe introducir la cantidad',
-                                            'numeric' => 'Campo numerico',
-                                            'integer' => 'Debe ser un numero entero',
-                                        ]),
-                                    ]),
-                                ])
-                    ])
-                    ->action(function (RecepcionInventario $record, array $data) {
-                        InventarioSucursalController::asignar_producto(
-                            $data['user_id'], 
-                            $data['cantidad'], 
-                            $record->producto_id
+                Filter::make('created_at')
+                ->form([
+                    DatePicker::make('desde'),
+                    DatePicker::make('hasta'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['desde'] ?? null,
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['hasta'] ?? null,
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                         );
-                    })
+                })
+                ->indicateUsing(function (array $data): array {
+                    $indicators = [];
+                    if ($data['desde'] ?? null) {
+                        $indicators['desde'] = 'Venta desde ' . Carbon::parse($data['desde'])->toFormattedDateString();
+                    }
+                    if ($data['hasta'] ?? null) {
+                        $indicators['hasta'] = 'Venta hasta ' . Carbon::parse($data['hasta'])->toFormattedDateString();
+                    }
+
+                    return $indicators;
+                }),
             ])
+            ->filtersTriggerAction(
+                fn (Action $action) => $action
+                    ->button()
+                    ->label('Filtros'),
+            )
             ->bulkActions([
                 BulkAction::make('aceptar')
                 ->requiresConfirmation()
@@ -154,30 +159,41 @@ class TableRecepcionInventario extends Component implements HasForms, HasTable
                     
                     foreach ($records as $record) {
                         
-                        $producto_aceptado = RecepcionInventario::find($record->id);
-                        
-                        $producto_existe = InventarioSucursal::where('producto_id', $producto_aceptado->producto_id)
-                        ->where('sucursal_id', auth()->user()->sucursal_id)
-                        ->first();
-                        
-                        if(isset($producto_existe)){
-                            $producto_existe->cantidad += $producto_aceptado->cantidad;
-                            $producto_existe->accepted_at = now();
-                            $producto_existe->save();
+                        $producto_aceptado = RecepcionInventario::where('id',$record->id)->first();
+
+                        if($producto_aceptado->accepted_at == null){
+                            $producto_existe = InventarioSucursal::where('producto_id', $producto_aceptado->producto_id)
+                            ->where('sucursal_id', auth()->user()->sucursal_id)
+                            ->first();
                             
-                        }else{
-                            InventarioSucursal::create([
-                                'producto_id'   => $producto_aceptado->producto_id,
-                                'sucursal_id'   => auth()->user()->sucursal_id,
-                                'cantidad'      => $producto_aceptado->cantidad,
-                                'responsable'   => auth()->user()->name,
-                                'uso'           => $producto_aceptado->uso,
-                                'aceptado_por'  => auth()->user()->name,
-                                ]);
+                            if(isset($producto_existe)){
+                                $producto_existe->cantidad += $producto_aceptado->cantidad;
+                                $producto_existe->accepted_at = now();
+                                $producto_existe->save();
+                                
+                            }else{
+                                InventarioSucursal::create([
+                                    'producto_id'   => $producto_aceptado->producto_id,
+                                    'sucursal_id'   => auth()->user()->sucursal_id,
+                                    'cantidad'      => $producto_aceptado->cantidad,
+                                    'responsable'   => auth()->user()->name,
+                                    'uso'           => $producto_aceptado->uso,
+                                    'aceptado_por'  => auth()->user()->name,
+                                    ]);
+                            }
 
                             $producto_aceptado->accepted_at = now();
-                            $producto_aceptado->save();
+                            $producto_aceptado->user_accepted = auth()->user()->name;
+                            
+                            return Notification::make()
+                                    ->title('NOTIFICACIÓN')
+                                    ->icon('heroicon-o-document-text')
+                                    ->iconColor('info')
+                                    ->color('danger')
+                                    ->body('Debe seleccionar productos que no estén previamente aceptados. Por favor verifica la selección y vuelve a intentar')
+                                    ->send();
                         }
+                        
                         
                     }
                 }),

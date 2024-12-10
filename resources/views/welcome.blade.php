@@ -1,11 +1,11 @@
 <x-guest-layout>
     @livewire('notifications')
-    <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2">
-        <div class="min-[250px]:hidden px-6 my-auto md:block lg:block">
+    {{-- <div class="grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-2"> --}}
+        {{-- <div class="min-[250px]:hidden px-6 my-auto md:block lg:block">
             <video class="w-full" muted autoplay loop>
-                <source src="{{ asset('images/video.mp4') }}" type="video/mp4">
+                <source src="{{ asset('images/video_intro.mp4') }}" type="video/mp4">
               </video>
-        </div>
+        </div> --}}
         <x-authentication-card>
             <x-slot name="logo">
                 <x-authentication-card-logo />
@@ -45,5 +45,5 @@
                 </div>
             </form>
         </x-authentication-card>
-    </div>
+    {{-- </div> --}}
 </x-guest-layout>

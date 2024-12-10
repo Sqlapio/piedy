@@ -37,6 +37,12 @@ class CierreDiarioController extends Controller
 
                 /** totales de pagos en Bolivares*/
                 $total_bs = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
+
+                $total_efectivo_bsd         = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago_dos', 'Efectivo Bsd')->sum('pago_bsd');
+                $total_pago_movil_bsd       = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago_dos', 'Pago movil')->sum('pago_bsd');
+                $total_punto_venta_bsd      = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago_dos', 'Punto de venta')->sum('pago_bsd');
+                $total_transferencia_bsd    = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago_dos', 'Transferencia')->sum('pago_bsd');
+
                 $total_bsd_productos = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'BSD')->sum('montoBsd');
 
                 /** totales gastos en Dolares*/
@@ -53,6 +59,12 @@ class CierreDiarioController extends Controller
                 $cierre->total_dolares_efectivo  = $total_efectivo_usd + $total_efectivo_usd_productos;
                 $cierre->total_dolares_zelle     = $total_zelle + $total_zelle_productos;
                 $cierre->total_bolivares         = $total_bs + $total_bsd_productos;
+                
+                $cierre->total_pago_movil_bsd    = $total_pago_movil_bsd;
+                $cierre->total_punto_venta_bsd   = $total_punto_venta_bsd;
+                $cierre->total_transferencia_bsd = $total_transferencia_bsd;
+                $cierre->total_efectivo_bsd      = $total_efectivo_bsd;
+                
                 $cierre->ref_debito              = $ref_debito;
                 $cierre->monto_ref_debito        = (str_replace(',', '.', str_replace('.', '', $monto_ref_debito))) == null ? 0.00 : str_replace(',', '.', str_replace('.', '', $monto_ref_debito));
                 $cierre->ref_credito             = $ref_credito;

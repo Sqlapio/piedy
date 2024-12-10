@@ -154,6 +154,15 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     })->name('material');
 
     /**
+     * Rutas para recepcion de inventario
+     */
+    Route::get('/recepcion/inventario', function () {
+        return view('recepcion-inventario');
+    })->name('recepcion-inventario');
+
+    
+
+    /**
      * Ruta para cierre general
      * ejecutado solo por el gerente de la tienda
      */

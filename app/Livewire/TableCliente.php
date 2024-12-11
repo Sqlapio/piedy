@@ -2,31 +2,33 @@
 
 namespace App\Livewire;
 
-use App\Http\Controllers\AsignacionController;
-use App\Http\Controllers\ClienteController;
-use App\Models\Cliente;
 use App\Models\User;
-use App\Models\Servicio;
-use App\Models\ServicioUser;
-use Filament\Forms\Components\Select;
-use Filament\Tables\Actions\Action;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Notifications\Notification;
 use Filament\Tables;
-use Filament\Tables\Columns\TextInputColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
-use Livewire\Component;
-use Illuminate\Contracts\View\View;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Grid;
+use App\Models\Cliente;
 use Filament\Forms\Get;
+use Livewire\Component;
+use App\Models\Servicio;
+use Filament\Tables\Table;
 use Filament\Support\RawJs;
+use App\Models\ServicioUser;
 use Illuminate\Support\Collection;
+use Filament\Forms\Components\Grid;
+use Filament\Tables\Actions\Action;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Contracts\HasForms;
+use App\Http\Controllers\LogController;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Tables\Actions\CreateAction;
+use App\Http\Controllers\ClienteController;
+use Filament\Tables\Columns\TextInputColumn;
+use App\Http\Controllers\AsignacionController;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
 
 class TableCliente extends Component implements HasForms, HasTable
 {
@@ -80,6 +82,7 @@ class TableCliente extends Component implements HasForms, HasTable
                     $res = AsignacionController::asignacion_servicio($record->id, $data['user_id'], $data['servicio_id']);
 
                     if ($res) {
+                        LogController::log(Auth::user()->id, 'asigno servicio', 'Asigno el servicio: '.Servicio::where('id', $data['servicio_id'])->first()->descripcion);
                         Notification::make()
                         ->title('NOTIFICACIÓN')
                         ->icon('heroicon-o-shield-check')

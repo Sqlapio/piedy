@@ -47,7 +47,8 @@ class ApiClientesController extends Controller
     {
         return User::query()
             ->select('id', 'name', 'email')
-            ->where('tipo_usuario', 'empleado')
+            ->where('rol_id', [1,2])
+            ->where('status', '1')
             ->orderBy('name')
             ->when(
                 $request->search,

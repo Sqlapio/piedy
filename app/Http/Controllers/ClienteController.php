@@ -51,8 +51,13 @@ class ClienteController extends Controller
                 ->body('El Cliente fue registrado con éxito')
                 ->send();
 
+            if($cliente->save()) {
+                LogController::log(Auth::user()->id, 'crear cliente', 'El usuario creo un cliente nuevo');
+            }
+
 
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')

@@ -190,6 +190,8 @@ class AsignacionController extends Controller
             $serv_disponible->venta_total   = $serv_disponible->acu_productos + $serv_disponible->acu_servicios;
             $serv_disponible->save();
 
+            LogController::log(Auth::user()->id, 'agrego producto', 'Agrego producto al servicio: '. $asigna_producto->cod_asignacion .' cantidad: '. $asigna_producto->cantidad);
+
             //code...
         } catch (\Throwable $th) {
             Notification::make()

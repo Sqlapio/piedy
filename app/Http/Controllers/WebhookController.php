@@ -11,7 +11,7 @@ class WebhookController extends Controller
         TasaBcv::where('fecha', date('d-m-Y'))->first()->update([
             'tasa' => $name
         ]);
-        return response()->json(['success' => true]);
+        return response()->json($name, 200);
     }
     //
 }

@@ -40,6 +40,17 @@ class AgendaController extends Controller
                 }
             }
 
+            //Restriccion para evitar que se agenden mas de 4 quiropedias a la misma hora
+            $quiropedias = DB::table('citas')
+            ->select('servicio_id')
+            ->where('hora', $hora_formateada)
+            ->get();
+
+            if(count($quiropedias) >= 4) {
+                throw new Exception("No puede agendar mas de 4 quiropedias a la misma hora. Valide la información y vuelva a intentar");
+            }
+            
+
             $cliente = Cliente::find($cliente_id);
 
             // $dia = UtilsController::agenda($mes, $opcion);

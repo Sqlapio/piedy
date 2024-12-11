@@ -82,9 +82,10 @@ class CierreDiarioController extends Controller
                 //Restriccion de servicios facturados
                 $servicios_facturados = DetalleAsignacion::whereBetween('created_at', [now()->startOfDay(), now()->endOfDay()])->where('status', 1)->count();
                 
-                if($servicios_facturados > 0){
+                if($servicios_facturados > 0) {
                     throw new Exception("Accion no permitida.! Existen servicios sin facturar, debera realizar la facturacion antes de realizar el cierre diario", 401); 
-                    } 
+                }
+                //Fin restriccion de servicios facturados
                 $cierre->save();
 
                 /** Notificacion para el usuario cuando su servicio fue anulado */
@@ -93,24 +94,24 @@ class CierreDiarioController extends Controller
                 $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
 
                 $mailData = [
-                        'tasa_bcv' => $tasa,
-                        'clientes_atendidos' => VentaServicio::where('fecha_venta', date('d-m-Y'))->count(),
-                        'servicios_clientes' => DetalleAsignacion::where('fecha', date('d-m-Y'))->count(),
-                        'total_ventas' => $cierre->total_ventas,
-                        'total_dolares' => VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_usd'),
-                        'zelle' => $cierre->total_dolares_zelle,
-                        'total_bolivares' => $cierre->total_bolivares,
-                        'ref_debito' => $cierre->ref_debito,
-                        'ref_credito' => $cierre->ref_credito,
-                        'ref_visaMaster' => $cierre->ref_visaMaster,
-                        'monto_ref_debito' => $monto_ref_debito,
-                        'monto_ref_credito' => $monto_ref_credito,
-                        'monto_ref_visaMaster' => $monto_ref_visaMaster,
-                        'conversion' => $cierre->total_bolivares / $tasa,
-                        'efectivo_caja_usd' => $cierre->total_dolares_efectivo,
-                        'fecha' => $cierre->created_at,
-                        'user_email' => $correo,
-                        'responsable' => $cierre->responsable,
+                        'tasa_bcv'              => $tasa,
+                        'clientes_atendidos'    => VentaServicio::where('fecha_venta', date('d-m-Y'))->count(),
+                        'servicios_clientes'    => DetalleAsignacion::where('fecha', date('d-m-Y'))->count(),
+                        'total_ventas'          => $cierre->total_ventas,
+                        'total_dolares'         => VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_usd'),
+                        'zelle'                 => $cierre->total_dolares_zelle,
+                        'total_bolivares'       => $cierre->total_bolivares,
+                        'ref_debito'            => $cierre->ref_debito,
+                        'ref_credito'           => $cierre->ref_credito,
+                        'ref_visaMaster'        => $cierre->ref_visaMaster,
+                        'monto_ref_debito'      => $monto_ref_debito,
+                        'monto_ref_credito'     => $monto_ref_credito,
+                        'monto_ref_visaMaster'  => $monto_ref_visaMaster,
+                        'conversion'            => $cierre->total_bolivares / $tasa,
+                        'efectivo_caja_usd'     => $cierre->total_dolares_efectivo,
+                        'fecha'                 => $cierre->created_at,
+                        'user_email'            => $correo,
+                        'responsable'           => $cierre->responsable,
                     ];
 
                 NotificacionesController::notification($mailData, $type);

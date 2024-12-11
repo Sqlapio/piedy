@@ -320,9 +320,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('clientes');
     })->name('cliente.edit');
 
-    Route::get('webhook/endpoint/{name}', [WebhookController::class, 'webhookAgendarCita']);
 });
 
+Route::get('webhook/endpoint/{name}', [WebhookController::class, 'webhookAgendarCita']);
 
 Route::get('/reporte/nomina', function () {
     return view('pdf.reporte');

@@ -32,7 +32,7 @@
         @livewireStyles
 
     </head>
-    <body style="background-image: url('images/fondo_intro.png');background-size: 100% 100%">
+    <body style="background-image: url('images/fondo_intro.png');background-size: 100%; 100%">
 
         <div class="font-sans text-gray-900 antialiased">
             {{ $slot }}

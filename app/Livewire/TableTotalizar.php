@@ -2,37 +2,38 @@
 
 namespace App\Livewire;
 
-use App\Models\FacturacionMultiple;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
-use Livewire\Component;
-use Illuminate\Http\Request;
-use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Disponible;
 use App\Models\TasaBcv;
-use App\Models\VentaServicio;
-use App\Models\MetodoPago;
-use App\Models\MetodoPrepago;
-use Livewire\Attributes\On;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Fieldset;
+use Livewire\Component;
+use App\Models\Disponible;
+use App\Models\MetodoPago;
+use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Livewire\Attributes\On;
+use Illuminate\Http\Request;
+use App\Models\MetodoPrepago;
+use App\Models\VentaServicio;
+use App\Models\FacturacionMultiple;
+use Filament\Forms\Components\Grid;
+use Filament\Tables\Actions\Action;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Actions\Action as HintAction;
-use App\Http\Controllers\GiftCardController;
-use Filament\Notifications\Notification;
+use Filament\Forms\Contracts\HasForms;
+use App\Http\Controllers\LogController;
+use Filament\Forms\Components\Fieldset;
+use Filament\Tables\Contracts\HasTable;
 use App\Http\Controllers\CajaController;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use App\Http\Controllers\GiftCardController;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Forms\Components\Actions\Action as HintAction;
 
 
 class TableTotalizar extends Component implements HasForms, HasTable
@@ -290,6 +291,7 @@ class TableTotalizar extends Component implements HasForms, HasTable
 
                                 if ($fm_dolares) {
                                     FacturacionMultiple::truncate();
+                                    LogController::log(Auth::user()->id, 'facturacion multiple', 'realizo la ejecucion de una factura multiple en dolares');
                                     Notification::make()
                                         ->title('Notificacion:')
                                         ->icon('heroicon-o-shield-check')
@@ -317,6 +319,7 @@ class TableTotalizar extends Component implements HasForms, HasTable
 
                                 if ($fm_bolivares) {
                                     FacturacionMultiple::truncate();
+                                    LogController::log(Auth::user()->id, 'facturacion multiple', 'realizo la ejecucion de una factura multiple en bolivares');
                                     Notification::make()
                                         ->title('Notificacion:')
                                         ->icon('heroicon-o-shield-check')
@@ -350,6 +353,7 @@ class TableTotalizar extends Component implements HasForms, HasTable
 
                                 if ($fm_multiMoneda) {
                                     FacturacionMultiple::truncate();
+                                    LogController::log(Auth::user()->id, 'facturacion multiple', 'realizo la ejecucion de una factura multiple en dolares y bolivares`  ');
                                     Notification::make()
                                         ->title('Notificacion:')
                                         ->icon('heroicon-o-shield-check')

@@ -2,21 +2,22 @@
 
 namespace App\Livewire;
 
-use App\Http\Controllers\FacturacionMultipleController;
-use App\Models\Disponible;
-use App\Models\FacturacionMultiple;
-use Filament\Tables\Actions\BulkAction;
-use Illuminate\Database\Eloquent\Collection;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Tables;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
 use Livewire\Component;
+use App\Models\Disponible;
+use Filament\Tables\Table;
+use Livewire\Attributes\On;
+use App\Models\FacturacionMultiple;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\On;
+use Filament\Forms\Contracts\HasForms;
+use App\Http\Controllers\LogController;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Contracts\HasTable;
+use Illuminate\Database\Eloquent\Collection;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
+use App\Http\Controllers\FacturacionMultipleController;
 
 class TableFacturacionMultiple extends Component implements HasForms, HasTable
 {
@@ -96,6 +97,7 @@ class TableFacturacionMultiple extends Component implements HasForms, HasTable
                         $res = FacturacionMultipleController::totalizar_fac_multiple($records);
                         
                         if ($res) {
+                            LogController::log(Auth::user()->id, 'facturacion multiple', 'se ejecuta una facturacion multiple');
                             $this->redirectRoute('facturar_cliente');
                         }
                     }),

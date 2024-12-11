@@ -27,6 +27,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\ActionSize;
+use App\Http\Controllers\LogController;
 use Filament\Forms\Components\Fieldset;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Contracts\HasTable;
@@ -403,6 +404,9 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     ->iconColor('success')
                                     ->body('Facturacion Exitosa. Codigo: '.$this->cod_asignacion)
                                     ->send();
+
+                                    LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en dolares: '.$this->cod_asignacion);
+                                    
                                     $this->redirectRoute('cabinas');
                                 }else{
                                     Notification::make()
@@ -438,6 +442,9 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     ->iconColor('success')
                                     ->body('Facturacion Exitosa. Codigo: '.$this->cod_asignacion)
                                     ->send();
+
+                                    LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en bolivares: '.$this->cod_asignacion);
+
                                     $this->redirectRoute('cabinas');
                                 }else{
                                     Notification::make()
@@ -479,6 +486,9 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     ->iconColor('success')
                                     ->body('Facturacion Exitosa. Codigo: '.$this->cod_asignacion)
                                     ->send();
+
+                                    LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en bolivares y dolares: '.$this->cod_asignacion);
+                                    
                                     $this->redirectRoute('cabinas');
                                 }else{
                                     Notification::make()
@@ -604,6 +614,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                             );
 
                             if($cierre){
+                                LogController::log(Auth::user()->id, 'servicio cerrado', 'ejecucion del cierre de servicio: '.$this->cod_asignacion);
                                 return redirect()->route('cabinas');
                             }else{
                                 Notification::make()

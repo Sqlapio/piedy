@@ -7,6 +7,7 @@ use App\Livewire\Login;
 use App\Models\Cliente;
 use App\Models\TasaBcv;
 use App\Models\Producto;
+use App\Models\Servicio;
 use App\Models\Membresia;
 use App\Models\Disponible;
 use Flowframe\Trend\Trend;
@@ -27,9 +28,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\ApiClientesController;
 use App\Http\Controllers\NotificacionesController;
-use App\Models\Servicio;
 
 /*
 |--------------------------------------------------------------------------
@@ -318,6 +319,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/{record}/edit', function () {
         return view('clientes');
     })->name('cliente.edit');
+
+    Route::post('webhook/endpoint', [WebhookController::class, 'webhookAgendarCita']);
 });
 
 

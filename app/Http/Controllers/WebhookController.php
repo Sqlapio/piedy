@@ -8,10 +8,15 @@ use Illuminate\Http\Request;
 class WebhookController extends Controller
 {
     public function webhookAgendarCita ($name) {
-        TasaBcv::where('fecha', date('d-m-Y'))->first()->update([
+        $res = TasaBcv::where('fecha', date('d-m-Y'))->first()->update([
             'tasa' => $name
         ]);
-        return response()->json($name, 200);
+
+        if($res) {
+            return response()->json(['message' => 'Tasa actualizada correctamente'], 200);
+            } else {
+                return response()->json(['message' => 'Error al actualizar la tasa'], 400);
+                }
     }
     //
 }

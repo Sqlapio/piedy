@@ -322,7 +322,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
 });
 
-Route::get('webhook/endpoint/{name}', [WebhookController::class, 'webhookAgendarCita']);
 
 Route::get('/reporte/nomina', function () {
     return view('pdf.reporte');

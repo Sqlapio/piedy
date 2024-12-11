@@ -78,6 +78,13 @@ class CierreDiarioController extends Controller
                 //Totales en dolares y bolivares
                 $cierre->total_cierre_usd        = $cierre->total_dolares_efectivo + $cierre->total_dolares_zelle;
                 $cierre->total_cierre_bsd        = $cierre->total_bolivares + $cierre->monto_ref_debito + $cierre->monto_ref_credito + $cierre->monto_ref_visaMaster;
+                
+                //Restriccion de servicios facturados
+                $servicios_facturados = DetalleAsignacion::whereBetween('created_at', [now()->startOfDay(), now()->endOfDay()])->where('status', 1)->count();
+                
+                if($servicios_facturados > 0){
+                    throw new Exception("Accion no permitida.! Existen servicios sin facturar, debera realizar la facturacion antes de realizar el cierre diario", 401); 
+                    } 
                 $cierre->save();
 
                 /** Notificacion para el usuario cuando su servicio fue anulado */

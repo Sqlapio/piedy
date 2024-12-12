@@ -21,7 +21,7 @@ class WebhookController extends Controller
             $citas->fecha_formateada = $fecha;
             $citas->responsable = 'PiedyBot';
             $citas->status = 1;
-            $citas->save(); `
+            $citas->save();
 
         if($citas->save()) {
             return response()->json(['message' => 'cita agendada'], 200);

@@ -10,8 +10,8 @@ use Illuminate\Http\Request;
 class WebhookController extends Controller
 {
     public function webhookAgendarCita ($name, $phone, $fecha, $hora) {
-// dd(Carbon::parse($fecha)->isoFormat('dddd, D MMM'));
-            // $dia = UtilsController::agenda($mes, $opcion);
+        if($fecha >= now()->format('Y-m-d'))
+        {
             $citas = new Cita();
             $citas->cod_cita = 'Pci-'.random_int(11111, 99999);
             $citas->telefono = $phone;
@@ -24,11 +24,13 @@ class WebhookController extends Controller
             $citas->sucursal_id = 1;
             $citas->save();
 
-        if($citas->save()) {
             return response()->json(['message' => 'cita agendada'], 200);
-            } else {
-                return response()->json(['message' => 'Error al agendar'], 400);
-                }
+            
+        }else{
+            return response()->json(['message' => 'La fecha debe ser mayor o igual a la fecha actual'], 400);
+
+        }
+
     }
     //
 }

@@ -257,6 +257,8 @@ class Citas extends Component implements HasForms, HasActions
         ->where('fecha_formateada', 'like', '%'.$fecha.'%')
         ->where('sucursal_id', Auth::user()->sucursal_id)
         ->get();
+
+        // dump($data_citas);
         
         $datas = Trend::model(Cita::class)
                 ->between(
@@ -274,6 +276,8 @@ class Citas extends Component implements HasForms, HasActions
         ->where('sucursal_id', Auth::user()->sucursal_id)
         ->where('fecha_formateada', date('Y-m-d'))
         ->get();
+
+        // dd($data_citas_dia);
 
         return view('livewire.citas', [
             'array'             => $array,

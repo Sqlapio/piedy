@@ -51,7 +51,7 @@
                                     <li class=" flex justify-between items-center p-1 text-2xs border text-gray-700 font-extrabold rounded-lg bg-[#D9C3C1]" >
                                         <div class="hover:flex flex-col group">
                                             <span class="hidden group-hover:block line-clamp-1 uppercase">{{ $items->empleado_id == null ? '.....' : $items->empleado->name }}</span>
-                                            <span class="hidden group-hover:block line-clamp-1">{{ $items->servicio->descripcion }}</span>
+                                            <span class="hidden group-hover:block line-clamp-1">{{ $items->servicio_id == null ? '.....' : $items->servicio->descripcion  }}</span>
                                             <span class="line-clamp-1">{{ $items->cliente }}</span>
                                             <span>Hora: {{$items->hora}}</span>
                                         </div>
@@ -100,7 +100,7 @@
                                     <li class="flex justify-between items-center p-1 text-2xs border text-gray-600 font-extrabold rounded-lg bg-[#D9C3C1]" >
                                         <div class="hover:flex flex-col group">
                                             <span class="hidden group-hover:block line-clamp-1 uppercase">{{ $items->empleado_id == null ? '.....' : $items->empleado->name }}</span>
-                                            <span class="hidden group-hover:block line-clamp-1">{{ $items->servicio->descripcion }}</span>
+                                            <span class="hidden group-hover:block line-clamp-1">{{ $items->servicio_id == null ? '.....' : $items->servicio->descripcion  }}</span>
                                             <span class="line-clamp-1">{{ $items->cliente }}</span>
                                             <span>Hora: {{$items->hora}}</span>
                                         </div>

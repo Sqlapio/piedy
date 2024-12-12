@@ -2,20 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cita;
 use App\Models\TasaBcv;
 use Illuminate\Http\Request;
 
 class WebhookController extends Controller
 {
-    public function webhookAgendarCita ($name) {
-        $res = TasaBcv::where('fecha', date('d-m-Y'))->first()->update([
-            'tasa' => $name
-        ]);
+    public function webhookAgendarCita ($name, $phone, $fecha, $hora) {
 
-        if($res) {
-            return response()->json(['message' => 'Tasa actualizada correctamente'], 200);
+            // $dia = UtilsController::agenda($mes, $opcion);
+            $citas = new Cita();
+            $citas->cod_cita = 'Pci-'.random_int(11111, 99999);
+            $citas->telefono = $phone;
+            $citas->cliente = $name;
+            $citas->hora = $hora;
+            $citas->fecha_formateada = $fecha;
+            $citas->responsable = 'PiedyBot';
+            $citas->status = 1;
+            $citas->save();
+
+        if($citas->save()) {
+            return response()->json(['message' => 'cita agendada'], 200);
             } else {
-                return response()->json(['message' => 'Error al actualizar la tasa'], 400);
+                return response()->json(['message' => 'Error al agendar'], 400);
                 }
     }
     //

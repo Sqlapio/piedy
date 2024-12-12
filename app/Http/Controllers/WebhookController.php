@@ -10,15 +10,18 @@ use Illuminate\Http\Request;
 class WebhookController extends Controller
 {
     public function webhookAgendarCita ($name, $phone, $fecha, $hora) {
+        // dd($name, $phone, $fecha, date("Y-m-d", strtotime($fecha)), $hora, str_replace(' ', '', $hora));
         if($fecha >= now()->format('Y-m-d'))
         {
+            $fecha_api = date("Y-m-d", strtotime($fecha));
+            
             $citas = new Cita();
             $citas->cod_cita = 'Pci-'.random_int(11111, 99999);
             $citas->telefono = $phone;
             $citas->cliente = $name;
-            $citas->hora = $hora;
-            $citas->fecha = Carbon::parse($fecha)->isoFormat('dddd, D MMM');
-            $citas->fecha_formateada = $fecha;
+            $citas->hora = str_replace(' ', '', $hora);
+            $citas->fecha = Carbon::parse($fecha_api)->isoFormat('dddd, D MMM');
+            $citas->fecha_formateada = $fecha_api;
             $citas->responsable = 'PiedyBot';
             $citas->status = 1;
             $citas->sucursal_id = 1;

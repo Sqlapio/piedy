@@ -104,6 +104,7 @@ class AgendaController extends Controller
             // redirect(route('citas'));
 
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-shield-check')
@@ -126,6 +127,7 @@ class AgendaController extends Controller
 
             //code...
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-shield-check')

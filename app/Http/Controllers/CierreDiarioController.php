@@ -88,6 +88,10 @@ class CierreDiarioController extends Controller
                 //Fin restriccion de servicios facturados
                 $cierre->save();
 
+                if($cierre->save()) {
+                    LogController::log(Auth::user()->id, 'cierre diario', 'El usuario ejecuto el cierre de turno');
+                }
+
                 /** Notificacion para el usuario cuando su servicio fue anulado */
                 $type = 'cierre_diario';
                 $correo = env('CEO');
@@ -127,6 +131,7 @@ class CierreDiarioController extends Controller
             }
 
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')

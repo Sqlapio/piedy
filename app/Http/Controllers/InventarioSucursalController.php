@@ -46,6 +46,7 @@ class InventarioSucursalController extends Controller
 
             //code...
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')
@@ -102,6 +103,7 @@ class InventarioSucursalController extends Controller
 
             //code...
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')

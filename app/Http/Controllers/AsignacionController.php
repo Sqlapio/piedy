@@ -72,6 +72,7 @@ class AsignacionController extends Controller
             }
 
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-shield-check')
@@ -140,6 +141,7 @@ class AsignacionController extends Controller
 
             //code...
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-shield-check')
@@ -194,6 +196,7 @@ class AsignacionController extends Controller
 
             //code...
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-shield-check')
@@ -272,6 +275,7 @@ class AsignacionController extends Controller
 
             //code...
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-shield-check')

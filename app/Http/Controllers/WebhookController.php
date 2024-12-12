@@ -21,6 +21,7 @@ class WebhookController extends Controller
             $citas->fecha_formateada = $fecha;
             $citas->responsable = 'PiedyBot';
             $citas->status = 1;
+            $citas->sucursal_id = 1;
             $citas->save();
 
         if($citas->save()) {

@@ -19,4 +19,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/webhook/{name}/{phone}/{fecha}/{hora}', [WebhookController::class, 'webhookAgendarCita']);
+Route::get('/webhook/{name}/{phone}/{fecha}/{hora}/{servicio_id}', [WebhookController::class, 'webhookAgendarCita']);

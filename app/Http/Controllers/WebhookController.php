@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class WebhookController extends Controller
 {
-    public function webhookAgendarCita ($name, $phone, $fecha, $hora) {
+    public function webhookAgendarCita ($name, $phone, $fecha, $hora, $servicio_id) {
         // dd($name, $phone, $fecha, date("Y-m-d", strtotime($fecha)), $hora, str_replace(' ', '', $hora));
         $fecha_api = date("Y-m-d", strtotime($fecha));
         
@@ -26,6 +26,7 @@ class WebhookController extends Controller
             $citas->responsable = 'PiedyBot';
             $citas->status = 1;
             $citas->sucursal_id = 1;
+            $citas->servicio_id = $servicio_id;
             $citas->save();
 
             return response()->json(['message' => 'cita agendada'], 200);

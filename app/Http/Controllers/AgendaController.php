@@ -39,16 +39,6 @@ class AgendaController extends Controller
                     throw new Exception("No puede agendar citas al cliente con el mismo tecnico a la misma hora y en la misma fecha. Valide la información y vuelva a intentar");
                 }
             }
-
-            //Restriccion para evitar que se agenden mas de 4 quiropedias a la misma hora
-            $quiropedias = DB::table('citas')
-            ->select('servicio_id')
-            ->where('hora', $hora_formateada)
-            ->get();
-
-            if(count($quiropedias) >= 4) {
-                throw new Exception("No puede agendar mas de 4 quiropedias a la misma hora. Valide la información y vuelva a intentar");
-            }
             
 
             $cliente = Cliente::find($cliente_id);
@@ -89,14 +79,14 @@ class AgendaController extends Controller
 
             if(isset($cliente_id)){
                 /**Notificacion por Whatsapp */
-                // NotificacionesController::notificacion_cita_wp($mailData);
+                NotificacionesController::notificacion_cita_wp($mailData);
 
                 /**Notificacion por correo */
                 // NotificacionesController::notification($mailData, $type);
 
             }else{
                 /**Notificacion por Whatsapp */
-                // NotificacionesController::notificacion_cita_wp($mailData);
+                NotificacionesController::notificacion_cita_wp($mailData);
             }
 
             return true;

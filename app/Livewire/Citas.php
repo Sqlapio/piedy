@@ -2,29 +2,33 @@
 
 namespace App\Livewire;
 
-use App\Http\Controllers\UtilsController;
-use App\Http\Controllers\AsignacionController;
-use App\Http\Controllers\AgendaController;
+use Closure;
+use Carbon\Carbon;
 use App\Models\Cita;
+use App\Models\User;
 use App\Models\Cliente;
 use App\Models\Horario;
-use Filament\Notifications\Notification;
-use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Get;
 use Livewire\Component;
-use Livewire\WithPagination;
-use WireUi\Traits\Actions;
-use Carbon\Carbon;
 use App\Models\Servicio;
-use App\Models\User;
-use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Actions\Action;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
 use Flowframe\Trend\Trend;
+use WireUi\Traits\Actions;
+use Filament\Actions\Action;
+use Livewire\WithPagination;
 use Flowframe\Trend\TrendValue;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
+use App\Http\Controllers\UtilsController;
+use App\Http\Controllers\AgendaController;
+use Filament\Actions\Contracts\HasActions;
+use App\Http\Controllers\AsignacionController;
+use Filament\Forms\Concerns\InteractsWithForms;
+use App\Http\Controllers\NotificacionesController;
+use Filament\Actions\Concerns\InteractsWithActions;
 
 class Citas extends Component implements HasForms, HasActions
 {
@@ -63,24 +67,49 @@ class Citas extends Component implements HasForms, HasActions
                         ->prefixIcon('heroicon-c-users')
                         ->options(Cliente::all()->pluck('nombre', 'id'))
                         ->searchable()
-                        ->required(),
+                        ->required()
+                        ->live(),
                     Select::make('servicio_id')
                         ->label('Seleccione el Servicio')
                         ->prefixIcon('heroicon-o-swatch')
                         ->options(Servicio::where('sucursal_id', Auth::user()->sucursal_id)->pluck('descripcion', 'id'))
                         ->searchable()
-                        ->required(),
+                        ->required()
+                        ->live(),
                     Select::make('user_id')
                         ->label('Seleccione el Tecnico')
                         ->prefixIcon('heroicon-c-users')
                         ->options(User::where('sucursal_id', Auth::user()->sucursal_id)->whereBetween('rol_id', [1,2])->pluck('name', 'id'))
-                        ->searchable(),
+                        ->searchable()
+                        ->live(),
                     Select::make('horario')
                         ->label('Hora de la Cita')
                         ->prefixIcon('heroicon-s-calendar-days')
                         ->options(Horario::all()->pluck('hora', 'id'))
                         ->searchable()
-                        ->required(),
+                        ->required()
+                        //Regla ara validar que la cantidad introducida por el usuario es menor a la existencia total
+                        ->rules([
+                            fn (Get $get): Closure => function (string $attribute, $value, Closure $fail) use ($get) {
+                                $hora = Horario::find($value)->hora;
+                                $hora_formateada = date('h:i a', strtotime($hora));
+
+                                //Restriccion del tecnico
+                                $tecnico = Cita::where('empleado_id', ($get('user_id')))->where('hora', $hora_formateada)->get();
+
+                                $count_quiropedias = Cita::where('servicio_id', ($get('user_id')))
+                                ->where('hora', $hora_formateada)
+                                ->get();
+
+                                if (count($tecnico) >= 1) {
+                                    $fail("No puede agendar el mismo tecnico a la misma hora");
+                                }
+
+                                if (count($count_quiropedias) >= 4) {
+                                    $fail("No puede agendar mas de 4 quiropedias a la misma hora");
+                                }
+                            },
+                        ]),
                 ])->columns(2)
         ])
         ->action(function (array $arguments, array $data) {
@@ -203,6 +232,38 @@ class Citas extends Component implements HasForms, HasActions
         ->action(function (array $arguments) {
             $cita = Cita::find($arguments['cita']);
             $cita?->delete();
+        });
+    }
+
+    public function RecordarAction(): Action
+    {
+        return Action::make('recordar')
+        ->color('success')
+        ->icon('heroicon-m-device-phone-mobile')
+        ->requiresConfirmation()
+        ->modalHeading('Recordatorio de Cita')
+        ->modalDescription('Esta seguro que desea enviar el recordatorio de cita?')
+        ->modalSubmitActionLabel('Si, enviar')
+        ->modalIcon('heroicon-m-device-phone-mobile')
+        ->action(function (array $arguments) {
+            $cita = Cita::find($arguments['cita']);
+            $cliente = Cliente::where('id', $cita->cliente_id)->first()->telefono;
+            $mailData = [
+                'cliente_email' => $cita->correo,
+                'cliente_fullname' => $cita->cliente,
+                'fecha_cita' => $cita->fecha,
+                'hora_cita' => $cita->hora,
+                'telefono' => $cliente,
+            ];
+            /**Notificacion por Whatsapp */
+            $notificacion = NotificacionesController::notificacion_cita_wp($mailData);
+            
+                Notification::make()
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('info')
+                ->body($notificacion)
+                ->send();
         });
     }
 

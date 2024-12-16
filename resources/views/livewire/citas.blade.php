@@ -7,7 +7,7 @@
                   <x-select wire:change="$emit('selected', $event.target.value)" wire:model.live="mes" placeholder="Seleccion" :async-data="route('api.meses')" option-label="mes" option-value="numero" />
                 </div>
                 <div class="flex flex-row gap-2">
-                    <ul class="flex border border-[#D9C3C1] bg-[#F2F2F2] rounded-xl">
+                    <ul class="flex border border-[#D9C3C1] bg-[#f1f1f1] rounded-xl">
                         <li>
                             <input type="radio" id="dia" wire:model.live="opcion" value="dia" class="hidden peer" required />
                             <label for="dia" class="inline-flex items-center justify-between p-2 m-1 text-[#7B95A6]  rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:bg-[#7B9EA6] peer-checked:text-white peer-checked:font-extrabold peer-checked:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
@@ -58,7 +58,7 @@
                                                     <path fill-rule="evenodd" d="M12 2a7 7 0 0 0-7 7 3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h1a1 1 0 0 0 1-1V9a5 5 0 1 1 10 0v7.083A2.919 2.919 0 0 1 14.083 19H14a2 2 0 0 0-2-2h-1a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1a2 2 0 0 0 1.732-1h.351a4.917 4.917 0 0 0 4.83-4H19a3 3 0 0 0 3-3v-2a3 3 0 0 0-3-3 7 7 0 0 0-7-7Zm1.45 3.275a4 4 0 0 0-4.352.976 1 1 0 0 0 1.452 1.376 2.001 2.001 0 0 1 2.836-.067 1 1 0 1 0 1.386-1.442 4 4 0 0 0-1.321-.843Z" clip-rule="evenodd"/>
                                                   </svg>
                                                 @endif
-                                                <span class="line-clamp-1 ml-1">{{ $items->cliente }}</span>
+                                                <span class="line-clamp-1">{{ $items->cliente }}</span>
                                             </div>
                                             <span>Hora: {{$items->hora}}</span>
                                         </div>
@@ -67,7 +67,8 @@
                                                 <x-filament-actions::group
                                                     :actions="[
                                                         ($this->asignarAction)(['cita' => $items->id]),
-                                                        ($this->eliminarAction)(['cita' => $items->id])
+                                                        ($this->eliminarAction)(['cita' => $items->id]),
+                                                        ($this->recordarAction)(['cita' => $items->id])
                                                     ]"
                                                     icon="heroicon-m-ellipsis-vertical"
                                                     color="colorOne"
@@ -76,7 +77,8 @@
                                                 <x-filament-actions::group
                                                     :actions="[
                                                         ($this->activarAction)(['cita' => $items->id]),
-                                                        ($this->eliminarAction)(['cita' => $items->id])
+                                                        ($this->eliminarAction)(['cita' => $items->id]),
+                                                        ($this->recordarAction)(['cita' => $items->id])
                                                     ]"
                                                     icon="heroicon-m-ellipsis-vertical"
                                                     color="colorOne"

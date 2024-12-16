@@ -123,7 +123,7 @@ class NotificacionesController extends Controller
             $params = array(
                 'token' => env('TOKEN_API_WHATSAPP'),
                 'to' => $data['telefono'],
-                'image' => env('IMAGE'),
+                'image' => env('IMAGEgg'),
                 'caption' => $body
             );
             $curl = curl_init();
@@ -142,11 +142,21 @@ class NotificacionesController extends Controller
                     "content-type: application/x-www-form-urlencoded"
                 ),
             ));
-
+            
             $response = curl_exec($curl);
             $err = curl_error($curl);
-
+            $res = json_decode($response, true);
+            $res_api = $res['error'][0];
             curl_close($curl);
+
+            if ($err) {
+                return $err;
+              } else {
+                return $res_api;
+              }
+
+            // return true;
+            
         } catch (\Throwable $th) {
             Notification::make()
                 ->title('NOTIFICACIÓN')

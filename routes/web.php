@@ -331,55 +331,57 @@ Route::get('/reporte/nomina', function () {
 
 Route::get('/ex', function () {
     
-    // $user_phone = Cliente::all();
+    $user_phone = Cliente::all();
 
-    //     foreach ($user_phone as $value) {
+        foreach ($user_phone as $value) {
 
-    //         $params = array(
-    //             'token' => env('TOKEN_API_WHATSAPP'),
-    //             'to' => $value->telefono,
-    //             'image' => env('IMAGE_PROMOCION'),
-    //             'caption' => '¡Celebremos juntos el 1er Aniversario de Piedy!'
-    //         );
-    //         $curl = curl_init();
-    //         curl_setopt_array($curl, array(
-    //             CURLOPT_URL => env('CURLOPT_URL_IMAGE'),
-    //             CURLOPT_RETURNTRANSFER => true,
-    //             CURLOPT_ENCODING => "",
-    //             CURLOPT_MAXREDIRS => 10,
-    //             CURLOPT_TIMEOUT => 30,
-    //             CURLOPT_SSL_VERIFYHOST => 0,
-    //             CURLOPT_SSL_VERIFYPEER => 0,
-    //             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    //             CURLOPT_CUSTOMREQUEST => "POST",
-    //             CURLOPT_POSTFIELDS => http_build_query($params),
-    //             CURLOPT_HTTPHEADER => array(
-    //                 "content-type: application/x-www-form-urlencoded"
-    //             ),
-    //         ));
+            $params = array(
+                'token' => env('TOKEN_API_WHATSAPP'),
+                'to' => $value->telefono,
+                'image' => env('IMAGE_PROMOCION'),
+                'caption' => '¡Tienes el Regalo perfecto para estas fechas...!'
+            );
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('CURLOPT_URL_IMAGE'),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_SSL_VERIFYHOST => 0,
+                CURLOPT_SSL_VERIFYPEER => 0,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => http_build_query($params),
+                CURLOPT_HTTPHEADER => array(
+                    "content-type: application/x-www-form-urlencoded"
+                ),
+            ));
 
-    //         $response = curl_exec($curl);
-    //         $err = curl_error($curl);
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
 
-    //         curl_close($curl);
-    //     }
+            curl_close($curl);
+        }
 
-    $array_servicios = [];
+    dd('Listo VB');
+
+    // $array_servicios = [];
             
-            //Servicios realizados por el tecnico
-            $servicios = DetalleAsignacion::where('cod_asignacion', 'Pca-40738592')
-            ->where('sucursal_id', Auth::user()->sucursal_id)
-            ->where('status', 2)
-            ->get();
+    //         //Servicios realizados por el tecnico
+    //         $servicios = DetalleAsignacion::where('cod_asignacion', 'Pca-40738592')
+    //         ->where('sucursal_id', Auth::user()->sucursal_id)
+    //         ->where('status', 2)
+    //         ->get();
             
-            for($i = 0; $i < count($servicios); $i++)
-            {
-                dump($servicios[$i]->servicio_id);
-                $descrip_serv = Servicio::find($servicios[$i]->servicio_id)->descripcion;
-                dd($descrip_serv);
-                array_push($array_servicios, $descrip_serv);
-            }
+    //         for($i = 0; $i < count($servicios); $i++)
+    //         {
+    //             dump($servicios[$i]->servicio_id);
+    //             $descrip_serv = Servicio::find($servicios[$i]->servicio_id)->descripcion;
+    //             dd($descrip_serv);
+    //             array_push($array_servicios, $descrip_serv);
+    //         }
 
-            dd($array_servicios);
+    //         dd($array_servicios);
 
 });

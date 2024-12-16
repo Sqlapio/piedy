@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CarProducto;
-use App\Models\Comision;
-use App\Models\InventarioSucursal;
-use App\Models\Producto;
-use App\Models\VentaProducto;
 use Exception;
-use Filament\Notifications\Notification;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Comision;
+use App\Models\Producto;
+use App\Models\MetodoPago;
+use App\Models\CarProducto;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\VentaProducto;
+use App\Models\InventarioSucursal;
+use Illuminate\Support\Facades\Auth;
+use Filament\Notifications\Notification;
 
 class VentaProductoController extends Controller
 {
-    static function facturarProducto_usd($metodoUsd, $montoUsd, $cliente_id, $empleado_id)
+    static function facturarProducto_usd($metodoUsd, $montoUsd, $cliente_id, $empleado_id, $ref_zelle)
     {
         // dd($metodoUsd, $montoUsd, $cliente_id, $empleado_id);
         try {
@@ -70,9 +71,8 @@ class VentaProductoController extends Controller
                     $venta_producto->gerente_id         = Auth::user()->id;
                     $venta_producto->producto_id        = $producto->id;
                     $venta_producto->costo_producto     = $producto->precio_venta;
-                    $venta_producto->metodo_pago        = 'USD';
 
-                    $venta_producto->metodoUsd          = $metodoUsd;
+                    $venta_producto->metodoUsd          = MetodoPago::where('id', $metodoUsd)->first()->descripcion;
                     $venta_producto->montoUsd           = $montoUsd;
 
                     $venta_producto->comision_gerente   = ($porComGte * $producto->precio_venta) / 100;
@@ -86,6 +86,8 @@ class VentaProductoController extends Controller
 
                     $venta_producto->cliente_id         = $cliente_id;
                     $venta_producto->empleado_id        = ($empleado_id == null) ? Auth::user()->id : $empleado_id;
+                    $venta_producto->ref_zelle          = $ref_zelle;
+                    
                     $venta_producto->save();
 
                     //Descuento la cantidad vendida de la exitencia del producto por sucursal
@@ -137,7 +139,7 @@ class VentaProductoController extends Controller
 
     }
 
-    static function facturarProducto_bsd($metodoBsd, $montoBsd, $referenciaBsd, $nroTarjeta, $cliente_id, $empleado_id = null)
+    static function facturarProducto_bsd($metodoBsd, $montoBsd, $cliente_id, $empleado_id, $ref_pago_movil, $ref_debito_credito, $nro_tarjeta)
     {
         try {
 
@@ -188,9 +190,8 @@ class VentaProductoController extends Controller
                 $venta_producto->gerente_id         = Auth::user()->id;
                 $venta_producto->producto_id        = $producto->id;
                 $venta_producto->costo_producto     = $producto->precio_venta;
-                $venta_producto->metodo_pago        = 'BSD';
 
-                $venta_producto->metodoBsd          = $metodoBsd;
+                $venta_producto->metodoBsd          = MetodoPago::where('id', $metodoBsd)->first()->descripcion;;
                 $venta_producto->montoBsd           = Str::replace(',', '.', (Str::replace('.', '', $montoBsd)));
 
                 $venta_producto->comision_gerente   = ($porComGte * $producto->precio_venta) / 100;
@@ -199,13 +200,14 @@ class VentaProductoController extends Controller
                 $venta_producto->fecha_venta        = now()->format('d-m-Y');
                 $venta_producto->cantidad           = $item->cantidad;
                 $venta_producto->total_venta        = $producto->precio_venta * $item->cantidad;
-                $venta_producto->referenciaBsd      = ($referenciaBsd == null) ? 'N/a' : $referenciaBsd ;
-                $venta_producto->nroTarjeta         = ($nroTarjeta == null) ? 'N/a' : $nroTarjeta;
+                $venta_producto->ref_pago_movil     = $ref_pago_movil;
+                $venta_producto->ref_debito_credito = $ref_debito_credito;
+                $venta_producto->nroTarjeta         = $nro_tarjeta;
                 $venta_producto->responsable        = Auth::user()->name;
                 $venta_producto->sucursal_id        = Auth::user()->sucursal->id;
 
                 $venta_producto->cliente_id         = $cliente_id;
-                $venta_producto->empleado_id        = ($empleado_id == null) ? Auth::user()->id : $empleado_id;
+                $venta_producto->empleado_id        = $empleado_id;
                 $venta_producto->save();
 
                 //Descuento la cantidad vendida de la exitencia del producto por sucursal
@@ -255,17 +257,21 @@ class VentaProductoController extends Controller
 
     }
 
-    static function facturarProducto_multiple($montoUsd, $montoBsd, $metodoUsd, $metodoBsd, $referenciaUsd, $referenciaBsd, $nroTarjeta, $cliente_id, $empleado_id = null)
+    static function facturarProducto_multiple($montoUsd, $montoBsd, $metodoUsd, $metodoBsd, $cliente_id, $empleado_id, $ref_zelle, $ref_pago_movil, $ref_debito_credito, $nro_tarjeta)
     {
         try {
 
             $codigoAsignacion = 'Pca-'.random_int(11111111, 99999999);
 
-            /**Validacion para no permitir los numero de referencias duplicados */
-            $exite_referencia = VentaProducto::where('referenciaUsd', $referenciaUsd)->orWhere('referenciaBsd', $referenciaBsd)->get();
-            if(count($exite_referencia) > 0){
-                throw new Exception("Numero de referencia duplicado. Por favor vuelva a intentarlo", 401);
-            }
+            // /**Validacion para no permitir los numero de referencias duplicados */
+            // $exite_referencia = VentaProducto::where('referenciaUsd', $referenciaUsd)
+            // ->orWhere('referenciaBsd', $referenciaBsd)
+            // ->orWhere('referenciaBsd', $referenciaBsd)
+            // ->orWhere('referenciaBsd', $referenciaBsd)
+            // ->get();
+            // if(count($exite_referencia) > 0){
+            //     throw new Exception("Numero de referencia duplicado. Por favor vuelva a intentarlo", 401);
+            // }
 
             $total_compra_usd = CarProducto::sum('total_compra_usd');
             // $total_compra_bsd = CarProducto::sum('total_compra_bsd')
@@ -314,13 +320,12 @@ class VentaProductoController extends Controller
                 $venta_producto->gerente_id         = Auth::user()->id;
                 $venta_producto->producto_id        = $producto->id;
                 $venta_producto->costo_producto     = $producto->precio_venta;
-                $venta_producto->metodo_pago        = 'multiple';
 
-                $venta_producto->metodoUsd          = $metodoUsd;
-                $venta_producto->metodoBsd          = $metodoBsd;
+                $venta_producto->metodoUsd          = MetodoPago::where('id', $metodoUsd)->first()->descripcion;;
+                $venta_producto->metodoBsd          = MetodoPago::where('id', $metodoBsd)->first()->descripcion;;
 
                 $venta_producto->montoUsd           = $montoUsd;
-                $venta_producto->montoBsd           = Str::replace(',', '.', (Str::replace('.', '', $montoBsd)));
+                $venta_producto->montoBsd           = $montoBsd;
 
                 $venta_producto->comision_gerente   = ($porComGte * $producto->precio_venta) / 100;
                 $venta_producto->comision_empleado  = ($empleado_id == null) ? 0.00 : ($porComEmp * $producto->precio_venta) / 100;
@@ -329,15 +334,16 @@ class VentaProductoController extends Controller
                 $venta_producto->cantidad           = $item->cantidad;
                 $venta_producto->total_venta        = $producto->precio_venta * $item->cantidad;
 
-                $venta_producto->referenciaUsd      = ($referenciaUsd == null) ? 'N/A' : $referenciaUsd;
-                $venta_producto->referenciaBsd      = ($referenciaBsd == null) ? 'N/A' : $referenciaBsd;
-
-                $venta_producto->nroTarjeta         = ($nroTarjeta == null) ? 'N/A' : $nroTarjeta;
+                $venta_producto->ref_pago_movil     = $ref_pago_movil;
+                $venta_producto->ref_debito_credito = $ref_debito_credito;
+                $venta_producto->nroTarjeta         = $nro_tarjeta;
+                $venta_producto->ref_zelle          = $ref_zelle;
+                
                 $venta_producto->responsable        = Auth::user()->name;
                 $venta_producto->sucursal_id        = Auth::user()->sucursal->id;
 
                 $venta_producto->cliente_id         = $cliente_id;
-                $venta_producto->empleado_id        = ($empleado_id == null) ? Auth::user()->id : $empleado_id;
+                $venta_producto->empleado_id        = $empleado_id;
                 $venta_producto->save();
 
                 //Descuento la cantidad vendida de la exitencia del producto por sucursal

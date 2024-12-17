@@ -405,7 +405,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     ->body('Facturacion Exitosa. Codigo: '.$this->cod_asignacion)
                                     ->send();
 
-                                    LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en dolares: '.$this->cod_asignacion);
+                                    LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en dolares: '.$this->cod_asignacion, $response = null);
                                     
                                     $this->redirectRoute('cabinas');
                                 }else{
@@ -443,7 +443,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     ->body('Facturacion Exitosa. Codigo: '.$this->cod_asignacion)
                                     ->send();
 
-                                    LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en bolivares: '.$this->cod_asignacion);
+                                    LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en bolivares: '.$this->cod_asignacion, $response = null);
 
                                     $this->redirectRoute('cabinas');
                                 }else{
@@ -487,7 +487,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     ->body('Facturacion Exitosa. Codigo: '.$this->cod_asignacion)
                                     ->send();
 
-                                    LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en bolivares y dolares: '.$this->cod_asignacion);
+                                    LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en bolivares y dolares: '.$this->cod_asignacion, $response = null);
                                     
                                     $this->redirectRoute('cabinas');
                                 }else{
@@ -614,7 +614,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                             );
 
                             if($cierre){
-                                LogController::log(Auth::user()->id, 'servicio cerrado', 'ejecucion del cierre de servicio: '.$this->cod_asignacion);
+                                LogController::log(Auth::user()->id, 'servicio cerrado', 'ejecucion del cierre de servicio: '.$this->cod_asignacion, $response = null);
                                 return redirect()->route('cabinas');
                             }else{
                                 Notification::make()

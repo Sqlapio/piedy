@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class LogController extends Controller
 {
-    public static function log($user_id, $accion, $descripcion)
+    public static function log($user_id, $accion, $descripcion, $response)
     {
         try {
 
@@ -16,6 +16,7 @@ class LogController extends Controller
             $log->user_id       = $user_id;
             $log->accion        = $accion;
             $log->descripcion   = $descripcion;
+            $log->response      = $response != null ? $response : null;
             $log->navegador     = $_SERVER['HTTP_USER_AGENT'];
             $log->ip            = $_SERVER['REMOTE_ADDR'];
             $log->save();

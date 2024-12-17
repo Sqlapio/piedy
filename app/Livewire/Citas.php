@@ -54,230 +54,225 @@ class Citas extends Component implements HasForms, HasActions
     public function CreateAction(): Action
     {
         return Action::make('create')
-        ->modalHeading(false)
-        ->color('success')
-        ->form([
-            Section::make('Formulario de Citas')
-                ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
-                ->icon('heroicon-s-calendar-days')
-                ->schema([
-                    //Seleccion de servicio
-                    Select::make('cliente_id')
-                        ->label('Seleccione el Cliente')
-                        ->prefixIcon('heroicon-c-users')
-                        ->options(Cliente::all()->pluck('nombre', 'id'))
-                        ->searchable()
-                        ->required()
-                        ->live(),
-                    Select::make('servicio_id')
-                        ->label('Seleccione el Servicio')
-                        ->prefixIcon('heroicon-o-swatch')
-                        ->options(Servicio::where('sucursal_id', Auth::user()->sucursal_id)->pluck('descripcion', 'id'))
-                        ->searchable()
-                        ->required()
-                        ->live(),
-                    Select::make('user_id')
-                        ->label('Seleccione el Tecnico')
-                        ->prefixIcon('heroicon-c-users')
-                        ->options(User::where('sucursal_id', Auth::user()->sucursal_id)->whereBetween('rol_id', [1,2])->pluck('name', 'id'))
-                        ->searchable()
-                        ->live(),
-                    Select::make('horario')
-                        ->label('Hora de la Cita')
-                        ->prefixIcon('heroicon-s-calendar-days')
-                        ->options(Horario::all()->pluck('hora', 'id'))
-                        ->searchable()
-                        ->required()
-                        //Regla ara validar que la cantidad introducida por el usuario es menor a la existencia total
-                        ->rules([
-                            fn (Get $get): Closure => function (string $attribute, $value, Closure $fail) use ($get) {
-                                $hora = Horario::find($value)->hora;
-                                $hora_formateada = date('h:i a', strtotime($hora));
+            ->modalHeading(false)
+            ->color('success')
+            ->form([
+                Section::make('Formulario de Citas')
+                    ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
+                    ->icon('heroicon-s-calendar-days')
+                    ->schema([
+                        //Seleccion de servicio
+                        Select::make('cliente_id')
+                            ->label('Seleccione el Cliente')
+                            ->prefixIcon('heroicon-c-users')
+                            ->options(Cliente::all()->pluck('nombre', 'id'))
+                            ->searchable()
+                            ->required()
+                            ->live(),
+                        Select::make('servicio_id')
+                            ->label('Seleccione el Servicio')
+                            ->prefixIcon('heroicon-o-swatch')
+                            ->options(Servicio::where('sucursal_id', Auth::user()->sucursal_id)->pluck('descripcion', 'id'))
+                            ->searchable()
+                            ->required()
+                            ->live(),
+                        Select::make('user_id')
+                            ->label('Seleccione el Tecnico')
+                            ->prefixIcon('heroicon-c-users')
+                            ->options(User::where('sucursal_id', Auth::user()->sucursal_id)->whereBetween('rol_id', [1, 2])->pluck('name', 'id'))
+                            ->searchable()
+                            ->live(),
+                        Select::make('horario')
+                            ->label('Hora de la Cita')
+                            ->prefixIcon('heroicon-s-calendar-days')
+                            ->options(Horario::all()->pluck('hora', 'id'))
+                            ->searchable()
+                            ->required(),
+                    ])->columns(2)
+            ])
+            ->action(function (array $arguments, array $data) {
+                // dd($arguments);
+                $array = UtilsController::agenda($arguments['mes'], $this->opcion);
 
-                                //Restriccion del tecnico
-                                $tecnico = Cita::where('empleado_id', ($get('user_id')))->where('hora', $hora_formateada)->get();
+                $valida = AgendaController::validaciones($data['horario'], $array[$arguments['id']], $data['cliente_id'], $data['servicio_id'], $data['user_id']);
 
-                                $count_quiropedias = Cita::where('servicio_id', ($get('user_id')))
-                                ->where('hora', $hora_formateada)
-                                ->get();
-
-                                if (count($tecnico) >= 1) {
-                                    $fail("No puede agendar el mismo tecnico a la misma hora");
-                                }
-
-                                if (count($count_quiropedias) >= 4) {
-                                    $fail("No puede agendar mas de 4 quiropedias a la misma hora");
-                                }
-                            },
-                        ]),
-                ])->columns(2)
-        ])
-        ->action(function (array $arguments, array $data) {
-
-            $array = UtilsController::agenda($arguments['mes'], $this->opcion);
-
-            $agendar = AgendaController::agendar_cita($data['cliente_id'], $data['servicio_id'], $data['user_id'], $array[$arguments['id']], $data['horario']);
-
-            if($agendar)
-            {
-                redirect(route('citas'));
-
-            }else{
-                Notification::make()
-                ->title('Notificacion')
-                ->icon('heroicon-o-exclamation-triangle')
-                ->iconColor('danger')
-                ->body('No se pudo agendar la cita, por favor vuelva a intentarlo')
-                ->send();
-            }
-
-        });
+                if($valida['success'] == true) {
+                    $agendar = AgendaController::agendar_cita($data['cliente_id'], $data['servicio_id'], $data['user_id'], $array[$arguments['id']], $data['horario']);
+                    if($agendar['success'] == true) {
+                        Notification::make()
+                            ->title('Notificacion')
+                            ->icon('heroicon-o-check-circle')
+                            ->iconColor('success')
+                        ->color('success')
+                            ->body($agendar['message'])
+                            ->send();
+                    }
+                } else {
+                    Notification::make()
+                        ->title('Notificacion')
+                        ->icon('heroicon-o-exclamation-triangle')
+                        ->iconColor('danger')
+                        ->color('danger')
+                        ->body($valida['message'])
+                        ->send();
+                }
+            });
     }
 
     public function AsignarAction(): Action
     {
         return Action::make('asignar')
-        ->icon('heroicon-c-user-plus')
-        ->modalHeading(false)
-        ->color('success')
-        ->form([
-            Section::make('Asignar Tecnico')
-                ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
-                ->icon('heroicon-c-user-plus')
-                ->schema([
-                    //Seleccion de servicio
-                    Select::make('user_id')
-                        ->label('Seleccione el Tecnico')
-                        ->prefixIcon('heroicon-c-users')
-                        ->options(User::where('sucursal_id', Auth::user()->sucursal_id)->whereBetween('rol_id', [1,2])->pluck('name', 'id'))
-                        ->searchable(),
-                ])
-        ])
-        ->action(function (array $arguments, array $data) {
+            ->icon('heroicon-c-user-plus')
+            ->modalHeading(false)
+            ->color('success')
+            ->form([
+                Section::make('Asignar Tecnico')
+                    ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
+                    ->icon('heroicon-c-user-plus')
+                    ->schema([
+                        //Seleccion de servicio
+                        Select::make('user_id')
+                            ->label('Seleccione el Tecnico')
+                            ->prefixIcon('heroicon-c-users')
+                            ->options(User::where('sucursal_id', Auth::user()->sucursal_id)->whereBetween('rol_id', [1, 2])->pluck('name', 'id'))
+                            ->searchable(),
+                    ])
+            ])
+            ->action(function (array $arguments, array $data) {
 
-            $res = AgendaController::asignar_tecnico($arguments['cita'], $data['user_id']);
+                $res = AgendaController::asignar_tecnico($arguments['cita'], $data['user_id']);
 
-            if($res)
-            {
-                Notification::make()
-                ->title('Notificacion')
-                ->icon('heroicon-m-check-circle')
-                ->iconColor('success')
-                ->color('success')
-                ->body('Tecnico asignado con exito!!!')
-                ->send();
-            }else{
-                Notification::make()
-                ->title('Notificacion')
-                ->icon('heroicon-o-exclamation-triangle')
-                ->iconColor('danger')
-                ->body('No se pudo asignar al tecnico, por favor vuelva a intentar')
-                ->send();
-            }
-
-        });
+                if ($res) {
+                    Notification::make()
+                        ->title('Notificacion')
+                        ->icon('heroicon-m-check-circle')
+                        ->iconColor('success')
+                        ->color('success')
+                        ->body('Tecnico asignado con exito!!!')
+                        ->send();
+                } else {
+                    Notification::make()
+                        ->title('Notificacion')
+                        ->icon('heroicon-o-exclamation-triangle')
+                        ->iconColor('danger')
+                        ->body('No se pudo asignar al tecnico, por favor vuelva a intentar')
+                        ->send();
+                }
+            });
     }
 
     public function ActivarAction(): Action
     {
         return Action::make('activar')
-        ->icon('heroicon-c-power')
-        ->color('colorOne')
-        ->requiresConfirmation()
-        ->modalHeading('Activar Servicio')
-        ->modalDescription('Esta seguro que desea activar el servício?')
-        ->modalSubmitActionLabel('Si, activar servício')
-        ->modalIcon('heroicon-c-power')
-        ->action(function (array $arguments) {
+            ->icon('heroicon-c-power')
+            ->color('colorOne')
+            ->requiresConfirmation()
+            ->modalHeading('Activar Servicio')
+            ->modalDescription('Esta seguro que desea activar el servício?')
+            ->modalSubmitActionLabel('Si, activar servício')
+            ->modalIcon('heroicon-c-power')
+            ->action(function (array $arguments) {
 
-            $info_cita = Cita::find($arguments)->first();
-            
-            //Controller para asignacion de servicio
-            $res = AsignacionController::asignacion_servicio($info_cita->cliente_id, $info_cita->empleado_id, $info_cita->servicio_id);
+                $info_cita = Cita::find($arguments)->first();
 
-            if ($res) {
-                
-                $info_cita->status = 2;
-                $info_cita->save();
-                
-                Notification::make()
-                ->title('NOTIFICACIÓN')
-                ->icon('heroicon-o-shield-check')
-                ->iconColor('success')
-                ->body('El servicio fue asignado correctamente!')
-                ->send();
+                //Controller para asignacion de servicio
+                $res = AsignacionController::asignacion_servicio($info_cita->cliente_id, $info_cita->empleado_id, $info_cita->servicio_id);
 
-            }else{
-                Notification::make()
-                ->title('NOTIFICACIÓN')
-                ->icon('heroicon-s-exclamation-triangle')
-                ->iconColor('danger')
-                ->body('El tecnico ya posee un servicio abierto. Por favor realiza la facturación y vuelve a intentar!')
-                ->send();
+                if ($res) {
 
-            }
-        });
+                    $info_cita->status = 2;
+                    $info_cita->save();
+
+                    Notification::make()
+                        ->title('NOTIFICACIÓN')
+                        ->icon('heroicon-o-shield-check')
+                        ->iconColor('success')
+                        ->body('El servicio fue asignado correctamente!')
+                        ->send();
+                } else {
+                    Notification::make()
+                        ->title('NOTIFICACIÓN')
+                        ->icon('heroicon-s-exclamation-triangle')
+                        ->iconColor('danger')
+                        ->body('El tecnico ya posee un servicio abierto. Por favor realiza la facturación y vuelve a intentar!')
+                        ->send();
+                }
+            });
     }
 
     public function EliminarAction(): Action
     {
         return Action::make('eliminar')
-        ->color('danger')
-        ->icon('heroicon-s-trash')
-        ->requiresConfirmation()
-        ->modalHeading('Eliminar Cita')
-        ->modalDescription('Esta seguro que desea eliminar la cita?')
-        ->modalSubmitActionLabel('Si, eliminar cita')
-        ->modalIcon('heroicon-o-trash')
-        ->action(function (array $arguments) {
-            $cita = Cita::find($arguments['cita']);
-            $cita?->delete();
-        });
+            ->color('danger')
+            ->icon('heroicon-s-trash')
+            ->requiresConfirmation()
+            ->modalHeading('Eliminar Cita')
+            ->modalDescription('Esta seguro que desea eliminar la cita?')
+            ->modalSubmitActionLabel('Si, eliminar cita')
+            ->modalIcon('heroicon-o-trash')
+            ->action(function (array $arguments) {
+                $cita = Cita::find($arguments['cita']);
+                $cita?->delete();
+            });
     }
 
     public function RecordarAction(): Action
     {
         return Action::make('recordar')
-        ->color('success')
-        ->icon('heroicon-m-device-phone-mobile')
-        ->requiresConfirmation()
-        ->modalHeading('Recordatorio de Cita')
-        ->modalDescription('Esta seguro que desea enviar el recordatorio de cita?')
-        ->modalSubmitActionLabel('Si, enviar')
-        ->modalIcon('heroicon-m-device-phone-mobile')
-        ->action(function (array $arguments) {
-            $cita = Cita::find($arguments['cita']);
-            $cliente = Cliente::where('id', $cita->cliente_id)->first()->telefono;
-            $mailData = [
-                'cliente_email' => $cita->correo,
-                'cliente_fullname' => $cita->cliente,
-                'fecha_cita' => $cita->fecha,
-                'hora_cita' => $cita->hora,
-                'telefono' => $cliente,
-            ];
-            /**Notificacion por Whatsapp */
-            $notificacion = NotificacionesController::notificacion_cita_wp($mailData);
-            
-                Notification::make()
-                ->title('NOTIFICACIÓN')
-                ->icon('heroicon-o-shield-check')
-                ->iconColor('info')
-                ->body($notificacion)
-                ->send();
-        });
+            ->color('success')
+            ->icon('heroicon-m-device-phone-mobile')
+            ->requiresConfirmation()
+            ->modalHeading('Recordatorio de Cita')
+            ->modalDescription('Esta seguro que desea enviar el recordatorio de cita?')
+            ->modalSubmitActionLabel('Si, enviar')
+            ->modalIcon('heroicon-m-device-phone-mobile')
+            ->action(function (array $arguments) {
+                $cita = Cita::find($arguments['cita']);
+                $cliente = Cliente::where('id', $cita->cliente_id)->first()->telefono;
+                $mailData = [
+                    'cliente_email' => $cita->correo,
+                    'cliente_fullname' => $cita->cliente,
+                    'fecha_cita' => $cita->fecha,
+                    'hora_cita' => $cita->hora,
+                    'telefono' => $cliente,
+                ];
+                /**Notificacion por Whatsapp */
+                $notificacion = NotificacionesController::notificacion_cita_wp($mailData);
+
+                if($notificacion['success'] == true){
+                    Notification::make()
+                    ->title('NOTIFICACIÓN')
+                    ->icon('heroicon-o-document-text')
+                    ->iconColor('success')
+                    ->color('success')
+                    ->body($notificacion['message'])
+                    ->send();
+                }else{
+                    Notification::make()
+                    ->title('NOTIFICACIÓN')
+                    ->icon('heroicon-o-document-text')
+                    ->iconColor('danger')
+                    ->color('danger')
+                    ->body($notificacion['message'])
+                    ->send();
+                }
+                    
+                    
+
+            });
     }
 
     public function filtro()
     {
-        if($this->opcion == 'semana'){
+        if ($this->opcion == 'semana') {
             $this->inicio = now()->startOfWeek()->month($this->mes);
             $this->fin = now()->endOfWeek();
         }
-        if($this->opcion == 'mes'){
+        if ($this->opcion == 'mes') {
             $this->inicio = now()->startOfMonth()->month($this->mes);
             $this->fin = now()->endOfMonth()->month($this->mes);
         }
-        if($this->opcion == 'dia'){
+        if ($this->opcion == 'dia') {
             $this->inicio = now()->startOfDay()->month($this->mes);
             $this->fin = now()->endOfDay()->month($this->mes);
         }
@@ -285,20 +280,17 @@ class Citas extends Component implements HasForms, HasActions
 
     public function div_largo()
     {
-        if($this->opcion == 'mes')
-        {
+        if ($this->opcion == 'mes') {
             $this->largo = 'h-64';
             $this->scroll = 'h-96';
         }
 
-        if($this->opcion == 'semana')
-        {
+        if ($this->opcion == 'semana') {
             $this->largo = 'h-96';
             $this->scroll = 'h-96';
         }
 
-        if($this->opcion == 'dia')
-        {
+        if ($this->opcion == 'dia') {
             $this->largo = '';
         }
     }
@@ -315,28 +307,28 @@ class Citas extends Component implements HasForms, HasActions
         $end = $this->fin;
 
         $data_citas = Cita::where('status', 1)
-        ->where('fecha_formateada', 'like', '%'.$fecha.'%')
-        ->where('sucursal_id', Auth::user()->sucursal_id)
-        ->get();
+            ->where('fecha_formateada', 'like', '%' . $fecha . '%')
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->get();
 
         // dump($data_citas);
-        
+
         $datas = Trend::model(Cita::class)
-                ->between(
-                    $start,
-                    $end,
-                )
-                ->perDay()
-                ->count();
-                
-        $array = $datas->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray();
+            ->between(
+                $start,
+                $end,
+            )
+            ->perDay()
+            ->count();
+
+        $array = $datas->map(fn(TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray();
 
         $horario = Horario::all();
-        
+
         $data_citas_dia = Cita::where('status', 1)
-        ->where('sucursal_id', Auth::user()->sucursal_id)
-        ->where('fecha_formateada', date('Y-m-d'))
-        ->get();
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->where('fecha_formateada', date('Y-m-d'))
+            ->get();
 
         // dd($data_citas_dia);
 

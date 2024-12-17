@@ -260,7 +260,7 @@ class TablePreSelectPro extends Component implements HasForms, HasTable
                                     ->body('Facturacion Exitosa')
                                     ->send();
 
-                                    LogController::log(Auth::user()->id, 'producto facturado', 'facturacion de producto vendido en dolares');
+                                    LogController::log(Auth::user()->id, 'producto facturado','facturacion de producto vendido en dolares', $response = null);
 
                                     CarProducto::where('sucursal_id', Auth::user()->sucursal_id)->delete();
 
@@ -306,7 +306,7 @@ class TablePreSelectPro extends Component implements HasForms, HasTable
                                     ->body('Facturacion Exitosa. Codigo: '.$this->cod_asignacion)
                                     ->send();
 
-                                    LogController::log(Auth::user()->id, 'producto facturado', 'facturacion de producto vendido en bolivares');
+                                    LogController::log(Auth::user()->id, 'producto facturado','facturacion de producto vendido en bolivares', $response = null);
 
                                     CarProducto::where('sucursal_id', Auth::user()->sucursal_id)->delete();
 
@@ -357,7 +357,7 @@ class TablePreSelectPro extends Component implements HasForms, HasTable
                                     ->body('Facturacion Exitosa')
                                     ->send();
 
-                                    LogController::log(Auth::user()->id, 'producto facturado', 'facturacion de producto vendido en dolares y bolivares');
+                                    LogController::log(Auth::user()->id, 'producto facturado','facturacion de producto vendido en dolares y bolivares', $response = null);
 
                                     CarProducto::where('sucursal_id', Auth::user()->sucursal_id)->delete();
 

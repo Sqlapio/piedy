@@ -48,8 +48,17 @@
                         @foreach ($data_citas as $items)
                             <div class="max-w-md space-y-2 text-gray-700 list-inside dark:text-gray-400">
                                 @if($items->fecha == $item )
-                                    <li class=" flex justify-between items-center p-1 text-2xs border text-gray-700 font-extrabold rounded-lg bg-[#D9C3C1]" >
-                                        <div class="hover:flex flex-col group">
+                                    <li class=" flex justify-between items-center p-1 text-2xs border text-gray-700 font-extrabold rounded-lg bg-[#D9C3C1] " >
+                                        <div class="hover:flex flex-col group p-1">
+                                            @if($items->confirmacion == 1)
+                                                <div class="flex justify-start items-center py-1">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-green-700">
+                                                        <path d="M5.85 3.5a.75.75 0 0 0-1.117-1 9.719 9.719 0 0 0-2.348 4.876.75.75 0 0 0 1.479.248A8.219 8.219 0 0 1 5.85 3.5ZM19.267 2.5a.75.75 0 1 0-1.118 1 8.22 8.22 0 0 1 1.987 4.124.75.75 0 0 0 1.48-.248A9.72 9.72 0 0 0 19.266 2.5Z" />
+                                                        <path fill-rule="evenodd" d="M12 2.25A6.75 6.75 0 0 0 5.25 9v.75a8.217 8.217 0 0 1-2.119 5.52.75.75 0 0 0 .298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 1 0 7.48 0 24.583 24.583 0 0 0 4.83-1.244.75.75 0 0 0 .298-1.205 8.217 8.217 0 0 1-2.118-5.52V9A6.75 6.75 0 0 0 12 2.25ZM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 0 0 4.496 0l.002.1a2.25 2.25 0 1 1-4.5 0Z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    <span class="ml-1 uppercase text-green-700">Confirmada</span>
+                                                </div>
+                                            @endif
                                             <span class="hidden group-hover:block line-clamp-1 uppercase">{{ $items->empleado_id == null ? '.....' : $items->empleado->name }}</span>
                                             <span class="hidden group-hover:block line-clamp-1">{{ $items->servicio_id == null ? '.....' : $items->servicio->descripcion  }}</span>
                                             <div class="flex justify-start items-center">
@@ -107,7 +116,16 @@
                             <div class="w-full space-y-2 text-gray-700 list-inside dark:text-gray-400">
                                 @if(date("h:i a", strtotime($items->hora)) == date("h:i a", strtotime($hora->hora)) )
                                     <li class="flex justify-between items-center p-1 text-2xs border text-gray-600 font-extrabold rounded-lg bg-[#D9C3C1]" >
-                                        <div class="hover:flex flex-col group">
+                                        <div class="hover:flex flex-col group p-1">
+                                            @if($items->confirmacion == 1)
+                                                <div class="flex justify-start items-center py-1">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-green-700">
+                                                        <path d="M5.85 3.5a.75.75 0 0 0-1.117-1 9.719 9.719 0 0 0-2.348 4.876.75.75 0 0 0 1.479.248A8.219 8.219 0 0 1 5.85 3.5ZM19.267 2.5a.75.75 0 1 0-1.118 1 8.22 8.22 0 0 1 1.987 4.124.75.75 0 0 0 1.48-.248A9.72 9.72 0 0 0 19.266 2.5Z" />
+                                                        <path fill-rule="evenodd" d="M12 2.25A6.75 6.75 0 0 0 5.25 9v.75a8.217 8.217 0 0 1-2.119 5.52.75.75 0 0 0 .298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 1 0 7.48 0 24.583 24.583 0 0 0 4.83-1.244.75.75 0 0 0 .298-1.205 8.217 8.217 0 0 1-2.118-5.52V9A6.75 6.75 0 0 0 12 2.25ZM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 0 0 4.496 0l.002.1a2.25 2.25 0 1 1-4.5 0Z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    <span class="ml-1 uppercase text-green-700">Confirmada</span>
+                                                </div>
+                                            @endif
                                             <span class="hidden group-hover:block line-clamp-1 uppercase">{{ $items->empleado_id == null ? '.....' : $items->empleado->name }}</span>
                                             <span class="hidden group-hover:block line-clamp-1">{{ $items->servicio_id == null ? '.....' : $items->servicio->descripcion  }}</span>
                                             <span class="line-clamp-1">{{ $items->cliente }}</span>
@@ -118,7 +136,9 @@
                                                 <x-filament-actions::group
                                                     :actions="[
                                                         ($this->asignarAction)(['cita' => $items->id]),
-                                                        ($this->eliminarAction)(['cita' => $items->id])
+                                                        ($this->eliminarAction)(['cita' => $items->id]),
+                                                        ($this->recordarAction)(['cita' => $items->id])
+
                                                     ]"
                                                     icon="heroicon-m-ellipsis-vertical"
                                                     color="colorOne"
@@ -127,7 +147,9 @@
                                                 <x-filament-actions::group
                                                     :actions="[
                                                         ($this->activarAction)(['cita' => $items->id]),
-                                                        ($this->eliminarAction)(['cita' => $items->id])
+                                                        ($this->eliminarAction)(['cita' => $items->id]),
+                                                        ($this->recordarAction)(['cita' => $items->id])
+
                                                     ]"
                                                     icon="heroicon-m-ellipsis-vertical"
                                                     color="colorOne"

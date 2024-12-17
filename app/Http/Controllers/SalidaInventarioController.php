@@ -31,10 +31,10 @@ class SalidaInventarioController extends Controller
 
             //escribimos en el log del sistema
             $descripcion = 'Envio a sucursal. Producto: '.Producto::find($salida->producto_id)->descripcion.', Sucursal: '. Sucursal::find($sucursal_id)->nombre .', Cantidad: '.$cantidad;
-            LogController::log(Auth::user()->id, $movimiento, $descripcion);
+            LogController::log(Auth::user()->id, $movimiento, $descripcion, $response = null);
 
         }catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')

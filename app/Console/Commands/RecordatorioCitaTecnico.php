@@ -1,28 +1,27 @@
 <?php
 
 namespace App\Console\Commands;
- 
+
 use App\Models\Cita;
-use App\Models\Cliente;
+use App\Models\User;
 use Illuminate\Console\Command;
-use App\Http\Controllers\LogController;
 use Illuminate\Support\Facades\Log;
 
-class AppointmentReminder extends Command
+class RecordatorioCitaTecnico extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:appointment-reminder';
+    protected $signature = 'app:recordatorio-cita-tecnico';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Recordatorio de citas un dia antes';
+    protected $description = 'Command description';
 
     /**
      * Execute the console command.
@@ -31,45 +30,27 @@ class AppointmentReminder extends Command
     {
         $citas = Cita::where('fecha_formateada', date('Y-m-d'))
         ->where('status', 1)
-        ->where('confirmacion', null)
         ->get();
 
         foreach ($citas as $cita) {
 
-            $cliente = Cliente::where('id', $cita->cliente_id)->first();
-            
-            if(isset($cliente)){
-                $tel = $cliente->telefono;
-            }else{
-                $tel = $cita->telefono;
-            }
-            
-            $ubication = 'https://maps.google.com/maps?q=Piedy%20Sambil%20Chacao,%20Distrito%20Capital&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=&amp;output=embed';
-
-            $link_confirmacion = env('LINK_CONFIRMACION') . $cita->id;
-            $link_cancelacion = env('LINK_CANCELACION') . $cita->id;
-
+            $empleado = User::where('id', $cita->empleado_id)->first();
+        
             $body = <<<HTML
 
-            *Sr(a):* {$cita->cliente}
+            *Sr(a):* {$empleado->name}
 
-            Le recordamos que para el día de hoy tiene una cita agendada en PIEDY. Te esperamos...
+            Le recordamos que para el día de hoy tiene una cita agendada, a continuación los detalles:
 
             *Fecha:* {$cita->fecha}
             *Hora:* {$cita->hora}
 
-            *Ubicación:* {$ubication}
-
-            Para confirmar si asistencia precione este link: {$link_confirmacion}
-
-            Para cancelar la cita precione este link: {$link_cancelacion}
-
-            *Con el fin de respetar el tiempo de nuestros clientes y empleados, le sugerimos debe llegar puntual a su cita. De no ser asi deberá esperar su nuevo turno o debe reagendar su cita.*
+            *Con el fin de respetar el tiempo de nuestros clientes, le sugerimos debe llegar puntual a la cita.*
             HTML;
 
             $params = array(
                 'token' => env('TOKEN_API_WHATSAPP'),
-                'to' => $tel,
+                'to' => $empleado->telefono,
                 'image' => env('IMAGE'),
                 'caption' => $body
             );
@@ -98,16 +79,14 @@ class AppointmentReminder extends Command
             curl_close($curl);
 
             if (isset($res['sent']) and $res['sent'] == 'true') {
-                Log::info('Recordatorio enviado con exito: ' . $response);
+                Log::info('Recordatorio enviado al tecnico con exito: ' . $response);
             }
 
             if (isset($res['error'])) {
                 Log::error('Error al enviar el recordatorio: ' . $response);
             }
-
         }
-    
-        $this->info($response);
 
+        $this->info($response);
     }
 }

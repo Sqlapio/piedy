@@ -72,7 +72,7 @@ class AsignacionController extends Controller
             }
 
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-shield-check')
@@ -141,7 +141,7 @@ class AsignacionController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-shield-check')
@@ -192,11 +192,11 @@ class AsignacionController extends Controller
             $serv_disponible->venta_total   = $serv_disponible->acu_productos + $serv_disponible->acu_servicios;
             $serv_disponible->save();
 
-            LogController::log(Auth::user()->id, 'agrego producto', 'Agrego producto al servicio: '. $asigna_producto->cod_asignacion .' cantidad: '. $asigna_producto->cantidad);
+            LogController::log(Auth::user()->id, 'agrego producto', 'Agrego producto al servicio: '. $asigna_producto->cod_asignacion .' cantidad: '. $asigna_producto->cantidad, $response = null);
 
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-shield-check')
@@ -275,7 +275,7 @@ class AsignacionController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-shield-check')

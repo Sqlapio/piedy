@@ -194,7 +194,7 @@ class TableProducto extends Component implements HasForms, HasTable
                 //     }
 
                 //     $descripcion = 'El usuario '. Auth::user()->name .' acepto inventario';
-                //     LogController::log(Auth::user()->id, 'Aceptacion de inventario', $descripcion);
+                //     LogController::log(Auth::user()->id, 'Aceptacion de inventario', $descripcion, $response = null);
 
                 // })
             ])

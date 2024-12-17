@@ -6,7 +6,9 @@ use App\Models\Cliente;
 use App\Models\Disponible;
 use Illuminate\Http\Request;
 use App\Mail\NotificacionesEmail;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\LogController;
 use Filament\Notifications\Notification;
 
 class NotificacionesController extends Controller
@@ -123,7 +125,7 @@ class NotificacionesController extends Controller
             $params = array(
                 'token' => env('TOKEN_API_WHATSAPP'),
                 'to' => $data['telefono'],
-                'image' => env('IMAGEgg'),
+                'image' => env('IMAGE'),
                 'caption' => $body
             );
             $curl = curl_init();
@@ -145,17 +147,26 @@ class NotificacionesController extends Controller
             
             $response = curl_exec($curl);
             $err = curl_error($curl);
+            
             $res = json_decode($response, true);
-            $res_api = $res['error'][0];
+
             curl_close($curl);
 
-            if ($err) {
-                return $err;
-              } else {
-                return $res_api;
+            if (isset($res['sent']) and $res['sent'] == 'true') {
+                LogController::log(Auth::user()->id, 'sistema', 'envio exitoso', $response);
+                return $response = [
+                    'success' => true,
+                    'message' => 'Se acaba de enviar recordatorio via WhatsApp al cliente'
+                ];
               }
 
-            // return true;
+            if (isset($res['error'])) {
+                LogController::log(Auth::user()->id, 'excepcion', 'falla de servicio WhatsApp', $response);
+                return $response = [
+                    'success' => false,
+                    'message' => 'El mensaje no fue enviado, pongase en contacto con el administrador del sistema'
+                ];
+            }
             
         } catch (\Throwable $th) {
             Notification::make()

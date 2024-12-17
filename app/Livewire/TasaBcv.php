@@ -43,7 +43,7 @@ class TasaBcv extends ModalComponent
                 ]);
             }
 
-            LogController::log(Auth::user()->id, 'Actualiza tasa BCV', 'El usuario actualizo la tasa BCV');
+            LogController::log(Auth::user()->id, 'Actualiza tasa BCV','El usuario actualizo la tasa BCV', $response = null);
 
             $this->forceClose()->closeModal();
 

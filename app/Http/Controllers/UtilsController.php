@@ -109,7 +109,7 @@ class UtilsController extends Controller
             }
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')
@@ -326,7 +326,7 @@ class UtilsController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')
@@ -380,7 +380,7 @@ class UtilsController extends Controller
             return $calculo;
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')
@@ -407,7 +407,7 @@ class UtilsController extends Controller
             return $calculo;
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')
@@ -434,7 +434,7 @@ class UtilsController extends Controller
             return $calculo;
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')
@@ -544,7 +544,7 @@ class UtilsController extends Controller
                 'total_venta'               => $total_venta
             ];
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')
@@ -576,7 +576,7 @@ class UtilsController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')
@@ -609,7 +609,7 @@ class UtilsController extends Controller
             ];
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('Notificacion: UtilsController::calculo_vip()')
                 ->icon('heroicon-o-shield-check')
@@ -639,7 +639,7 @@ class UtilsController extends Controller
             ];
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('Notificacion: UtilsController::calculo_vip_bsd()')
                 ->icon('heroicon-o-shield-check')
@@ -703,7 +703,7 @@ class UtilsController extends Controller
             ];
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('Notificacion: UtilsController::calculo_vip_multiple()')
                 ->icon('heroicon-o-shield-check')
@@ -730,7 +730,7 @@ class UtilsController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('Notificacion: UtilsController::calculo_general()')
                 ->icon('heroicon-o-shield-check')
@@ -757,7 +757,7 @@ class UtilsController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('Notificacion: UtilsController::calculo_general_bsd()')
                 ->icon('heroicon-o-shield-check')
@@ -790,7 +790,7 @@ class UtilsController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('Notificacion: UtilsController::calculo_general_multiple()')
                 ->icon('heroicon-o-shield-check')
@@ -822,7 +822,7 @@ class UtilsController extends Controller
             return json_encode($array_servicios);
             
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('Notificacion: UtilsController::array_servicios()')
                 ->icon('heroicon-o-shield-check')

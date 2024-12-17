@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\ApiClientesController;
 use App\Http\Controllers\NotificacionesController;
@@ -326,6 +327,16 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 Route::get('/reporte/nomina', function () {
     return view('pdf.reporte');
 })->name('reporte');
+
+/**
+ * RUTAS PARA CONFIRMACION Y CANCELACION DE CITAS
+ */
+
+Route::get('/confirmacion/{cita_id}', [AgendaController::class, 'confirmacion'])->name('cita-confirmacion');
+
+Route::get('/cancelcion/{cita_id}', [AgendaController::class, 'cancelacion'])->name('cita-cancelacion');
+
+
 
 /**FIN GRUPO DE RUTAS------------------------------------------------------------------------------------------*/
 

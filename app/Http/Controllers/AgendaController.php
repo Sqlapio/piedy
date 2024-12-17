@@ -22,30 +22,26 @@ class AgendaController extends Controller
             $hora_formateada = date('h:i a', strtotime($hora));
 
             $cita = DB::table('citas')
-            ->select('cliente_id', 'empleado_id')
-            ->where('fecha_formateada', $fecha_formateada)
-            ->where('hora', $hora_formateada)
-            ->get();
-            
+                ->select('cliente_id', 'empleado_id')
+                ->where('fecha_formateada', $fecha_formateada)
+                ->where('hora', $hora_formateada)
+                ->get();
+
             //Restriccion de la agenda
-            if(count($cita) > 0)
-            {
-                if($cita[0]->cliente_id == $cliente_id)
-                {
+            if (count($cita) > 0) {
+                if ($cita[0]->cliente_id == $cliente_id) {
                     throw new Exception("No puede agendar citas al mismo cliente a la misma hora y en la misma fecha. Valide la información y vuelva a intentar");
-                    
-                }elseif($cita[0]->empleado_id == $empleado_id)
-                {
+                } elseif ($cita[0]->empleado_id == $empleado_id) {
                     throw new Exception("No puede agendar citas al cliente con el mismo tecnico a la misma hora y en la misma fecha. Valide la información y vuelva a intentar");
                 }
             }
-            
+
 
             $cliente = Cliente::find($cliente_id);
 
             // $dia = UtilsController::agenda($mes, $opcion);
             $citas = new Cita();
-            $citas->cod_cita = 'Pci-'.random_int(11111, 99999);
+            $citas->cod_cita = 'Pci-' . random_int(11111, 99999);
             $citas->cliente_id = $cliente->id;
             $citas->correo = $cliente->email;
             $citas->telefono = $cliente->telefono;
@@ -59,13 +55,6 @@ class AgendaController extends Controller
             $citas->sucursal_id = Auth::user()->sucursal_id;
             $citas->status = 1;
             $citas->save();
-           
-            Notification::make()
-                ->title('NOTIFICACIÓN')
-                ->icon('heroicon-o-shield-check')
-                ->iconColor('danger')
-                ->body('La cita fue agendada con éxito')
-                ->send();
 
             $cliente_citado = Cita::where('id', $citas->id)->first();
             $type = 'cliente';
@@ -77,24 +66,63 @@ class AgendaController extends Controller
                 'telefono' => $cliente_citado->telefono,
             ];
 
-            if(isset($cliente_id)){
+            if (isset($cliente_id)) {
                 /**Notificacion por Whatsapp */
-                NotificacionesController::notificacion_cita_wp($mailData);
+                $notificacion = NotificacionesController::notificacion_cita_wp($mailData);
+
+                if ($notificacion['success'] == true) {
+                    Notification::make()
+                        ->title('NOTIFICACIÓN')
+                        ->icon('heroicon-o-document-text')
+                        ->iconColor('success')
+                        ->color('success')
+                        ->body($notificacion['message'])
+                        ->send();
+                } else {
+                    Notification::make()
+                        ->title('NOTIFICACIÓN')
+                        ->icon('heroicon-o-document-text')
+                        ->iconColor('danger')
+                        ->color('danger')
+                        ->body($notificacion['message'])
+                        ->send();
+                }
 
                 /**Notificacion por correo */
                 // NotificacionesController::notification($mailData, $type);
 
-            }else{
+            } else {
                 /**Notificacion por Whatsapp */
-                NotificacionesController::notificacion_cita_wp($mailData);
+                $notificacion = NotificacionesController::notificacion_cita_wp($mailData);
+
+                if ($notificacion['success'] == true) {
+                    Notification::make()
+                        ->title('NOTIFICACIÓN')
+                        ->icon('heroicon-o-document-text')
+                        ->iconColor('success')
+                        ->color('success')
+                        ->body($notificacion['message'])
+                        ->send();
+                } else {
+                    Notification::make()
+                        ->title('NOTIFICACIÓN')
+                        ->icon('heroicon-o-document-text')
+                        ->iconColor('danger')
+                        ->color('danger')
+                        ->body($notificacion['message'])
+                        ->send();
+                }
             }
 
-            return true;
+            return $response = [
+                'success' => true,
+                'message' => 'La cita fue agendada con exito!!!',
+            ];
 
             // redirect(route('citas'));
 
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-shield-check')
@@ -117,7 +145,7 @@ class AgendaController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-shield-check')
@@ -126,4 +154,87 @@ class AgendaController extends Controller
                 ->send();
         }
     }
+
+    static function validaciones($horario_id, $fecha_formateada, $cliente_id, $servicio_id, $user_id)
+    {
+        try {
+            $hora = Horario::find($horario_id)->hora;
+            $hora_formateada = date('h:i a', strtotime($hora));
+
+            // Verificar si el horario ya se encuentra ocupado por el tecnico
+            // en la fecha seleccionada
+            $tecnico = Cita::where('empleado_id', $user_id)
+                ->where('hora', $hora_formateada)
+                ->where('fecha_formateada', $fecha_formateada)
+                ->get();
+
+            // Verificar si el cliente ya tiene una cita agendada en la fecha seleccionada
+            $cliente = Cita::where('empleado_id', $user_id)
+            ->where('cliente_id', $cliente_id)
+                ->where('hora', $hora_formateada)
+                ->where('fecha_formateada', $fecha_formateada)
+                ->get();
+
+            // Verificar si el servicio ya tiene una cita agendada en la fecha seleccionada
+            $servicio = Cita::where('servicio_id', $servicio_id)
+                ->where('hora', $hora_formateada)
+                ->where('fecha_formateada', $fecha_formateada)
+                ->get();
+            
+            // dd($servicio);
+
+            // Si el tecnico tiene un horario ocupado en la fecha seleccionada
+            // con el mismo cliente, lanzar una excepcion
+            if ($tecnico->count() > 0) {
+                return $response = [
+                    'success' => false,
+                    'message' => 'El tecnico ya tiene un horario ocupado en la fecha seleccionada',
+                ];
+            }elseif ($cliente->count() > 0) {
+                return $response = [
+                    'success' => false,
+                    'message' => 'El cliente ya tiene una cita agendada en la fecha seleccionada',
+                ];
+            }elseif ($servicio->count() >= 4) {
+                return $response = [
+                    'success' => false,
+                    'message' => 'No puede agendar el mismo servicio mas de 4 veces a la misma hora',
+                ];
+            }elseif ($fecha_formateada < now()->format('Y-m-d')) {
+                return $response = [
+                    'success' => false,
+                    'message' => 'La fecha seleccionada es menor a la fecha actual',
+                ];
+            }
+            else {
+                return $response = [
+                    'success' => true,
+                    'message' => 'El horario esta disponible',
+                ];
+            }
+            
+            //code...
+        } catch (\Throwable $th) {
+            Notification::make()
+            ->title('NOTIFICACIÓN')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
+        }
+        
+    }
+
+    static function confirmacion($cita_id) {
+        $confimacion = Cita::where('id', $cita_id)->first();
+        $confimacion->confirmacion = 1;
+        $confimacion->save();
+    }
+
+    static function cancelacion($cita_id) {
+        $cancelacion = Cita::where('id', $cita_id)->first();
+        $cancelacion->status = 2;
+        $cancelacion->confirmacion = 2;
+        $cancelacion->save();
+    }  
 }

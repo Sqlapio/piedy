@@ -52,12 +52,12 @@ class ClienteController extends Controller
                 ->send();
 
             if($cliente->save()) {
-                LogController::log(Auth::user()->id, 'crear cliente', 'El usuario creo un cliente nuevo');
+                LogController::log(Auth::user()->id, 'crear cliente','El usuario creo un cliente nuevo', $response = null);
             }
 
 
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage());
+            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')

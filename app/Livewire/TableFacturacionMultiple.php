@@ -97,7 +97,7 @@ class TableFacturacionMultiple extends Component implements HasForms, HasTable
                         $res = FacturacionMultipleController::totalizar_fac_multiple($records);
                         
                         if ($res) {
-                            LogController::log(Auth::user()->id, 'facturacion multiple', 'se ejecuta una facturacion multiple');
+                            LogController::log(Auth::user()->id, 'facturacion multiple','se ejecuta una facturacion multiple', $response = null);
                             $this->redirectRoute('facturar_cliente');
                         }
                     }),

@@ -291,7 +291,7 @@ class TableTotalizar extends Component implements HasForms, HasTable
 
                                 if ($fm_dolares) {
                                     FacturacionMultiple::truncate();
-                                    LogController::log(Auth::user()->id, 'facturacion multiple', 'realizo la ejecucion de una factura multiple en dolares');
+                                    LogController::log(Auth::user()->id, 'facturacion multiple','realizo la ejecucion de una factura multiple en dolares', $response = null);
                                     Notification::make()
                                         ->title('Notificacion:')
                                         ->icon('heroicon-o-shield-check')
@@ -319,7 +319,7 @@ class TableTotalizar extends Component implements HasForms, HasTable
 
                                 if ($fm_bolivares) {
                                     FacturacionMultiple::truncate();
-                                    LogController::log(Auth::user()->id, 'facturacion multiple', 'realizo la ejecucion de una factura multiple en bolivares');
+                                    LogController::log(Auth::user()->id, 'facturacion multiple','realizo la ejecucion de una factura multiple en bolivares', $response = null);
                                     Notification::make()
                                         ->title('Notificacion:')
                                         ->icon('heroicon-o-shield-check')
@@ -353,7 +353,7 @@ class TableTotalizar extends Component implements HasForms, HasTable
 
                                 if ($fm_multiMoneda) {
                                     FacturacionMultiple::truncate();
-                                    LogController::log(Auth::user()->id, 'facturacion multiple', 'realizo la ejecucion de una factura multiple en dolares y bolivares`  ');
+                                    LogController::log(Auth::user()->id, 'facturacion multiple','realizo la ejecucion de una factura multiple en dolares y bolivares', $response = null);
                                     Notification::make()
                                         ->title('Notificacion:')
                                         ->icon('heroicon-o-shield-check')

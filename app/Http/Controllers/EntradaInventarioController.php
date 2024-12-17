@@ -28,7 +28,7 @@ class EntradaInventarioController extends Controller
             
             //escribimos en el log del sistema
             $descripcion = 'Reposición. Producto: '.Producto::find($entrada->producto_id)->descripcion.', Cantidad: '.$cantidad;
-            LogController::log(Auth::user()->id, $movimiento, $descripcion);
+            LogController::log(Auth::user()->id, $movimiento,$descripcion, $response = null);
 
         }catch (\Throwable $th) {
             Notification::make()

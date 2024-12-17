@@ -82,7 +82,7 @@ class TableCliente extends Component implements HasForms, HasTable
                     $res = AsignacionController::asignacion_servicio($record->id, $data['user_id'], $data['servicio_id']);
 
                     if ($res) {
-                        LogController::log(Auth::user()->id, 'asigno servicio', 'Asigno el servicio: '.Servicio::where('id', $data['servicio_id'])->first()->descripcion);
+                        LogController::log(Auth::user()->id, 'asigno servicio', 'Asigno el servicio: '.Servicio::where('id', $data['servicio_id'])->first()->descripcion, $response = null);
                         Notification::make()
                         ->title('NOTIFICACIÓN')
                         ->icon('heroicon-o-shield-check')

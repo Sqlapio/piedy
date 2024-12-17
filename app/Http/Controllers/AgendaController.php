@@ -232,9 +232,9 @@ class AgendaController extends Controller
     }
 
     static function cancelacion($cita_id) {
-        $cancelacion = Cita::where('id', $cita_id)->first();
-        $cancelacion->status = 2;
-        $cancelacion->confirmacion = 2;
-        $cancelacion->save();
+        Cita::where('id', $cita_id)->first()->update([
+            'status' => 2,
+            'confirmacion' => 2
+        ]);
     }  
 }

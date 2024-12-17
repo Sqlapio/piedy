@@ -334,7 +334,7 @@ Route::get('/reporte/nomina', function () {
 
 Route::get('/confirmacion/{cita_id}', [AgendaController::class, 'confirmacion'])->name('cita-confirmacion');
 
-Route::get('/cancelcion/{cita_id}', [AgendaController::class, 'cancelacion'])->name('cita-cancelacion');
+Route::get('/cancelacion/{cita_id}', [AgendaController::class, 'cancelacion'])->name('cita-cancelacion');
 
 
 

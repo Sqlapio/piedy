@@ -229,6 +229,8 @@ class AgendaController extends Controller
         $confimacion = Cita::where('id', $cita_id)->first();
         $confimacion->confirmacion = 1;
         $confimacion->save();
+
+        return view('confirmacion');
     }
 
     static function cancelacion($cita_id) {
@@ -236,5 +238,7 @@ class AgendaController extends Controller
             'status' => 2,
             'confirmacion' => 2
         ]);
+
+        return view('cancelacion');
     }  
 }

@@ -109,7 +109,10 @@ class TablePreSelectPro extends Component implements HasForms, HasTable
             ->actions([
                 Action::make('delete')
                 ->requiresConfirmation()
-                ->action(fn (CarProducto $record) => $record->delete())
+                ->action(function (CarProducto $record) {
+                    $record->delete();
+                    LogController::log(Auth::user()->id, 'delete-item-car', "Se ha eliminado un item del carrito de compras", $response = null);
+                })
                 ->icon('heroicon-c-trash')
                 ->color('danger')
                 //UI - Modal

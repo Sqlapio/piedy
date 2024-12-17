@@ -43,49 +43,49 @@ class InventarioResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Section::make('CARGA DE INVENTARIO POR PRODUCTO')
-                ->description('Formulario de carga de inventario')
-                ->icon('heroicon-s-square-3-stack-3d')
-                ->schema([
-                    Select::make('producto_id')
-                        ->prefixIcon('heroicon-m-list-bullet')
-                        ->relationship('producto', 'descripcion')
-                        ->searchable()
-                        ->preload()
-                        ->required()
-                        ->live(onBlur: true)
-                        ->afterStateUpdated(function (Set $set, ?string $state) {
-                            $uso = Producto::find($state)->uso;
-                            $set('uso', $uso);
-                        }),
-                        
-                    TextInput::make('uso')
-                        ->prefixIcon('heroicon-s-queue-list')
-                        ->required(),
-                        
-                    TextInput::make('min')
-                        ->label('Exitencia Minima en Almacen')
-                        ->prefixIcon('heroicon-s-queue-list')
-                        ->numeric()
-                        ->required(),
-                    Select::make('almacen_id')
-                        ->prefixIcon('heroicon-m-list-bullet')
-                        ->relationship('almacen', 'nombre')
-                        ->searchable()
-                        ->preload()
-                        ->createOptionForm([
-                            TextInput::make('nombre')
-                                ->required(),
-                        ])
-                        ->required(),
-                    TextInput::make('cantidad')
-                        ->prefixIcon('heroicon-s-queue-list')
-                        ->required()
-                        ->numeric(),
-                    TextInput::make('responsable')
-                        ->prefixIcon('heroicon-c-user-circle')
-                        ->default(Auth::user()->name)
-                ])
-                ->columns(2),
+                    ->description('Formulario de carga de inventario')
+                    ->icon('heroicon-s-square-3-stack-3d')
+                    ->schema([
+                        Select::make('producto_id')
+                            ->prefixIcon('heroicon-m-list-bullet')
+                            ->relationship('producto', 'descripcion')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (Set $set, ?string $state) {
+                                $uso = Producto::find($state)->uso;
+                                $set('uso', $uso);
+                            }),
+
+                        TextInput::make('uso')
+                            ->prefixIcon('heroicon-s-queue-list')
+                            ->required(),
+
+                        TextInput::make('min')
+                            ->label('Exitencia Minima en Almacen')
+                            ->prefixIcon('heroicon-s-queue-list')
+                            ->numeric()
+                            ->required(),
+                        Select::make('almacen_id')
+                            ->prefixIcon('heroicon-m-list-bullet')
+                            ->relationship('almacen', 'nombre')
+                            ->searchable()
+                            ->preload()
+                            ->createOptionForm([
+                                TextInput::make('nombre')
+                                    ->required(),
+                            ])
+                            ->required(),
+                        TextInput::make('cantidad')
+                            ->prefixIcon('heroicon-s-queue-list')
+                            ->required()
+                            ->numeric(),
+                        TextInput::make('responsable')
+                            ->prefixIcon('heroicon-c-user-circle')
+                            ->default(Auth::user()->name)
+                    ])
+                    ->columns(2),
             ]);
     }
 
@@ -163,34 +163,34 @@ class InventarioResource extends Resource
                                 ->icon('heroicon-s-clipboard-document-list')
                                 ->schema([
                                     Grid::make()
-                                    ->schema([
+                                        ->schema([
 
-                                        //Seleccion del producto
-                                        Select::make('sucursal_id')
-                                            ->label('Sucursal')
-                                            ->prefixIcon('heroicon-c-building-office-2')
-                                            ->options(Sucursal::all()->pluck('nombre', 'id'))
-                                            ->searchable()
-                                            ->required(),
+                                            //Seleccion del producto
+                                            Select::make('sucursal_id')
+                                                ->label('Sucursal')
+                                                ->prefixIcon('heroicon-c-building-office-2')
+                                                ->options(Sucursal::all()->pluck('nombre', 'id'))
+                                                ->searchable()
+                                                ->required(),
 
-                                        //Cantidad
-                                        TextInput::make('cantidad')
-                                            ->label('Cantidad')
-                                            ->prefixIcon('heroicon-c-squares-plus')
-                                            ->numeric()
-                                            ->required(),
+                                            //Cantidad
+                                            TextInput::make('cantidad')
+                                                ->label('Cantidad')
+                                                ->prefixIcon('heroicon-c-squares-plus')
+                                                ->numeric()
+                                                ->required(),
 
-                                                //Responsable
-                                        TextInput::make('responsable')
-                                            ->label('Responsable del Movimiento')
-                                            ->prefixIcon('heroicon-c-squares-plus')
-                                            ->default(Auth::user()->name)
-                                            ->disabled()
+                                            //Responsable
+                                            TextInput::make('responsable')
+                                                ->label('Responsable del Movimiento')
+                                                ->prefixIcon('heroicon-c-squares-plus')
+                                                ->default(Auth::user()->name)
+                                                ->disabled()
 
-                                    ]),
+                                        ]),
                                 ])
                         ])->action(function (Inventario $record, array $data) {
-                            InventarioController::asigancion_sucursal(
+                            InventarioController::asignacion_sucursal(
                                 $record->id,
                                 $data['sucursal_id'],
                                 $data['cantidad']
@@ -207,22 +207,22 @@ class InventarioResource extends Resource
                                 ->icon('heroicon-s-clipboard-document-list')
                                 ->schema([
                                     Grid::make()
-                                    ->schema([
-                                        //Cantidad
-                                        TextInput::make('cantidad')
-                                            ->label('Cantidad')
-                                            ->prefixIcon('heroicon-c-squares-plus')
-                                            ->numeric()
-                                            ->required(),
+                                        ->schema([
+                                            //Cantidad
+                                            TextInput::make('cantidad')
+                                                ->label('Cantidad')
+                                                ->prefixIcon('heroicon-c-squares-plus')
+                                                ->numeric()
+                                                ->required(),
 
-                                        //Responsable
-                                        TextInput::make('responsable')
-                                            ->label('Responsable del Movimiento')
-                                            ->prefixIcon('heroicon-c-squares-plus')
-                                            ->default(Auth::user()->name)
-                                            ->disabled()
+                                            //Responsable
+                                            TextInput::make('responsable')
+                                                ->label('Responsable del Movimiento')
+                                                ->prefixIcon('heroicon-c-squares-plus')
+                                                ->default(Auth::user()->name)
+                                                ->disabled()
 
-                                    ]),
+                                        ]),
                                 ])
                         ])->action(function (Inventario $record, array $data) {
                             InventarioController::reposicion(

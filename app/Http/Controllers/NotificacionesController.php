@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\Producto;
 use App\Models\Disponible;
 use Illuminate\Http\Request;
 use App\Mail\NotificacionesEmail;
@@ -224,6 +225,75 @@ class NotificacionesController extends Controller
             }
             //code...
         } catch (\Throwable $th) {
+        }
+    }
+
+    static function notificacion_exitencia_minima($cantidad, $producto_id, $almacen)
+    {
+        try {
+
+            $producto = Producto::where('id', $producto_id)->first();
+
+            $body = <<<HTML
+
+            *Srs:* Administracion Piedy
+
+            Le informamos que la existencia del producto: *{$producto->descripcion}* ha llegado a un nivel critico, por lo que se requiere se realize su reposición.
+
+            *Detalles:*
+            *Producto:* {$producto->descripcion}
+            *Existencia Actual:* {$cantidad}
+            *Ubicado en:* {$almacen}
+            HTML;
+
+            $params = array(
+                'token' => env('TOKEN_API_WHATSAPP'),
+                'to' => env('GROUPID'),
+                'image' => env('IMAGE'),
+                'caption' => $body
+            );
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('CURLOPT_URL_IMAGE'),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_SSL_VERIFYHOST => 0,
+                CURLOPT_SSL_VERIFYPEER => 0,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => http_build_query($params),
+                CURLOPT_HTTPHEADER => array(
+                    "content-type: application/x-www-form-urlencoded"
+                ),
+            ));
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            $res = json_decode($response, true);
+
+            curl_close($curl);
+
+            if (isset($res['sent']) and $res['sent'] == 'true') {
+                LogController::log(Auth::user()->id, 'sistema', 'envio exitoso', $response);
+                return $response = [
+                    'success' => true,
+                    'message' => 'Notificacion enviada con exito'
+                ];
+            }
+
+            if (isset($res['error'])) {
+                LogController::log(Auth::user()->id, 'excepcion', 'falla de servicio WhatsApp', $response);
+                return $response = [
+                    'success' => false,
+                    'message' => 'La Notificacion no fue enviada, por favor comunicarse con el administrador del sistema'
+                ];
+            }
+
+        } catch (\Throwable $th) {
+            
         }
     }
 }

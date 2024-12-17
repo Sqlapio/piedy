@@ -56,7 +56,7 @@ class InventarioController extends Controller
         }
     }
 
-    public static function asigancion_sucursal($inventario_id, $sucursal_id, $cantidad)
+    public static function asignacion_sucursal($inventario_id, $sucursal_id, $cantidad)
     {
         try {
 
@@ -88,11 +88,19 @@ class InventarioController extends Controller
             
             SalidaInventarioController::crear_salida($inventario_id, $sucursal_id, $cantidad, 'envio-sucursal');
             
-            if($recepcion->save()){
+            if($recepcion->save()) {
                 $restaExistencia = Inventario::where('producto_id', $producto->id)->first();
                 $restaExistencia->update([
                     'cantidad' => $restaExistencia->cantidad - $cantidad
                 ]);
+
+                //Calculo del porcentaje de exitencia minima
+                $porcentaje = ($restaExistencia->cantidad * 20) / 100;
+
+                if($restaExistencia->cantidad <= $inventario->min)
+                {
+                    $notificacion = NotificacionesController::notificacion_exitencia_minima($restaExistencia->cantidad, $producto->id, $inventario->almacen->nombre);
+                }
                 
                 Notification::make()
                     ->title('El Movimiento se realizo con éxito.')
@@ -106,7 +114,7 @@ class InventarioController extends Controller
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
             Notification::make()
-                ->title('NOTIFICACIÓN: InventarioController(asigancion_sucursal)')
+                ->title('NOTIFICACIÓN: InventarioController(asignacion_sucursal)')
                 ->icon('heroicon-c-x-circle')
                 ->color('danger')
                 ->iconColor('danger')

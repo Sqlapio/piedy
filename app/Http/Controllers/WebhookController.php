@@ -50,6 +50,8 @@ class WebhookController extends Controller
                         if ($servicio_id > 0) {
                             //Si el servicio_id exite mas de 4 veces no se agrega la cita
                             $citas = Cita::where('servicio_id', $servicio_id)
+                                ->whereBetween('servicio_id', [1, 8])
+                                ->where('fecha_formateada', $fecha_api)
                                 ->where('hora', $hora)
                                 ->where('status', 1)
                                 ->count();

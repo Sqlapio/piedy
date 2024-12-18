@@ -47,13 +47,12 @@ class WebhookController extends Controller
                         if ($servicio_id > 0) {
                             //Si el servicio_id exite mas de 4 veces no se agrega la cita
                             $citas = Cita::where('servicio_id', $servicio_id)
-                            ->where('fecha', $fecha_api)
                             ->where('hora', $hora)
                                 ->where('status', 1)
                                 ->count();
 
                             if ($citas > 4) {
-                                return response()->json(['message' => 'No disponemos de cupos para las fecha y hora que solicita la cita, por favor modifique la fecha y la hora'], 400);
+                                return response()->json(['message' => 'No disponemos de técnico disponible para la hora que solicita la cita, por favor modifique la hora'], 400);
                             } else {
                                 $citas = new Cita();
                                 $citas->cod_cita = 'Pci-' . random_int(11111, 99999);
@@ -74,28 +73,20 @@ class WebhookController extends Controller
                         }
                     } else {
                         //log
-                        Log::error('Error al agendar cita por PiedyBot: La hora debe estar entre las 10:00am y las 22:00pm. Por favor intente nuevamente');
-                        return response()->json(['message' => 'La hora debe estar entre las 10:00am y las 22:00pm. Por favor intente nuevamente'], 400);
+                        Log::error('Error al agendar cita por PiedyBot: La hora debe estar entre las 10:00am y las 10:00pm. Por favor intente nuevamente');
+                        return response()->json(['message' => 'Nuestra hora de atención es de 10:00am a 10:00pm, por favor modifique la hora.'], 400);
                     }
                 } else {
                     //log
                     Log::error('Error al agendar cita por PiedyBot: La fecha debe ser menor a 15 dias');
-                    return response()->json(['message' => 'La fecha debe ser menor a 15 dias'], 400);
+                    return response()->json(['message' => 'La fecha debe ser menor a 15 días'], 400);
                 }
             } else {
                 //log
                 Log::error('Error al agendar cita por PiedyBot: El telefono debe comenzar con 0412, 0414, 0424, 0416 o 0426');
                 return response()->json(['message' => 'El teléfono no posee un formato valido, debe comenzar con 0412, 0414, 0424, 0416 o 0426'], 400);
             }
-            
-
-
-
-
-
-            
-
-            
+               
         }else{
             return response()->json(['message' => 'La fecha debe ser mayor o igual a la fecha actual'], 400);
 

@@ -30,23 +30,30 @@ class CierreDiarioController extends Controller
                 
                 /** totales de pagos en Dolares*/
                 $total_efectivo_usd = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Efectivo Usd')->sum('pago_usd');
-                $total_efectivo_usd_productos = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'USD')->where('metodoUSD', 'Efectivo Usd')->sum('montoUsd');
+                $total_efectivo_usd_productos = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodoUsd', 'Efectivo Usd')->sum('montoUsd');
 
                 $total_zelle = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Zelle')->sum('pago_usd');
-                $total_zelle_productos = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'USD')->where('metodoUSD', 'Zelle')->sum('montoUsd');
+                $total_zelle_productos = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodoUsd', 'Zelle')->sum('montoUsd');
 
                 /** totales de pagos en Bolivares*/
-                $total_bs = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
+                $total_bs                   = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
 
                 $total_efectivo_bsd         = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago_dos', 'Efectivo Bsd')->sum('pago_bsd');
                 $total_pago_movil_bsd       = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago_dos', 'Pago movil')->sum('pago_bsd');
                 $total_punto_venta_bsd      = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago_dos', 'Punto de venta')->sum('pago_bsd');
                 $total_transferencia_bsd    = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago_dos', 'Transferencia')->sum('pago_bsd');
 
-                $total_bsd_productos = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'BSD')->sum('montoBsd');
+                /** Total de pago en bolivares para venta de productos */
+                $totalprod_bsd               = VentaProducto::where('fecha_venta', date('d-m-Y'))->sum('montoBsd');
+                
+                $totalprod_efectivo_bsd      = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodoBsd', 'Efectivo Bsd')->sum('montoBsd');
+                $totalprod_pago_movil_bsd    = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodoBsd', 'Pago movil')->sum('montoBsd');
+                $totalprod_punto_venta_bsd   = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodoBsd', 'Punto de venta')->sum('montoBsd');
+                $totalprod_transferencia_bsd = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodoBsd', 'Transferencia')->sum('montoBsd');
+                
+                
+                
 
-                /** totales gastos en Dolares*/
-                $efectivo_caja_usd = CajaChica::where('fecha', date('d-m-Y'))->first();
 
                 /**Logica para evitar que una persona haga mas de dos cierres en el dia */
                 $existe_cierre = CierreDiario::where('fecha', date('d-m-Y'))->where('responsable', $user->name)->first();
@@ -58,12 +65,12 @@ class CierreDiarioController extends Controller
                 $cierre = new CierreDiario();
                 $cierre->total_dolares_efectivo  = $total_efectivo_usd + $total_efectivo_usd_productos;
                 $cierre->total_dolares_zelle     = $total_zelle + $total_zelle_productos;
-                $cierre->total_bolivares         = $total_bs + $total_bsd_productos;
+                $cierre->total_bolivares         = $total_bs + $totalprod_bsd;
                 
-                $cierre->total_pago_movil_bsd    = $total_pago_movil_bsd;
-                $cierre->total_punto_venta_bsd   = $total_punto_venta_bsd;
-                $cierre->total_transferencia_bsd = $total_transferencia_bsd;
-                $cierre->total_efectivo_bsd      = $total_efectivo_bsd;
+                $cierre->total_pago_movil_bsd    = $total_pago_movil_bsd + $totalprod_pago_movil_bsd;
+                $cierre->total_punto_venta_bsd   = $total_punto_venta_bsd + $totalprod_punto_venta_bsd;
+                $cierre->total_transferencia_bsd = $total_transferencia_bsd + $totalprod_transferencia_bsd;
+                $cierre->total_efectivo_bsd      = $total_efectivo_bsd +$totalprod_efectivo_bsd;
                 
                 $cierre->ref_debito              = $ref_debito;
                 $cierre->monto_ref_debito        = (str_replace(',', '.', str_replace('.', '', $monto_ref_debito))) == null ? 0.00 : str_replace(',', '.', str_replace('.', '', $monto_ref_debito));

@@ -306,7 +306,7 @@ class TablePreSelectPro extends Component implements HasForms, HasTable
                                     ->title('Notificacion')
                                     ->icon('heroicon-o-shield-check')
                                     ->iconColor('success')
-                                    ->body('Facturacion Exitosa. Codigo: '.$this->cod_asignacion)
+                                    ->body('Facturacion Exitosa')
                                     ->send();
 
                                     LogController::log(Auth::user()->id, 'producto facturado','facturacion de producto vendido en bolivares', $response = null);

@@ -30,7 +30,12 @@ class CierreDiario extends Model
         'fecha',
         'responsable',
         'observaciones',
-        'sucursal_id'
+        'sucursal_id',
+        'efectivo_usd_real',
+        'recibido_por',
+        'received_at',
+        'observ_recepcion'
+        
     ];
 
     /**

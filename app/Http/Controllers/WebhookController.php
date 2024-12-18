@@ -35,10 +35,6 @@ class WebhookController extends Controller
 
         $fecha_api = date("Y-m-d", strtotime($fecha));
 
-        $res = date("Y-m-d", strtotime($fecha_api . "+ 15 days"));
-
-        dd($fecha_api, $res);
-
         $hora_formateada = date("H:i:s", strtotime($hora));
 
         if ($name == null || $phone == null || $fecha == null || $hora == null || $servicio_id == null) {
@@ -47,7 +43,7 @@ class WebhookController extends Controller
 
             if ($fecha_api >= now()->format('Y-m-d')) //Valicacion de fecha menor a la fecha actual
             {
-                if ($fecha_api < date("Y-m-d", strtotime($fecha_api . "+ 15 days"))) {
+                if ($fecha_api < date("Y-m-d", strtotime(now()->format('Y-m-d') . "+ 15 days"))) {
                     //Si la fecha de la cita es mayor a 15 dias, no se agenda la cita
                     if ($hora_formateada >= '10:00' && $hora_formateada < '22:00') {
                         //Si la hora de la cita es menor a 10:00am o mayor a 22:00pm, no se agenda la cita

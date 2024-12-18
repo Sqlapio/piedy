@@ -55,7 +55,7 @@ class WebhookController extends Controller
                 
             } catch (\Throwable $th) {
                 Log::error('Error al agendar cita por PiedyBot: '.$th->getMessage());
-                return response()->json(['message' => 'Hubo un error al agendar la cita'], 500);
+                return response()->json(['message' => 'La fecha debe ser mayor o igual a la fecha actual'], 500);
             }
             
         }else{

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Rol extends Model
 {
     use HasFactory;
+    
     protected $fillable = [
         'descripcion',
     ];
@@ -34,5 +35,15 @@ class Rol extends Model
     public function servicios(): HasMany
     {
         return $this->hasMany(Servicio::class);
+    }
+
+    /**
+     * Get the preNomina that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function preNomina(): BelongsTo
+    {
+        return $this->belongsTo(PreNomina::class, 'rol_id', 'id');
     }
 }

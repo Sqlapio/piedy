@@ -247,7 +247,9 @@ class NomManicurista extends Component
 
     public function render()
     {
-        $data = User::where('tipo_servicio_id', '1')->where('status', '1')->get();
+        // $data = User::where('tipo_servicio_id', '1')->where('status', '1')->get();
+        $data = User::where('rol_id', '2')->where('status', '1')->get();
+
         return view('livewire.nom-manicurista', compact('data'));
     }
 }

@@ -345,11 +345,13 @@ Route::get('/ex', function () {
     $cadena = '10:00am';
     // dd(str_starts_with($cadena, '0412'));
     
-    if(date('h:ia', strtotime("+2 hours")) > '22:00'){
-        dd(1);
-    }else{
-        dd(2);
-    }
+    // if(date('h:ia', strtotime("+2 hours")) > '22:00'){
+    //     dd(1);
+    // }else{
+    //     dd(2);
+    // }
+
+    dd(now()->toDateString());
     
     // $user_phone = Cliente::all();
 

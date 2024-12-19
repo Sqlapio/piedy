@@ -232,4 +232,14 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(DetalleAsignacion::class, 'empleado_id', 'id');
     }
 
+    /**
+     * Get the preNomina that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function preNomina(): BelongsTo
+    {
+        return $this->belongsTo(PreNomina::class, 'user_id', 'id');
+    }
+
 }

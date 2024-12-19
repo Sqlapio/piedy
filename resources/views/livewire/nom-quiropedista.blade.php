@@ -5,41 +5,11 @@
             <div class="flex">
                 <h1 class="text-xl mb-6 font-extrabold text-[#7898a5] uppercase">MODULO DE NOMINA QUIROPEDISTAS</h1>
             </div>
-            <div class="flex">
-                <h1 class="text-sm mb-4 font-extrabold text-[#bd9c95] uppercase">Rango de Fecha</h1>
-            </div>
-            <div class="grid md:grid-cols-4 sm:gap-4 md:gap-4">
-                <div>
-                    <x-datetime-picker id="min-max-times-input" without-timezone label="Desde:" placeholder="desde" wire:model.defer="desde" min-time="05:00" max-time="23:00" parse-format="YYYY-MM-DD HH:mm:ss" />
-                </div>
-                <div>
-                    <x-datetime-picker id="min-max-times-input" without-timezone label="Hasta:" placeholder="hasta" wire:model.defer="hasta" min-time="05:00" max-time="23:00" parse-format="YYYY-MM-DD HH:mm:ss" />
-                </div>
-                <div>
-                    <x-select label="Select Status" placeholder="Selccione quincena"
-                        :options="[
-                            ['descripcion' => '1era. Quincena',  'id' => 'primera'],
-                            ['descripcion' => '2da. Quincena', 'id' => 'segunda'],
-                        ]"
-                        option-label="descripcion"
-                        option-value="id"
-                        wire:model.defer="quincena"
-                    />
-                </div>
-            </div>
         </div>
 
         <div class="mt-8">
-            <div class="flex justify-between">
-                <div>
-                    <h1 class="text-sm mb-6 font-extrabold text-[#bd9c95] uppercase">Tabla de asignaciones y deducciones</h1>
-                </div>
-                <div>
-                    <x-button icon="check" positive label="cargar nomina" wire:click="store" class="uppercase text-xs font-extrabold" />
-                </div>
-            </div>
             <div class="relative overflow-x-auto shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] sm:rounded-lg">
-                <table class="w-full text-sm text-center">
+                {{-- <table class="w-full text-sm text-center">
                     <thead class="text-xs text-black font-extrabold uppercase bg-[#bc9b94]">
                         <tr>
                         <tr>
@@ -82,15 +52,10 @@
                             </tr>
                         @endfor
                     </tbody>
-                </table>
+                </table> --}}
+                @livewire('table-pre-nomina')
             </div>
         </div>
-    </div>
-    <div class="px-10 py-4 mt-4">
-        <div class="flex">
-            <h1 class="text-sm mb-4 font-bold text-[#bd9c95] uppercase">tabla de nomina</h1>
-        </div>
-        @livewire('table-nom-quiropedista')
     </div>
 
     {{-- div para separacion --}}

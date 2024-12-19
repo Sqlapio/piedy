@@ -116,12 +116,12 @@ class CierreDiario extends Component implements HasForms, HasTable
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextInputColumn::make('efectivo_usd_real')
-                    ->label('Efectivo($) recibido')
-                    ->rules(['numeric'])
+                umeric'])
                     ->hidden(function () {
                         if(Auth::user()->rol_id == 4 || Auth::user()->rol_id == 3){
-                            return false;
+                            retTextInputColumn::make('efectivo_usd_real')
+                    ->label('Efectivo($) recibido')
+                    ->rules(['nurn false;
                         }
                     })
                     ->afterStateUpdated(function ($record, $state) {

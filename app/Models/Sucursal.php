@@ -184,4 +184,14 @@ class Sucursal extends Model
         return $this->belongsTo(VentaServicio::class, 'sucursal_id', 'id');
     }
 
+    /**
+     * Get the preNomina that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function preNomina(): BelongsTo
+    {
+        return $this->belongsTo(PreNomina::class, 'sucursal_id', 'id');
+    }
+
 }

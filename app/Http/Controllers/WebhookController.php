@@ -49,13 +49,11 @@ class WebhookController extends Controller
                         //Si la hora de la cita es menor a 10:00am o mayor a 22:00pm, no se agenda la cita
                         if ($servicio_id > 0) {
                             //Si el servicio_id exite mas de 4 veces no se agrega la cita
-                            $citas = Cita::where('servicio_id', $servicio_id)
-                                ->whereBetween('servicio_id', [1, 8])
+                            $citas = Cita::whereBetween('servicio_id', [1, 8])
                                 ->where('fecha_formateada', $fecha_api)
                                 ->where('hora', $hora)
                                 ->where('status', 1)
                                 ->count();
-                                dd($citas);
 
                             if ($citas > 4) {
                                 return response()->json(['message' => 'No disponemos de técnico disponible para la hora que solicita la cita, por favor modifique la hora'], 400);

@@ -46,7 +46,7 @@ class AgendaController extends Controller
             $citas->correo = $cliente->email;
             $citas->telefono = $cliente->telefono;
             $citas->cliente = $cliente->nombre;
-            $citas->hora = date("h:i a", strtotime($hora));
+            $citas->hora = date("h:ia", strtotime($hora));
             $citas->fecha = Carbon::parse($fecha_formateada)->isoFormat('dddd, D MMM');
             $citas->fecha_formateada = $fecha_formateada;
             $citas->responsable = Auth::user()->name;
@@ -166,6 +166,8 @@ class AgendaController extends Controller
             $tecnico = Cita::where('empleado_id', $user_id)
                 ->where('hora', $hora_formateada)
                 ->where('fecha_formateada', $fecha_formateada)
+                ->where('status', 1)
+                ->where('sucursal_id', Auth::user()->sucursal_id)
                 ->get();
 
             // Verificar si el cliente ya tiene una cita agendada en la fecha seleccionada
@@ -173,12 +175,16 @@ class AgendaController extends Controller
             ->where('cliente_id', $cliente_id)
                 ->where('hora', $hora_formateada)
                 ->where('fecha_formateada', $fecha_formateada)
+                ->where('status', 1)
+                ->where('sucursal_id', Auth::user()->sucursal_id)
                 ->get();
 
             // Verificar si el servicio ya tiene una cita agendada en la fecha seleccionada
-            $servicio = Cita::where('servicio_id', $servicio_id)
+            $servicio = Cita::whereBetween('servicio_id', [1, 8])
                 ->where('hora', $hora_formateada)
                 ->where('fecha_formateada', $fecha_formateada)
+                ->where('status', 1)
+                ->where('sucursal_id', Auth::user()->sucursal_id)
                 ->get();
             
             // dd($servicio);

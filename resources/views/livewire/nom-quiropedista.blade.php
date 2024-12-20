@@ -3,7 +3,7 @@
     <div class="px-10 py-4">
         <div class="mb-10">
             <div class="flex">
-                <h1 class="text-xl mb-6 font-extrabold text-[#7898a5] uppercase">MODULO DE NOMINA QUIROPEDISTAS</h1>
+                <h1 class="text-xl mb-6 font-extrabold text-[#7898a5] uppercase">MODULO DE NOMINA</h1>
             </div>
         </div>
 

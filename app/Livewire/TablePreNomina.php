@@ -24,6 +24,7 @@ use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Actions\CreateAction;
 use Illuminate\Database\Eloquent\Builder;
@@ -257,6 +258,7 @@ class TablePreNomina extends Component implements HasForms, HasTable
             ])
             ->groups([
                 Group::make('rol.descripcion')->label('Rol'),
+                Group::make('sucursal.nombre')->label('Sucursal'),
             ])
             ->filters([
                 Filter::make('created_at')
@@ -305,15 +307,37 @@ class TablePreNomina extends Component implements HasForms, HasTable
                         }
                     })
                     ->action(function (PreNomina $record) {
-                        PreNominaController::reporteNomina($record);
+                        try {
+                            $reporte = PreNominaController::reporteNomina($record);
+                            if($reporte) {
+                                Notification::make()
+                                ->title('NOTIFICACIÓN')
+                                ->icon('heroicon-o-document-text')
+                                ->iconColor('success')
+                                ->color('success')
+                                ->body('El reporte de: ' . $record->user->name . ' ha sido generado exitosamente')
+                                ->send();
+                            }
+                        } catch (\Throwable $th) {
+                            LogController::log(Auth::user()->id, 'excepcion: reporte de nomina', $th->getMessage(), $response = null);
+                            Notification::make()
+                            ->title('NOTIFICACIÓN')
+                            ->icon('heroicon-o-shield-check')
+                            ->iconColor('danger')
+                            ->color('danger')
+                            ->body($th->getMessage())
+                            ->send();
+                        } 
                     }),
             ])
             ->headerActions([
                 CreateAction::make()
+                ->label('Calculo de Nomina')
                     ->model(CierreDiario::class)
+                    ->color('colorOne')
                     ->form([
                         Section::make('Formulario')
-                            ->description('Debe llenar los campos de forma correta')
+                            ->description('Debe llenar los campos de forma correta. Campos Requeridos(*)')
                             ->icon('heroicon-s-newspaper')
                             ->schema([
                                 Grid::make()
@@ -389,20 +413,33 @@ class TablePreNomina extends Component implements HasForms, HasTable
                         ->icon('heroicon-c-arrow-down-tray')
                         ->requiresConfirmation()
                         ->action(function (Collection $records) {
-                            $records->each->update([
-                                'status' => 2
-                            ]);
-                            //log
-                            LogController::log(Auth::user()->id, 'cierre de nomina', 'totalizo nomina', $response = null);
-
-                            $this->resetTable();
-                        }),
+                            try {
+                                $reporte = PreNominaController::reporteMasivoNomina($records);
+                                $this->resetTable();
+                                
+                            } catch (\Throwable $th) {
+                                LogController::log(Auth::user()->id, 'excepcion: reporte masivo de nomina' , $th->getMessage(), $response = null);
+                                Notification::make()
+                                ->title('NOTIFICACIÓN')
+                                ->icon('heroicon-o-shield-check')
+                                ->iconColor('danger')
+                                ->color('danger')
+                                ->body($th->getMessage())
+                                ->send();
+                            } 
+                    }),
                     BulkAction::make('delete')
                         ->label('Reversar Calculo')
                         ->color('primary')
                         ->icon('heroicon-c-arrow-uturn-left')
                         ->requiresConfirmation()
-                        ->action(fn(Collection $records) => $records->each->delete()),
+                        ->action(function (Collection $records) {
+                            $records->each->delete();
+                            //log
+                            LogController::log(Auth::user()->id, 'cierre de nomina', 'totalizo nomina', $response = null);
+
+                            $this->resetTable();
+                        }),
                 ]),
                 // BulkAction::make('export')->button()->action(fn (Collection $records) => ...),
             ])

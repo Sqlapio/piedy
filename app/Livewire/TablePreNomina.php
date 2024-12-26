@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Carbon\Carbon;
 use Filament\Tables;
+use App\Models\Reporte;
 use Livewire\Component;
 use App\Models\PreNomina;
 use Filament\Tables\Table;
@@ -303,42 +304,6 @@ class TablePreNomina extends Component implements HasForms, HasTable
                     ->button()
                     ->label('Filtros'),
             )
-            ->actions([
-                Tables\Actions\Action::make('generar-pdf')
-                    ->label('PDF')
-                    ->icon('heroicon-c-arrow-down-tray')
-                    ->color('danger')
-                    ->hidden(function ($record) {
-                        if($record->status == 2){
-                            return false;
-                        }else{
-                            return true;
-                        }
-                    })
-                    ->action(function (PreNomina $record) {
-                        try {
-                            $reporte = PreNominaController::reporteNomina($record);
-                            if($reporte) {
-                                Notification::make()
-                                ->title('NOTIFICACIÓN')
-                                ->icon('heroicon-o-document-text')
-                                ->iconColor('success')
-                                ->color('success')
-                                ->body('El reporte de: ' . $record->user->name . ' ha sido generado exitosamente')
-                                ->send();
-                            }
-                        } catch (\Throwable $th) {
-                            LogController::log(Auth::user()->id, 'excepcion: reporte de nomina', $th->getMessage(), $response = null);
-                            Notification::make()
-                            ->title('NOTIFICACIÓN')
-                            ->icon('heroicon-o-shield-check')
-                            ->iconColor('danger')
-                            ->color('danger')
-                            ->body($th->getMessage())
-                            ->send();
-                        } 
-                    }),
-            ])
             ->headerActions([
                 CreateAction::make()
                 ->label('Calculo de Nomina')

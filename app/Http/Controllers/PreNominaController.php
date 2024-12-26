@@ -24,101 +24,203 @@ class PreNominaController extends Controller
             //busco todos los usuarios con el rol_id y sucursal_id
             $empleados = User::where('rol_id', $rol_id)->where('sucursal_id', $sucursal_id)->where('status', 1)->get();
 
-            //Hacemos un foreach para calcular la nomina
-            foreach ($empleados as $item) {
+            //Roles de quiropedia y manicure
+            if($rol_id == 1 || $rol_id == 2){
+                //Hacemos un foreach para calcular la nomina
+                foreach ($empleados as $item) {
+    
+                    $preNomina = new PreNomina();
+                    $random = rand('111111', '999999');
+    
+                    $preNomina->user_id = $item->id;
+                    // dump($item->id);
+                    $preNomina->rol_id = $item->rol_id;
+                    $preNomina->sucursal_id = $item->sucursal_id;
+    
+                    //Total de servicio realizados
+                    $preNomina->total_servicios = VentaServicio::where('empleado_id', $item->id)
+                        ->where('sucursal_id', $sucursal_id)
+                        ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
+                        ->count();
+                    // dump($preNomina->total_servicios);
+    
+                    //Total productos vendidos
+                    $preNomina->total_productos = VentaProducto::where('empleado_id', $item->id)
+                        ->where('sucursal_id', $sucursal_id)
+                        ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
+                        ->count();
+                    // dump($preNomina->total_productos);
+    
+                    /**
+                     * CALCULO PARA LOS SERVICIOS REALIZADOS
+                     * ------------------------------------------------------------------------------------- 
+                     */
+    
+                    //Comisiones en dolares (USD) de los servicios realizados
+                    $preNomina->comision_usd = VentaServicio::where('empleado_id', $item->id)
+                        ->where('sucursal_id', $sucursal_id)
+                        ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
+                        ->sum('comision_dolares');
+                    // dump($preNomina->comision_usd);
+    
+    
+                    //Comisiones en Bolivares (BS) de los servicios realizados
+                    $preNomina->comision_bsd = VentaServicio::where('empleado_id', $item->id)
+                        ->where('sucursal_id', $sucursal_id)
+                        ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
+                        ->sum('comision_bolivares');
+    
+                    /**FIN DE CALCULO PARA LOS SERVICIOS REALIZADOS------------------------------------------*/
+    
+                    /**
+                     * CALCULO PARA LOS PRODUCTOS VENDIDOS
+                     * --------------------------------------------------------------------------------------- 
+                     */
+    
+                    //Comisiones en dolares (USD) de los productos vendidos
+                    $preNomina->comision_prod = VentaProducto::where('empleado_id', $item->id)
+                        ->where('sucursal_id', $sucursal_id)
+                        ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
+                        ->sum('comision_empleado');
+    
+                    /**FIN DE CALCULO PARA LOS PRODUCTOS VENDIDOS--------------------------------------------*/
+    
+                    /**
+                     * CALCULO PARA LAS PROPINAS
+                     * --------------------------------------------------------------------------------------- 
+                     */
+    
+                    //Propinas en Dolares (USD) de los servicios realizados
+                    $preNomina->propinas_usd = VentaServicio::where('empleado_id', $item->id)
+                        ->where('sucursal_id', $sucursal_id)
+                        ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
+                        ->sum('propina_usd');
+    
+                    //Propinas en Bolivares (BS) de los servicios realizados
+                    $preNomina->propinas_bsd = VentaServicio::where('empleado_id', $item->id)
+                        ->where('sucursal_id', $sucursal_id)
+                        ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
+                        ->sum('propina_bsd');
+    
+                    /**FIN DE CALCULO PARA LAS PROPINAS------------------------------------------------------*/
+    
+                    $preNomina->fecha_ini = $fecha_ini;
+                    $preNomina->fecha_fin = $fecha_fin;
+    
+                    /**
+                     * CALCULO PARA LOS TOTALES
+                     * --------------------------------------------------------------------------------------- 
+                     */
+    
+                    $preNomina->total_usd = $preNomina->comision_usd + $preNomina->comision_prod + $preNomina->propinas_usd;
+                    $preNomina->total_bsd = $preNomina->comision_bsd + $preNomina->propinas_bsd;
+    
+                    /**FIN DE CALCULO PARA LOS TOTALES-------------------------------------------------------*/
+                    // dd('alto');
+                    $preNomina->cod_nomina = $random;
+                    $preNomina->save();
 
-                $preNomina = new PreNomina();
+                    //Log
+                    LogController::log(Auth::user()->id, 'calculo pre-nomina', 'realizo el calculo de nomina del ' . $fecha_ini . ' al ' . $fecha_fin . ' en la sucursal: ' . $sucursal_id, $response = null);
 
-                $preNomina->user_id = $item->id;
-                // dump($item->id);
-                $preNomina->rol_id = $item->rol_id;
-                $preNomina->sucursal_id = $item->sucursal_id;
-
-                //Total de servicio realizados
-                $preNomina->total_servicios = VentaServicio::where('empleado_id', $item->id)
-                    ->where('sucursal_id', $sucursal_id)
-                    ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
-                    ->count();
-                // dump($preNomina->total_servicios);
-
-                //Total productos vendidos
-                $preNomina->total_productos = VentaProducto::where('empleado_id', $item->id)
-                    ->where('sucursal_id', $sucursal_id)
-                    ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
-                    ->count();
-                // dump($preNomina->total_productos);
-
-                /**
-                 * CALCULO PARA LOS SERVICIOS REALIZADOS
-                 * ------------------------------------------------------------------------------------- 
-                 */
-
-                //Comisiones en dolares (USD) de los servicios realizados
-                $preNomina->comision_usd = VentaServicio::where('empleado_id', $item->id)
-                    ->where('sucursal_id', $sucursal_id)
-                    ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
-                    ->sum('comision_dolares');
-                // dump($preNomina->comision_usd);
-
-
-                //Comisiones en Bolivares (BS) de los servicios realizados
-                $preNomina->comision_bsd = VentaServicio::where('empleado_id', $item->id)
-                    ->where('sucursal_id', $sucursal_id)
-                    ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
-                    ->sum('comision_bolivares');
-
-                /**FIN DE CALCULO PARA LOS SERVICIOS REALIZADOS------------------------------------------*/
-
-                /**
-                 * CALCULO PARA LOS PRODUCTOS VENDIDOS
-                 * --------------------------------------------------------------------------------------- 
-                 */
-
-                //Comisiones en dolares (USD) de los productos vendidos
-                $preNomina->comision_prod = VentaProducto::where('empleado_id', $item->id)
-                    ->where('sucursal_id', $sucursal_id)
-                    ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
-                    ->sum('comision_empleado');
-
-                /**FIN DE CALCULO PARA LOS PRODUCTOS VENDIDOS--------------------------------------------*/
-
-                /**
-                 * CALCULO PARA LAS PROPINAS
-                 * --------------------------------------------------------------------------------------- 
-                 */
-
-                //Propinas en Dolares (USD) de los servicios realizados
-                $preNomina->propinas_usd = VentaServicio::where('empleado_id', $item->id)
-                    ->where('sucursal_id', $sucursal_id)
-                    ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
-                    ->sum('propina_usd');
-
-                //Propinas en Bolivares (BS) de los servicios realizados
-                $preNomina->propinas_bsd = VentaServicio::where('empleado_id', $item->id)
-                    ->where('sucursal_id', $sucursal_id)
-                    ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
-                    ->sum('propina_bsd');
-
-                /**FIN DE CALCULO PARA LAS PROPINAS------------------------------------------------------*/
-
-                $preNomina->fecha_ini = $fecha_ini;
-                $preNomina->fecha_fin = $fecha_fin;
-
-                /**
-                 * CALCULO PARA LOS TOTALES
-                 * --------------------------------------------------------------------------------------- 
-                 */
-
-                $preNomina->total_usd = $preNomina->comision_usd + $preNomina->comision_prod + $preNomina->propinas_usd;
-                $preNomina->total_bsd = $preNomina->comision_bsd + $preNomina->propinas_bsd;
-
-                /**FIN DE CALCULO PARA LOS TOTALES-------------------------------------------------------*/
-                // dd('alto');
-                $preNomina->save();
+                }           
             }
 
-            LogController::log(Auth::user()->id, 'calculo pre-nomina', 'realizo el calculo de nomina del ' . $fecha_ini . ' al ' . $fecha_fin . ' en la sucursal: ' . $sucursal_id, $response = null);
-            //code...
+            //Rol para los Gerentes de Tienda
+            if($rol_id == 3){
+                //Hacemos un foreach para calcular la nomina
+                foreach ($empleados as $item) {
+
+                    $preNomina = new PreNomina();
+                    $random = rand('111111', '999999');
+
+                    $preNomina->user_id = $item->id;
+                    // dump($item->id);
+                    $preNomina->rol_id = $item->rol_id;
+                    $preNomina->sucursal_id = $item->sucursal_id;
+
+                    //Total de servicio realizados
+                    $preNomina->total_servicios = VentaServicio::where('responsable_id', $item->id)
+                        ->where('sucursal_id', $sucursal_id)
+                        ->where('comision_gerente', '!=', 0)
+                        ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
+                        ->count();
+                    // dump($preNomina->total_servicios);
+
+                    //Total productos vendidos
+                    $preNomina->total_productos = VentaProducto::where('gerente_id', $item->id)
+                        ->where('sucursal_id', $sucursal_id)
+                        ->where('empleado_id', null)
+                        ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
+                        ->count();
+                    // dump($preNomina->total_productos);
+
+                    /**
+                     * CALCULO PARA LOS SERVICIOS REALIZADOS
+                     * ------------------------------------------------------------------------------------- 
+                     */
+
+                    //Comisiones en dolares (USD) de los servicios realizados
+                    $preNomina->comision_usd = VentaServicio::where('responsable_id', $item->id)
+                        ->where('sucursal_id', $sucursal_id)
+                        ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
+                        ->sum('comision_gerente');
+                    // dump($preNomina->comision_usd);
+
+
+                    //Comisiones en Bolivares (BS) de los servicios realizados
+                    $preNomina->comision_bsd = 0.00;
+
+                    /**FIN DE CALCULO PARA LOS SERVICIOS REALIZADOS------------------------------------------*/
+
+                    /**
+                     * CALCULO PARA LOS PRODUCTOS VENDIDOS
+                     * --------------------------------------------------------------------------------------- 
+                     */
+
+                    //Comisiones en dolares (USD) de los productos vendidos
+                    $preNomina->comision_prod = VentaProducto::where('gerente_id', $item->id)
+                        ->where('sucursal_id', $sucursal_id)
+                        ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
+                        ->sum('comision_gerente');
+
+                    /**FIN DE CALCULO PARA LOS PRODUCTOS VENDIDOS--------------------------------------------*/
+
+                    /**
+                     * CALCULO PARA LAS PROPINAS
+                     * --------------------------------------------------------------------------------------- 
+                     */
+
+                    //Propinas en Dolares (USD) de los servicios realizados
+                    $preNomina->propinas_usd = 0.00;
+
+                    //Propinas en Bolivares (BS) de los servicios realizados
+                    $preNomina->propinas_bsd = 0.00;
+
+                    /**FIN DE CALCULO PARA LAS PROPINAS------------------------------------------------------*/
+
+                    $preNomina->fecha_ini = $fecha_ini;
+                    $preNomina->fecha_fin = $fecha_fin;
+
+                    /**
+                     * CALCULO PARA LOS TOTALES
+                     * --------------------------------------------------------------------------------------- 
+                     */
+
+                    $preNomina->total_usd = $preNomina->comision_usd + $preNomina->comision_prod;
+                    $preNomina->total_bsd = 0.00;
+
+                    /**FIN DE CALCULO PARA LOS TOTALES-------------------------------------------------------*/
+                    // dd('alto');
+                    $preNomina->cod_nomina = $random;
+                    $preNomina->save();
+
+                    //Log
+                    LogController::log(Auth::user()->id, 'calculo pre-nomina', 'realizo el calculo de nomina del ' . $fecha_ini . ' al ' . $fecha_fin . ' en la sucursal: ' . $sucursal_id, $response = null);
+
+                }       
+            }
+
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion: calculo nomina - PreNominaController/calculo_pre_nomina', $th->getMessage(), $response = null);
             Notification::make()
@@ -136,8 +238,8 @@ class PreNominaController extends Controller
 
         try {
 
-            $random = rand('111111', '999999');
-            $pdf = str_replace(' ', '-', $record->user->name) . '-' . $random . '.pdf';
+            // $random = rand('111111', '999999');
+            $pdf = str_replace(' ', '-', $record->user->name) . '-' . $record->cod_nomina . '.pdf';
 
             pdf::view(
                 'pdf.reporte',
@@ -156,7 +258,7 @@ class PreNominaController extends Controller
                     'total_dolares'         => $record->comision_usd + $record->comision_prod + $record->propinas_usd,
                     'dias_trabajados'       => '10',
                     'total_bolivares'       => $record->comision_bsd + $record->propinas_bsd,
-                    'nro_reporte'           => $random,
+                    'nro_reporte'           => $record->cod_nomina,
                     'area_trabajo'          => $record->rol->descripcion,
                     'total_mem_atendidas'   => 0,
                     'total_comi_mem_atendidas' => 0,
@@ -175,7 +277,7 @@ class PreNominaController extends Controller
             /**Guardo el reporte en la tabla de reportes para tener el historico */
             $reporte = new Reporte();
             $reporte->user_id = $record->user->id;
-            $reporte->cod_reporte = $random;
+            $reporte->cod_reporte = $record->cod_nomina;
             $reporte->fecha_ini = $record->fecha_ini;
             $reporte->fecha_fin = $record->fecha_fin;
             $reporte->descripcion = $pdf;
@@ -208,8 +310,8 @@ class PreNominaController extends Controller
 
             foreach ($records as $record) {
 
-                $random = rand('111111', '999999');
-                $pdf = str_replace(' ', '-', $record->user->name) . '-' . $random . '.pdf';
+                // $random = rand('111111', '999999');
+                $pdf = str_replace(' ', '-', $record->user->name) . '-' . $record->cod_nomina . '.pdf';
 
                 pdf::view(
                     'pdf.reporte',
@@ -228,7 +330,7 @@ class PreNominaController extends Controller
                         'total_dolares'         => $record->comision_usd + $record->comision_prod + $record->propinas_usd,
                         'dias_trabajados'       => '10',
                         'total_bolivares'       => $record->comision_bsd + $record->propinas_bsd,
-                        'nro_reporte'           => $random,
+                        'nro_reporte'           => $record->cod_nomina,
                         'area_trabajo'          => $record->rol->descripcion,
                         'total_mem_atendidas'   => 0,
                         'total_comi_mem_atendidas' => 0,
@@ -247,7 +349,7 @@ class PreNominaController extends Controller
                 /**Guardo el reporte en la tabla de reportes para tener el historico */
                 $reporte = new Reporte();
                 $reporte->user_id = $record->user->id;
-                $reporte->cod_reporte = $random;
+                $reporte->cod_reporte = $record->cod_nomina;
                 $reporte->fecha_ini = $record->fecha_ini;
                 $reporte->fecha_fin = $record->fecha_fin;
                 $reporte->descripcion = $pdf;

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
+use App\Models\Reporte;
 use Filament\Forms\Form;
 use App\Models\PreNomina;
 use Filament\Tables\Table;
@@ -31,8 +32,8 @@ use Filament\Tables\Actions\BulkActionGroup;
 use App\Http\Controllers\PreNominaController;
 use App\Filament\Resources\PreNominaResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\PreNominaResource\RelationManagers;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\PreNominaResource\RelationManagers;
 
 class PreNominaResource extends Resource
 {
@@ -212,39 +213,13 @@ class PreNominaResource extends Resource
             )
             ->actions([
                 Tables\Actions\Action::make('generar-pdf')
-                    ->label('PDF')
-                    ->icon('heroicon-c-arrow-down-tray')
-                    ->color('danger')
-                    ->hidden(function ($record) {
-                        if ($record->status == 2) {
-                            return false;
-                        } else {
-                            return true;
-                        }
-                    })
-                    ->action(function (PreNomina $record) {
-                        try {
-                            $reporte = PreNominaController::reporteNomina($record);
-                            if ($reporte) {
-                                Notification::make()
-                                    ->title('NOTIFICACIÓN')
-                                    ->icon('heroicon-o-document-text')
-                                    ->iconColor('success')
-                                    ->color('success')
-                                    ->body('El reporte de: ' . $record->user->name . ' ha sido generado exitosamente')
-                                    ->send();
-                            }
-                        } catch (\Throwable $th) {
-                            LogController::log(Auth::user()->id, 'excepcion: reporte de nomina', $th->getMessage(), $response = null);
-                            Notification::make()
-                                ->title('NOTIFICACIÓN')
-                                ->icon('heroicon-o-shield-check')
-                                ->iconColor('danger')
-                                ->color('danger')
-                                ->body($th->getMessage())
-                                ->send();
-                        }
-                    }),
+                ->label('Generar PDF')
+                ->url(function (PreNomina $record) {
+                    $reporte = Reporte::where('cod_reporte', $record->cod_nomina)->first();
+                    return url('/' . $reporte->descripcion);
+                })
+                ->color('danger')
+                ->icon('heroicon-c-eye')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

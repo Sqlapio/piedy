@@ -35,8 +35,8 @@ class CierreDiario extends Component implements HasForms, HasTable
             ->heading('CIERRE DIARIO')
             ->description('Tabla de cierre diario por turno')
             ->query(ModelsCierreDiario::query()
-            ->whereDate('created_at', now()->toDateString())
-            ->where('sucursal_id', auth()->user()->sucursal_id))
+                ->whereDate('created_at', now()->toDateString())
+                ->where('sucursal_id', auth()->user()->sucursal_id))
             ->columns([
                 TextColumn::make('total_ventas')
                     ->numeric(decimalPlaces: 0)
@@ -109,35 +109,34 @@ class CierreDiario extends Component implements HasForms, HasTable
                     ->color('colorOne')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                
+
                 TextColumn::make('observaciones')
                     ->icon('heroicon-s-user')
                     ->color('colorOne')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                umeric'])
-                    ->hidden(function () {
-                        if(Auth::user()->rol_id == 4 || Auth::user()->rol_id == 3){
-                            retTextInputColumn::make('efectivo_usd_real')
+                TextInputColumn::make('efectivo_usd_real')
                     ->label('Efectivo($) recibido')
-                    ->rules(['nurn false;
+                    ->rules(['numeric'])
+                    ->hidden(function () {
+                        if (Auth::user()->rol_id == 4 || Auth::user()->rol_id == 3) {
+                            return false;
                         }
                     })
                     ->afterStateUpdated(function ($record, $state) {
                         ModelsCierreDiario::where('id', $record->id)->first()
-                        ->update([
-                            'efectivo_usd_real' => $state,
-                            'recibido_por' => Auth::user()->name,
-                            'received_at' => now()->format('Y-m-d H:i:s'),
-                        ]);
-
-                    }), 
+                            ->update([
+                                'efectivo_usd_real' => $state,
+                                'recibido_por' => Auth::user()->name,
+                                'received_at' => now()->format('Y-m-d H:i:s'),
+                            ]);
+                    }),
 
                 TextInputColumn::make('observ_recepcion')
                     ->label('Observaciones en la Entrega')
                     ->hidden(function () {
-                        if(Auth::user()->rol_id == 4 || Auth::user()->rol_id == 3){
+                        if (Auth::user()->rol_id == 4 || Auth::user()->rol_id == 3) {
                             return false;
                         }
                     }),
@@ -147,7 +146,7 @@ class CierreDiario extends Component implements HasForms, HasTable
                     ->color('colorOne')
                     ->searchable()
                     ->hidden(function () {
-                        if(Auth::user()->rol_id == 4 || Auth::user()->rol_id == 3){
+                        if (Auth::user()->rol_id == 4 || Auth::user()->rol_id == 3) {
                             return false;
                         }
                     }),
@@ -179,78 +178,78 @@ class CierreDiario extends Component implements HasForms, HasTable
             ])
             ->headerActions([
                 CreateAction::make()
-                ->model(CierreDiario::class)
-                ->form([
-                    Section::make('Formulario')
-                        ->description('Debe llenar los campos de forma correta')
-                        ->icon('heroicon-s-newspaper')
-                        ->schema([
-                            Grid::make()
+                    ->model(CierreDiario::class)
+                    ->form([
+                        Section::make('Formulario')
+                            ->description('Debe llenar los campos de forma correta')
+                            ->icon('heroicon-s-newspaper')
                             ->schema([
+                                Grid::make()
+                                    ->schema([
 
-                                //Debito
-                                TextInput::make('ref_debito')
-                                    ->label('Ref. Debito')
-                                    ->prefixIcon('heroicon-c-hashtag')
-                                    ->mask(RawJs::make(<<<'JS'
+                                        //Debito
+                                        TextInput::make('ref_debito')
+                                            ->label('Ref. Debito')
+                                            ->prefixIcon('heroicon-c-hashtag')
+                                            ->mask(RawJs::make(<<<'JS'
                                         $input.startsWith('34') || $input.startsWith('37') ? '999999' : '999999'
                                     JS))
-                                    ->numeric(),
-                                TextInput::make('monto_ref_debito')
-                                    ->label('Monto Debito')
-                                    ->prefixIcon('heroicon-s-building-library')
-                                    ->mask(RawJs::make(<<<'JS'
+                                            ->numeric(),
+                                        TextInput::make('monto_ref_debito')
+                                            ->label('Monto Debito')
+                                            ->prefixIcon('heroicon-s-building-library')
+                                            ->mask(RawJs::make(<<<'JS'
                                         $money($input, ',')
                                     JS)),
 
-                                //Credito
-                                TextInput::make('ref_credito')
-                                    ->label('Ref. Credito')
-                                    ->prefixIcon('heroicon-c-hashtag')
-                                    ->mask(RawJs::make(<<<'JS'
+                                        //Credito
+                                        TextInput::make('ref_credito')
+                                            ->label('Ref. Credito')
+                                            ->prefixIcon('heroicon-c-hashtag')
+                                            ->mask(RawJs::make(<<<'JS'
                                         $input.startsWith('34') || $input.startsWith('37') ? '999999' : '999999'
                                     JS))
-                                    ->numeric(),
-                                TextInput::make('monto_ref_credito')
-                                    ->label('Monto Credito')
-                                    ->prefixIcon('heroicon-s-building-library')
-                                    ->mask(RawJs::make(<<<'JS'
+                                            ->numeric(),
+                                        TextInput::make('monto_ref_credito')
+                                            ->label('Monto Credito')
+                                            ->prefixIcon('heroicon-s-building-library')
+                                            ->mask(RawJs::make(<<<'JS'
                                         $money($input, ',')
                                     JS)),
 
-                                //Vida/Master
-                                TextInput::make('ref_visaMaster')
-                                    ->label('Ref. Visa/Master')
-                                    ->prefixIcon('heroicon-c-hashtag')
-                                    ->mask(RawJs::make(<<<'JS'
+                                        //Vida/Master
+                                        TextInput::make('ref_visaMaster')
+                                            ->label('Ref. Visa/Master')
+                                            ->prefixIcon('heroicon-c-hashtag')
+                                            ->mask(RawJs::make(<<<'JS'
                                         $input.startsWith('34') || $input.startsWith('37') ? '999999' : '999999'
                                     JS))
-                                    ->numeric(),
+                                            ->numeric(),
 
-                                TextInput::make('monto_ref_visaMaster')
-                                    ->label('Monto Visa/Master')
-                                    ->prefixIcon('heroicon-s-building-library')
-                                    ->mask(RawJs::make(<<<'JS'
+                                        TextInput::make('monto_ref_visaMaster')
+                                            ->label('Monto Visa/Master')
+                                            ->prefixIcon('heroicon-s-building-library')
+                                            ->mask(RawJs::make(<<<'JS'
                                         $money($input, ',')
                                     JS)),
-                                // ...
-                            ]),
-                        Textarea::make('observaciones')
-                        ->autosize()
+                                        // ...
+                                    ]),
+                                Textarea::make('observaciones')
+                                    ->autosize()
 
-                        ])
-                ])
-                ->action(function (array $data) {
-                    CierreDiarioController::cierreDiario(
-                        $data['ref_debito'],
-                        $data['monto_ref_debito'],
-                        $data['ref_credito'],
-                        $data['monto_ref_credito'],
-                        $data['ref_visaMaster'],
-                        $data['monto_ref_visaMaster'],
-                        $data['observaciones']);
-
-                })
+                            ])
+                    ])
+                    ->action(function (array $data) {
+                        CierreDiarioController::cierreDiario(
+                            $data['ref_debito'],
+                            $data['monto_ref_debito'],
+                            $data['ref_credito'],
+                            $data['monto_ref_credito'],
+                            $data['ref_visaMaster'],
+                            $data['monto_ref_visaMaster'],
+                            $data['observaciones']
+                        );
+                    })
             ]);
     }
 

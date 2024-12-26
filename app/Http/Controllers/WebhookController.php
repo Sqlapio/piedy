@@ -32,10 +32,17 @@ class WebhookController extends Controller
      */
     public function webhookAgendarCita($name, $phone, $fecha, $hora, $servicio_id)
     {
+        //Eliminar espacios en blanco de la fecha y la hora
+        $fecha = trim($fecha);
+        $hora = trim($hora);
 
         $fecha_api = date("Y-m-d", strtotime($fecha));
 
         $hora_formateada = date("H:i:s", strtotime($hora));
+
+        //Eliminar espacios en blanco del nombre del cliente y del telefono
+        $name = trim($name);
+        $phone = trim($phone);
 
         if ($name == null || $phone == null || $fecha == null || $hora == null || $servicio_id == null) {
             return response()->json(['message' => 'Por favor llene todos los campos para poder agendar la cita'], 400);

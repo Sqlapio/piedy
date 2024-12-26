@@ -2,20 +2,21 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Forms;
+use Filament\Tables;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Actions\Action;
+use Filament\Resources\Resource;
+use App\Models\NotificacionMasiva;
+use Illuminate\Support\Facades\Auth;
+use Filament\Support\Enums\FontWeight;
+use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
+use App\Http\Controllers\NotificacionesController;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\NotificacionMasivaResource\Pages;
 use App\Filament\Resources\NotificacionMasivaResource\RelationManagers;
-use App\Http\Controllers\NotificacionesController;
-use App\Models\NotificacionMasiva;
-use Filament\Actions\Action;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Support\Enums\FontWeight;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Auth;
 
 class NotificacionMasivaResource extends Resource
 {
@@ -77,7 +78,16 @@ class NotificacionMasivaResource extends Resource
                 ->label('Enviar Notificacion')
                 ->icon('heroicon-o-rectangle-stack')
                 ->action(function (NotificacionMasiva $record) {
-                    NotificacionesController::notificacion_masiva($record->image, $record->caption);
+                    $envio = NotificacionesController::notificacion_masiva($record->image, $record->caption);
+                    if($envio['success'] == true) {
+                        Notification::make()
+                        ->title('NOTIFICACIÓN')
+                        ->icon('heroicon-o-document-text')
+                        ->iconColor('success')
+                        ->color('success')
+                        ->body($envio['message'])
+                        ->send();
+                    }
                 }),
             ])
             ->bulkActions([

@@ -97,7 +97,6 @@ class NotificacionesController extends Controller
                 Mail::to($mailData['user_email'])->send(new NotificacionesEmail($mailData, $view, $subject));
             }
         } catch (\Throwable $th) {
-            dd($th);
             $message = $th->getMessage();
             dd('Error UtilsController.send_mail()', $message);
         }
@@ -154,6 +153,7 @@ class NotificacionesController extends Controller
             curl_close($curl);
 
             if (isset($res['sent']) and $res['sent'] == 'true') {
+                array_push($response_ok, $res['sent']);
                 LogController::log(Auth::user()->id, 'sistema', 'envio exitoso', $response);
                 return $response = [
                     'success' => true,
@@ -162,6 +162,7 @@ class NotificacionesController extends Controller
               }
 
             if (isset($res['error'])) {
+                array_push($response_err, $res['error']);
                 LogController::log(Auth::user()->id, 'excepcion', 'falla de servicio WhatsApp', $response);
                 return $response = [
                     'success' => false,
@@ -185,14 +186,19 @@ class NotificacionesController extends Controller
 
         try {
 
-            $user_phone = Cliente::all();
+            $user_phone = Cliente::where('status', 1)->get('telefono')->toArray();
 
-            foreach ($user_phone as $value) {
-
+            $response_ok = [];
+            $response_err = [];
+            
+            for ($i=0; $i < count($user_phone); $i++) {
+                # code...
                 $params = array(
                     'token' => env('TOKEN_API_WHATSAPP'),
-                    'to' => $value->telefono,
+                    'to' => $user_phone[$i]['telefono'],
                     'image' => env('APP_URL') . '/storage/' . $image,
+                    // 'image' => env('IMAGE_PROMOCION'),
+
                     'caption' => $caption
                 );
                 $curl = curl_init();
@@ -215,16 +221,36 @@ class NotificacionesController extends Controller
                 $response = curl_exec($curl);
                 $err = curl_error($curl);
 
+                $res = json_decode($response, true);
+
                 curl_close($curl);
 
-                if ($err) {
-                    echo "cURL Error #:" . $err;
-                } else {
-                    echo $response;
+                if (isset($res['sent']) and $res['sent'] == 'true') {
+                    array_push($response_ok, $res['sent']);
+                }
+
+                if (isset($res['error'])) {
+                    array_push($response_err, $res['error']);
                 }
             }
+
+            LogController::log(Auth::user()->id, 'mensajes enviados', 'servicio masivo WhatsApp. Total enviados: '.count($response_ok), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion', 'falla de servicio masivo WhatsApp. Total fallidos:'.count($response_err), $response = null);
+
+            return $response = [
+                'success' => true,
+                'message' => 'Notificaciones enviadas: Total enviados: '.count($response_ok).', Total fallidos: '.count($response_err)
+            ];
+
             //code...
         } catch (\Throwable $th) {
+            Notification::make()
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-o-document-text')
+                ->iconColor('danger')
+                ->color('danger')
+                ->body($th->getMessage())
+                ->send();
         }
     }
 

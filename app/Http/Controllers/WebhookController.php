@@ -62,7 +62,7 @@ class WebhookController extends Controller
                                 ->where('status', 1)
                                 ->count();
 
-                            if ($citas > 4) {
+                            if ($citas >= 4) {
                                 return response()->json(['message' => 'No disponemos de técnico disponible para la hora que solicita la cita, por favor modifique la hora'], 400);
                             } else {
                                 $citas = new Cita();

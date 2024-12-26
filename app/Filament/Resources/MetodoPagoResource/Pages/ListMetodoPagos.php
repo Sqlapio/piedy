@@ -10,6 +10,8 @@ class ListMetodoPagos extends ListRecords
 {
     protected static string $resource = MetodoPagoResource::class;
 
+    protected ?string $heading = 'Metodos de Pago';
+
     protected function getHeaderActions(): array
     {
         return [

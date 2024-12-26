@@ -29,6 +29,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Actions\CreateAction;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextInputColumn;
 use Illuminate\Database\Eloquent\Collection;
 use App\Http\Controllers\PreNominaController;
@@ -36,6 +37,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use App\Http\Controllers\CierreDiarioController;
 use Filament\Tables\Concerns\InteractsWithTable;
 use App\Models\CierreDiario as ModelsCierreDiario;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 
 class TablePreNomina extends Component implements HasForms, HasTable
@@ -212,11 +214,6 @@ class TablePreNomina extends Component implements HasForms, HasTable
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                Tables\Columns\TextColumn::make('total_usd')
-                    ->label('Total(USD)')
-                    ->money('USD')
-                    ->sortable(),
-
                 Tables\Columns\TextColumn::make('total_bsd')
                     ->label('Total(Bs.)')
                     ->money('Bs.')
@@ -240,9 +237,21 @@ class TablePreNomina extends Component implements HasForms, HasTable
                     ->sortable(),
 
 
+                Tables\Columns\TextColumn::make('total_usd')
+                    ->label('Total(USD)')
+                    ->money('USD')
+                    ->summarize(Sum::make()
+                    ->money('USD')
+                    ->label('Neto Dolares($)'))
+                    ->sortable(),
+
+
                 Tables\Columns\TextColumn::make('total_pagar_bsd')
                     ->label('Total A Pagar(Bs.)')
-                    ->money('Bs.')
+                    ->money('VES')
+                    ->summarize(Sum::make()
+                    ->money('VES')
+                    ->label('Neto Bolivares(Bs.)'))
                     ->sortable(),
 
 
@@ -440,6 +449,8 @@ class TablePreNomina extends Component implements HasForms, HasTable
 
                             $this->resetTable();
                         }),
+                    ExportBulkAction::make()
+                    ->label('Exportar Excel')
                 ]),
                 // BulkAction::make('export')->button()->action(fn (Collection $records) => ...),
             ])

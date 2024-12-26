@@ -77,6 +77,8 @@ class ComisionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->heading('COMISIONES')
+            ->description('Lista de Comisiones generales del sistema')
             ->columns([
                 // TextColumn::make('cod_comision')->searchable()->label('Código'),
                 TextColumn::make('porcentaje')

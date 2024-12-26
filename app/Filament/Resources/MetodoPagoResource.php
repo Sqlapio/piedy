@@ -49,6 +49,8 @@ class MetodoPagoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->heading('METODOS DE PAGO')
+            ->description('Listado de metodos de pago, Bolivares(bsd) y Dolares(usd)')
             ->columns([
                 TextColumn::make('descripcion')
                     ->icon('heroicon-m-check-circle')

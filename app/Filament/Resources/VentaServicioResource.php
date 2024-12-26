@@ -41,30 +41,30 @@ class VentaServicioResource extends Resource
                 TextColumn::make('cod_asignacion')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                    
+
                 TextColumn::make('cliente.nombre')
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->searchable()
                     ->sortable(),
-                
-                 Tables\Columns\TextColumn::make('sucursal.nombre')
+
+                Tables\Columns\TextColumn::make('sucursal.nombre')
                     ->icon('heroicon-s-building-office-2')
                     ->color('colorTree')
                     ->numeric()
                     ->searchable(),
-                    
+
                 TextColumn::make('user.name')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable()
                     ->sortable(),
-                    
+
                 TextColumn::make('created_at')->searchable()
                     ->label('Fecha de venta')
                     ->toggleable(isToggledHiddenByDefault: false),
-                    
+
                 TextColumn::make('metodo_pago')
                     ->label('Metodo Pago($)')
-                    ->description(fn (VentaServicio $record): string => $record->metodo_pago_dos)
+                    ->description(fn(VentaServicio $record): string => $record->metodo_pago_dos)
                     ->alignCenter()
                     ->searchable(),
 
@@ -86,10 +86,10 @@ class VentaServicioResource extends Resource
 
                 TextColumn::make('total_USD')
                     ->label(('Costo de Servício($)'))
-                        ->summarize(Sum::make()
+                    ->summarize(Sum::make()
                         ->label(('Total'))
                         ->money('USD'))
-                        ->alignCenter()
+                    ->alignCenter()
                     ->searchable(),
 
                 TextColumn::make('pago_usd')->money('USD')
@@ -97,47 +97,47 @@ class VentaServicioResource extends Resource
                     ->summarize(Sum::make()
                         ->label(('Total'))
                         ->money('USD'))
-                        ->alignCenter()
+                    ->alignCenter()
                     ->searchable(),
 
                 TextColumn::make('pago_bsd')
                     ->toggleable(isToggledHiddenByDefault: false)
-                        ->label(('Pagos(Bs.)'))
-                        ->summarize(Sum::make()
-                            ->label(('Total')))
-                            ->alignCenter()
-                        ->searchable(),
+                    ->label(('Pagos(Bs.)'))
+                    ->summarize(Sum::make()
+                        ->label(('Total')))
+                    ->alignCenter()
+                    ->searchable(),
 
                 TextColumn::make('comision_gerente')->money('USD')
                     ->label(('Comision Gte.($)'))
-                        ->summarize(Sum::make()
-                            ->money('USD')
-                            ->label('Neto Gerente($)'))
+                    ->summarize(Sum::make()
+                        ->money('USD')
+                        ->label('Neto Gerente($)'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('comision_dolares')->money('USD')
                     ->label(('Comision($)'))
-                        ->summarize(Sum::make()
-                            ->money('USD')
-                            ->label('Neto Empleado($)'))
+                    ->summarize(Sum::make()
+                        ->money('USD')
+                        ->label('Neto Empleado($)'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('comision_bolivares')
                     ->label(('Comision(Bs.)'))
-                        ->summarize(Sum::make()
-                            ->label('Neto Empleado(Bs.)'))
+                    ->summarize(Sum::make()
+                        ->label('Neto Empleado(Bs.)'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('comision_emp_venprod')
                     ->label(('Comision Producto($)'))
-                        ->summarize(Sum::make()
-                            ->label('Neto Comision Producto(Bs.)'))
+                    ->summarize(Sum::make()
+                        ->label('Neto Comision Producto(Bs.)'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -164,7 +164,7 @@ class VentaServicioResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('duracion')
-                ->label('Duración(Minutos)')
+                    ->label('Duración(Minutos)')
                     ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -180,35 +180,35 @@ class VentaServicioResource extends Resource
             ])
             ->filters([
                 Filter::make('created_at')
-                ->form([
-                    DatePicker::make('desde'),
-                    DatePicker::make('hasta'),
-                ])
-                ->query(function (Builder $query, array $data): Builder {
-                    return $query
-                        ->when(
-                            $data['desde'] ?? null,
-                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                        )
-                        ->when(
-                            $data['hasta'] ?? null,
-                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-                        );
-                })
-                ->indicateUsing(function (array $data): array {
-                    $indicators = [];
-                    if ($data['desde'] ?? null) {
-                        $indicators['desde'] = 'Venta desde ' . Carbon::parse($data['desde'])->toFormattedDateString();
-                    }
-                    if ($data['hasta'] ?? null) {
-                        $indicators['hasta'] = 'Venta hasta ' . Carbon::parse($data['hasta'])->toFormattedDateString();
-                    }
+                    ->form([
+                        DatePicker::make('desde'),
+                        DatePicker::make('hasta'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['desde'] ?? null,
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['hasta'] ?? null,
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['desde'] ?? null) {
+                            $indicators['desde'] = 'Venta desde ' . Carbon::parse($data['desde'])->toFormattedDateString();
+                        }
+                        if ($data['hasta'] ?? null) {
+                            $indicators['hasta'] = 'Venta hasta ' . Carbon::parse($data['hasta'])->toFormattedDateString();
+                        }
 
-                    return $indicators;
-                }),
+                        return $indicators;
+                    }),
             ])
             ->filtersTriggerAction(
-                fn (Action $action) => $action
+                fn(Action $action) => $action
                     ->button()
                     ->label('Filtros'),
             )
@@ -247,5 +247,4 @@ class VentaServicioResource extends Resource
             'edit' => Pages\EditVentaServicio::route('/{record}/edit'),
         ];
     }
-
 }

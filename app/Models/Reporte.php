@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Reporte extends Model
 {
@@ -23,11 +24,12 @@ class Reporte extends Model
     protected $fillable = [
         'user_id',
         'cod_reporte',
-        'cod_quincena',
         'descripcion',
+        'fecha_ini',
+        'fecha_fin',
         'tipo',
         'responsable',
-        'fecha',
+        'sucursal_id',
     ];
 
     /**
@@ -35,8 +37,19 @@ class Reporte extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user(): BelongsTo
+    public function sucursal(): HasOne
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
     }
+
+    /**
+     * Get the user that owns the Reporte
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
 }

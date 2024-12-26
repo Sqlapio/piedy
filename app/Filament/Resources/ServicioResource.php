@@ -103,6 +103,8 @@ class ServicioResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->heading('SERVICIOS')
+            ->description('Listado de Servicios')
             ->columns([
                 TextColumn::make('cod_servicio')->searchable()->label('Código'),
                 TextColumn::make('sucursal.nombre')

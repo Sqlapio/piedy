@@ -274,7 +274,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
      */
 
     Route::get('/nomina', function () {
-        return view('nomina');
+        return view('nom-quiropedista');
     })->name('nomina');
 
     Route::get('/reporte', function () {
@@ -351,7 +351,7 @@ Route::get('/ex', function () {
     //     dd(2);
     // }
 
-    dd(now()->toDateString());
+    dd(url('/Carolina-Troconis-568194.pdf'));
     
     // $user_phone = Cliente::all();
 

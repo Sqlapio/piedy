@@ -253,7 +253,7 @@ class CompraResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()
                 ]),
-            ]);
+            ])->striped();
     }
 
     public static function getRelations(): array

@@ -10,6 +10,8 @@ class ListComisions extends ListRecords
 {
     protected static string $resource = ComisionResource::class;
 
+    protected ?string $heading = 'Modulo de Comisiones';
+
     protected function getHeaderActions(): array
     {
         return [

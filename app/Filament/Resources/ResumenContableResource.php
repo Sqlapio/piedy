@@ -25,9 +25,11 @@ class ResumenContableResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = '';
+    protected static ?string $navigationLabel = 'Resumen Contable';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationGroup = 'Contabilidad';
+
+    protected static ?int $navigationSort = 6;
 
     public static function table(Table $table): Table
     {

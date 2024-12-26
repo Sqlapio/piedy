@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Reporte;
 use App\Models\PreNomina;
 use Illuminate\Http\Request;
 use App\Models\VentaProducto;
@@ -15,7 +16,8 @@ use Filament\Notifications\Notification;
 
 class PreNominaController extends Controller
 {
-    static function calculo_pre_nomina($fecha_ini, $fecha_fin, $rol_id, $sucursal_id) {
+    static function calculo_pre_nomina($fecha_ini, $fecha_fin, $rol_id, $sucursal_id)
+    {
 
         try {
 
@@ -127,11 +129,11 @@ class PreNominaController extends Controller
                 ->body($th->getMessage())
                 ->send();
         }
-
     }
 
-    static function reporteNomina($record) {
-        
+    static function reporteNomina($record)
+    {
+
         try {
 
             $random = rand('111111', '999999');
@@ -170,7 +172,22 @@ class PreNominaController extends Controller
                 ->footerView('pdf.footer')
                 ->save($pdf);
 
+            /**Guardo el reporte en la tabla de reportes para tener el historico */
+            $reporte = new Reporte();
+            $reporte->user_id = $record->user->id;
+            $reporte->cod_reporte = $random;
+            $reporte->fecha_ini = $record->fecha_ini;
+            $reporte->fecha_fin = $record->fecha_fin;
+            $reporte->descripcion = $pdf;
+            $reporte->tipo = $record->rol->descripcion;         
+            $reporte->responsable = Auth::user()->name;
+            $reporte->sucursal_id = $record->sucursal_id;
+            $reporte->save();
+
+            if($reporte->save()){
                 return true;
+            }
+
             //code...
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion: reporte de nomina - PreNominaController/reporteNomina', $th->getMessage(), $response = null);
@@ -182,14 +199,14 @@ class PreNominaController extends Controller
                 ->body($th->getMessage())
                 ->send();
         }
-        
     }
 
-    static function reporteMasivoNomina($records) {
-        
+    static function reporteMasivoNomina($records)
+    {
+
         try {
 
-            foreach($records as $record) {
+            foreach ($records as $record) {
 
                 $random = rand('111111', '999999');
                 $pdf = str_replace(' ', '-', $record->user->name) . '-' . $random . '.pdf';
@@ -227,14 +244,27 @@ class PreNominaController extends Controller
                     ->footerView('pdf.footer')
                     ->save($pdf);
 
-                Notification::make()
-                    ->title('NOTIFICACIÓN')
-                    ->icon('heroicon-o-document-text')
-                    ->iconColor('success')
-                    ->color('success')
-                    ->body('El reporte de: ' . $record->user->name . ' ha sido generado exitosamente')
-                    ->send();
-                
+                /**Guardo el reporte en la tabla de reportes para tener el historico */
+                $reporte = new Reporte();
+                $reporte->user_id = $record->user->id;
+                $reporte->cod_reporte = $random;
+                $reporte->fecha_ini = $record->fecha_ini;
+                $reporte->fecha_fin = $record->fecha_fin;
+                $reporte->descripcion = $pdf;
+                $reporte->tipo = $record->rol->descripcion;
+                $reporte->responsable = Auth::user()->name;
+                $reporte->sucursal_id = $record->sucursal_id;
+                $reporte->save();
+
+                if ($reporte->save()) {
+                    Notification::make()
+                        ->title('NOTIFICACIÓN')
+                        ->icon('heroicon-o-document-text')
+                        ->iconColor('success')
+                        ->color('success')
+                        ->body('El reporte de: ' . $record->user->name . ' ha sido generado exitosamente')
+                        ->send();
+                }
             }
 
             //code...

@@ -194,4 +194,14 @@ class Sucursal extends Model
         return $this->belongsTo(PreNomina::class, 'sucursal_id', 'id');
     }
 
+    /**
+     * Get the preNomina that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function reporte(): BelongsTo
+    {
+        return $this->belongsTo(Reporte::class, 'sucursal_id', 'id');
+    }
+
 }

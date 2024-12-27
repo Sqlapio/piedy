@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
+use App\Http\Controllers\LogController;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
@@ -59,6 +60,7 @@ class TableRecepcionInventario extends Component implements HasForms, HasTable
                             return 'heroicon-m-lock-closed';
                         }
                     }),
+                    
                 Tables\Columns\TextColumn::make('uso')
                     ->icon('heroicon-s-megaphone')
                     ->color(function (RecepcionInventario $record) {
@@ -69,6 +71,7 @@ class TableRecepcionInventario extends Component implements HasForms, HasTable
                         }
                     })
                     ->searchable(),
+                    
                 Tables\Columns\TextColumn::make('cantidad')
                     ->label('Existencia')
                     ->color(function (RecepcionInventario $record) {
@@ -157,47 +160,72 @@ class TableRecepcionInventario extends Component implements HasForms, HasTable
                 ->color('success')
                 ->action(function (Collection $records) {
                     
-                    foreach ($records as $record) {
-                        
-                        $producto_aceptado = RecepcionInventario::where('id',$record->id)->first();
+                    try {
 
-                        if($producto_aceptado->accepted_at == null){
-                            $producto_existe = InventarioSucursal::where('producto_id', $producto_aceptado->producto_id)
-                            ->where('sucursal_id', auth()->user()->sucursal_id)
-                            ->first();
-                            
-                            if(isset($producto_existe)){
-                                $producto_existe->cantidad += $producto_aceptado->cantidad;
-                                $producto_existe->accepted_at = now();
-                                $producto_existe->save();
-                                
-                            }else{
-                                InventarioSucursal::create([
-                                    'producto_id'   => $producto_aceptado->producto_id,
-                                    'sucursal_id'   => auth()->user()->sucursal_id,
-                                    'cantidad'      => $producto_aceptado->cantidad,
-                                    'responsable'   => auth()->user()->name,
-                                    'uso'           => $producto_aceptado->uso,
-                                    'aceptado_por'  => auth()->user()->name,
+                        $records = $records->toArray();
+                        for ($i = 0; $i < count($records); $i++) {
+
+                            $producto_aceptado = RecepcionInventario::where('id', $records[$i]['id'])->first();
+
+                            if ($records[$i]['status'] == 1) {
+
+                                $producto_existe = InventarioSucursal::where('producto_id', $records[$i]['producto_id'])
+                                    ->where('sucursal_id', auth()->user()->sucursal_id)
+                                    ->first();
+
+                                if (isset($producto_existe)) {
+                                    $producto_existe->cantidad += $records[$i]['cantidad'];
+                                    $producto_existe->accepted_at = now();
+                                    $producto_existe->save();
+                                } else {
+
+                                    InventarioSucursal::create([
+                                        'producto_id'   => $records[$i]['producto_id'],
+                                        'sucursal_id'   => auth()->user()->sucursal_id,
+                                        'cantidad'      => $records[$i]['cantidad'],
+                                        'responsable'   => auth()->user()->name,
+                                        'uso'           => $records[$i]['uso'],
+                                        'aceptado_por'  => auth()->user()->name,
                                     ]);
-                            }
+                                }
 
-                            $producto_aceptado->accepted_at = now();
-                            $producto_aceptado->user_accepted = auth()->user()->name;
-                            
-                            return Notification::make()
+                                $producto_aceptado->accepted_at = now();
+                                $producto_aceptado->user_accepted = auth()->user()->name;
+                                $producto_aceptado->status = 2;
+                                $producto_aceptado->save();
+
+                                Notification::make()
                                     ->title('NOTIFICACIÓN')
                                     ->icon('heroicon-o-document-text')
-                                    ->iconColor('info')
+                                    ->iconColor('success')
+                                    ->color('dangersuccess')
+                                    ->body('El producto ha sido aceptado con exito')
+                                    ->send();
+                                    
+                            } else {
+                                return Notification::make()
+                                    ->title('NOTIFICACIÓN')
+                                    ->icon('heroicon-o-document-text')
+                                    ->iconColor('danger')
                                     ->color('danger')
                                     ->body('Debe seleccionar productos que no estén previamente aceptados. Por favor verifica la selección y vuelve a intentar')
                                     ->send();
+                            }
                         }
                         
-                        
+                    } catch (\Throwable $th) {
+                        LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
+                        Notification::make()
+                        ->title('NOTIFICACIÓN')
+                        ->icon('heroicon-c-x-circle')
+                        ->color('danger')
+                        ->iconColor('danger')
+                        ->body($th->getMessage())
+                        ->send();
                     }
+
                 }),
-            ]);
+            ])->striped();
     }
 
     public function render(): View

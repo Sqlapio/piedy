@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Models\Producto;
 use App\Models\Disponible;
+use App\Models\Requisicion;
 use Illuminate\Http\Request;
 use App\Mail\NotificacionesEmail;
 use Illuminate\Support\Facades\Auth;
@@ -253,6 +254,7 @@ class NotificacionesController extends Controller
 
             //code...
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion(notificacion_masiva)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-document-text')
@@ -328,7 +330,76 @@ class NotificacionesController extends Controller
             }
 
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion(notificacion_exitencia_minima)', $th->getMessage(), $response = null);
+        }
+    }
+
+    static function notificacion_requisicion($codigo)
+    {
+        // dd($codigo);
+        try {
+
+            $requisicion= Requisicion::where('codigo', $codigo)->first();
+            $link_requisicion = env('LINK_REQUISICION') . $codigo;
+
+            $body = <<<HTML
+
+            *Srs:* Administracion Piedy
+
+            Le informamos que fue generada la requisicion con el codigo: *{$requisicion->codigo}*
+            Para visulizar el detalle de la misma por favor ingrese a este link:
             
+            {$link_requisicion}
+
+            HTML;
+
+            $params = array(
+                'token' => env('TOKEN_API_WHATSAPP'),
+                'to' => env('GROUPID'),
+                'image' => env('IMAGE'),
+                'caption' => $body
+            );
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('CURLOPT_URL_IMAGE'),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_SSL_VERIFYHOST => 0,
+                CURLOPT_SSL_VERIFYPEER => 0,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => http_build_query($params),
+                CURLOPT_HTTPHEADER => array(
+                    "content-type: application/x-www-form-urlencoded"
+                ),
+            ));
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            $res = json_decode($response, true);
+
+            curl_close($curl);
+
+            if (isset($res['sent']) and $res['sent'] == 'true') {
+                LogController::log(Auth::user()->id, 'sistema', 'envio exitoso', $response);
+                return $response = [
+                    'success' => true,
+                    'message' => 'Notificacion enviada con exito'
+                ];
+            }
+
+            if (isset($res['error'])) {
+                LogController::log(Auth::user()->id, 'excepcion', 'falla de servicio WhatsApp', $response);
+                return $response = [
+                    'success' => false,
+                    'message' => 'La Notificacion no fue enviada, por favor comunicarse con el administrador del sistema'
+                ];
+            }
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion(notificacion_exitencia_minima)', $th->getMessage(), $response = null);
         }
     }
 }

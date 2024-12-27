@@ -591,7 +591,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                         ->label('Cerrar Servicio')
                         ->icon('heroicon-c-document-plus')
                         ->color('danger')
-                        ->hidden(! (auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2))
+                        ->hidden(! (auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2|| auth()->user()->rol_id == 5))
                         ->model(DetalleAsignacion::class)
                         ->form([
                             Section::make('Contraseña')

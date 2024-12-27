@@ -31,6 +31,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\ApiClientesController;
+use App\Http\Controllers\RequisicionController;
 use App\Http\Controllers\NotificacionesController;
 
 /*
@@ -336,56 +337,24 @@ Route::get('/confirmacion/{cita_id}', [AgendaController::class, 'confirmacion'])
 
 Route::get('/cancelacion/{cita_id}', [AgendaController::class, 'cancelacion'])->name('cita-cancelacion');
 
+Route::get('/requisicion/{codigo}', [RequisicionController::class, 'detalleRequisicion'])->name('detalle-requisicion');
+
 
 
 /**FIN GRUPO DE RUTAS------------------------------------------------------------------------------------------*/
 
 Route::get('/ex', function () {
 
-    $cadena = '10:00am';
-    // dd(str_starts_with($cadena, '0412'));
-    
-    // if(date('h:ia', strtotime("+2 hours")) > '22:00'){
-    //     dd(1);
-    // }else{
-    //     dd(2);
-    // }
+    $clientes = Cliente::all();
 
-    dd(url('/Carolina-Troconis-568194.pdf'));
-    
-    // $user_phone = Cliente::all();
+    foreach ($clientes as $cliente) {
+        $nombre = $cliente->nombre;
+        $apellido = $cliente->apellido;
+        $cliente->update([
+            'nombre' => $nombre. ' ' . $apellido
+        ]);
+    }
 
-    //     foreach ($user_phone as $value) {
-
-    //         $params = array(
-    //             'token' => env('TOKEN_API_WHATSAPP'),
-    //             'to' => $value->telefono,
-    //             'image' => env('IMAGE_PROMOCION'),
-    //             'caption' => '¡Tienes el Regalo perfecto para estas fechas...!'
-    //         );
-    //         $curl = curl_init();
-    //         curl_setopt_array($curl, array(
-    //             CURLOPT_URL => env('CURLOPT_URL_IMAGE'),
-    //             CURLOPT_RETURNTRANSFER => true,
-    //             CURLOPT_ENCODING => "",
-    //             CURLOPT_MAXREDIRS => 10,
-    //             CURLOPT_TIMEOUT => 30,
-    //             CURLOPT_SSL_VERIFYHOST => 0,
-    //             CURLOPT_SSL_VERIFYPEER => 0,
-    //             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    //             CURLOPT_CUSTOMREQUEST => "POST",
-    //             CURLOPT_POSTFIELDS => http_build_query($params),
-    //             CURLOPT_HTTPHEADER => array(
-    //                 "content-type: application/x-www-form-urlencoded"
-    //             ),
-    //         ));
-
-    //         $response = curl_exec($curl);
-    //         $err = curl_error($curl);
-
-    //         curl_close($curl);
-    //     }
-
-    // dd('Listo VB'); 
+    dd(1);
 
 });

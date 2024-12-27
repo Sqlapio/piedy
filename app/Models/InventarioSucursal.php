@@ -22,7 +22,8 @@ class InventarioSucursal extends Model
         'sucursal_id',
         'cantidad',
         'responsable',
-        'uso'
+        'uso',
+        'cant_requisicion'
     ];
 
     /**

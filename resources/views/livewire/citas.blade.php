@@ -38,7 +38,7 @@
         {{-- Citas agendadas --}}
         <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7 {{ $opcion == 'mes' || $opcion == 'semana' ? '' : 'hidden'}}">
             @foreach ($array as $key => $item)
-            <div class="flex rounded-lg {{ $largo }} p-2 flex-col border border-[#D9C3C1] bg-[#F2F2F2]" >
+            <div class="flex rounded-lg {{ $largo }} p-2 flex-col border border-[#D9C3C1] bg-[#ffffff]" >
                 <div class="flex items-center mb-1 p-2 rounded-lg bg-[#7B9EA6] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
                     <h2 class="text-white text-sm font-bold cursor-pointer" wire:click="mountAction('create', { id: {{$key}} , mes: {{$mes}} })">{{ $item }}</h2>
                 </div>
@@ -67,7 +67,7 @@
                                                     <path fill-rule="evenodd" d="M12 2a7 7 0 0 0-7 7 3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h1a1 1 0 0 0 1-1V9a5 5 0 1 1 10 0v7.083A2.919 2.919 0 0 1 14.083 19H14a2 2 0 0 0-2-2h-1a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1a2 2 0 0 0 1.732-1h.351a4.917 4.917 0 0 0 4.83-4H19a3 3 0 0 0 3-3v-2a3 3 0 0 0-3-3 7 7 0 0 0-7-7Zm1.45 3.275a4 4 0 0 0-4.352.976 1 1 0 0 0 1.452 1.376 2.001 2.001 0 0 1 2.836-.067 1 1 0 1 0 1.386-1.442 4 4 0 0 0-1.321-.843Z" clip-rule="evenodd"/>
                                                   </svg>
                                                 @endif
-                                                <span class="line-clamp-1">{{ $items->cliente }}</span>
+                                                <span class="line-clamp-1 ml-1">{{ $items->cliente }}</span>
                                             </div>
                                             <span>Hora: {{$items->hora}}</span>
                                         </div>
@@ -128,7 +128,7 @@
                                             @endif
                                             <span class="hidden group-hover:block line-clamp-1 uppercase">{{ $items->empleado_id == null ? '.....' : $items->empleado->name }}</span>
                                             <span class="hidden group-hover:block line-clamp-1">{{ $items->servicio_id == null ? '.....' : $items->servicio->descripcion  }}</span>
-                                            <span class="line-clamp-1">{{ $items->cliente }}</span>
+                                            <span class="line-clamp-1 ml-1">{{ $items->cliente }}</span>
                                             <span>Hora: {{$items->hora}}</span>
                                         </div>
                                         <div class="text-black">

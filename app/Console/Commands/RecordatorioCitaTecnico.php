@@ -31,8 +31,13 @@ class RecordatorioCitaTecnico extends Command
         $citas = Cita::where('fecha_formateada', date('Y-m-d'))
         ->where('status', 1)
         ->get();
+        
+        
 
         foreach ($citas as $cita) {
+
+            $link_confirmar = env('LINK_CONFIRMACION').$cita->id;
+            $link_cancelar = env('LINK_CANCELACION').$cita->id;
 
             $empleado = User::where('id', $cita->empleado_id)->first();
         
@@ -45,6 +50,12 @@ class RecordatorioCitaTecnico extends Command
             *Fecha:* {$cita->fecha}
             *Hora:* {$cita->hora}
 
+            *Para confirmar su asistencia por favor ingrese al link:*
+            {$link_confirmar}
+
+            *Para cancelar su asistencia por favor ingrese al link:*
+            {$link_cancelar}
+            
             *Con el fin de respetar el tiempo de nuestros clientes, le sugerimos debe llegar puntual a la cita.*
             HTML;
 

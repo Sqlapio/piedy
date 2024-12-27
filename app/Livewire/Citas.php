@@ -227,38 +227,51 @@ class Citas extends Component implements HasForms, HasActions
             ->modalSubmitActionLabel('Si, enviar')
             ->modalIcon('heroicon-m-device-phone-mobile')
             ->action(function (array $arguments) {
-                $cita = Cita::find($arguments['cita']);
-                $cliente = Cliente::where('id', $cita->cliente_id)->first()->telefono;
-                $mailData = [
-                    'cliente_email' => $cita->correo,
-                    'cliente_fullname' => $cita->cliente,
-                    'fecha_cita' => $cita->fecha,
-                    'hora_cita' => $cita->hora,
-                    'telefono' => $cliente,
-                ];
-                /**Notificacion por Whatsapp */
-                $notificacion = NotificacionesController::notificacion_cita_wp($mailData);
 
-                if($notificacion['success'] == true){
-                    Notification::make()
-                    ->title('NOTIFICACIÓN')
-                    ->icon('heroicon-o-document-text')
-                    ->iconColor('success')
-                    ->color('success')
-                    ->body($notificacion['message'])
-                    ->send();
-                }else{
+                try {
+
+                    $cita = Cita::find($arguments['cita']);
+                    $mailData = [
+                        'id'                => $cita->id,
+                        'cliente_email'     => $cita->correo,
+                        'cliente_fullname'  => $cita->cliente,
+                        'fecha_cita'        => $cita->fecha,
+                        'hora_cita'         => $cita->hora,
+                        'telefono'          => $cita->telefono,
+                    ];
+                    
+                    /**Notificacion por Whatsapp */
+                    $notificacion = NotificacionesController::notificacion_cita_wp($mailData);
+
+                    if ($notificacion['success'] == true) {
+                        Notification::make()
+                        ->title('NOTIFICACIÓN')
+                        ->icon('heroicon-o-document-text')
+                        ->iconColor('success')
+                        ->color('success')
+                        ->body($notificacion['message'])
+                        ->send();
+                        
+                    } else {
+                        Notification::make()
+                        ->title('NOTIFICACIÓN')
+                        ->icon('heroicon-o-document-text')
+                        ->iconColor('danger')
+                        ->color('danger')
+                        ->body($notificacion['message'])
+                        ->send();
+                    }
+                    //code...
+                } catch (\Throwable $th) {
                     Notification::make()
                     ->title('NOTIFICACIÓN')
                     ->icon('heroicon-o-document-text')
                     ->iconColor('danger')
                     ->color('danger')
-                    ->body($notificacion['message'])
+                    ->body($th->getMessage())
                     ->send();
                 }
                     
-                    
-
             });
     }
 
@@ -330,7 +343,7 @@ class Citas extends Component implements HasForms, HasActions
             ->where('fecha_formateada', date('Y-m-d'))
             ->get();
 
-        // dd($data_citas_dia);
+        // dd($data_citas_dia, $data_citas);
 
         return view('livewire.citas', [
             'array'             => $array,

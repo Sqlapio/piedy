@@ -107,6 +107,9 @@ class NotificacionesController extends Controller
 
         try {
 
+            $link_confirmar = env('LINK_CONFIRMACION') . $data['id'];
+            $link_cancelar = env('LINK_CANCELACION') . $data['id'];
+
             $ubication = 'https://maps.google.com/maps?q=Piedy%20Sambil%20Chacao,%20Distrito%20Capital&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=&amp;output=embed';
 
             $body = <<<HTML
@@ -118,6 +121,12 @@ class NotificacionesController extends Controller
             *Detalle:*
             *Fecha:* {$data['fecha_cita']}
             *Hora:* {$data['hora_cita']}
+
+            *Para confirmar su asistencia por favor ingrese al link:*
+            {$link_confirmar}
+
+            *Para cancelar su asistencia por favor ingrese al link:*
+            {$link_cancelar}
 
             *Ubicación:* {$ubication}
             HTML;
@@ -153,7 +162,7 @@ class NotificacionesController extends Controller
             curl_close($curl);
 
             if (isset($res['sent']) and $res['sent'] == 'true') {
-                array_push($response_ok, $res['sent']);
+                // dd(1);
                 LogController::log(Auth::user()->id, 'sistema', 'envio exitoso', $response);
                 return $response = [
                     'success' => true,
@@ -162,7 +171,7 @@ class NotificacionesController extends Controller
               }
 
             if (isset($res['error'])) {
-                array_push($response_err, $res['error']);
+                // dd(2);
                 LogController::log(Auth::user()->id, 'excepcion', 'falla de servicio WhatsApp', $response);
                 return $response = [
                     'success' => false,

@@ -163,9 +163,11 @@ class TableCliente extends Component implements HasForms, HasTable
                                             ->mask(RawJs::make(<<<'JS'
                                                 $input.startsWith('1') ? '19999999999' : '9999-9999999'
                                             JS))
+                                            ->unique(column: 'telefono')   
                                             ->rules(['required'])
                                             ->validationMessages([
                                                 'required'    => 'Campo requerido',
+                                                'unique'    => 'El número de teléfono esta duplicado', 
                                             ]),
 
                                     ]),

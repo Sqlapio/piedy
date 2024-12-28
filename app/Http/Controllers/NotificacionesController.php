@@ -181,6 +181,7 @@ class NotificacionesController extends Controller
             }
             
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-NotificacionesController(notificacion_cita_wp)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-document-text')

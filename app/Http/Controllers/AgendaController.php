@@ -56,19 +56,18 @@ class AgendaController extends Controller
             $citas->status = 1;
             $citas->save();
 
-            $cliente_citado = Cita::where('id', $citas->id)->first();
-            $type = 'cliente';
-            $mailData = [
-                'cliente_email' => $cliente_citado->correo,
-                'cliente_fullname' => $cliente_citado->cliente,
-                'fecha_cita' => $cliente_citado->fecha,
-                'hora_cita' => $cliente_citado->hora,
-                'telefono' => $cliente_citado->telefono,
-            ];
+            if ($citas->save()) {
 
-            if (isset($cliente_id)) {
+                $data = [
+                    'id'                => $citas->id,
+                    'cliente_fullname'  => $citas->cliente,
+                    'fecha_cita'        => $citas->fecha,
+                    'hora_cita'         => $citas->hora,
+                    'telefono'          => $citas->telefono,
+                ];
+                
                 /**Notificacion por Whatsapp */
-                $notificacion = NotificacionesController::notificacion_cita_wp($mailData);
+                $notificacion = NotificacionesController::notificacion_cita_wp($data);
 
                 if ($notificacion['success'] == true) {
                     Notification::make()
@@ -88,41 +87,15 @@ class AgendaController extends Controller
                         ->send();
                 }
 
-                /**Notificacion por correo */
-                // NotificacionesController::notification($mailData, $type);
+                return $response = [
+                    'success' => true,
+                    'message' => 'La cita fue agendada con exito!!!',
+                ];
 
-            } else {
-                /**Notificacion por Whatsapp */
-                $notificacion = NotificacionesController::notificacion_cita_wp($mailData);
-
-                if ($notificacion['success'] == true) {
-                    Notification::make()
-                        ->title('NOTIFICACIÓN')
-                        ->icon('heroicon-o-document-text')
-                        ->iconColor('success')
-                        ->color('success')
-                        ->body($notificacion['message'])
-                        ->send();
-                } else {
-                    Notification::make()
-                        ->title('NOTIFICACIÓN')
-                        ->icon('heroicon-o-document-text')
-                        ->iconColor('danger')
-                        ->color('danger')
-                        ->body($notificacion['message'])
-                        ->send();
-                }
-            }
-
-            return $response = [
-                'success' => true,
-                'message' => 'La cita fue agendada con exito!!!',
-            ];
-
-            // redirect(route('citas'));
+            } 
 
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion-AgendaController(agendar_cita)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-shield-check')
@@ -145,7 +118,7 @@ class AgendaController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion-AgendaController(asignar_tecnico)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-shield-check')
@@ -158,6 +131,7 @@ class AgendaController extends Controller
     static function validaciones($horario_id, $fecha_formateada, $cliente_id, $servicio_id, $user_id)
     {
         try {
+            
             $hora = Horario::find($horario_id)->hora;
             $hora_formateada = date('h:i a', strtotime($hora));
 
@@ -221,6 +195,7 @@ class AgendaController extends Controller
             
             //code...
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-AgendaController(validaciones)', $th->getMessage(), $response = null);
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-shield-check')
@@ -232,19 +207,38 @@ class AgendaController extends Controller
     }
 
     static function confirmacion($cita_id) {
-        $confimacion = Cita::where('id', $cita_id)->first();
-        $confimacion->confirmacion = 1;
-        $confimacion->save();
+        try {
+            
+            $confimacion = Cita::where('id', $cita_id)->first();
+            $confimacion->confirmacion = 1;
+            $confimacion->save();
 
-        return view('confirmacion');
+            LogController::log(1, 'usuario externo', 'Usuario confirmo cita, id: '. $cita_id, $response = null);
+
+            return view('confirmacion');
+
+        } catch (\Throwable $th) {
+            LogController::log(1, 'excepcion(confirmacion link externo)', $th->getMessage(), $response = null);
+        }
+        
     }
 
     static function cancelacion($cita_id) {
-        Cita::where('id', $cita_id)->first()->update([
-            'status' => 2,
-            'confirmacion' => 2
-        ]);
 
-        return view('cancelacion');
+        try {
+
+            Cita::where('id', $cita_id)->first()->update([
+                'status' => 2,
+                'confirmacion' => 2
+            ]);
+
+            LogController::log(1, 'usuario externo', 'Usuario cancelo cita, id: ' . $cita_id, $response = null);
+
+            return view('cancelacion');
+            
+        } catch(\Throwable $th) {
+            LogController::log(1, 'excepcion(cancelacion link externo)', $th->getMessage(), $response = null);
+        }
+        
     }  
 }

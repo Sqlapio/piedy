@@ -126,16 +126,16 @@ class Citas extends Component implements HasForms, HasActions
             ->modalHeading(false)
             ->color('success')
             ->form([
-                Section::make('Asignar Tecnico')
-                    ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
-                    ->icon('heroicon-c-user-plus')
-                    ->schema([
-                        //Seleccion de servicio
-                        Select::make('user_id')
-                            ->label('Seleccione el Tecnico')
-                            ->prefixIcon('heroicon-c-users')
-                            ->options(User::where('sucursal_id', Auth::user()->sucursal_id)->whereBetween('rol_id', [1, 2])->pluck('name', 'id'))
-                            ->searchable(),
+                    Section::make('Asignar Tecnico')
+                        ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
+                        ->icon('heroicon-c-user-plus')
+                        ->schema([
+                    //Seleccion de servicio
+                    Select::make('user_id')
+                        ->label('Seleccione el Tecnico')
+                        ->prefixIcon('heroicon-c-users')
+                        ->options(User::where('sucursal_id', Auth::user()->sucursal_id)->whereBetween('rol_id', [1, 2])->pluck('name', 'id'))
+                        ->searchable(),
                     ])
             ])
             ->action(function (array $arguments, array $data) {

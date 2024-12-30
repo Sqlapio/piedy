@@ -186,6 +186,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                             $notificacion = NotificacionesController::notificacion_requisicion($codigo);
                             
                             if($notificacion['success'] == true){
+                                LogController::log(Auth::user()->id, 'requisicion', 'Se creo la requisicion nro: '.$codigo, $response = null);
                                 Notification::make()
                                 ->title('NOTIFICACIÓN')
                                 ->icon('heroicon-c-x-circle')

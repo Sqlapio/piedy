@@ -45,7 +45,7 @@ class InventarioController extends Controller
             }
 
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion-InventarioController(reposicion)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN: InventarioController(reposicion)')
                 ->icon('heroicon-c-x-circle')
@@ -112,7 +112,7 @@ class InventarioController extends Controller
 
 
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion-InventarioController(asignacion_sucursal)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN: InventarioController(asignacion_sucursal)')
                 ->icon('heroicon-c-x-circle')
@@ -162,7 +162,7 @@ class InventarioController extends Controller
 
 
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion-InventarioController(entrada_directa)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN: InventarioController(entrada_directa)')
                 ->icon('heroicon-c-x-circle')

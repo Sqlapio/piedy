@@ -61,7 +61,7 @@ class FacturacionMultipleController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            dd($th);
+            LogController::log(Auth::user()->id, 'excepcion-FacturacionMultipleController(totalizar_fac_multiple)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')

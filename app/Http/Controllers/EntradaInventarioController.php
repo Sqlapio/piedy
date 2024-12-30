@@ -31,6 +31,7 @@ class EntradaInventarioController extends Controller
             LogController::log(Auth::user()->id, $movimiento,$descripcion, $response = null);
 
         }catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-EntradaInventarioController(crear_entrada)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')

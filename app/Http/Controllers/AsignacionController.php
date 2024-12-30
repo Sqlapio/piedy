@@ -72,7 +72,7 @@ class AsignacionController extends Controller
             }
 
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion-AsignacionController(asignacion_servicio)', $th->getMessage(), $response = null);
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-shield-check')
@@ -141,7 +141,7 @@ class AsignacionController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion-AsignacionController(asigna_servicio_adicional)', $th->getMessage(), $response = null);
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-shield-check')
@@ -196,7 +196,7 @@ class AsignacionController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion-AsignacionController(asigna_producto)', $th->getMessage(), $response = null);
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-shield-check')
@@ -248,21 +248,21 @@ class AsignacionController extends Controller
                  * Notificacion al empleado via email
                  * ------------------------------------
                  */
-                $servicios = Disponible::where('cod_asignacion', $cod_asignacion)
-                ->with('detalleAsignaciones', 'user', 'cliente')
-                ->first();
+                // $servicios = Disponible::where('cod_asignacion', $cod_asignacion)
+                // ->with('detalleAsignaciones', 'user', 'cliente')
+                // ->first();
 
-                $type = 'servicio';
-                $mailData = [
-                    'codigo'           => $cod_asignacion ,
-                    'user_email'       => $servicios->user->email,
-                    'user_fullname'    => $servicios->user->name,
-                    'cliente_fullname' => $servicios->cliente->nombre,
-                    'fecha_venta'      => $servicios->update_at,
-                    'detalle'          => $servicios->detalleAsignaciones,
-                ];
+                // $type = 'servicio';
+                // $mailData = [
+                //     'codigo'           => $cod_asignacion ,
+                //     'user_email'       => $servicios->user->email,
+                //     'user_fullname'    => $servicios->user->name,
+                //     'cliente_fullname' => $servicios->cliente->nombre,
+                //     'fecha_venta'      => $servicios->update_at,
+                //     'detalle'          => $servicios->detalleAsignaciones,
+                // ];
 
-                NotificacionesController::notification($mailData, $type);
+                // NotificacionesController::notification($mailData, $type);
                 /*-------------------------------------------------------------------*/
 
                 return true;
@@ -275,7 +275,7 @@ class AsignacionController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion-AsignacionController(cerrar_servicio)', $th->getMessage(), $response = null);
             Notification::make()
             ->title('NOTIFICACIÓN')
             ->icon('heroicon-o-shield-check')

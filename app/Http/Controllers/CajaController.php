@@ -138,7 +138,7 @@ class CajaController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion-CajaController(dolares)', $th->getMessage(), $response = null);
             Notification::make()
             ->title('Notificacion: CajaController::dolares() ')
             ->icon('heroicon-o-shield-check')
@@ -276,7 +276,7 @@ class CajaController extends Controller
 
 
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion-CajaController(bolivares)', $th->getMessage(), $response = null);
             Notification::make()
             ->title('Notificacion: CajaController::bolivares() ')
             ->icon('heroicon-o-shield-check')
@@ -433,7 +433,7 @@ class CajaController extends Controller
 
 
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion-CajaController(multiple)', $th->getMessage(), $response = null);
             Notification::make()
             ->title('Notificacion: CajaController::multiple() ')
             ->icon('heroicon-o-shield-check')

@@ -40,6 +40,8 @@ class VentaServicioController extends Controller
             $facturar->save();
 
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-VentaServicioController(venta_servicio_usd)', $th->getMessage(), $response = null);
+
             Notification::make()
             ->title('Notificacion: VentaServicioController::venta_servicio_usd()')
             ->icon('heroicon-o-shield-check')
@@ -80,6 +82,8 @@ class VentaServicioController extends Controller
             $facturar->save();
 
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-VentaServicioController(venta_servicio_bsd)', $th->getMessage(), $response = null);
+
             Notification::make()
             ->title('Notificacion: VentaServicioController::venta_servicio_bsd()')
             ->icon('heroicon-o-shield-check')
@@ -124,6 +128,8 @@ class VentaServicioController extends Controller
             $facturar->save();
 
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-VentaServicioController(venta_servicio_multiple)', $th->getMessage(), $response = null);
+
             Notification::make()
             ->title('Notificacion: VentaServicioController::venta_servicio_multiple()')
             ->icon('heroicon-o-shield-check')

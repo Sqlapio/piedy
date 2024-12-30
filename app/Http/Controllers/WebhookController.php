@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 namespace App\Http\Controllers;
 
@@ -30,23 +30,38 @@ class WebhookController extends Controller
      * 
      * Devuelve un 200 con un mensaje de confirmacion si se agendo correctamente.
      */
-    public function webhookAgendarCita($name, $phone, $fecha, $hora, $servicio_id)
+    public function webhookAgendarCita($name, $cedula, $phone, $fecha, $hora, $servicio_id)
     {
         try {
 
             //Eliminar espacios en blanco de la fecha y la hora
-            $fecha = trim($fecha);
-            $hora = trim($hora);
+            $fecha  = trim($fecha);
+            $hora   = trim($hora);
 
             $fecha_api = date("Y-m-d", strtotime($fecha));
 
             $hora_formateada = date("H:i:s", strtotime($hora));
 
             //Eliminar espacios en blanco del nombre del cliente y del telefono
-            $name = trim($name);
-            $phone = trim($phone);
+            $name   = trim($name);
+            $phone  = trim($phone);
+            $cedula = trim($cedula);
 
-            if ($name == null || $phone == null || $fecha == null || $hora == null || $servicio_id == null) {
+            //Restricciones para el mismo cliente, mismo servicio misma hora
+            $cliente_restric_one = Cita::where('cedula', $cedula)
+                ->where('fecha_formateada', $fecha_api)
+                ->where('hora', $hora)
+                ->where('servicio_id', $servicio_id)
+                ->where('status', 1)
+                ->first();
+
+            if(isset($cliente_restric_one) && count($cliente_restric_one) > 0){
+                Log::error('Error al agendar cita por PiedyBot: El cliente ya tiene una cita agendada para el mismo servicio en la misma hora');
+                return response()->json(['message' => 'El cliente ya tiene una cita agendada para el mismo servicio en la misma hora, por favor intente agendar una hora diferente'], 400);
+            }
+
+
+            if ($name == null || $cedula == null || $phone == null || $fecha == null || $hora == null || $servicio_id == null) {
                 return response()->json(['message' => 'Por favor llene todos los campos para poder agendar la cita'], 400);
             } else {
 
@@ -71,6 +86,7 @@ class WebhookController extends Controller
                                     $citas->cod_cita = 'Pci-' . random_int(11111, 99999);
                                     $citas->telefono = $phone;
                                     $citas->cliente = $name;
+                                    $citas->cedula = $cedula;
                                     $citas->hora = str_replace(' ', '', $hora);
                                     $citas->fecha = Carbon::parse($fecha_api)->isoFormat('dddd, D MMM');
                                     $citas->fecha_formateada = $fecha_api;

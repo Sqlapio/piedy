@@ -37,6 +37,8 @@ class VentaController extends Controller
             $servicio_disponible->save();
 
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-VentaController(venta)', $th->getMessage(), $response = null);
+
             Notification::make()
             ->title('Notificacion: VentaController::venta() ')
             ->icon('heroicon-o-shield-check')
@@ -64,6 +66,8 @@ class VentaController extends Controller
             $venta->save();
 
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-VentaController(venta_producto)', $th->getMessage(), $response = null);
+
             Notification::make()
             ->title('Notificacion: VentaController::venta_producto() ')
             ->icon('heroicon-o-shield-check')

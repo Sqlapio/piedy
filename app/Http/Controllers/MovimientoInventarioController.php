@@ -24,6 +24,7 @@ class MovimientoInventarioController extends Controller
             $movimiento->save();
             //code...
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-MovimientoInventarioController(registrar_movimiento)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')

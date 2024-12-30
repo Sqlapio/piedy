@@ -222,7 +222,7 @@ class PreNominaController extends Controller
             }
 
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion: calculo nomina - PreNominaController/calculo_pre_nomina', $th->getMessage(), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion-PreNominaController(calculo_pre_nomina)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-shield-check')
@@ -292,7 +292,7 @@ class PreNominaController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion: reporte de nomina - PreNominaController/reporteNomina', $th->getMessage(), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion-PreNominaController(reporteNomina)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-shield-check')
@@ -371,7 +371,7 @@ class PreNominaController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion: reporte de nomina - PreNominaController/reporteNomina', $th->getMessage(), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion-PreNominaController(reporteMasivoNomina)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-shield-check')

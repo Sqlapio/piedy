@@ -34,7 +34,7 @@ class SalidaInventarioController extends Controller
             LogController::log(Auth::user()->id, $movimiento, $descripcion, $response = null);
 
         }catch (\Throwable $th) {
-            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
+            LogController::log(Auth::user()->id, 'excepcion-SalidaInventarioController(crear_salida)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')

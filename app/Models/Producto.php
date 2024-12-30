@@ -38,7 +38,8 @@ class Producto extends Model
         'total_unidades',
         'marca',
         'min',
-        'max'
+        'max',
+        'existencia_min_sucursal'
     ];
 
     public function comision():BelongsTo

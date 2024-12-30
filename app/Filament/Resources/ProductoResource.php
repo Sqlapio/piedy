@@ -172,7 +172,14 @@ class ProductoResource extends Resource
                         ->prefixIcon('heroicon-s-pencil')
                         ->label('Cantidad Minima en existencia')
                         ->numeric(),
-                ])->columns(2),
+
+                    TextInput::make('existencia_min_sucursal')
+                        ->prefixIcon('heroicon-s-pencil')
+                        ->label('Cantidad Minima en existencia en sucursal')
+                        ->default(5)
+                        ->helperText('Este dato sera utilizado para el envio de notificaciones cuando el producto llegue a la cantidad minima en el almacen de la sucursal')
+                        ->numeric(),
+                ])->columns(3),
             ]);
     }
 

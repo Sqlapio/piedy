@@ -13,6 +13,7 @@ use App\Models\VentaProducto;
 use App\Models\InventarioSucursal;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
+use App\Http\Controllers\NotificacionesController;
 
 class VentaProductoController extends Controller
 {
@@ -97,8 +98,33 @@ class VentaProductoController extends Controller
 
                     if($productoSucursal->cantidad == 0)
                     {
+
                         $productoSucursal->accepted_at = null;
                         $productoSucursal->save();
+                    }
+
+                    //Notificacion por existencia minima del producto
+                    if($productoSucursal->cantidad <= $producto->existencia_min_sucursal)
+                    {
+                        
+                        $notificacion = NotificacionesController::notificacion_exitencia_minima_sucursal($productoSucursal->cantidad, $producto->id, Auth::user()->sucursal_id);
+                        if($notificacion['success'] == true) {
+                            Notification::make()
+                            ->title('NOTIFICACIÓN')
+                            ->icon('heroicon-o-document-text')
+                            ->iconColor('success')
+                            ->color('success')
+                            ->body($notificacion['message'])
+                            ->send();
+                        }else{
+                            Notification::make()
+                            ->title('NOTIFICACIÓN')
+                            ->icon('heroicon-o-document-text')
+                            ->iconColor('danger')
+                            ->color('danger')
+                            ->body($notificacion['message'])
+                            ->send();
+                        }
                     }
 
                     //Cargamos el movimiento de inventario en su tabla
@@ -219,6 +245,28 @@ class VentaProductoController extends Controller
                 {
                     $productoSucursal->accepted_at = null;
                     $productoSucursal->save();
+                }
+
+                //Notificacion por existencia minima del producto
+                if ($productoSucursal->cantidad <= $producto->existencia_min_sucural) {
+                    $notificacion = NotificacionesController::notificacion_exitencia_minima_sucursal($productoSucursal->cantidad, $producto->id, Auth::user()->sucursal_id);
+                    if ($notificacion['success'] == true) {
+                        Notification::make()
+                            ->title('NOTIFICACIÓN')
+                            ->icon('heroicon-o-document-text')
+                            ->iconColor('success')
+                            ->color('success')
+                            ->body($notificacion['message'])
+                            ->send();
+                    } else {
+                        Notification::make()
+                            ->title('NOTIFICACIÓN')
+                            ->icon('heroicon-o-document-text')
+                            ->iconColor('danger')
+                            ->color('danger')
+                            ->body($notificacion['message'])
+                            ->send();
+                    }
                 }
 
                 //Cargamos el movimiento de inventario en su tabla
@@ -355,6 +403,28 @@ class VentaProductoController extends Controller
                 {
                     $productoSucursal->accepted_at = null;
                     $productoSucursal->save();
+                }
+
+                //Notificacion por existencia minima del producto
+                if ($productoSucursal->cantidad <= $producto->existencia_min_sucural) {
+                    $notificacion = NotificacionesController::notificacion_exitencia_minima_sucursal($productoSucursal->cantidad, $producto->id, Auth::user()->sucursal_id);
+                    if ($notificacion['success'] == true) {
+                        Notification::make()
+                            ->title('NOTIFICACIÓN')
+                            ->icon('heroicon-o-document-text')
+                            ->iconColor('success')
+                            ->color('success')
+                            ->body($notificacion['message'])
+                            ->send();
+                    } else {
+                        Notification::make()
+                            ->title('NOTIFICACIÓN')
+                            ->icon('heroicon-o-document-text')
+                            ->iconColor('danger')
+                            ->color('danger')
+                            ->body($notificacion['message'])
+                            ->send();
+                    }
                 }
 
                 //Cargamos el movimiento de inventario en su tabla

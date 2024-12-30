@@ -27,6 +27,7 @@ use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CajaController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\WebhookController;
@@ -338,6 +339,8 @@ Route::get('/confirmacion/{cita_id}', [AgendaController::class, 'confirmacion'])
 Route::get('/cancelacion/{cita_id}', [AgendaController::class, 'cancelacion'])->name('cita-cancelacion');
 
 Route::get('/requisicion/{codigo}/{sucursal_id}', [RequisicionController::class, 'detalleRequisicion'])->name('detalle-requisicion');
+
+Route::get('/detalle/srv/{codigo}', [CajaController::class, 'detalleServicio'])->name('detalle-servicio');
 
 
 

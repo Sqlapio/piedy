@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comision;
-use App\Models\InventarioSucursal;
-use App\Models\MetodoPago;
 use App\Models\Producto;
 use App\Models\Servicio;
-use App\Models\VentaProducto as VentaProducto;
-use Filament\Notifications\Notification;
+use App\Models\Disponible;
+use App\Models\MetodoPago;
+use App\Models\InventarioSucursal;
 use Illuminate\Support\Facades\Auth;
+use Filament\Notifications\Notification;
+use App\Models\VentaProducto as VentaProducto;
 
 class CajaController extends Controller
 {
@@ -444,5 +445,19 @@ class CajaController extends Controller
 
     static function manejo_propinas() {
 
+    }
+
+    static function detalleServicio($cod_asignacion) {
+        // dd($cod_asignacion);
+        try {
+
+            $detalle = Disponible::where('cod_asignacion', $cod_asignacion)
+            ->with('cliente', 'empleado')
+            ->first();
+            return view('detalle-servicio-facturado', compact('detalle'));
+
+        } catch (\Throwable $th) {
+            
+        }
     }
 }

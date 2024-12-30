@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Cliente;
 use App\Models\Producto;
 use App\Models\Disponible;
@@ -357,6 +358,78 @@ class NotificacionesController extends Controller
             $params = array(
                 'token' => env('TOKEN_API_WHATSAPP'),
                 'to' => env('GROUPID'),
+                'image' => env('IMAGE'),
+                'caption' => $body
+            );
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('CURLOPT_URL_IMAGE'),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_SSL_VERIFYHOST => 0,
+                CURLOPT_SSL_VERIFYPEER => 0,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => http_build_query($params),
+                CURLOPT_HTTPHEADER => array(
+                    "content-type: application/x-www-form-urlencoded"
+                ),
+            ));
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            $res = json_decode($response, true);
+
+            curl_close($curl);
+
+            if (isset($res['sent']) and $res['sent'] == 'true') {
+                LogController::log(Auth::user()->id, 'sistema', 'envio exitoso', $response);
+                return $response = [
+                    'success' => true,
+                    'message' => 'Notificacion enviada con exito'
+                ];
+            }
+
+            if (isset($res['error'])) {
+                LogController::log(Auth::user()->id, 'excepcion', 'falla de servicio WhatsApp', $response);
+                return $response = [
+                    'success' => false,
+                    'message' => 'La Notificacion no fue enviada, por favor comunicarse con el administrador del sistema'
+                ];
+            }
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion(notificacion_exitencia_minima)', $th->getMessage(), $response = null);
+        }
+    }
+
+    static function notificacion_servicio_facturado($cod_asignacion, $cliente_id)
+    {
+        // dd($codigo);
+        try {
+
+            $data_servicio = Disponible::where('cod_asignacion', $cod_asignacion)->first();
+            $user = User::where('id', $data_servicio->empleado_id)->first();
+            $link_servicio = env('LINK_SERVICIO') . $cod_asignacion;
+
+            $body = <<<HTML
+
+            *Sr(a):* {$user->name}
+
+            Le informamos que acaba de ser facturado el servicio Nro:
+            *{$cod_asignacion}*
+            
+            Para visulizar el detalle por favor ingrese a este link:
+            
+            {$link_servicio}
+
+            HTML;
+
+            $params = array(
+                'token' => env('TOKEN_API_WHATSAPP'),
+                'to' => '04247667265',
                 'image' => env('IMAGE'),
                 'caption' => $body
             );

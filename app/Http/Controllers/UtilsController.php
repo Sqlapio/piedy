@@ -811,6 +811,7 @@ class UtilsController extends Controller
             //Servicios realizados por el tecnico
             $servicios = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
                 ->where('sucursal_id', Auth::user()->sucursal_id)
+                ->where('tipo', 'servicio')
                 ->where('status', 2)
                 ->get();
 
@@ -818,7 +819,7 @@ class UtilsController extends Controller
                 $descrip_serv = Servicio::where('id', $servicios[$i]->servicio_id)->first()->descripcion;
                 array_push($array_servicios, $descrip_serv);
             }
-
+            
             return json_encode($array_servicios);
             
         } catch (\Throwable $th) {

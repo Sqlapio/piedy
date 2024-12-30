@@ -41,6 +41,7 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Http\Controllers\AsignacionController;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
+use App\Http\Controllers\NotificacionesController;
 use Filament\Forms\Components\Actions\Action as HintAction;
 
 class TableDetalleAsignacion extends Component implements HasForms, HasTable
@@ -404,6 +405,9 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     ->iconColor('success')
                                     ->body('Facturacion Exitosa. Codigo: '.$this->cod_asignacion)
                                     ->send();
+
+                                    //Envio una notificacion por whatsaap
+                                    $notificacion = NotificacionesController::notificacion_servicio_facturado($this->cod_asignacion,         $this->cliente_id);
 
                                     LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en dolares: '.$this->cod_asignacion, $response = null);
                                     

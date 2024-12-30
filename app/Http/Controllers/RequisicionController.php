@@ -18,7 +18,7 @@ class RequisicionController extends Controller
             return view('detalle-requisicion', compact('codigo', 'sucursal_id', 'detalle', 'responsable'));
             
         } catch (\Throwable $th) {
-            dd($th);
+            // dd($th);
             LogController::log(1, 'excepcion(detalleRequisicion Link externo)', $th->getMessage(), $response = null);
         }
     }

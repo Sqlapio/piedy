@@ -153,7 +153,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                 'codigo' => $codigo,
                                 'fecha' => date('d-m-Y'),
                                 'sucursal_id' => Auth::user()->sucursal_id,
-                                'user_id' => Auth::user()->sucursal_id,
+                                'user_id' => Auth::user()->id,
                                 'status' => 1,
                             ]);
                             

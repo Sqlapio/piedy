@@ -337,7 +337,7 @@ Route::get('/confirmacion/{cita_id}', [AgendaController::class, 'confirmacion'])
 
 Route::get('/cancelacion/{cita_id}', [AgendaController::class, 'cancelacion'])->name('cita-cancelacion');
 
-Route::get('/requisicion/{codigo}', [RequisicionController::class, 'detalleRequisicion'])->name('detalle-requisicion');
+Route::get('/requisicion/{codigo}/{sucursal_id}', [RequisicionController::class, 'detalleRequisicion'])->name('detalle-requisicion');
 
 
 

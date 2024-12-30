@@ -27,7 +27,7 @@ class DetalleRequisicion extends Model
      */
     public function sucursal(): HasOne
     {
-        return $this->hasOne(User::class, 'id', 'sucursal_id');
+        return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
     }
 
     /**
@@ -37,7 +37,7 @@ class DetalleRequisicion extends Model
      */
     public function producto(): HasOne
     {
-        return $this->hasOne(User::class, 'id', 'producto_id');
+        return $this->hasOne(Producto::class, 'id', 'producto_id');
     }
 
     public function requisicion(): HasOne

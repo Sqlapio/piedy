@@ -341,7 +341,7 @@ class NotificacionesController extends Controller
         try {
 
             $requisicion= Requisicion::where('codigo', $codigo)->first();
-            $link_requisicion = env('LINK_REQUISICION') . $codigo;
+            $link_requisicion = env('LINK_REQUISICION') . $codigo .'/'. $requisicion->sucursal_id;
 
             $body = <<<HTML
 

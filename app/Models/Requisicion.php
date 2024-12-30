@@ -35,7 +35,7 @@ class Requisicion extends Model
      */
     public function sucursal(): HasOne
     {
-        return $this->hasOne(User::class, 'id', 'sucursal_id');
+        return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
     }
 
     /**

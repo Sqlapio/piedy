@@ -74,7 +74,7 @@ class TableProducto extends Component implements HasForms, HasTable
                     ->alignCenter()
                     ->icon('heroicon-m-square-3-stack-3d')
                     ->color(function(InventarioSucursal $record) {
-                        if($record->cantidad < 6){
+                        if($record->cantidad <= $record->producto->existencia_min_sucursal){
                             return 'danger';
                         }else{
                             return 'success';

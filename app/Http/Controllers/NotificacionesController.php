@@ -317,7 +317,7 @@ class NotificacionesController extends Controller
             curl_close($curl);
 
             if (isset($res['sent']) and $res['sent'] == 'true') {
-                LogController::log(Auth::user()->id, 'sistema', 'envio exitoso', $response);
+                LogController::log(Auth::user()->id, 'Notificacion-exitencia-minima', 'envio exitoso', $response);
                 return $response = [
                     'success' => true,
                     'message' => 'Notificacion enviada con exito'
@@ -325,7 +325,7 @@ class NotificacionesController extends Controller
             }
 
             if (isset($res['error'])) {
-                LogController::log(Auth::user()->id, 'excepcion', 'falla de servicio WhatsApp', $response);
+                LogController::log(Auth::user()->id, 'excepcion-Notificacion-exitencia-minima', 'falla de servicio WhatsApp', $response);
                 return $response = [
                     'success' => false,
                     'message' => 'La Notificacion no fue enviada, por favor comunicarse con el administrador del sistema'
@@ -410,7 +410,7 @@ class NotificacionesController extends Controller
 
     static function notificacion_requisicion($codigo)
     {
-        // dd($codigo);
+
         try {
 
             $requisicion= Requisicion::where('codigo', $codigo)->first();
@@ -458,7 +458,7 @@ class NotificacionesController extends Controller
             curl_close($curl);
 
             if (isset($res['sent']) and $res['sent'] == 'true') {
-                LogController::log(Auth::user()->id, 'sistema', 'envio exitoso', $response);
+                LogController::log(Auth::user()->id, 'Notificacion-requisicion', 'envio exitoso', $response);
                 return $response = [
                     'success' => true,
                     'message' => 'Notificacion enviada con exito'
@@ -466,7 +466,7 @@ class NotificacionesController extends Controller
             }
 
             if (isset($res['error'])) {
-                LogController::log(Auth::user()->id, 'excepcion', 'falla de servicio WhatsApp', $response);
+                LogController::log(Auth::user()->id, 'excepcion-notificacion-requisicion', 'falla de servicio WhatsApp', $response);
                 return $response = [
                     'success' => false,
                     'message' => 'La Notificacion no fue enviada, por favor comunicarse con el administrador del sistema'
@@ -477,9 +477,8 @@ class NotificacionesController extends Controller
         }
     }
 
-    static function notificacion_servicio_facturado($cod_asignacion, $cliente_id)
+    static function notificacion_servicio_facturado($cod_asignacion)
     {
-        // dd($codigo);
         try {
 
             $data_servicio = Disponible::where('cod_asignacion', $cod_asignacion)->first();
@@ -501,7 +500,7 @@ class NotificacionesController extends Controller
 
             $params = array(
                 'token' => env('TOKEN_API_WHATSAPP'),
-                'to' => '04247667265',
+                'to' => '04127018390',
                 'image' => env('IMAGE'),
                 'caption' => $body
             );
@@ -530,7 +529,7 @@ class NotificacionesController extends Controller
             curl_close($curl);
 
             if (isset($res['sent']) and $res['sent'] == 'true') {
-                LogController::log(Auth::user()->id, 'sistema', 'envio exitoso', $response);
+                LogController::log(Auth::user()->id, 'Notificacion-servicio-facturado', 'envio exitoso', $response);
                 return $response = [
                     'success' => true,
                     'message' => 'Notificacion enviada con exito'
@@ -538,7 +537,7 @@ class NotificacionesController extends Controller
             }
 
             if (isset($res['error'])) {
-                LogController::log(Auth::user()->id, 'excepcion', 'falla de servicio WhatsApp', $response);
+                LogController::log(Auth::user()->id, 'excepcion-Notificacion-servicio-facturado', 'falla de servicio WhatsApp', $response);
                 return $response = [
                     'success' => false,
                     'message' => 'La Notificacion no fue enviada, por favor comunicarse con el administrador del sistema'

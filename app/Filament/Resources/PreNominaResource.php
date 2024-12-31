@@ -50,7 +50,7 @@ class PreNominaResource extends Resource
         return $table
             ->heading('NOMINA')
             ->description('Tabla de nominas generales')
-            ->query(PreNomina::query())
+            ->query(PreNomina::query()->orderBy('created_at', 'desc'))
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->icon('heroicon-c-cog-8-tooth')

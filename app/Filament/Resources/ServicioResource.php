@@ -105,47 +105,48 @@ class ServicioResource extends Resource
         return $table
             ->heading('SERVICIOS')
             ->description('Listado de Servicios')
+            ->query(Servicio::query()->orderBy('created_at', 'desc'))
             ->columns([
                 TextColumn::make('cod_servicio')->searchable()->label('Código'),
                 TextColumn::make('sucursal.nombre')
-                ->icon('heroicon-s-home')
-                ->color('colorTree')
-                ->searchable()
-                ->label('Sucursal'),
+                    ->icon('heroicon-s-home')
+                    ->color('colorTree')
+                    ->searchable()
+                    ->label('Sucursal'),
                 TextColumn::make('descripcion')
-                ->icon('heroicon-s-pencil')
-                ->color('colorOne')
-                ->searchable(),
+                    ->icon('heroicon-s-pencil')
+                    ->color('colorOne')
+                    ->searchable(),
                 TextColumn::make('categoria')
-                ->badge()
-                ->color(fn (string $state): string => match ($state) {
-                    'principal' => 'success',
-                    'adicional' => 'warning',
-                })
-                ->searchable(),
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'principal' => 'success',
+                        'adicional' => 'warning',
+                    })
+                    ->searchable(),
                 TextColumn::make('rol.descripcion')->label('Tipo de servício')->searchable(),
                 TextColumn::make('costo')
-                ->color('success')
-                ->money('USD')
-                ->searchable()
-                ->label('Costo($)'),
+                    ->color('success')
+                    ->money('USD')
+                    ->searchable()
+                    ->label('Costo($)'),
                 TextColumn::make('asignacion')
-                ->badge()
-                ->colors([
-                    'info' => 'general',
-                    'success' => 'vip',
-                    'warning' => 'membresia',
-                ])
-                ->searchable(),
-                IconColumn::make('status')
-                ->options([
-                    'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
-                    'heroicon-m-minus-circle' => fn ($state, $record): bool => $record->status === 'inactivo',
-                ])
-                ->colors([
-                    'danger' => 'inactivo',
-                    'success' => 'activo',
-                ]),
+                    ->badge()
+                    ->colors([
+                        'info' => 'general',
+                        'success' => 'vip',
+                        'warning' => 'membresia',
+                    ])
+                    ->searchable(),
+                    IconColumn::make('status')
+                    ->options([
+                        'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
+                        'heroicon-m-minus-circle' => fn ($state, $record): bool => $record->status === 'inactivo',
+                    ])
+                    ->colors([
+                        'danger' => 'inactivo',
+                        'success' => 'activo',
+                    ]),
             ])
             ->filters([
                 //

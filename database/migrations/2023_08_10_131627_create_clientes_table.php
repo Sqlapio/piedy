@@ -20,7 +20,10 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->string('telefono')->nullable();
             $table->string('visitas')->nullable();
+            $table->string('visitas_membresia')->nullable();
+            $table->string('status')->nullable();
             $table->string('responsable')->nullable();
+            $table->string('control')->nullable();
             $table->timestamps();
         });
     }

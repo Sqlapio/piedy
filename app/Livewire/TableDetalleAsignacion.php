@@ -209,29 +209,31 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                 ->icon('heroicon-o-swatch')
                                 ->schema([
                                     //Seleccion de servicio
+                                    // Select::make('servicio_id')
+                                    //     ->label('Servicios')
+                                    //     ->prefixIcon('heroicon-o-swatch')
+                                    //     ->options(Servicio::where('sucursal_id', Auth::user()->sucursal_id)->pluck('descripcion', 'id'))
+                                    //     ->searchable()
+                                    //     ->required(),
+                                        
                                     Select::make('servicio_id')
-                                        ->label('Servicios')
-                                        ->prefixIcon('heroicon-o-swatch')
-                                        ->options(Servicio::where('sucursal_id', Auth::user()->sucursal_id)->pluck('descripcion', 'id'))
-                                        ->searchable()
-                                        ->required(),
-                                    Select::make('servicio_id')
-                        ->label('Seleccione el Servício')
-                        // ->options(fn (Get $get): Collection => ServicioUser::query()
+                                        ->label('Seleccione el Servício')
+                                        // ->options(fn (Get $get): Collection => ServicioUser::query()
 
-                        ->options(function () {
-                            $disponible_user = Disponible::where('cod_asignacion', $this->cod_asignacion)
-                            ->first()
-                            ->empleado_id;
-                            
-                            $servicio_user = ServicioUser::where('user_id', $disponible_user)
-                            ->pluck('descripcion', 'servicio_id');
+                                        ->options(function () {
+                                            $disponible_user = Disponible::where('cod_asignacion', $this->cod_asignacion)
+                                            ->first()
+                                            ->empleado_id;
+                                            
+                                            $servicio_user = ServicioUser::where('user_id', $disponible_user)
+                                            ->pluck('descripcion', 'servicio_id');
 
-                            return $servicio_user;
-                        })
-                        // ->options(Servicio::orderBy('descripcion', 'asc')->pluck('descripcion', 'id'))
-                        ->required()
-                        ->searchable(),
+                                            // dd($servicio_user);
+                                            return $servicio_user;
+                                        })
+                                        // ->options(Servicio::orderBy('descripcion', 'asc')->pluck('descripcion', 'id'))
+                                        ->required()
+                                        ->searchable(),
                                 ])
                         ])->action(function (array $data) {
                             AsignacionController::asigna_servicio_adicional(

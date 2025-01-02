@@ -108,7 +108,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                             ->validationMessages([
                                                 'required' => 'Debe introducir la cantidad',
                                                 'numeric' => 'Campo numerico',
-                                                'integer' => 'Debe ser un numero entero',
+                                                'integer' => 'Debe ser un número entero',
                                             ]),
                                     ]),
                             ])
@@ -186,13 +186,13 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                             $notificacion = NotificacionesController::notificacion_requisicion($codigo);
 
                             if($notificacion['success'] == true){
-                                LogController::log(Auth::user()->id, 'requisicion', 'Se creo la requisicion nro: '.$codigo, $response = null);
+                                LogController::log(Auth::user()->id, 'requisicion', 'Se creo la requisición nro: '.$codigo, $response = null);
                                 Notification::make()
                                 ->title('NOTIFICACIÓN')
                                 ->icon('heroicon-c-x-circle')
                                 ->color('success')
                                 ->iconColor('success')
-                                ->body('La requisicion fue creada con exito')
+                                ->body('La requisicion fue creada con éxito')
                                 ->send();
                             }
                         } catch (\Throwable $th) {

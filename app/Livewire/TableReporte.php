@@ -26,8 +26,8 @@ class TableReporte extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->heading('REPORTES DE NOMINA')
-            ->description('Tabla para reporte de nomina')
+            ->heading('REPORTES DE NÓMINA')
+            ->description('Tabla para reporte de nómina')
             ->query(Reporte::query()->orderBy('created_at', 'desc'))
             ->columns([
                 Tables\Columns\TextColumn::make('cod_reporte')

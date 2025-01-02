@@ -140,6 +140,22 @@ class Dashboard extends Component
                 $this->redirect('/cierre/diario');
             }
 
+
+        }
+
+        if($valor == 99)
+        {
+
+            if($tasa->fecha != date('d-m-Y'))
+            {
+                $this->dialog()->error(
+                    $title = 'Error !!!',
+                    $description = 'Debe actualizar la tasa del BCV para poder utilizar el sistema. Por favor haga click en el simbolo del BCV.'
+                );
+            }else{
+                $this->redirect('/venta');
+            }
+
         }
 
         if($valor == 10)

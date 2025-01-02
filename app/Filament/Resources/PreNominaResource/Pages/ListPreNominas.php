@@ -10,7 +10,7 @@ class ListPreNominas extends ListRecords
 {
     protected static string $resource = PreNominaResource::class;
 
-    protected ?string $heading = 'Modulo de Nomina';
+    protected ?string $heading = 'Módulo de Nomina';
 
     protected function getHeaderActions(): array
     {

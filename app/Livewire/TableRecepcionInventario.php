@@ -38,8 +38,8 @@ class TableRecepcionInventario extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->heading('RECEPCION DE INVENTARIO')
-            ->description('Recepcion de inventario asigando tanto para ventas como de consumo interno')
+            ->heading('RECEPCIÓN DE INVENTARIO')
+            ->description('Recepción de inventario asignado tanto para ventas como consumo interno')
             ->query(RecepcionInventario::query()
             ->where('sucursal_id', Auth::user()->sucursal_id)
             ->orderBy('created_at', 'desc'))
@@ -60,7 +60,7 @@ class TableRecepcionInventario extends Component implements HasForms, HasTable
                             return 'heroicon-m-lock-closed';
                         }
                     }),
-                    
+
                 Tables\Columns\TextColumn::make('uso')
                     ->icon('heroicon-s-megaphone')
                     ->color(function (RecepcionInventario $record) {
@@ -71,7 +71,7 @@ class TableRecepcionInventario extends Component implements HasForms, HasTable
                         }
                     })
                     ->searchable(),
-                    
+
                 Tables\Columns\TextColumn::make('cantidad')
                     ->label('Existencia')
                     ->color(function (RecepcionInventario $record) {
@@ -104,7 +104,7 @@ class TableRecepcionInventario extends Component implements HasForms, HasTable
                         }
                     })
                     ->icon('heroicon-c-user-circle'),
-                    
+
                 Tables\Columns\TextColumn::make('accepted_at')
                     ->label('Aceptado el:')
                     ->color(function (RecepcionInventario $record) {
@@ -159,7 +159,7 @@ class TableRecepcionInventario extends Component implements HasForms, HasTable
                 ->icon('heroicon-c-cog-8-tooth')
                 ->color('success')
                 ->action(function (Collection $records) {
-                    
+
                     try {
 
                         $records = $records->toArray();
@@ -201,7 +201,7 @@ class TableRecepcionInventario extends Component implements HasForms, HasTable
                                     ->color('dangersuccess')
                                     ->body('El producto ha sido aceptado con exito')
                                     ->send();
-                                    
+
                             } else {
                                 return Notification::make()
                                     ->title('NOTIFICACIÓN')
@@ -212,7 +212,7 @@ class TableRecepcionInventario extends Component implements HasForms, HasTable
                                     ->send();
                             }
                         }
-                        
+
                     } catch (\Throwable $th) {
                         LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
                         Notification::make()

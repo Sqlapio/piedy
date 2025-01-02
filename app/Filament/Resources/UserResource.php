@@ -87,20 +87,6 @@ class UserResource extends Resource
                             ->required()
                             ->live(),
 
-                        TextInput::make('salario')
-                            ->label('Salario Mensual')
-                            ->prefix('$')
-                            ->numeric()
-                            ->inputMode('decimal')
-                            ->hidden(function (Get $get) {
-                                if($get('rol_id') == 3)
-                                {
-                                    return false;
-                                }else{
-                                    return true;
-                                }
-                            }),
-
                         TextInput::make('password')
                             ->password()
                             ->dehydrateStateUsing(fn ($state) => Hash::make($state))
@@ -135,19 +121,26 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable()->label('Nombre y Apellido'),
-                TextColumn::make('email')->searchable()->label('Correo electrónico'),
-                TextColumn::make('tipo_usuario')
-                ->badge()
-                ->color(fn (string $state): string => match ($state) {
-                    'administrador' => 'success',
-                    'gerente' => 'success',
-                    'encargado' => 'info',
-                    'empleado' => 'warning',
-                    'nomina' => 'gray',
-                })
-                ->searchable(),
-                TextColumn::make('tipo_servicio.descripcion')->label('Tipo de servício')->searchable(),
+                TextColumn::make('name')
+                    ->icon('heroicon-s-user-circle')
+                    ->searchable()
+                    ->label('Nombre y Apellido'),
+                TextColumn::make('email')
+                    ->icon('heroicon-m-at-symbol')
+                    ->searchable()
+                    ->label('Correo electrónico'),
+                TextColumn::make('cedula')
+                    ->searchable()
+                    ->label('Cedula'),
+                TextColumn::make('telefono')
+                    ->icon('heroicon-o-device-phone-mobile')
+                    ->searchable()
+                    ->label('Teléfono'),
+                TextColumn::make('rol.descripcion')
+                    ->badge()
+                    ->searchable()
+                    ->label('Correo electrónico'),
+                
             ])
             ->filters([
                 //

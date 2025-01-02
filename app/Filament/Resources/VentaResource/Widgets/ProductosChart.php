@@ -17,7 +17,7 @@ class ProductosChart extends ChartWidget
 
     protected static ?string $heading = 'Productos';
 
-    // protected static ?string $maxHeight = '300px';
+    protected static ?string $maxHeight = '300px';
 
     // protected int | string | array $columnSpan = '3';
 
@@ -39,26 +39,9 @@ class ProductosChart extends ChartWidget
     protected function getData(): array
     {
 
-        // $activeFilter = $this->filter;
-
-        // if ($activeFilter === 'today') {
-        //     $rangeStartDate = now()->startOfDay();
-        //     $rangeEndDate = now()->endOfDay();
-        // } elseif ($activeFilter === 'week') {
-        //     $rangeStartDate = now()->subWeek()->startOfWeek();
-        //     $rangeEndDate = now()->endOfWeek();
-        // } elseif ($activeFilter === 'month') {
-        //     $rangeStartDate = now()->subMonthNoOverflow()->startOfMonth();
-        //     $rangeEndDate = now()->endOfMonth();
-        // } elseif ($activeFilter === 'year'){
-        //     $rangeStartDate = now()->subMonthNoOverflow()->startOfYear();
-        //     $rangeEndDate = now()->endOfYear();
-        // }
-        // $start = $this->filters['startDate'];
-        // $end = $this->filters['endDate'];
-
         $data = DB::table('venta_productos')
-        ->select(DB::raw('COUNT(producto_id) as venta, producto_id'))
+        ->select(DB::raw('COUNT(producto_id) as venta, producto_id, productos.descripcion as descripcion'))
+        ->join('productos', 'venta_productos.producto_id', '=', 'productos.id')
         ->groupBy('producto_id')
         ->get();
 
@@ -67,12 +50,12 @@ class ProductosChart extends ChartWidget
                     [
                         'label' => 'Average de Productos',
                         'data' => $data->map(fn ($data) => $data->venta),
-                        'backgroundColor' => '#22c55e',
-                        'borderColor' => '#22c55e',
-                        'fill' => true,
+                    'backgroundColor' => ['#22c55e', '#ed0000'],
+                        // 'borderColor' => '#22c55e',
+                        // 'fill' => true,
                     ],
                 ],
-                'labels' => ($data->map(fn ($data) => $data->producto_id)),
+                'labels' => ($data->map(fn ($data) => $data->descripcion)),
         ];
 
     }
@@ -82,8 +65,19 @@ class ProductosChart extends ChartWidget
         return 'Productos por la cantidad de ventas';
     }
 
+    protected static ?array $options = [
+        'scales' => [
+            'x' => [
+                'display' => false,
+            ],
+            'y' => [
+                'display' => false,
+            ],
+        ],
+    ];   // protected function getOptions(): RawJs
+
     protected function getType(): string
     {
-        return 'bar';
+        return 'doughnut';
     }
 }

@@ -18,8 +18,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\UserResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\UserResource\RelationManagers;
+use Filament\Tables\Columns\TextInputColumn;
 
 class UserResource extends Resource
 {
@@ -53,7 +52,7 @@ class UserResource extends Resource
                             ->label('Nombre y Apellido')
                             ->required(),
 
-                        TextInput::make('cedula')
+                TextInput::make('cedula')
                             ->label('Cédula de Identidad')
                             ->hiddenOn('edit')
                             ->required()
@@ -64,7 +63,7 @@ class UserResource extends Resource
                                 'unique'    => 'El número de cédula esta duplicado',
                             ]),
 
-                        TextInput::make('email')
+                TextInput::make('email')
                             ->email()
                             ->required()
                             ->rules(['required','email','unique:users,email'])
@@ -74,7 +73,7 @@ class UserResource extends Resource
                                 'unique'    => 'El email esta duplicado',
                             ]),
 
-                        TextInput::make('telefono')
+                TextInput::make('telefono')
                             ->label('Teléfono')
                             ->required(),
 
@@ -123,22 +122,22 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->icon('heroicon-s-user-circle')
+                TextInputColumn::make('name')
+                    // ->icon('heroicon-s-user-circle')
                     ->searchable()
                     ->label('Nombre y Apellido'),
-                TextColumn::make('email')
-                    ->icon('heroicon-m-at-symbol')
+                TextInputColumn::make('email')
+                    // ->icon('heroicon-m-at-symbol')
                     ->searchable()
                     ->label('Correo electrónico'),
-                TextColumn::make('cedula')
+                TextInputColumn::make('cedula')
                     ->searchable()
                     ->label('Cedula'),
-                TextColumn::make('telefono')
-                    ->icon('heroicon-o-device-phone-mobile')
+                TextInputColumn::make('telefono')
+                    // ->icon('heroicon-o-device-phone-mobile')
                     ->searchable()
                     ->label('Teléfono'),
-                TextColumn::make('rol.descripcion')
+            TextColumn::make('rol.descripcion')
                     ->badge()
                     ->searchable()
                     ->label('Correo electrónico'),

@@ -25,17 +25,22 @@ class VentaProductosStats extends BaseWidget
 
         return [
 
-            Stat::make('TOTAL VENTAS', $this->getPageTableQuery()->sum('cantidad'))
+            Stat::make('TOTAL PRODUCTOS VENDIDOS', $this->getPageTableQuery()->sum('cantidad'))
             ->description('Total de productos vendidos')
             ->descriptionIcon('heroicon-m-user-group')
             ->color('primary'),
 
-            Stat::make('COMISION TECNICO', '$'. $this->getPageTableQuery()->sum('comision_empleado'))
+            Stat::make('TOTAL VENTA($)', '$' . $this->getPageTableQuery()->sum('total_venta'))
+            ->description('Total de productos vendidos')
+            ->descriptionIcon('heroicon-m-user-group')
+            ->color('primary'),
+
+            Stat::make('COMISIONES POR TECNICO', '$'. $this->getPageTableQuery()->sum('comision_empleado'))
             ->description('Total de comisiones por tecnico')
             ->descriptionIcon('heroicon-m-user-group')
             ->color('info'),
 
-            Stat::make('COMISION GERENTE', '$' . $this->getPageTableQuery()->sum('comision_gerente'))
+            Stat::make('COMISIONES POR GERENTE', '$' . $this->getPageTableQuery()->sum('comision_gerente'))
             ->description('Total de comisiones por gerente')
             ->descriptionIcon('heroicon-m-currency-dollar')
             ->color('success'),
@@ -51,5 +56,10 @@ class VentaProductosStats extends BaseWidget
             // ->color('success'),
 
         ];
+    }
+
+    public function getColumns(): int
+    {
+        return 2;
     }
 }

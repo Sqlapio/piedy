@@ -49,8 +49,8 @@ class TablePreNomina extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->heading('PRE-NOMINA')
-            ->description('Tabla para realizar y validar el pre calculo de la nomina')
+            ->heading('PRE-NÓMINA')
+            ->description('Tabla para realizar y validar el pre calculo de la nómina')
             ->query(PreNomina::query())
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
@@ -88,17 +88,17 @@ class TablePreNomina extends Component implements HasForms, HasTable
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('comision_usd')
-                    ->label('Comision(USD)')
+                    ->label('Comisión(USD)')
                     ->money('USD')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('comision_bsd')
-                    ->label('Comision(BSD)')
+                    ->label('Comisión(BSD)')
                     ->money('Bs.')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('comision_prod')
-                    ->label('Comision Productos')
+                    ->label('Comisión Productos')
                     ->money('USD')
                     ->sortable(),
 
@@ -233,7 +233,7 @@ class TablePreNomina extends Component implements HasForms, HasTable
 
 
                 Tables\Columns\TextColumn::make('retencion_isrl')
-                    ->label('Retencion ISRL')
+                    ->label('Retención ISRL')
                     ->money('Bs.')
                     ->sortable(),
 
@@ -306,12 +306,12 @@ class TablePreNomina extends Component implements HasForms, HasTable
             )
             ->headerActions([
                 CreateAction::make()
-                ->label('Calculo de Nomina')
+                ->label('Cálculo de Nomina')
                     ->model(CierreDiario::class)
                     ->color('colorOne')
                     ->form([
                         Section::make('Formulario')
-                            ->description('Debe llenar los campos de forma correta. Campos Requeridos(*)')
+                            ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
                             ->icon('heroicon-s-newspaper')
                             ->schema([
                                 Grid::make()
@@ -359,7 +359,7 @@ class TablePreNomina extends Component implements HasForms, HasTable
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('totalizar')
-                        ->label('Totalizar Nomina')
+                        ->label('Totalizar Nómina')
                         ->color('success')
                         ->icon('heroicon-c-cog-8-tooth')
                         ->requiresConfirmation()
@@ -390,7 +390,7 @@ class TablePreNomina extends Component implements HasForms, HasTable
                             try {
                                 $reporte = PreNominaController::reporteMasivoNomina($records);
                                 $this->resetTable();
-                                
+
                             } catch (\Throwable $th) {
                                 LogController::log(Auth::user()->id, 'excepcion: reporte masivo de nomina' , $th->getMessage(), $response = null);
                                 Notification::make()
@@ -400,10 +400,10 @@ class TablePreNomina extends Component implements HasForms, HasTable
                                 ->color('danger')
                                 ->body($th->getMessage())
                                 ->send();
-                            } 
+                            }
                     }),
                     BulkAction::make('delete')
-                        ->label('Reversar Calculo')
+                        ->label('Reversar Cálculo')
                         ->color('primary')
                         ->icon('heroicon-c-arrow-uturn-left')
                         ->requiresConfirmation()

@@ -1,7 +1,7 @@
 <div>
     <div class="mt-10 pt-5">
         @livewire('notifications')
-        <h1 class="text-xl mb-6 font-bold text-[#bd9c95] uppercase">Modulo de cierre por turno</h1>
+        <h1 class="text-xl mb-6 font-bold text-[#bd9c95] uppercase">Módulo de cierre por turno</h1>
     </div>
 
     <div class="border rounded-lg mb-5 mt-10">

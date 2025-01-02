@@ -63,7 +63,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                         }
                     }),
                 TextInputColumn::make('cant_requisicion')
-                ->label('Cantidad(Requisicion)')
+                ->label('Cantidad(Requisición)')
 
             ])
             ->defaultGroup('uso')
@@ -134,16 +134,16 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                 //                 TextInput::make('name');
                 //             ]
                 //         }
-                //     })  
+                //     })
                 // ->action(function (array $data, $livewire) {
                 //     dd($livewire->selectedTableRecords, $data);
-                //     // $data contains the form value, and the $livewire contains many stuff, but for getting only the selected data you can use $livewire->selectedTableRecords 
+                //     // $data contains the form value, and the $livewire contains many stuff, but for getting only the selected data you can use $livewire->selectedTableRecords
 
                 // })
                     ->action(function (Collection $records) {
 
                         try {
-                            
+
                             $codigo = rand(11111, 99999);
 
                             $records = $records->toArray();
@@ -156,7 +156,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                 'user_id' => Auth::user()->id,
                                 'status' => 1,
                             ]);
-                            
+
                             //Fpr para generar el detalle de la riquisicion y guardar la data en la tabla de detalleRequisicion
                             for ($i = 0; $i < count($records); $i++) {
                                 //Guardo la informacion en la tabla de detalle de Requisicion
@@ -167,8 +167,8 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                     'cantidad'        => $records[$i]['cant_requisicion'],
                                     'sucursal_id'     => $requisicion['sucursal_id'],
                                     'uso'             => $records[$i]['uso'],
-                                    'status'          => 1,   
-                                    
+                                    'status'          => 1,
+
                                 ]);
                             }
 
@@ -181,10 +181,10 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                     'cant_requisicion' => 0
                                 ]);
                             }
- 
+
                             //Envio una notificacion por whatsaap
                             $notificacion = NotificacionesController::notificacion_requisicion($codigo);
-                            
+
                             if($notificacion['success'] == true){
                                 LogController::log(Auth::user()->id, 'requisicion', 'Se creo la requisicion nro: '.$codigo, $response = null);
                                 Notification::make()

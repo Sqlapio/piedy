@@ -55,6 +55,7 @@ class UserResource extends Resource
 
                         TextInput::make('cedula')
                             ->label('Cédula de Identidad')
+                            ->hiddenOn('edit')
                             ->required()
                             ->rules(['required','numeric','unique:users,cedula'])
                             ->validationMessages([
@@ -67,6 +68,7 @@ class UserResource extends Resource
                             ->email()
                             ->required()
                             ->rules(['required','email','unique:users,email'])
+                            ->hiddenOn('edit')
                             ->validationMessages([
                                 'required'  => 'Campo requerido',
                                 'unique'    => 'El email esta duplicado',

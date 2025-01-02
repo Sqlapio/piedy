@@ -278,8 +278,9 @@ class Citas extends Component implements HasForms, HasActions
     public function filtro()
     {
         if ($this->opcion == 'semana') {
-            $this->inicio = now()->startOfWeek()->month($this->mes);
+            $this->inicio = now()->startOfWeek();
             $this->fin = now()->endOfWeek();
+            // dd($this->inicio, $this->fin);
         }
         if ($this->opcion == 'mes') {
             $this->inicio = now()->startOfMonth()->month($this->mes);

@@ -32,6 +32,16 @@ class TableVentaServicio extends Component implements HasForms, HasTable
                 Tables\Columns\TextColumn::make('cliente.nombre')                    
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
+
+            Tables\Columns\TextColumn::make('servicios')
+                    ->label('Servicios')
+                    ->getStateUsing(function (VentaServicio $record) {
+                        // dd(json_decode($record->servicios))
+                        $array = json_decode($record->servicios);
+                        return $array;
+                    })
+                    ->alignCenter()
+                    ->listWithLineBreaks(),
                 Tables\Columns\TextColumn::make('metodo_pago')
                     ->description(fn (VentaServicio $record): string => $record->metodo_pago_dos)
                     ->searchable(),

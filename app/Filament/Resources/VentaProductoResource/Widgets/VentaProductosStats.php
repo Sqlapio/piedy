@@ -45,16 +45,6 @@ class VentaProductosStats extends BaseWidget
             ->descriptionIcon('heroicon-m-currency-dollar')
             ->color('success'),
 
-            // Stat::make('PRODUCTO MAS VENDIDO', $this->getPageTableQuery()->max('cantidad'))
-            // ->description('Total de comisiones por gerente')
-            // ->descriptionIcon('heroicon-m-currency-dollar')
-            // ->color('success'),
-
-            // Stat::make('PRODUCTO MENOS VENDIDO ', $this->getPageTableQuery()->min('cantidad'))
-            // ->description('Total de comisiones por gerente')
-            // ->descriptionIcon('heroicon-m-currency-dollar')
-            // ->color('success'),
-
         ];
     }
 

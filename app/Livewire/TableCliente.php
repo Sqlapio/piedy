@@ -39,19 +39,22 @@ class TableCliente extends Component implements HasForms, HasTable
     {
         return $table
             ->heading('CLIENTES')
-            ->description('Tabla de gestion de clientes')
+            ->description('Tabla de gestión de clientes')
             ->query(Cliente::query()->orderBy('created_at', 'desc'))
             ->columns([
                     TextInputColumn::make('nombre')
+                        ->label('Nombre')
                         ->grow(false)
                         ->searchable(),
                     TextInputColumn::make('cedula')
+                        ->label('Cédula')
                         ->rules(['numeric'])
                         ->searchable(),
                     TextInputColumn::make('email')
                         ->rules(['email'])
                         ->searchable(),
                     TextInputColumn::make('telefono')
+                        ->label('Teléfono')
                         ->rules(['numeric'])
                         ->searchable(),
             ])
@@ -95,7 +98,7 @@ class TableCliente extends Component implements HasForms, HasTable
                         ->title('NOTIFICACIÓN')
                         ->icon('heroicon-s-exclamation-triangle')
                         ->iconColor('danger')
-                        ->body('El tecnico ya posee un servicio abierto. Por favor realiza la facturación y vuelve a intentar!')
+                        ->body('El técnico ya posee un servicio abierto. Por favor realiza la facturación y vuelve a intentar!')
                         ->send();
 
                     }
@@ -141,7 +144,7 @@ class TableCliente extends Component implements HasForms, HasTable
                                             ->rules(['required','numeric','unique:clientes,cedula'])
                                             ->validationMessages([
                                                 'required'  => 'Campo requerido',
-                                                'numeric'    => 'Solo admite números',
+                                                'numeric'   => 'Solo admite números',
                                                 'unique'    => 'El número de cédula esta duplicado',
                                             ]),
 
@@ -163,11 +166,11 @@ class TableCliente extends Component implements HasForms, HasTable
                                             ->mask(RawJs::make(<<<'JS'
                                                 $input.startsWith('1') ? '19999999999' : '9999-9999999'
                                             JS))
-                                            ->unique(column: 'telefono')   
+                                            ->unique(column: 'telefono')
                                             ->rules(['required'])
                                             ->validationMessages([
-                                                'required'    => 'Campo requerido',
-                                                'unique'    => 'El número de teléfono esta duplicado', 
+                                                'required'  => 'Campo requerido',
+                                                'unique'    => 'El número de teléfono esta duplicado',
                                             ]),
 
                                     ]),

@@ -7,9 +7,9 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <link rel="icon" sizes="256x256" href="{{ asset('images/favicon.ico') }}">
-        <link rel="icon" sizes="180x180" href="{{ asset('images/favicon.ico') }}">
-        <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}"/>
+        <link rel="icon" sizes="256x256" href="{{ asset('images/icono-2.png') }}">
+        <link rel="icon" sizes="180x180" href="{{ asset('images/icono-3.png') }}">
+        <link rel="apple-touch-icon" href="{{ asset('images/ICONO.png') }}"/>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

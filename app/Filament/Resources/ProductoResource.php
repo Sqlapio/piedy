@@ -198,14 +198,18 @@ class ProductoResource extends Resource
                     ->searchable(),
 
                 ImageColumn::make('image')
+                ->toggleable(isToggledHiddenByDefault: true)
                     ->circular()
                     ->searchable(),
 
                 TextColumn::make('descripcion')
+                    ->toggleable(isToggledHiddenByDefault: false)
                     ->icon('heroicon-s-shopping-bag')
                     ->searchable(),
 
                 TextColumn::make('uso')
+                    ->toggleable(isToggledHiddenByDefault: false)
+
                     ->icon('heroicon-s-shopping-bag')
                     ->searchable(),
 
@@ -214,6 +218,8 @@ class ProductoResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('precio_venta')
+                    ->toggleable(isToggledHiddenByDefault: false)
+
                     ->color('success')
                     ->icon('heroicon-s-currency-dollar')
                     ->money('USD')
@@ -221,6 +227,8 @@ class ProductoResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('costo')
+                    ->toggleable(isToggledHiddenByDefault: false)
+
                     ->color('success')
                     ->icon('heroicon-s-currency-dollar')
                     ->money('USD')
@@ -228,15 +236,23 @@ class ProductoResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('contenido_neto')
+                    ->toggleable(isToggledHiddenByDefault: false)
+
                     ->alignCenter()
                     ->searchable(),
 
                 TextColumn::make('unidad')
+                    ->toggleable(isToggledHiddenByDefault: false)
+
                     ->alignCenter()
                     ->searchable(),
 
                     TextColumn::make('tipo_empaquetado')
+                    ->toggleable(isToggledHiddenByDefault: false)
+
                     ->label('Empaquetado en:')
+                    ->toggleable(isToggledHiddenByDefault: false)
+
                     ->alignCenter()
                     ->searchable(),
 
@@ -252,12 +268,16 @@ class ProductoResource extends Resource
                 //     ]),
 
                 TextColumn::make('responsable')
+                    ->toggleable(isToggledHiddenByDefault: false)
+
                     ->label('Responsable')
                     ->color('primary')
                     ->icon('heroicon-m-user')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('created_at')
+                    ->toggleable(isToggledHiddenByDefault: false)
+
                     ->label('Fecha de Creación')
                     ->icon('heroicon-s-calendar-days')
                     ->dateTime()

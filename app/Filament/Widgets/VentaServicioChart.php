@@ -12,6 +12,7 @@ use Flowframe\Trend\TrendValue;
 class VentaServicioChart extends ChartWidget
 {
     use InteractsWithPageFilters;
+    
 
     protected static ?string $heading = 'Ventas';
 

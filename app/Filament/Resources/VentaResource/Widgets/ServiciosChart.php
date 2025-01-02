@@ -18,7 +18,7 @@ class ServiciosChart extends ChartWidget
 
     protected static ?string $heading = 'Servicios';
 
-    // protected static ?string $maxHeight = '300px';
+    protected static ?string $maxHeight = '300px';
 
     // protected int | string | array $columnSpan = 'full';
 
@@ -40,26 +40,8 @@ class ServiciosChart extends ChartWidget
     protected function getData(): array
     {
 
-        // $activeFilter = $this->filter;
-
-        // if ($activeFilter === 'today') {
-        //     $rangeStartDate = now()->startOfDay();
-        //     $rangeEndDate = now()->endOfDay();
-        // } elseif ($activeFilter === 'week') {
-        //     $rangeStartDate = now()->subWeek()->startOfWeek();
-        //     $rangeEndDate = now()->endOfWeek();
-        // } elseif ($activeFilter === 'month') {
-        //     $rangeStartDate = now()->subMonthNoOverflow()->startOfMonth();
-        //     $rangeEndDate = now()->endOfMonth();
-        // } elseif ($activeFilter === 'year'){
-        //     $rangeStartDate = now()->subMonthNoOverflow()->startOfYear();
-        //     $rangeEndDate = now()->endOfYear();
-        // }
-        // $start = $this->filters['startDate'];
-        // $end = $this->filters['endDate'];
-
         $data = DB::table('detalle_asignacions')
-        ->select(DB::raw('COUNT(servicio_id) as venta, servicio_id, servicios.descripcion as descripcion'))
+        ->select(DB::raw('COUNT(servicio_id) as venta, servicio_id, servicios.descripcion as descripcion', 'created_at'))
         ->join('servicios', 'detalle_asignacions.servicio_id', '=', 'servicios.id')
         ->groupBy('servicio_id')
         ->get();
@@ -69,33 +51,28 @@ class ServiciosChart extends ChartWidget
                     [
                         'label' => 'Average de servicios',
                         'data' => $data->map(fn ($data) => $data->venta),
-                        'backgroundColor' => '#22c55e',
-                        'borderColor' => '#22c55e',
-                        'fill' => true,
+                        'backgroundColor' => ['#22c55e', '#ed0000'],
+                        // 'borderColor' => '#22c55e',
+                        // 'fill' => true,
                     ],
 
                 ],
-                'labels' => $data->map(fn ($data) => $data->servicio_id),                                
+                'labels' => $data->map(fn ($data) => $data->descripcion),                                
             ];
 
     }
 
-    // protected function getOptions(): RawJs
-    // {
-        
-    //     return RawJs::make(<<<JS
-    //         {
-    //                 options: {
-    //                     plugins: {
-    //                         tooltip: {
-    //                             callbacks: (value) => '€' + value,
-    //                         }
-    //                     }
-    //                 }
+    protected static ?array $options = [
+        'scales' => [
+            'x' => [
+                'display' => false,
+            ],
+            'y' => [
+                'display' => false,
+            ],
+        ],
+    ];   // protected function getOptions(): RawJs
 
-    //         }
-    //     JS);
-    // }
 
     public function getDescription(): ?string
     {
@@ -104,6 +81,6 @@ class ServiciosChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'bar';
+        return 'doughnut';
     }
 }

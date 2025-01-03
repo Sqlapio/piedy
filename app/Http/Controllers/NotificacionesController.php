@@ -500,7 +500,7 @@ class NotificacionesController extends Controller
 
             $params = array(
                 'token' => env('TOKEN_API_WHATSAPP'),
-                'to' => '04127018390',
+                'to' => $user->telefono,
                 'image' => env('IMAGE'),
                 'caption' => $body
             );

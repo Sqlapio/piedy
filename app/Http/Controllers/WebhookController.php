@@ -96,6 +96,24 @@ class WebhookController extends Controller
                                     $citas->servicio_id = $servicio_id;
                                     $citas->save();
 
+                                    //Notificacion por whatsapp al cliente
+                                    if($citas->save()){
+                                        $data = [
+                                            'id'                => $citas->cod_cita,
+                                            'cliente_fullname'  => $name,
+                                            'telefono'          => $phone,
+                                            'fecha_cita'        => $fecha,
+                                            'hora_cita'         => $hora,
+                                        ];
+                                        $notificacionWebHook = NotificacionesController::notificacion_cita_wp($data);
+                                        
+                                        if($notificacionWebHook['success'] == 200) {
+                                            Log::info('Notificacion enviada por Webhook para PiedyBot de forma exitosa. Cita:' . $citas->cod_cita);
+                                        }else{
+                                            Log::info('Error al enviar notificacion por Webhook para PiedyBot' . $notificacionWebHook['message']);
+                                        }
+                                    }
+
                                     Log::info('Nueva cita agendada por PiedyBot: ' . $citas->cod_cita);
                                     return response()->json(['message' => 'cita agendada'], 200);
                                 }

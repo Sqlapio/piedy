@@ -20,22 +20,7 @@ class ServiciosChart extends ChartWidget
 
     protected static ?string $maxHeight = '300px';
 
-    // protected int | string | array $columnSpan = 'full';
-
-    // protected static ?int $sort = 4;
-
-
-    // public ?string $filter = 'today';
-
-    // protected function getFilters(): ?array
-    // {
-    //     return [
-    //         'today' => 'Hoy',
-    //         'week'  => 'Semana',
-    //         'month' => 'Mes',
-    //         'year'  => 'Año',
-    //     ];
-    // }
+    // protected int | string | array $columnSpan = '2';
 
     protected function getData(): array
     {

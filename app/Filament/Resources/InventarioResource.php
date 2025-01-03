@@ -214,6 +214,19 @@ class InventarioResource extends Resource
                                                 ->label('Cantidad')
                                                 ->prefixIcon('heroicon-c-squares-plus')
                                                 ->numeric()
+                                                ->hint(function (Inventario $record) {
+                                                    $id = $record->producto_id;
+                                                    if (isset($id)) {
+                                                        $existencia = Inventario::where('producto_id', $id)
+                                                        ->where('id', $record->id)
+                                                            ->first()
+                                                            ->cantidad;
+                                                        return 'Existencia actual: ' . $existencia;
+                                                    } else {
+                                                        return 'Existencia actual: 0';
+                                                    }
+                                                })
+                                                ->hintIcon('heroicon-m-square-3-stack-3d')
                                                 ->required(),
 
                                             //Responsable

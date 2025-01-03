@@ -30,7 +30,7 @@ class TableVentaProducto extends Component implements HasForms, HasTable
                     ->searchable(),
                 Tables\Columns\TextColumn::make('gerente_id')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('producto.id')
+                Tables\Columns\TextColumn::make('producto.descripcion')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('costo_producto')

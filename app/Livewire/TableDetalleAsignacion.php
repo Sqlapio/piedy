@@ -390,21 +390,21 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                                                 ->required(fn(Get $get): bool => ($get('metodo_pago') == 3) ? true : false),
                                                             TextInput::make('ref_pago_movil')
                                                                 ->numeric()
-                                                                ->mask('99999999')
+                                                                // ->mask('99999999')
                                                                 ->label('Referencia Pago Movil(Bs.)')
                                                                 ->prefixIcon('heroicon-s-hashtag')
                                                                 ->visible(fn(Get $get): bool => $get('metodo_pago_dos') == 5)
                                                                 ->required(fn(Get $get): bool => ($get('metodo_pago_dos') == 5) ? true : false),
                                                             TextInput::make('ref_debito_credito')
-                                                                ->numeric()
-                                                                ->mask('99999999')
+                                                                // ->numeric()
+                                                                // ->mask('99999999')
                                                                 ->label('Referencia Debito/Credito')
                                                                 ->prefixIcon('heroicon-s-hashtag')
                                                                 ->visible(fn(Get $get): bool => $get('metodo_pago_dos') == 7)
                                                                 ->required(fn(Get $get): bool => ($get('metodo_pago_dos') == 7) ? true : false),
                                                             TextInput::make('nro_tarjeta')
-                                                                ->numeric()
-                                                                ->mask('99999999')
+                                                                // ->numeric()
+                                                                // ->mask('99999999')
                                                                 ->label('Nro. Tarjeta Debito/Credito')
                                                                 ->prefixIcon('heroicon-s-hashtag')
                                                                 ->visible(fn(Get $get): bool => $get('metodo_pago_dos') == 7)
@@ -439,16 +439,16 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                                         ->required(fn(Get $get): bool => $get('is_bsd')),
 
                                                     TextInput::make('pro_ref_debito_credito')
-                                                        ->numeric()
-                                                        ->mask('99999999')
+                                                        // ->numeric()
+                                                        // ->mask('99999999')
                                                         ->label('Referencia Debito/Credito')
                                                         ->prefixIcon('heroicon-s-hashtag')
                                                         ->visible(fn(Get $get): bool => $get('is_bsd'))
                                                         ->required(fn(Get $get): bool => $get('is_bsd')),
 
                                                     TextInput::make('pro_nro_tarjeta')
-                                                        ->numeric()
-                                                        ->mask('99999999')
+                                                        // ->numeric()
+                                                        // ->mask('99999999')
                                                         ->label('Nro. Tarjeta Debito/Credito')
                                                         ->prefixIcon('heroicon-s-hashtag')
                                                         ->visible(fn(Get $get): bool => $get('is_bsd'))

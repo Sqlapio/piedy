@@ -21,10 +21,6 @@ class Kernel extends ConsoleKernel
         ->dailyAt('9:30')
         ->emailOutputTo('gusta.acp@gmail.com');
 
-        $schedule->command('app:activa-periodo-nomina')
-        ->monthlyOn(1, '9:30')
-        ->emailOutputTo('gusta.acp@gmail.com');
-
         $schedule->command('app:expira-membresia')
         ->dailyAt('9:30')
         ->emailOutputTo('gusta.acp@gmail.com');

@@ -4,11 +4,14 @@ namespace App\Livewire;
 
 use App\Models\User;
 use Filament\Tables;
+use App\Models\Cliente;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Models\Requisicion;
+use Filament\Support\RawJs;
 use App\Models\DetalleRequisicion;
 use App\Models\InventarioSucursal;
+use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
 use Illuminate\Contracts\View\View;
@@ -17,13 +20,18 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
 use App\Http\Controllers\LogController;
+use Filament\Forms\Components\Repeater;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Actions\CreateAction;
 use Illuminate\Database\Eloquent\Builder;
+use App\Http\Controllers\ClienteController;
 use Filament\Tables\Columns\TextInputColumn;
 use Illuminate\Database\Eloquent\Collection;
+use App\Http\Controllers\RequisicionController;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 use App\Http\Controllers\NotificacionesController;
@@ -41,7 +49,6 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
             ->description('Tabla de inventario para los productos de venta y de consumo interno')
             ->query(InventarioSucursal::query()
                 ->where('sucursal_id', Auth::user()->sucursal_id))
-            // ->where('accepted_at', null))
             ->columns([
                 Tables\Columns\TextColumn::make('producto.descripcion')
                     ->icon('heroicon-s-truck')
@@ -62,8 +69,6 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                             return 'success';
                         }
                     }),
-                TextInputColumn::make('cant_requisicion')
-                ->label('Cantidad(Requisición)')
 
             ])
             ->defaultGroup('uso')
@@ -121,91 +126,101 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                         );
                     })
             ])
-            ->bulkActions([
-                BulkAction::make('aceptar')
-                ->requiresConfirmation()
-                    ->deselectRecordsAfterCompletion()
-                    ->label('Generar Requisición')
-                    ->icon('heroicon-c-cog-8-tooth')
+            ->headerActions([
+                CreateAction::make()
+                    ->label('Crear Requisicion')
                     ->color('success')
-                //     ->form(function (Collection $records) {
-                //         foreach ($records as $record) {
-                //             return [
-                //                 TextInput::make('name');
-                //             ]
-                //         }
-                //     })
-                // ->action(function (array $data, $livewire) {
-                //     dd($livewire->selectedTableRecords, $data);
-                //     // $data contains the form value, and the $livewire contains many stuff, but for getting only the selected data you can use $livewire->selectedTableRecords
+                    ->model(Requisicion::class)
+                    ->form([
+                        Section::make('Formulario de Requisicion')
+                            ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
+                            ->icon('heroicon-c-users')
+                            ->schema([
+                                Grid::make()
+                                    ->schema([
 
-                // })
-                    ->action(function (Collection $records) {
+                                        //codigo de requisicion
+                                        TextInput::make('codigo')
+                                            ->label('Codigo de Requisicion')
+                                            ->prefixIcon('heroicon-c-users')
+                                            ->required()
+                                            ->readOnly()
+                                            ->default('REQ-' . random_int(111111, 999999)),
 
-                        try {
+                                    ]),
+                            ]),
+                        Section::make('Productos para requisicion')
+                            ->icon('heroicon-c-users')
+                            ->schema([
+                                Grid::make()
+                                    ->schema([
+                                        Repeater::make('productos')
+                                            ->schema([
+                                                Grid::make()
+                                                    ->schema([
+                                                        Select::make('producto_id')
+                                                            ->label('Producto')
+                                                            ->options(function () {
 
-                            $codigo = rand(11111, 99999);
+                                                                $productos = DB::table('inventario_sucursals')
+                                                                    ->select(DB::raw('producto_id as id, productos.descripcion as descripcion'))
+                                                                    ->where('sucursal_id', Auth::user()->sucursal_id)
+                                                                    ->join('productos', 'inventario_sucursals.producto_id', '=', 'productos.id')
+                                                                    ->groupBy('producto_id')
+                                                                    ->get();
 
-                            $records = $records->toArray();
+                                                                return $productos->pluck('descripcion', 'id');
+                                                            })
+                                                            ->rules(['required'])
+                                                            ->validationMessages([
+                                                                'required' => 'Debe selecionar un producto de la lista',
+                                                            ]),
+                                                        TextInput::make('cantidad')
+                                                            ->label('Cantidad')
+                                                            ->prefixIcon('heroicon-c-credit-card')
+                                                            ->hint('Nota: solo números enteros')
+                                                            ->rules(['required', 'numeric', 'integer'])
+                                                            ->validationMessages([
+                                                                'required' => 'Debe selecionar un tecnico',
+                                                                'numeric' => 'Campo numerico',
+                                                                'integer' => 'Debe ser un número entero',
+                                                            ])
+                                                            ->default(1),
+                                                    ])
 
-                            //Guardo la informacion de la requision en la tabla de requisicion
-                            $requisicion = Requisicion::create([
-                                'codigo' => $codigo,
-                                'fecha' => date('d-m-Y'),
-                                'sucursal_id' => Auth::user()->sucursal_id,
-                                'user_id' => Auth::user()->id,
-                                'status' => 1,
-                            ]);
 
-                            //Fpr para generar el detalle de la riquisicion y guardar la data en la tabla de detalleRequisicion
-                            for ($i = 0; $i < count($records); $i++) {
-                                //Guardo la informacion en la tabla de detalle de Requisicion
-                                $generaDetalle = DetalleRequisicion::create([
-                                    'codigo'          => $requisicion['codigo'],
-                                    'requisicion_id'  => $requisicion['id'],
-                                    'producto_id'     => $records[$i]['producto_id'],
-                                    'cantidad'        => $records[$i]['cant_requisicion'],
-                                    'sucursal_id'     => $requisicion['sucursal_id'],
-                                    'uso'             => $records[$i]['uso'],
-                                    'status'          => 1,
+                                            ])->columnSpanFull(),
+                                    ])->columns(2),
+                            ])->collapsible(),
+                    ])
+                    ->action(function (array $data) {
+                        $crearRequisicion = RequisicionController::crearRequisicion($data);
+                        if ($crearRequisicion) {
 
-                                ]);
-                            }
-
-                            //For para actualizar el campo cant_requisicion y colocarlo en cero(0)
-                            for ($i = 0; $i < count($records); $i++) {
-                                //Guardo la informacion en la tabla de detalle de Requisicion
-                                $update = InventarioSucursal::where('producto_id',$records[$i]['producto_id'])
-                                ->first()
-                                ->update([
-                                    'cant_requisicion' => 0
-                                ]);
-                            }
-
-                            //Envio una notificacion por whatsaap
-                            $notificacion = NotificacionesController::notificacion_requisicion($codigo);
-
-                            if($notificacion['success'] == true){
-                                LogController::log(Auth::user()->id, 'requisicion', 'Se creo la requisición nro: '.$codigo, $response = null);
-                                Notification::make()
+                            Notification::make()
                                 ->title('NOTIFICACIÓN')
                                 ->icon('heroicon-c-x-circle')
                                 ->color('success')
                                 ->iconColor('success')
                                 ->body('La requisicion fue creada con éxito')
                                 ->send();
+
+                            //Envio una notificacion por whatsaap
+                            $notificacion = NotificacionesController::notificacion_requisicion($data['codigo'], Auth::user()->sucursal_id);
+
+                            if ($notificacion['success'] == true) {
+                                LogController::log(Auth::user()->id, 'Notificacion-requisicion', 'Se creo la requisición nro: ' . $data['codigo'], $response = null);
+                                Notification::make()
+                                    ->title('NOTIFICACIÓN')
+                                    ->icon('heroicon-c-x-circle')
+                                    ->color('success')
+                                    ->iconColor('success')
+                                    ->body('La notificacion fue enviada via whatsapp con éxito')
+                                    ->send();
                             }
-                        } catch (\Throwable $th) {
-                            LogController::log(Auth::user()->id, 'excepcion', $th->getMessage(), $response = null);
-                            Notification::make()
-                                ->title('NOTIFICACIÓN')
-                                ->icon('heroicon-c-x-circle')
-                                ->color('danger')
-                                ->iconColor('danger')
-                                ->body($th->getMessage())
-                                ->send();
                         }
-                    }),
+                    })
+                    ->slideOver(),
             ])->striped();
     }
 

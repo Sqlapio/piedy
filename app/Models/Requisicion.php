@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Requisicion extends Model
@@ -46,5 +47,15 @@ class Requisicion extends Model
     public function producto(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'producto_id');
+    }
+
+    /**
+     * Get all of the comments for the Requisicion
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function detalleRequisicion(): HasMany
+    {
+        return $this->hasMany(DetalleRequisicion::class, 'requisicion_id', 'id');
     }
 }

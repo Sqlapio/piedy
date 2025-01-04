@@ -484,6 +484,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->body('Facturacion Exitosa. Codigo: ' . $this->cod_asignacion)
                                         ->send();
 
+                                    LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en dolares: ' . $this->cod_asignacion, $response = null);
+
                                     //Envio una notificacion por whatsaap
                                     $notificacion = NotificacionesController::notificacion_servicio_facturado($this->cod_asignacion);
                                     if($notificacion['success'] == true){
@@ -503,8 +505,6 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->body($notificacion['message'])
                                         ->send();
                                     }
-
-                                    LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en dolares: ' . $this->cod_asignacion, $response = null);
 
                                     $this->redirectRoute('cabinas');
                                 } else {
@@ -541,6 +541,9 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->body('Facturacion Exitosa. Codigo: ' . $this->cod_asignacion)
                                         ->send();
 
+                                    LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en bolivares: ' . $this->cod_asignacion, $response = null);
+                                    
+
                                     //Envio una notificacion por whatsaap
                                     $notificacion = NotificacionesController::notificacion_servicio_facturado($this->cod_asignacion);
                                     if ($notificacion['success'] == true) {
@@ -560,8 +563,6 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                             ->body($notificacion['message'])
                                             ->send();
                                     }
-
-                                    LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en bolivares: ' . $this->cod_asignacion, $response = null);
 
                                     $this->redirectRoute('cabinas');
                                 } else {
@@ -604,6 +605,9 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->body('Facturacion Exitosa. Codigo: ' . $this->cod_asignacion)
                                         ->send();
 
+                                    LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en bolivares y dolares: ' . $this->cod_asignacion, $response = null);
+                                    
+
                                     //Envio una notificacion por whatsaap
                                     $notificacion = NotificacionesController::notificacion_servicio_facturado($this->cod_asignacion);
                                     if ($notificacion['success'] == true) {
@@ -624,7 +628,6 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                             ->send();
                                     }
 
-                                    LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en bolivares y dolares: ' . $this->cod_asignacion, $response = null);
 
                                     $this->redirectRoute('cabinas');
                                 } else {

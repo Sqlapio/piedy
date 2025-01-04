@@ -40,8 +40,8 @@ class DetalleRequisicion extends Model
         return $this->hasOne(Producto::class, 'id', 'producto_id');
     }
 
-    public function requisicion(): HasOne
-    {
-        return $this->hasOne(Requisicion::class, 'id', 'requisicion_id');
-    }
+    // public function requisicion(): HasOne
+    // {
+    //     return $this->hasOne(Requisicion::class, 'id', 'requisicion_id');
+    // }
 }

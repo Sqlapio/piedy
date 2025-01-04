@@ -33,6 +33,7 @@ use Filament\Notifications\Notification;
 use App\Http\Controllers\GiftCardController;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
+use App\Http\Controllers\NotificacionesController;
 use Filament\Forms\Components\Actions\Action as HintAction;
 
 
@@ -298,6 +299,27 @@ class TableTotalizar extends Component implements HasForms, HasTable
                                         ->iconColor('success')
                                         ->body('La facturacion ' . $data_fm[$i] . ' fue realizada con exito.')
                                         ->send();
+                                        
+                                    //Envio una notificacion por whatsaap
+                                    $notificacion = NotificacionesController::notificacion_servicio_facturado($data_fm[$i]);
+                                    if ($notificacion['success'] == true) {
+                                        Notification::make()
+                                            ->title('Notificacion')
+                                            ->icon('heroicon-o-shield-check')
+                                            ->color('success')
+                                            ->iconColor('success')
+                                            ->body('Notificacion al tecnico enviada por WhatsApp con exito. Codigo: ' . $data_fm[$i])
+                                            ->send();
+                                    } else {
+                                        Notification::make()
+                                            ->title('Notificacion')
+                                            ->icon('heroicon-o-shield-check')
+                                            ->iconColor('danger')
+                                            ->color('danger')
+                                            ->body($notificacion['message'])
+                                            ->send();
+                                    }
+                                    
                                     $this->redirectRoute('cabinas');
                                 }
                             }
@@ -326,6 +348,27 @@ class TableTotalizar extends Component implements HasForms, HasTable
                                         ->iconColor('success')
                                         ->body('La facturacion ' . $data_fm[$i] . ' fue realizada con exito.')
                                         ->send();
+
+                                    //Envio una notificacion por whatsaap
+                                    $notificacion = NotificacionesController::notificacion_servicio_facturado($data_fm[$i]);
+                                    if ($notificacion['success'] == true) {
+                                        Notification::make()
+                                            ->title('Notificacion')
+                                            ->icon('heroicon-o-shield-check')
+                                            ->color('success')
+                                            ->iconColor('success')
+                                            ->body('Notificacion al tecnico enviada por WhatsApp con exito. Codigo: ' . $data_fm[$i])
+                                            ->send();
+                                    } else {
+                                        Notification::make()
+                                            ->title('Notificacion')
+                                            ->icon('heroicon-o-shield-check')
+                                            ->iconColor('danger')
+                                            ->color('danger')
+                                            ->body($notificacion['message'])
+                                            ->send();
+                                    }
+
                                     $this->redirectRoute('cabinas');
                                 }
                             }
@@ -360,6 +403,27 @@ class TableTotalizar extends Component implements HasForms, HasTable
                                         ->iconColor('success')
                                         ->body('La facturacion ' . $data_fm[$i] . ' fue realizada con exito.')
                                         ->send();
+                                        
+                                    //Envio una notificacion por whatsaap
+                                    $notificacion = NotificacionesController::notificacion_servicio_facturado($data_fm[$i]);
+                                    if ($notificacion['success'] == true) {
+                                        Notification::make()
+                                            ->title('Notificacion')
+                                            ->icon('heroicon-o-shield-check')
+                                            ->color('success')
+                                            ->iconColor('success')
+                                            ->body('Notificacion al tecnico enviada por WhatsApp con exito. Codigo: ' . $data_fm[$i])
+                                            ->send();
+                                    } else {
+                                        Notification::make()
+                                            ->title('Notificacion')
+                                            ->icon('heroicon-o-shield-check')
+                                            ->iconColor('danger')
+                                            ->color('danger')
+                                            ->body($notificacion['message'])
+                                            ->send();
+                                    }
+
                                     $this->redirectRoute('cabinas');
                                 }
                             }

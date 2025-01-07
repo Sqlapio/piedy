@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TasaBcv;
 use App\Models\Comision;
 use App\Models\Producto;
 use App\Models\Servicio;
 use App\Models\Disponible;
 use App\Models\MetodoPago;
+use App\Models\DetalleAsignacion;
 use App\Models\InventarioSucursal;
+use App\Models\FacturacionMultiple;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
 use App\Models\VentaProducto as VentaProducto;
@@ -49,6 +52,7 @@ class CajaController extends Controller
                     $venta_producto->sucursal_id        = Auth::user()->sucursal->id;
                     $venta_producto->cliente_id         = $valores['info_cliente_user']->cliente_id;
                     $venta_producto->empleado_id        = $valores['info_cliente_user']->empleado_id;
+                    $venta_producto->montoUsd           = $producto->precio_venta * $item->cantidad;
                     $venta_producto->save();
 
                     //Descuento la cantidad vendida de la exitencia del producto por sucursal
@@ -97,7 +101,8 @@ class CajaController extends Controller
                     $propina_usd,
                     $propina_bsd,
                     $pro_ref_debito_credito,
-                    $pro_nro_tarjeta
+                    $pro_nro_tarjeta,
+                    $metodo_pago
 
                 );
 
@@ -126,7 +131,8 @@ class CajaController extends Controller
                     $propina_usd,
                     $propina_bsd,
                     $pro_ref_debito_credito,
-                    $pro_nro_tarjeta
+                    $pro_nro_tarjeta,
+                    $metodo_pago
                 );
 
                 //Asiento tabla de Venta
@@ -160,6 +166,8 @@ class CajaController extends Controller
              */
             $productos = $valores['productos'];
 
+            $tasa = TasaBcv::all()->first()->tasa;
+
             if(count($productos) > 0)
             {
                 foreach($productos as $item)
@@ -182,6 +190,7 @@ class CajaController extends Controller
                     $venta_producto->sucursal_id        = Auth::user()->sucursal->id;
                     $venta_producto->cliente_id         = $valores['info_cliente_user']->cliente_id;
                     $venta_producto->empleado_id        = $valores['info_cliente_user']->empleado_id;
+                    $venta_producto->montoBsd           = ($producto->precio_venta * $item->cantidad) * $tasa;
                     $venta_producto->save();
 
                     //Descuento la cantidad vendida de la exitencia del producto por sucursal
@@ -287,10 +296,10 @@ class CajaController extends Controller
     }
 
 
-    static function multiple($monto_usd, $monto_bsd, $cod_asignacion,$metodo_pago, $metodo_pago_dos, $ref_zelle, $ref_pago_movil, $ref_debito_credito, $nro_tarjeta, $propina_usd, $propina_bsd, $pro_ref_debito_credito, $pro_nro_tarjeta) {
+    static function multiple($monto_srv_usd, $monto_srv_bsd,$monto_prod_usd, $monto_prod_bsd, $cod_asignacion,$metodo_pago, $metodo_pago_dos, $ref_zelle, $ref_pago_movil, $ref_debito_credito, $nro_tarjeta, $propina_usd, $propina_bsd, $pro_ref_debito_credito, $pro_nro_tarjeta) {
         // dd($monto_usd, $monto_bsd, $cod_asignacion,$metodo_pago, $metodo_pago_dos, $ref_zelle , $ref_pago_movil , $ref_debito_credito , $nro_tarjeta );
         try {
-
+// dd('function multiple', $monto_usd, $monto_bsd);
             //Valores necesarios para realizar los asientos
             $valores = UtilsController::info($cod_asignacion);
 
@@ -323,6 +332,9 @@ class CajaController extends Controller
                     $venta_producto->sucursal_id        = Auth::user()->sucursal->id;
                     $venta_producto->cliente_id         = $valores['info_cliente_user']->cliente_id;
                     $venta_producto->empleado_id        = $valores['info_cliente_user']->empleado_id;
+                    $venta_producto->montoUsd           = $monto_prod_usd;
+                    $venta_producto->montoBsd           = $monto_prod_bsd;
+                    
                     $venta_producto->save();
 
                     //Descuento la cantidad vendida de la exitencia del producto por sucursal
@@ -353,8 +365,8 @@ class CajaController extends Controller
                 // dd($valores['costo_total_servicios'], $valores['costo_quiropedia_basica']);
                 //Calculo de Comision
                 $calculos = UtilsController::calculo_vip_multiple(
-                    $monto_usd,
-                    $monto_bsd,
+                    $monto_srv_usd,
+                    $monto_srv_bsd,
                     $valores['total_venta'],
                     $valores['costo_quiropedia_basica'],
                     $serv_adicionales,
@@ -365,8 +377,8 @@ class CajaController extends Controller
 
                 //Asiento en la tabla de ventas Servicios
                 VentaServicioController::venta_servicio_multiple(
-                    $monto_usd,
-                    $monto_bsd,
+                    $monto_srv_usd,
+                    $monto_srv_bsd,
                     $metodo_pago,
                     $metodo_pago_dos,
                     $cod_asignacion,
@@ -395,16 +407,16 @@ class CajaController extends Controller
              {
                 //Calculo de Comision
                 $calculos = UtilsController::calculo_general_multiple(
-                    $monto_usd,
-                    $monto_bsd,
+                    $monto_srv_usd,
+                    $monto_srv_bsd,
                     $valores['total_venta'],
                     $valores['porcen_vip_emp'],
                     $valores['costo_total_servicios'],
                 );
                 //Asiento en la tabla de ventas Servicios
                 VentaServicioController::venta_servicio_multiple(
-                    $monto_usd,
-                    $monto_bsd,
+                    $monto_srv_usd,
+                    $monto_srv_bsd,
                     $metodo_pago,
                     $metodo_pago_dos,
                     $cod_asignacion,
@@ -443,8 +455,165 @@ class CajaController extends Controller
         }
     }
 
-    static function manejo_propinas() {
 
+    /**
+     * Logica para la facturacion multiple de servicios
+     */
+
+    static function calculo_porcentajes_srv_fm($cod_asigancion, $pago_usd, $pago_bsd) {
+        
+        try {
+
+            $total_venta = FacturacionMultiple::where('sucursal_id', Auth::user()->sucursal_id)->first()->venta_total_usd;
+
+            //Calculo de los porcentajes de venta por representacion
+            $total_servicios = Disponible::where('cod_asignacion', $cod_asigancion)
+                ->where('sucursal_id', Auth::user()->sucursal_id)
+                ->where('status', 'cerrado')
+                ->first();
+
+            // $total_venta = $total_servicios->venta_total;
+            $total_venta_srv = $total_servicios->acu_servicios;
+
+            $porcen_servicio = ($total_venta_srv * 100) / $total_venta;
+            //Calculo del equivalente en dolares
+            $valor_usd = ($pago_usd * $porcen_servicio) / 100;
+
+            //Calculo del equivalente en bolivares
+            $valor_bsd = ($pago_bsd * $porcen_servicio) / 100;
+
+            return $array = [
+                'valor_usd' => $valor_usd,
+                'valor_bsd' => $valor_bsd
+            ];
+            
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-CajaController(multiple)', $th->getMessage(), $response = null);
+            Notification::make()
+            ->title('Notificacion: CajaController::multiple() ')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
+        }
+            
+    }
+
+    static function calculo_porcentajes_prod_fm($cod_asigancion, $pago_usd, $pago_bsd)
+    {
+
+        try {
+
+            $total_venta = FacturacionMultiple::where('sucursal_id', Auth::user()->sucursal_id)->first()->venta_total_usd;
+
+            //Calculo de los porcentajes de venta por representacion
+            $total_servicios = Disponible::where('cod_asignacion', $cod_asigancion)
+                ->where('sucursal_id', Auth::user()->sucursal_id)
+                ->where('status', 'cerrado')
+                ->first();
+            // dump($total_servicios);
+            // $total_venta = $total_servicios->venta_total;
+            $total_venta_prod = $total_servicios->acu_productos;
+
+            $porcen_prod = ($total_venta_prod * 100) / $total_venta;
+
+            //Calculo del equivalente en dolares
+            $valor_usd = ($pago_usd * $porcen_prod) / 100;
+
+            //Calculo del equivalente en bolivares
+            $valor_bsd = ($pago_bsd * $porcen_prod) / 100;
+
+            return $array = [
+                'valor_usd' => $valor_usd,
+                'valor_bsd' => $valor_bsd
+            ];
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-CajaController(multiple)', $th->getMessage(), $response = null);
+            Notification::make()
+                ->title('Notificacion: CajaController::multiple() ')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+        }
+    }
+
+    
+    /**
+     * Logica para el pago multiple 
+     */
+    static function calculo_porcentajes_srv($cod_asigancion, $pago_usd, $pago_bsd)
+    {
+
+        try {
+
+            $total_servicios = Disponible::where('cod_asignacion', $cod_asigancion)
+                ->where('sucursal_id', Auth::user()->sucursal_id)
+                ->where('status', 'cerrado')
+                ->first();
+
+            $total_venta = $total_servicios->venta_total;
+            $total_venta_srv = $total_servicios->acu_servicios;
+
+            $porcen_servicio = ($total_venta_srv * 100) / $total_venta;
+            //Calculo del equivalente en dolares
+            $valor_usd = ($pago_usd * $porcen_servicio) / 100;
+
+            //Calculo del equivalente en bolivares
+            $valor_bsd = ($pago_bsd * $porcen_servicio) / 100;
+
+            dd($total_venta, $total_venta_srv, $porcen_servicio, $valor_usd, $valor_bsd);
+
+            return $array = [
+                'valor_usd' => $valor_usd,
+                'valor_bsd' => $valor_bsd
+            ];
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-CajaController(multiple)', $th->getMessage(), $response = null);
+            Notification::make()
+                ->title('Notificacion: CajaController::multiple() ')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+        }
+    }
+
+    static function calculo_porcentajes_prod($cod_asigancion, $pago_usd, $pago_bsd)
+    {
+
+        try {
+
+            //Calculo de los porcentajes de venta por representacion
+            $total_servicios = Disponible::where('cod_asignacion', $cod_asigancion)
+                ->where('sucursal_id', Auth::user()->sucursal_id)
+                ->where('status', 'cerrado')
+                ->first();
+            // dump($total_servicios);
+            $total_venta = $total_servicios->venta_total;
+            $total_venta_prod = $total_servicios->acu_productos;
+
+            $porcen_prod = ($total_venta_prod * 100) / $total_venta;
+
+            //Calculo del equivalente en dolares
+            $valor_usd = ($pago_usd * $porcen_prod) / 100;
+
+            //Calculo del equivalente en bolivares
+            $valor_bsd = ($pago_bsd * $porcen_prod) / 100;
+
+            return $array = [
+                'valor_usd' => $valor_usd,
+                'valor_bsd' => $valor_bsd
+            ];
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-CajaController(multiple)', $th->getMessage(), $response = null);
+            Notification::make()
+                ->title('Notificacion: CajaController::multiple() ')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+        }
     }
 
     static function detalleServicio($cod_asignacion) {

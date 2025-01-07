@@ -201,7 +201,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                         ->label('Añadir Servicios')
                         ->icon('heroicon-c-document-plus')
                         ->color('success')
-                        ->hidden(! (auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2))
+                        ->hidden(! (auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2 || auth()->user()->rol_id == 5))
                         ->model(DetalleAsignacion::class)
                         ->form([
                             Section::make('Agregar Servicio')
@@ -488,6 +488,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
 
                                     //Envio una notificacion por whatsaap
                                     $notificacion = NotificacionesController::notificacion_servicio_facturado($this->cod_asignacion);
+
                                     if($notificacion['success'] == true){
                                         Notification::make()
                                         ->title('Notificacion')
@@ -579,9 +580,14 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                             if ($data['metodo_pago'] != '' && $data['metodo_pago_dos'] != '') {
                                 $monto_bsd = Str::replace(',', '.', (Str::replace('.', '', $data['pago_bsd'])));
 
+                                $montos_srv = CajaController::calculo_porcentajes_srv($this->cod_asignacion, $data['pago_usd'], $monto_bsd);
+                                $montos_prod = CajaController::calculo_porcentajes_prod($this->cod_asignacion, $data['pago_usd'], $monto_bsd);
+                                // dd($montos);
                                 $multiple = CajaController::multiple(
-                                    $data['pago_usd'],
-                                    $monto_bsd,
+                                    $montos_srv['valor_usd'],
+                                    $montos_srv['valor_bsd'],
+                                    $montos_prod['valor_usd'],
+                                    $montos_prod['valor_bsd'],
                                     $this->cod_asignacion,
                                     $data['metodo_pago'],
                                     $data['metodo_pago_dos'],

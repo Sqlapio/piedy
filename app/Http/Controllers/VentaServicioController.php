@@ -14,13 +14,13 @@ use Filament\Notifications\Notification;
 
 class VentaServicioController extends Controller
 {
-    static function venta_servicio_usd($cod_asignacion, $costo_total_servicios, $comision_total, $comision_gerente, $info_serv_empleado, $ref_zelle, $propina_usd, $propina_bsd, $pro_ref_debito_credito, $pro_nro_tarjeta){
+    static function venta_servicio_usd($cod_asignacion, $costo_total_servicios, $comision_total, $comision_gerente, $info_serv_empleado, $ref_zelle, $propina_usd, $propina_bsd, $pro_ref_debito_credito, $pro_nro_tarjeta, $metodo_pago){
         // dd($cod_asignacion, $costo_total_servicios, $comision_total, $comision_gerente);
         try {
 
             $facturar = new VentaServicio();
             $facturar->cod_asignacion           = $cod_asignacion;
-            $facturar->metodo_pago              = 'Efectivo Usd';
+            $facturar->metodo_pago              = MetodoPago::find($metodo_pago)->descripcion;
             $facturar->total_USD                = $costo_total_servicios;
             $facturar->pago_usd                 = $costo_total_servicios;
             $facturar->comision_dolares         = $comision_total;

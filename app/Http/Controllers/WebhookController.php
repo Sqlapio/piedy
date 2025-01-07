@@ -97,22 +97,22 @@ class WebhookController extends Controller
                                     $citas->save();
 
                                     //Notificacion por whatsapp al cliente
-                                    if($citas->save()){
-                                        $data = [
-                                            'id'                => $citas->cod_cita,
-                                            'cliente_fullname'  => $name,
-                                            'telefono'          => $phone,
-                                            'fecha_cita'        => $fecha,
-                                            'hora_cita'         => $hora,
-                                        ];
-                                        $notificacionWebHook = NotificacionesController::notificacion_cita_wp($data);
+                                    // if($citas->save()){
+                                    //     $data = [
+                                    //         'id'                => $citas->cod_cita,
+                                    //         'cliente_fullname'  => $name,
+                                    //         'telefono'          => $phone,
+                                    //         'fecha_cita'        => $fecha,
+                                    //         'hora_cita'         => $hora,
+                                    //     ];
+                                    //     $notificacionWebHook = NotificacionesController::notificacion_cita_wp($data);
                                         
-                                        if($notificacionWebHook['success'] == 200) {
-                                            Log::info('Notificacion enviada por Webhook para PiedyBot de forma exitosa. Cita:' . $citas->cod_cita);
-                                        }else{
-                                            Log::info('Error al enviar notificacion por Webhook para PiedyBot' . $notificacionWebHook['message']);
-                                        }
-                                    }
+                                    //     if($notificacionWebHook['success'] == 200) {
+                                    //         Log::info('Notificacion enviada por Webhook para PiedyBot de forma exitosa. Cita:' . $citas->cod_cita);
+                                    //     }else{
+                                    //         Log::info('Error al enviar notificacion por Webhook para PiedyBot' . $notificacionWebHook['message']);
+                                    //     }
+                                    // }
 
                                     Log::info('Nueva cita agendada por PiedyBot: ' . $citas->cod_cita);
                                     return response()->json(['message' => 'cita agendada'], 200);
@@ -120,8 +120,8 @@ class WebhookController extends Controller
                             }
                         } else {
                             //log
-                            Log::error('Error al agendar cita por PiedyBot: La hora debe estar entre las 10:00am y las 10:00pm. Por favor intente nuevamente');
-                            return response()->json(['message' => 'Nuestra hora de atención es de 10:00am a 10:00pm, por favor modifique la hora.'], 400);
+                            Log::error('Error al agendar cita por PiedyBot: La hora debe estar entre las 10:00am y las 08:00pm. Por favor intente nuevamente');
+                            return response()->json(['message' => 'Nuestra hora de atención es de 10:00am a 08:00pm, por favor modifique la hora.'], 400);
                         }
                     } else {
                         //log

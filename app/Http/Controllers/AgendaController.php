@@ -65,7 +65,7 @@ class AgendaController extends Controller
                     'hora_cita'         => $citas->hora,
                     'telefono'          => $citas->telefono,
                 ];
-                
+
                 /**Notificacion por Whatsapp */
                 $notificacion = NotificacionesController::notificacion_cita_wp($data);
 
@@ -91,9 +91,7 @@ class AgendaController extends Controller
                     'success' => true,
                     'message' => 'La cita fue agendada con exito!!!',
                 ];
-
-            } 
-
+            }
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion-AgendaController(agendar_cita)', $th->getMessage(), $response = null);
             Notification::make()
@@ -130,10 +128,11 @@ class AgendaController extends Controller
 
     static function validaciones($horario_id, $fecha_formateada, $cliente_id, $servicio_id, $user_id)
     {
+        // dd($horario_id, $fecha_formateada, $cliente_id, $servicio_id, $user_id);
         try {
-            
+
             $hora = Horario::find($horario_id)->hora;
-            $hora_formateada = date('h:i a', strtotime($hora));
+            $hora_formateada = date('h:ia', strtotime($hora));
 
             // Verificar si el horario ya se encuentra ocupado por el tecnico
             // en la fecha seleccionada
@@ -146,7 +145,7 @@ class AgendaController extends Controller
 
             // Verificar si el cliente ya tiene una cita agendada en la fecha seleccionada
             $cliente = Cita::where('empleado_id', $user_id)
-            ->where('cliente_id', $cliente_id)
+                ->where('cliente_id', $cliente_id)
                 ->where('hora', $hora_formateada)
                 ->where('fecha_formateada', $fecha_formateada)
                 ->where('status', 1)
@@ -160,8 +159,6 @@ class AgendaController extends Controller
                 ->where('status', 1)
                 ->where('sucursal_id', Auth::user()->sucursal_id)
                 ->get();
-            
-            // dd($servicio);
 
             // Si el tecnico tiene un horario ocupado en la fecha seleccionada
             // con el mismo cliente, lanzar una excepcion
@@ -170,60 +167,58 @@ class AgendaController extends Controller
                     'success' => false,
                     'message' => 'El tecnico ya tiene un horario ocupado en la fecha seleccionada',
                 ];
-            }elseif ($cliente->count() > 0) {
+            } elseif ($cliente->count() > 0) {
                 return $response = [
                     'success' => false,
                     'message' => 'El cliente ya tiene una cita agendada en la fecha seleccionada',
                 ];
-            }elseif ($servicio->count() >= 4) {
+            } elseif ($servicio->count() >= 4) {
                 return $response = [
                     'success' => false,
                     'message' => 'No puede agendar el mismo servicio mas de 4 veces a la misma hora',
                 ];
-            }elseif ($fecha_formateada < now()->format('Y-m-d')) {
+            } elseif ($fecha_formateada < now()->format('Y-m-d')) {
                 return $response = [
                     'success' => false,
                     'message' => 'La fecha seleccionada es menor a la fecha actual',
                 ];
-            }
-            else {
+            } else {
                 return $response = [
                     'success' => true,
                     'message' => 'El horario esta disponible',
                 ];
             }
-            
+
             //code...
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion-AgendaController(validaciones)', $th->getMessage(), $response = null);
             Notification::make()
-            ->title('NOTIFICACIÓN')
-            ->icon('heroicon-o-shield-check')
-            ->iconColor('danger')
-            ->body($th->getMessage())
-            ->send();
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
         }
-        
     }
 
-    static function confirmacion($cita_id) {
+    static function confirmacion($cita_id)
+    {
         try {
-            
+
             $confimacion = Cita::where('id', $cita_id)->first();
             $confimacion->confirmacion = 1;
             $confimacion->save();
 
-            LogController::log(1, 'usuario externo', 'Usuario confirmo cita, id: '. $cita_id, $response = null);
+            LogController::log(1, 'usuario externo', 'Usuario confirmo cita, id: ' . $cita_id, $response = null);
 
             return view('confirmacion');
-
         } catch (\Throwable $th) {
             LogController::log(1, 'excepcion(confirmacion link externo)', $th->getMessage(), $response = null);
         }
-        
     }
 
-    static function cancelacion($cita_id) {
+    static function cancelacion($cita_id)
+    {
 
         try {
 
@@ -235,10 +230,8 @@ class AgendaController extends Controller
             LogController::log(1, 'usuario externo', 'Usuario cancelo cita, id: ' . $cita_id, $response = null);
 
             return view('cancelacion');
-            
-        } catch(\Throwable $th) {
+        } catch (\Throwable $th) {
             LogController::log(1, 'excepcion(cancelacion link externo)', $th->getMessage(), $response = null);
         }
-        
-    }  
+    }
 }

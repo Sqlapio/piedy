@@ -341,8 +341,8 @@ class ProductoResource extends Resource
                                         TextInput::make('min')
                                             ->label('Exitencia Minima en Almacen')
                                             ->prefixIcon('heroicon-s-queue-list')
-                                            ->numeric()
-                                            ->required(),
+                                            ->numeric(),
+                                            // ->required(),
                                         Select::make('almacen_id')
                                             ->prefixIcon('heroicon-m-list-bullet')
                                             ->relationship('almacenes', 'nombre')
@@ -351,8 +351,8 @@ class ProductoResource extends Resource
                                             ->createOptionForm([
                                                 TextInput::make('nombre')
                                                     ->required(),
-                                            ])
-                                            ->required(),
+                                            ]),
+                                            // ->required(),,
                                         TextInput::make('cantidad')
                                             ->prefixIcon('heroicon-s-queue-list')
                                             ->required()

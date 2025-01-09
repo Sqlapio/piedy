@@ -167,10 +167,10 @@ class ProductoResource extends Resource
                 ->description('Informacion para el manejo de las cantiddes maximas y minimas de inventario')
                 ->icon('heroicon-m-list-bullet')
                 ->schema([
-                    TextInput::make('max')
-                        ->prefixIcon('heroicon-s-pencil')
-                        ->label('Cantidad Maxima en existencia')
-                        ->numeric(),
+                    // TextInput::make('max')
+                    //     ->prefixIcon('heroicon-s-pencil')
+                    //     ->label('Cantidad Maxima en existencia')
+                    //     ->numeric(),
                         
                     TextInput::make('min')
                         ->prefixIcon('heroicon-s-pencil')
@@ -183,7 +183,7 @@ class ProductoResource extends Resource
                         ->default(5)
                         ->helperText('Este dato sera utilizado para el envio de notificaciones cuando el producto llegue a la cantidad minima en el almacen de la sucursal')
                         ->numeric(),
-                ])->columns(3),
+                ])->columns(2),
             ]);
     }
 

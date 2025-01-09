@@ -237,7 +237,7 @@ class ProductoResource extends Resource
 
                 TextColumn::make('contenido_neto')
                     ->toggleable(isToggledHiddenByDefault: false)
-
+                    ->numeric()
                     ->alignCenter()
                     ->searchable(),
 

@@ -18,19 +18,19 @@ class EditProducto extends EditRecord
         ];
     }
 
-    protected function beforeSave(): void
-    {
-        if($this->data['max'] == $this->data['min'])
-        {
-            Notification::make()
-            ->warning()
-            ->title('Notificacion')
-            ->body('La cantidad maxima y minima de existencia del producto no pueden ser iguales')
-            ->send();
+    // protected function beforeSave(): void
+    // {
+    //     if($this->data['max'] == $this->data['min'])
+    //     {
+    //         Notification::make()
+    //         ->warning()
+    //         ->title('Notificacion')
+    //         ->body('La cantidad maxima y minima de existencia del producto no pueden ser iguales')
+    //         ->send();
     
-            $this->halt();
-        }
-    }
+    //         $this->halt();
+    //     }
+    // }
 
     protected function getRedirectUrl(): string
     {

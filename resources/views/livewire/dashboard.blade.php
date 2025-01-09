@@ -7,7 +7,7 @@
                 <div class="flex items-center">
                     <img class="w-20 h-auto p-2 rounded-full" src="{{ asset('images/BCV.png') }}" alt="">
                     <div class="ml-2 text-right">
-                        <div class="mt-2 text-md text-white leading-7 font-bold">
+                        <div class="mt-2 text-md text-black leading-7 font-bold">
                             TASA BCV: {{ $tasa->tasa }}Bs.
                         </div>
                     </div>
@@ -115,10 +115,10 @@
                       </svg>
                 </div>
                 <div class="ml-12 text-right">
-                    <div class="mt-2 text-xl text-white text- leading-7 font-bold">
+                    <div class="mt-2 text-xl text-black text- leading-7 font-bold">
                         RECEPCIÓN DE INVENTARIO
                     </div>
-                    <div class="sm:hidden md:hidden lg:block text-right text-sm font-semibold text-white">
+                    <div class="sm:hidden md:hidden lg:block text-right text-sm font-semibold text-black">
                         <div>Gestión de inventario</div>
                     </div>
                 </div>
@@ -138,10 +138,10 @@
                       </svg>
                 </div>
                 <div class="ml-12 text-right">
-                    <div class="mt-2 text-xl text-white text- leading-7 font-bold">
+                    <div class="mt-2 text-xl text-black text- leading-7 font-bold">
                         INVENTARIO GENERAL
                     </div>
-                    <div class="sm:hidden md:hidden lg:block text-right text-sm font-semibold text-white">
+                    <div class="sm:hidden md:hidden lg:block text-right text-sm font-semibold text-black">
                         <div>Gestión de inventario</div>
                     </div>
                 </div>
@@ -157,10 +157,10 @@
                       </svg>
                 </div>
                 <div class="ml-12 text-right">
-                    <div class="mt-2 text-xl text-white leading-7 font-bold">
+                    <div class="mt-2 text-xl text-black leading-7 font-bold">
                         PRODUCTOS
                     </div>
-                    <div class="sm:hidden md:hidden lg:block text-right text-sm font-semibold text-white">
+                    <div class="sm:hidden md:hidden lg:block text-right text-sm font-semibold text-black">
                         <div>Carga y gestión de productos</div>
                     </div>
                 </div>
@@ -247,10 +247,10 @@
                         <img class="w-16 h-16 m-2 rounded-full" src="{{ asset('images/BCV.png') }}" alt="">
                     </div>
                     <div class="ml-12 text-right">
-                        <div class="sm:hidden md:hidden lg:block mt-2 text-xl text-white text- leading-7 font-bold">
+                        <div class="sm:hidden md:hidden lg:block mt-2 text-xl text-black text- leading-7 font-bold">
                             TASA BCV
                         </div>
-                        <div class="sm:hidden md:hidden lg:block text-right text-sm font-semibold text-white">
+                        <div class="sm:hidden md:hidden lg:block text-right text-sm font-semibold text-black">
                             <div>{{ $tasa->tasa }}Bs.</div>
 
                         </div>
@@ -270,10 +270,10 @@
                 </div>
 
                 <div class="ml-12 text-right">
-                    <div class="sm:hidden md:hidden lg:block mt-2 text-xl text-white text- leading-7 font-bold">
+                    <div class="sm:hidden md:hidden lg:block mt-2 text-xl text-black text- leading-7 font-bold">
                         NÓMINA
                     </div>
-                    <div class="sm:hidden md:hidden lg:block text-right text-sm font-semibold text-white">
+                    <div class="sm:hidden md:hidden lg:block text-right text-sm font-semibold text-black">
                         <div>Módulo para el cálculo de nómina</div>
                     </div>
                 </div>
@@ -302,10 +302,10 @@
                 </div>
 
                 <div class="ml-12 text-right">
-                    <div class="sm:hidden md:hidden lg:block mt-2 text-xl text-white text- leading-7 font-bold">
+                    <div class="sm:hidden md:hidden lg:block mt-2 text-xl text-black text- leading-7 font-bold">
                         REPORTES
                     </div>
-                    <div class="sm:hidden md:hidden lg:block text-right text-sm font-semibold text-white">
+                    <div class="sm:hidden md:hidden lg:block text-right text-sm font-semibold text-black">
                         <div>Módulo para gestión de reportes</div>
                     </div>
                 </div>

@@ -143,10 +143,6 @@ class InventarioSucursalResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()
-                    ->exports([
-                        // Pass a string
-                        ExcelExport::make()->withFilename(date('d-m-Y') . '-inv-sucursales'),
-                    ])
                 ]),
             ]);
     }

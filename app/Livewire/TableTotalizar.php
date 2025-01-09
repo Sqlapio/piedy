@@ -275,9 +275,12 @@ class TableTotalizar extends Component implements HasForms, HasTable
                             ])
                     ])->action(function (array $data, FacturacionMultiple $record) {
                         $data_fm = json_decode($record->cod_asignacion);
+                        // dd($data_fm);
+                        // dd($data_fm);
                         for ($i = 0; $i < count($data_fm); $i++) {
                             //Dolares
                             if ($data['metodo_pago'] != '' &&  $data['metodo_pago_dos'] == '') {
+            
                                 $fm_dolares = CajaController::dolares(
                                     $data['pago_usd'],
                                     $data['metodo_pago'],
@@ -291,7 +294,7 @@ class TableTotalizar extends Component implements HasForms, HasTable
                                 );
 
                                 if ($fm_dolares) {
-                                    FacturacionMultiple::truncate();
+                                    // FacturacionMultiple::truncate();
                                     LogController::log(Auth::user()->id, 'facturacion multiple','realizo la ejecucion de una factura multiple en dolares', $response = null);
                                     Notification::make()
                                         ->title('Notificacion:')
@@ -300,7 +303,7 @@ class TableTotalizar extends Component implements HasForms, HasTable
                                         ->body('La facturacion ' . $data_fm[$i] . ' fue realizada con exito.')
                                         ->send();
                                         
-                                    //Envio una notificacion por whatsaap
+                                    // //Envio una notificacion por whatsaap
                                     $notificacion = NotificacionesController::notificacion_servicio_facturado($data_fm[$i]);
                                     if ($notificacion['success'] == true) {
                                         Notification::make()
@@ -320,11 +323,11 @@ class TableTotalizar extends Component implements HasForms, HasTable
                                             ->send();
                                     }
                                     
-                                    $this->redirectRoute('cabinas');
+                                    // $this->redirectRoute('cabinas');
                                 }
                             }
 
-                            // //Pago en Bolivares metodos 2 - 4 - 5 - 7
+                            //Bolivares
                             if ($data['metodo_pago_dos'] != '' &&  $data['metodo_pago'] == '') {
                                 $fm_bolivares = CajaController::bolivares(
                                     $data['metodo_pago_dos'],
@@ -340,7 +343,7 @@ class TableTotalizar extends Component implements HasForms, HasTable
                                 );
 
                                 if ($fm_bolivares) {
-                                    FacturacionMultiple::truncate();
+                                    // FacturacionMultiple::truncate();
                                     LogController::log(Auth::user()->id, 'facturacion multiple','realizo la ejecucion de una factura multiple en bolivares', $response = null);
                                     Notification::make()
                                         ->title('Notificacion:')
@@ -349,7 +352,7 @@ class TableTotalizar extends Component implements HasForms, HasTable
                                         ->body('La facturacion ' . $data_fm[$i] . ' fue realizada con exito.')
                                         ->send();
 
-                                    //Envio una notificacion por whatsaap
+                                    // //Envio una notificacion por whatsaap
                                     $notificacion = NotificacionesController::notificacion_servicio_facturado($data_fm[$i]);
                                     if ($notificacion['success'] == true) {
                                         Notification::make()
@@ -369,65 +372,77 @@ class TableTotalizar extends Component implements HasForms, HasTable
                                             ->send();
                                     }
 
-                                    $this->redirectRoute('cabinas');
+                                    // $this->redirectRoute('cabinas');
                                 }
                             }
 
-                            // //Pago en Bolivares metodos 2 - 4 - 5 - 7
+                            //Dolasres y Bolivares
                             if ($data['metodo_pago'] != '' && $data['metodo_pago_dos'] != '') {
                                 $monto_bsd = Str::replace(',', '.', (Str::replace('.', '', $data['pago_bsd'])));
+                            
+                                    $montos_srv = CajaController::calculo_porcentajes_srv_fm($data_fm[$i], $data['pago_usd'], $monto_bsd);
+                                    // dd($montos_srv);
+                                    $montos_prod = CajaController::calculo_porcentajes_prod($data_fm[$i], $data['pago_usd'], $monto_bsd);
+                                    // dd($montos_srv, $montos_prod);
+                                    // dd($montos_srv, $montos_prod);
+                                    $fm_multiMoneda = CajaController::multiple(
+                                        $montos_srv['valor_usd'],
+                                        $montos_srv['valor_bsd'],
+                                        $montos_prod['valor_usd'],
+                                        $montos_prod['valor_bsd'],
+                                        $data_fm[$i],
+                                        $data['metodo_pago'],
+                                        $data['metodo_pago_dos'],
+                                        (isset($data['ref_zelle'])) ? $data['ref_zelle'] : null,
+                                        (isset($data['ref_pago_movil'])) ? $data['ref_pago_movil'] : null,
+                                        (isset($data['ref_debito_credito'])) ? $data['ref_debito_credito'] : null,
+                                        (isset($data['nro_tarjeta'])) ? $data['nro_tarjeta'] : null,
+                                        (isset($data['propina_usd'])) ? $data['propina_usd'] : 0.00,
+                                        (isset($data['propina_bsd'])) ? $data['propina_bsd'] : 0.00,
+                                        (isset($data['pro_ref_debito_credito'])) ? $data['pro_ref_debito_credito'] : null,
+                                        (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null,
 
-                                $fm_multiMoneda = CajaController::multiple(
-                                    $data['pago_usd'],
-                                    $monto_bsd,
-                                    $data_fm[$i],
-                                    $data['metodo_pago'],
-                                    $data['metodo_pago_dos'],
-                                    (isset($data['ref_zelle'])) ? $data['ref_zelle'] : null,
-                                    (isset($data['ref_pago_movil'])) ? $data['ref_pago_movil'] : null,
-                                    (isset($data['ref_debito_credito'])) ? $data['ref_debito_credito'] : null,
-                                    (isset($data['nro_tarjeta'])) ? $data['nro_tarjeta'] : null,
-                                    (isset($data['propina_usd'])) ? $data['propina_usd'] : 0.00,
-                                    (isset($data['propina_bsd'])) ? $data['propina_bsd'] : 0.00,
-                                    (isset($data['pro_ref_debito_credito'])) ? $data['pro_ref_debito_credito'] : null,
-                                    (isset($data['pro_nro_tarjeta'])) ? $data['pro_nro_tarjeta'] : null,
+                                    );
 
-                                );
+                                    if ($fm_multiMoneda) {
 
-                                if ($fm_multiMoneda) {
-                                    FacturacionMultiple::truncate();
-                                    LogController::log(Auth::user()->id, 'facturacion multiple','realizo la ejecucion de una factura multiple en dolares y bolivares', $response = null);
-                                    Notification::make()
-                                        ->title('Notificacion:')
-                                        ->icon('heroicon-o-shield-check')
-                                        ->iconColor('success')
-                                        ->body('La facturacion ' . $data_fm[$i] . ' fue realizada con exito.')
-                                        ->send();
-                                        
-                                    //Envio una notificacion por whatsaap
-                                    $notificacion = NotificacionesController::notificacion_servicio_facturado($data_fm[$i]);
-                                    if ($notificacion['success'] == true) {
+                                        LogController::log(Auth::user()->id, 'facturacion multiple', 'realizo la ejecucion de una factura multiple en dolares y bolivares', $response = null);
                                         Notification::make()
-                                            ->title('Notificacion')
+                                            ->title('Notificacion:')
                                             ->icon('heroicon-o-shield-check')
-                                            ->color('success')
                                             ->iconColor('success')
-                                            ->body('Notificacion al tecnico enviada por WhatsApp con exito. Codigo: ' . $data_fm[$i])
+                                            ->body('La facturacion ' . $data_fm[$i] . ' fue realizada con exito.')
                                             ->send();
-                                    } else {
-                                        Notification::make()
-                                            ->title('Notificacion')
-                                            ->icon('heroicon-o-shield-check')
-                                            ->iconColor('danger')
-                                            ->color('danger')
-                                            ->body($notificacion['message'])
-                                            ->send();
-                                    }
 
-                                    $this->redirectRoute('cabinas');
-                                }
+                                        //Envio una notificacion por whatsaap
+                                        $notificacion = NotificacionesController::notificacion_servicio_facturado($data_fm[$i]);
+                                        if ($notificacion['success'] == true) {
+                                            Notification::make()
+                                                ->title('Notificacion')
+                                                ->icon('heroicon-o-shield-check')
+                                                ->color('success')
+                                                ->iconColor('success')
+                                                ->body('Notificacion al tecnico enviada por WhatsApp con exito. Codigo: ' . $data_fm[$i])
+                                                ->send();
+                                        } else {
+                                            Notification::make()
+                                                ->title('Notificacion')
+                                                ->icon('heroicon-o-shield-check')
+                                                ->iconColor('danger')
+                                                ->color('danger')
+                                                ->body($notificacion['message'])
+                                                ->send();
+                                        }
+
+                                        // $this->redirectRoute('cabinas');
+                                    }
+                                
                             }
                         }
+                        
+                        FacturacionMultiple::truncate();
+                        $this->redirectRoute('cabinas');
+                        
                     }),
 
 

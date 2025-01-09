@@ -2,19 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TasaBcv;
 use App\Models\Comision;
 use App\Models\Producto;
 use App\Models\Servicio;
 use App\Models\Disponible;
 use App\Models\MetodoPago;
+use App\Models\DetalleAsignacion;
 use App\Models\InventarioSucursal;
+use App\Models\FacturacionMultiple;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
 use App\Models\VentaProducto as VentaProducto;
 
 class CajaController extends Controller
 {
-    static function dolares($monto_usd, $metodo_pago, $cod_asignacion, $ref_zelle , $propina_usd , $propina_bsd , $pro_ref_debito_credito , $pro_nro_tarjeta, $metodoUsd ) {
+    static function dolares($monto_usd, $metodo_pago, $cod_asignacion, $ref_zelle, $propina_usd, $propina_bsd, $pro_ref_debito_credito, $pro_nro_tarjeta, $metodoUsd)
+    {
 
         try {
 
@@ -27,10 +31,8 @@ class CajaController extends Controller
              */
             $productos = $valores['productos'];
 
-            if(count($productos) > 0)
-            {
-                foreach($productos as $item)
-                {
+            if (count($productos) > 0) {
+                foreach ($productos as $item) {
 
                     $producto = Producto::where('cod_producto', $item->cod_prod_serv)->first();
                     $venta_producto = new VentaProducto();
@@ -49,6 +51,7 @@ class CajaController extends Controller
                     $venta_producto->sucursal_id        = Auth::user()->sucursal->id;
                     $venta_producto->cliente_id         = $valores['info_cliente_user']->cliente_id;
                     $venta_producto->empleado_id        = $valores['info_cliente_user']->empleado_id;
+                    $venta_producto->montoUsd           = $producto->precio_venta * $item->cantidad;
                     $venta_producto->save();
 
                     //Descuento la cantidad vendida de la exitencia del producto por sucursal
@@ -72,8 +75,7 @@ class CajaController extends Controller
              * DE ACUERDO CON EL SERVICIO SELECCIONADO
              * POR EL CLIENTE
              */
-             if(Servicio::find($valores['servicio_id'])->asignacion == 'vip')
-             {
+            if (Servicio::find($valores['servicio_id'])->asignacion == 'vip') {
                 //4.- Calculo de los servicios adicionales si existen!
                 $serv_adicionales = $valores['costo_total_servicios'] - $valores['costo_quiropedia_basica'];
 
@@ -97,7 +99,8 @@ class CajaController extends Controller
                     $propina_usd,
                     $propina_bsd,
                     $pro_ref_debito_credito,
-                    $pro_nro_tarjeta
+                    $pro_nro_tarjeta,
+                    $metodo_pago
 
                 );
 
@@ -105,10 +108,9 @@ class CajaController extends Controller
                 VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago, $metodo_pago_dos = 'N/A');
 
                 return true;
-             }
+            }
 
-             if(Servicio::find($valores['servicio_id'])->asignacion == 'general')
-             {
+            if (Servicio::find($valores['servicio_id'])->asignacion == 'general') {
                 //Calculo de Comision
                 $calculos = UtilsController::calculo_general(
                     $valores['costo_total_servicios'],
@@ -126,29 +128,30 @@ class CajaController extends Controller
                     $propina_usd,
                     $propina_bsd,
                     $pro_ref_debito_credito,
-                    $pro_nro_tarjeta
+                    $pro_nro_tarjeta,
+                    $metodo_pago
                 );
 
                 //Asiento tabla de Venta
                 VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago, $metodo_pago_dos = 'N/A');
 
                 return true;
-
-             }
+            }
 
             //code...
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion-CajaController(dolares)', $th->getMessage(), $response = null);
             Notification::make()
-            ->title('Notificacion: CajaController::dolares() ')
-            ->icon('heroicon-o-shield-check')
-            ->iconColor('danger')
-            ->body($th->getMessage())
-            ->send();
+                ->title('Notificacion: CajaController::dolares() ')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
         }
     }
 
-    static function bolivares($metodo_pago_dos, $cod_asignacion, $ref_pago_movil , $ref_debito_credito , $nro_tarjeta , $propina_usd , $propina_bsd , $pro_ref_debito_credito , $pro_nro_tarjeta, $monto_bsd ) {
+    static function bolivares($metodo_pago_dos, $cod_asignacion, $ref_pago_movil, $ref_debito_credito, $nro_tarjeta, $propina_usd, $propina_bsd, $pro_ref_debito_credito, $pro_nro_tarjeta, $monto_bsd)
+    {
 
         try {
             //Valores necesarios para realizar los asientos
@@ -160,10 +163,10 @@ class CajaController extends Controller
              */
             $productos = $valores['productos'];
 
-            if(count($productos) > 0)
-            {
-                foreach($productos as $item)
-                {
+            $tasa = TasaBcv::all()->first()->tasa;
+
+            if (count($productos) > 0) {
+                foreach ($productos as $item) {
 
                     $producto = Producto::where('cod_producto', $item->cod_prod_serv)->first();
                     $venta_producto = new VentaProducto();
@@ -182,6 +185,7 @@ class CajaController extends Controller
                     $venta_producto->sucursal_id        = Auth::user()->sucursal->id;
                     $venta_producto->cliente_id         = $valores['info_cliente_user']->cliente_id;
                     $venta_producto->empleado_id        = $valores['info_cliente_user']->empleado_id;
+                    $venta_producto->montoBsd           = ($producto->precio_venta * $item->cantidad) * $tasa;
                     $venta_producto->save();
 
                     //Descuento la cantidad vendida de la exitencia del producto por sucursal
@@ -205,8 +209,7 @@ class CajaController extends Controller
              * DE ACUERDO CON EL SERVICIO SELECCIONADO
              * POR EL CLIENTE
              */
-             if(Servicio::find($valores['servicio_id'])->asignacion == 'vip')
-             {
+            if (Servicio::find($valores['servicio_id'])->asignacion == 'vip') {
                 //4.- Calculo de los servicios adicionales si existen!
                 $serv_adicionales = $valores['costo_total_servicios'] - $valores['costo_quiropedia_basica'];
 
@@ -237,13 +240,12 @@ class CajaController extends Controller
                 );
 
                 //Asiento tabla de Venta
-                VentaController::venta($cod_asignacion, $valores['total_venta'],$metodo_pago = 'N/A', $metodo_pago_dos);
+                VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago = 'N/A', $metodo_pago_dos);
 
                 return true;
-             }
+            }
 
-             if(Servicio::find($valores['servicio_id'])->asignacion == 'general')
-             {
+            if (Servicio::find($valores['servicio_id'])->asignacion == 'general') {
                 //Calculo de Comision
                 $calculos = UtilsController::calculo_general_bsd(
                     $valores['porcen_vip_emp'],
@@ -271,26 +273,24 @@ class CajaController extends Controller
                 VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago = 'N/A', $metodo_pago_dos);
 
                 return true;
-
-             }
-
-
+            }
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion-CajaController(bolivares)', $th->getMessage(), $response = null);
             Notification::make()
-            ->title('Notificacion: CajaController::bolivares() ')
-            ->icon('heroicon-o-shield-check')
-            ->iconColor('danger')
-            ->body($th->getMessage())
-            ->send();
+                ->title('Notificacion: CajaController::bolivares() ')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
         }
     }
 
 
-    static function multiple($monto_usd, $monto_bsd, $cod_asignacion,$metodo_pago, $metodo_pago_dos, $ref_zelle, $ref_pago_movil, $ref_debito_credito, $nro_tarjeta, $propina_usd, $propina_bsd, $pro_ref_debito_credito, $pro_nro_tarjeta) {
+    static function multiple($monto_srv_usd, $monto_srv_bsd, $monto_prod_usd, $monto_prod_bsd, $cod_asignacion, $metodo_pago, $metodo_pago_dos, $ref_zelle, $ref_pago_movil, $ref_debito_credito, $nro_tarjeta, $propina_usd, $propina_bsd, $pro_ref_debito_credito, $pro_nro_tarjeta)
+    {
         // dd($monto_usd, $monto_bsd, $cod_asignacion,$metodo_pago, $metodo_pago_dos, $ref_zelle , $ref_pago_movil , $ref_debito_credito , $nro_tarjeta );
         try {
-
+            // dd('function multiple', $monto_usd, $monto_bsd);
             //Valores necesarios para realizar los asientos
             $valores = UtilsController::info($cod_asignacion);
 
@@ -300,10 +300,8 @@ class CajaController extends Controller
              */
             $productos = $valores['productos'];
 
-            if(count($productos) > 0)
-            {
-                foreach($productos as $item)
-                {
+            if (count($productos) > 0) {
+                foreach ($productos as $item) {
 
                     $producto = Producto::where('cod_producto', $item->cod_prod_serv)->first();
                     $venta_producto = new VentaProducto();
@@ -323,6 +321,9 @@ class CajaController extends Controller
                     $venta_producto->sucursal_id        = Auth::user()->sucursal->id;
                     $venta_producto->cliente_id         = $valores['info_cliente_user']->cliente_id;
                     $venta_producto->empleado_id        = $valores['info_cliente_user']->empleado_id;
+                    $venta_producto->montoUsd           = $monto_prod_usd;
+                    $venta_producto->montoBsd           = $monto_prod_bsd;
+
                     $venta_producto->save();
 
                     //Descuento la cantidad vendida de la exitencia del producto por sucursal
@@ -346,15 +347,14 @@ class CajaController extends Controller
              * DE ACUERDO CON EL SERVICIO SELECCIONADO
              * POR EL CLIENTE
              */
-             if(Servicio::find($valores['servicio_id'])->asignacion == 'vip')
-             {
+            if (Servicio::find($valores['servicio_id'])->asignacion == 'vip') {
                 //4.- Calculo de los servicios adicionales si existen!
                 $serv_adicionales = $valores['costo_total_servicios'] - $valores['costo_quiropedia_basica'];
                 // dd($valores['costo_total_servicios'], $valores['costo_quiropedia_basica']);
                 //Calculo de Comision
                 $calculos = UtilsController::calculo_vip_multiple(
-                    $monto_usd,
-                    $monto_bsd,
+                    $monto_srv_usd,
+                    $monto_srv_bsd,
                     $valores['total_venta'],
                     $valores['costo_quiropedia_basica'],
                     $serv_adicionales,
@@ -365,8 +365,8 @@ class CajaController extends Controller
 
                 //Asiento en la tabla de ventas Servicios
                 VentaServicioController::venta_servicio_multiple(
-                    $monto_usd,
-                    $monto_bsd,
+                    $monto_srv_usd,
+                    $monto_srv_bsd,
                     $metodo_pago,
                     $metodo_pago_dos,
                     $cod_asignacion,
@@ -389,22 +389,21 @@ class CajaController extends Controller
                 VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago, $metodo_pago_dos);
 
                 return true;
-             }
+            }
 
-             if(Servicio::find($valores['servicio_id'])->asignacion == 'general')
-             {
+            if (Servicio::find($valores['servicio_id'])->asignacion == 'general') {
                 //Calculo de Comision
                 $calculos = UtilsController::calculo_general_multiple(
-                    $monto_usd,
-                    $monto_bsd,
+                    $monto_srv_usd,
+                    $monto_srv_bsd,
                     $valores['total_venta'],
                     $valores['porcen_vip_emp'],
                     $valores['costo_total_servicios'],
                 );
                 //Asiento en la tabla de ventas Servicios
                 VentaServicioController::venta_servicio_multiple(
-                    $monto_usd,
-                    $monto_bsd,
+                    $monto_srv_usd,
+                    $monto_srv_bsd,
                     $metodo_pago,
                     $metodo_pago_dos,
                     $cod_asignacion,
@@ -427,37 +426,186 @@ class CajaController extends Controller
                 VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago, $metodo_pago_dos);
 
                 return true;
-
-             }
-
-
-
+            }
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion-CajaController(multiple)', $th->getMessage(), $response = null);
             Notification::make()
-            ->title('Notificacion: CajaController::multiple() ')
-            ->icon('heroicon-o-shield-check')
-            ->iconColor('danger')
-            ->body($th->getMessage())
-            ->send();
+                ->title('Notificacion: CajaController::multiple() ')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
         }
     }
 
-    static function manejo_propinas() {
 
+    /**
+     * Logica para la facturacion multiple de servicios
+     */
+
+    static function calculo_porcentajes_srv_fm($cod_asigancion, $pago_usd, $pago_bsd)
+    {
+
+        try {
+
+            $total_venta = FacturacionMultiple::where('sucursal_id', Auth::user()->sucursal_id)->first()->venta_total_usd;
+
+            //Calculo de los porcentajes de venta por representacion
+            $total_servicios = Disponible::where('cod_asignacion', $cod_asigancion)
+                ->where('sucursal_id', Auth::user()->sucursal_id)
+                ->where('status', 'cerrado')
+                ->first();
+
+            // $total_venta = $total_servicios->venta_total;
+            $total_venta_srv = $total_servicios->acu_servicios;
+
+            $porcen_servicio = ($total_venta_srv * 100) / $total_venta;
+            //Calculo del equivalente en dolares
+            $valor_usd = ($pago_usd * $porcen_servicio) / 100;
+
+            //Calculo del equivalente en bolivares
+            $valor_bsd = ($pago_bsd * $porcen_servicio) / 100;
+
+            return $array = [
+                'valor_usd' => $valor_usd,
+                'valor_bsd' => $valor_bsd
+            ];
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-CajaController(multiple)', $th->getMessage(), $response = null);
+            Notification::make()
+                ->title('Notificacion: CajaController::multiple() ')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+        }
     }
 
-    static function detalleServicio($cod_asignacion) {
+    static function calculo_porcentajes_prod_fm($cod_asigancion, $pago_usd, $pago_bsd)
+    {
+
+        try {
+
+            $total_venta = FacturacionMultiple::where('sucursal_id', Auth::user()->sucursal_id)->first()->venta_total_usd;
+
+            //Calculo de los porcentajes de venta por representacion
+            $total_servicios = Disponible::where('cod_asignacion', $cod_asigancion)
+                ->where('sucursal_id', Auth::user()->sucursal_id)
+                ->where('status', 'cerrado')
+                ->first();
+            // dump($total_servicios);
+            // $total_venta = $total_servicios->venta_total;
+            $total_venta_prod = $total_servicios->acu_productos;
+
+            $porcen_prod = ($total_venta_prod * 100) / $total_venta;
+
+            //Calculo del equivalente en dolares
+            $valor_usd = ($pago_usd * $porcen_prod) / 100;
+
+            //Calculo del equivalente en bolivares
+            $valor_bsd = ($pago_bsd * $porcen_prod) / 100;
+
+            return $array = [
+                'valor_usd' => $valor_usd,
+                'valor_bsd' => $valor_bsd
+            ];
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-CajaController(multiple)', $th->getMessage(), $response = null);
+            Notification::make()
+                ->title('Notificacion: CajaController::multiple() ')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+        }
+    }
+
+
+    /**
+     * Logica para el pago multiple 
+     */
+    static function calculo_porcentajes_srv($cod_asigancion, $pago_usd, $pago_bsd)
+    {
+
+        try {
+
+            $total_servicios = Disponible::where('cod_asignacion', $cod_asigancion)
+                ->where('sucursal_id', Auth::user()->sucursal_id)
+                ->where('status', 'cerrado')
+                ->first();
+
+            $total_venta = $total_servicios->venta_total;
+            $total_venta_srv = $total_servicios->acu_servicios;
+
+            $porcen_servicio = ($total_venta_srv * 100) / $total_venta;
+            //Calculo del equivalente en dolares
+            $valor_usd = ($pago_usd * $porcen_servicio) / 100;
+
+            //Calculo del equivalente en bolivares
+            $valor_bsd = ($pago_bsd * $porcen_servicio) / 100;
+
+            return $array = [
+                'valor_usd' => $valor_usd,
+                'valor_bsd' => $valor_bsd
+            ];
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-CajaController(multiple)', $th->getMessage(), $response = null);
+            Notification::make()
+                ->title('Notificacion: CajaController::multiple() ')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+        }
+    }
+
+    static function calculo_porcentajes_prod($cod_asigancion, $pago_usd, $pago_bsd)
+    {
+
+        try {
+
+            //Calculo de los porcentajes de venta por representacion
+            $total_servicios = Disponible::where('cod_asignacion', $cod_asigancion)
+                ->where('sucursal_id', Auth::user()->sucursal_id)
+                ->where('status', 'cerrado')
+                ->first();
+            // dump($total_servicios);
+            $total_venta = $total_servicios->venta_total;
+            $total_venta_prod = $total_servicios->acu_productos;
+
+            $porcen_prod = ($total_venta_prod * 100) / $total_venta;
+
+            //Calculo del equivalente en dolares
+            $valor_usd = ($pago_usd * $porcen_prod) / 100;
+
+            //Calculo del equivalente en bolivares
+            $valor_bsd = ($pago_bsd * $porcen_prod) / 100;
+
+            return $array = [
+                'valor_usd' => $valor_usd,
+                'valor_bsd' => $valor_bsd
+            ];
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-CajaController(multiple)', $th->getMessage(), $response = null);
+            Notification::make()
+                ->title('Notificacion: CajaController::multiple() ')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+        }
+    }
+
+    static function detalleServicio($cod_asignacion)
+    {
         // dd($cod_asignacion);
         try {
 
             $detalle = Disponible::where('cod_asignacion', $cod_asignacion)
-            ->with('cliente', 'empleado')
-            ->first();
+                ->with('cliente', 'empleado')
+                ->first();
             return view('detalle-servicio-facturado', compact('detalle'));
-
         } catch (\Throwable $th) {
-            
         }
     }
 }

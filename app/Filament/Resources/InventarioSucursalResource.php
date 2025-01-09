@@ -56,6 +56,11 @@ class InventarioSucursalResource extends Resource
         return $table
             ->query(InventarioSucursal::query()->orderBy('created_at', 'desc'))
             ->columns([
+                Tables\Columns\TextColumn::make('cod_producto')
+                ->icon('heroicon-s-shopping-bag')
+                ->numeric()
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('producto.descripcion')
                     ->icon('heroicon-s-shopping-bag')
                     ->numeric()

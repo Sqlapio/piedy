@@ -2,16 +2,17 @@
 
 namespace App\Livewire;
 
-use App\Models\VentaServicio;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Tables;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
 use Livewire\Component;
+use Filament\Tables\Table;
+use App\Models\VentaServicio;
 use Illuminate\Contracts\View\View;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
 
 class TableVentaServicio extends Component implements HasForms, HasTable
 {
@@ -21,19 +22,20 @@ class TableVentaServicio extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->heading('VENTA DE SERVICIOS')
+            ->heading('VENTA DIARIA')
             ->description('Tabla de venta de servicios')
             ->query(VentaServicio::query()
-            ->whereBetween('created_at', [now()->startOfDay(), now()->endOfDay()])
-            ->orderBy('created_at', 'desc'))
+                ->whereBetween('created_at', [now()->startOfDay(), now()->endOfDay()])
+                ->orderBy('created_at', 'desc'))
             ->columns([
                 Tables\Columns\TextColumn::make('cod_asignacion')
+                ->label('Codigo Asignacion')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('cliente.nombre')                    
+                Tables\Columns\TextColumn::make('cliente.nombre')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
 
-            Tables\Columns\TextColumn::make('servicios')
+                Tables\Columns\TextColumn::make('servicios')
                     ->label('Servicios')
                     ->getStateUsing(function (VentaServicio $record) {
                         // dd(json_decode($record->servicios))
@@ -43,21 +45,35 @@ class TableVentaServicio extends Component implements HasForms, HasTable
                     ->alignCenter()
                     ->listWithLineBreaks(),
                 Tables\Columns\TextColumn::make('metodo_pago')
-                    ->description(fn (VentaServicio $record): string => $record->metodo_pago_dos)
+                ->label('Metodo de Pago')
+                    ->description(fn(VentaServicio $record): string => $record->metodo_pago_dos)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Fecha')
+                    ->label('Fecha de Venta')
                     ->dateTime()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('total_USD')
-                    ->label('Total Venta')
+                    ->label('Venta Neta')
                     ->money('USD')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('pago_usd')
-                    ->description(fn (VentaServicio $record): string => 'Bs.'.$record->pago_bsd)
-                    ->money('USD')
-                    ->sortable(),
+                ->label('Pago USD')
+                ->money('USD')
+                ->summarize(Sum::make()
+                        ->label(('Total'))
+                        ->money('USD'))
+                    ->alignCenter()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('pago_bsd')
+                ->label('Pago BS.')
+                    ->numeric()
+                ->summarize(Sum::make()
+                    ->label(('Total'))
+                    ->numeric())
+                ->alignCenter()
+                ->searchable(),
                 Tables\Columns\TextColumn::make('responsable_id')
+                ->label('Responsable')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('ref_zelle')

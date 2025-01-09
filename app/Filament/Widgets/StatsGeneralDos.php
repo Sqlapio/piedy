@@ -177,29 +177,29 @@ class StatsGeneralDos extends BaseWidget
              * GRUPO 5:
              * -----------
              */
-            Stat::make('CLIENTES NUEVOS', $clientes_nuevos)
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
+            // Stat::make('CLIENTES NUEVOS', $clientes_nuevos)
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'border-2 border-[#7B9EA6]',
+            //     ]),
 
-            Stat::make('TASA AUSENCIA DE CLIENTE', '% '.number_format($tasa_aucencia_clientes, 2, '.', ','))
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
+            // Stat::make('TASA AUSENCIA DE CLIENTE', '% '.number_format($tasa_aucencia_clientes, 2, '.', ','))
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'border-2 border-[#7B9EA6]',
+            //     ]),
 
-            Stat::make('% OCUPACIÓN CITAS', '% '.number_format($ocupacion_citas, 2, '.', ','))
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
+            // Stat::make('% OCUPACIÓN CITAS', '% '.number_format($ocupacion_citas, 2, '.', ','))
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'border-2 border-[#7B9EA6]',
+            //     ]),
                 
             //--------------------------------------------------------------------------------------
             
@@ -207,29 +207,29 @@ class StatsGeneralDos extends BaseWidget
              * GRUPO 6:
              * -----------
              */
-            Stat::make('I.U.R.H', '% '.number_format($utilidad_neta, 2, '.', ','))
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
+            // Stat::make('I.U.R.H', '% '.number_format($utilidad_neta, 2, '.', ','))
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'border-2 border-[#7B9EA6]',
+            //     ]),
 
-            Stat::make('TASA RETENCIÓN CLIENTES', '% '.number_format($tasa_retencion_clientes, 2, '.', ','))
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
+            // Stat::make('TASA RETENCIÓN CLIENTES', '% '.number_format($tasa_retencion_clientes, 2, '.', ','))
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'border-2 border-[#7B9EA6]',
+            //     ]),
 
-            Stat::make('NIVEL SATISFACCION DEL CLIENTE', '% '.number_format($tasa_satisfaccion_clientes, 2, '.', ','))
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
+            // Stat::make('NIVEL SATISFACCION DEL CLIENTE', '% '.number_format($tasa_satisfaccion_clientes, 2, '.', ','))
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'border-2 border-[#7B9EA6]',
+            //     ]),
                 
             //--------------------------------------------------------------------------------------
 
@@ -237,29 +237,29 @@ class StatsGeneralDos extends BaseWidget
              * GRUPO :
              * -----------
              */
-            Stat::make('INVENTARIO PRODUCTOS', 0)
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
+            // Stat::make('INVENTARIO PRODUCTOS', 0)
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'border-2 border-[#7B9EA6]',
+            //     ]),
 
-            Stat::make('C.U.P.I.Q.', 0)
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
+            // Stat::make('C.U.P.I.Q.', 0)
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'border-2 border-[#7B9EA6]',
+            //     ]),
 
-            Stat::make('U.C.U.P.I.M', '$ '.number_format($utilidad_neta, 2, '.', ','))
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
+            // Stat::make('U.C.U.P.I.M', '$ '.number_format($utilidad_neta, 2, '.', ','))
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'border-2 border-[#7B9EA6]',
+            //     ]),
 
                 
             //--------------------------------------------------------------------------------------

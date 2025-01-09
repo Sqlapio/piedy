@@ -65,19 +65,19 @@ class StatsGeneral extends BaseWidget
 
         //Comisiones de gastos de bolivares a dolares
         $conver_gastos_bsd_usd = $gastos_bsd / $tasa;
-        
+
         $utilidad_neta      = $ventas - $comisiones_serv_usd - $comisiones_serv_usd_gte - $conver_comisiones_serv_bsd_usd - $comisiones_prod_emp_usd - $comisiones_prod_gte_usd - $gastos_usd - $conver_gastos_bsd_usd;
-        
+
         //----------------------------------------------------------------------------------------------------------------------------------
 
-        
+
         //Ingresos totales
         $ingresos_totales   = $ventas;
 
         //Total de servicios realizado, tabla detalle_asignations
         $total_servicio_realizados = DetalleAsignacion::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->count();
 
-        
+
         /**
          * Calculo del ingreso en divisas
          * -----------------------------------------
@@ -93,7 +93,7 @@ class StatsGeneral extends BaseWidget
         $ingresos_divisas = $serv_usd + $prod_usd;
         //------------------------------------------------------------------------------------------------------------------
 
-        
+
         /**
          * Calculo del promedio venta servicios
          * -----------------------------------------
@@ -109,7 +109,7 @@ class StatsGeneral extends BaseWidget
 
         //------------------------------------------------------------------------------------------------------------------
 
-        
+
         /**
          * TASA RETENCION DE CLINETES
          * -----------------------------------------
@@ -125,7 +125,7 @@ class StatsGeneral extends BaseWidget
         $tasa_retencion_clientes = ($clientes_recurentes / $clientes) * 100;
         //------------------------------------------------------------------------------------------------------------------
 
-        
+
         /**
          * % OCUPACION CITAS
          * -----------------------------------------
@@ -146,15 +146,15 @@ class StatsGeneral extends BaseWidget
             '08:00 pm',
             '09:00 pm',
         ];
-    
+
         $nro_citas_agendadas = [];
-    
-        for ($i=0; $i < count($array_hrs); $i++) { 
+
+        for ($i=0; $i < count($array_hrs); $i++) {
             # code...
             $count = Cita::where('hora', $array_hrs[$i])->whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->count();
             array_push($nro_citas_agendadas, $count);
         }
-        
+
         $ocupacion_citas = (array_sum($nro_citas_agendadas) / 44) * 100;
         //------------------------------------------------------------------------------------------------------------------
 
@@ -190,7 +190,7 @@ class StatsGeneral extends BaseWidget
          */
         $servicios_vip = Disponible::whereBetween('servicio_id',[2,3,4,5,6,7,8])->count();
         //------------------------------------------------------------------------------------------------------------------
-        
+
 
         /**
          * GASTOS TOTALES
@@ -212,7 +212,7 @@ class StatsGeneral extends BaseWidget
         $gastos_totales = $gastos_usd + $conver_gastos_bsd_usd + $conver_gastos_cmp_bsd;
         //------------------------------------------------------------------------------------------------------------------
 
-        
+
         /**
          * TASA DE AUSENCIA DE LOS CLIENTES
          * -----------------------------------------
@@ -259,7 +259,7 @@ class StatsGeneral extends BaseWidget
         //cantidad de clientes que estan por sobre el promedio de visitas
 
 
-        
+
         //------------------------------------------------------------------------------------------------------------------
 
 
@@ -269,90 +269,126 @@ class StatsGeneral extends BaseWidget
              * GRUPO 1:
              * -----------
              */
-            Stat::make('SERVICIOS', $total_servicio_realizados)
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
 
-            Stat::make('SERVICIOS VIP', $servicios_vip)
-                // ->description($rango)
+             Stat::make('Estadística 1', $servicios_vip)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
-
-            Stat::make('PROMEDIO VENTA SERVICIOS', '$ '.number_format($promedio_venta_servicios, 2, '.', ','))
-                // ->description($rango)
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 border-2 border-gray-300 rounded-md']),
+         
+            Stat::make('Estadística 2', $servicios_vip)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
-                
-            //--------------------------------------------------------------------------------------
-
-            /**
-             * GRUPO 2:
-             * -----------
-             */
-            Stat::make('INGRESOS DIVISAS', '$ '.number_format($ingresos_divisas, 2, '.', ','))
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
-
-            Stat::make('INGRESO EN BOLIVARES', 'Bs. '.number_format($ingresos_bolivares, 2, '.', ','))
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
-
-            Stat::make('INGRESOS TOTALES', '$ '.number_format($ingresos_totales, 2, '.', ','))
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
-                
-            //--------------------------------------------------------------------------------------
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 border-2 border-gray-300 rounded-md']),
             
-            /**
-             * GRUPO 3:
-             * -----------
-             */
-            Stat::make('VENTA PRODUCTOS', '$ '.number_format($venta_productos, 2, '.', ','))
-                // ->description($rango)
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
+            // Stat::make('Estadística Grande', $servicios_vip)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes(['class' => 'col-span-2 row-span-3 border-2 border-gray-300 rounded-md']),
 
-            Stat::make('COMISIONES', $total_servicio_realizados)
-                // ->description($rango)
+            Stat::make('Estadística 3', $servicios_vip)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 border-2 border-gray-300 rounded-md']),
+            
+            Stat::make('Estadística 4', $servicios_vip)
+                ->descriptionIcon('heroicon-m-presentation-chart-line')
+                ->color('success')
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 border-2 border-gray-300 rounded-md']),
 
-            Stat::make('GATOS TOTALES', $gastos_totales)
-                // ->description($rango)
+            Stat::make('Estadística 3', $servicios_vip)
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->color('success')
-                ->extraAttributes([
-                    'class' => 'border-2 border-[#7B9EA6]',
-                ]),
-                
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 border-2 border-gray-300 rounded-md']),
+            
+            Stat::make('Estadística 4', $servicios_vip)
+                ->descriptionIcon('heroicon-m-presentation-chart-line')
+                ->color('success')
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 border-2 border-gray-300 rounded-md']),
+        
+        
+            // Stat::make('SERVICIOS', $total_servicio_realizados)
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'col-span-1 row-span-1 border-2 border-[#7B9EA6]',
+            //     ]),
+
+            // Stat::make('SERVICIOS VIP', $servicios_vip)
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'col-span-1 row-span-1 border-2 border-[#7B9EA6]',
+            //     ]),
+            // Stat::make('PROMEDIO VENTA SERVICIOS', '$ '.number_format($promedio_venta_servicios, 2, '.', ','))
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'col-span-2 row-span-2 border-2 border-[#7B9EA6]',
+            //     ]),
+
+            // //--------------------------------------------------------------------------------------
+
+            // /**
+            //  * GRUPO 2:
+            //  * -----------
+            //  */
+            // Stat::make('INGRESOS DIVISAS', '$ '.number_format($ingresos_divisas, 2, '.', ','))
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'col-span-1 row-span-1 border-2 border-[#7B9EA6]',
+            //     ]),
+
+            // Stat::make('INGRESO EN BOLIVARES', 'Bs. '.number_format($ingresos_bolivares, 2, '.', ','))
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => ' col-span-1 row-span-1 border-2 border-[#7B9EA6]',
+            //     ]),
+
+            // Stat::make('INGRESOS TOTALES', '$ '.number_format($ingresos_totales, 2, '.', ','))
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'col-span-2 row-span-2 border-2 border-[#7B9EA6]',
+            //     ]),
+
+            // //--------------------------------------------------------------------------------------
+
+            // /**
+            //  * GRUPO 3:
+            //  * -----------
+            //  */
+            // Stat::make('VENTA PRODUCTOS', '$ '.number_format($venta_productos, 2, '.', ','))
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'border-2 border-[#7B9EA6]',
+            //     ]),
+
+            // Stat::make('COMISIONES', $total_servicio_realizados)
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'border-2 border-[#7B9EA6]',
+            //     ]),
+
+            // Stat::make('GATOS TOTALES', $gastos_totales)
+            //     // ->description($rango)
+            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
+            //     ->color('success')
+            //     ->extraAttributes([
+            //         'class' => 'border-2 border-[#7B9EA6]',
+            //     ]),
+
             //--------------------------------------------------------------------------------------
 
         ];
@@ -360,6 +396,6 @@ class StatsGeneral extends BaseWidget
 
     public function getColumns(): int
     {
-        return 3;
+        return 2;
     }
 }

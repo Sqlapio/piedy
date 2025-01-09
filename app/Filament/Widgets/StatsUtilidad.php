@@ -62,10 +62,10 @@ class StatsUtilidad extends BaseWidget
          * -----------
          */
         return [
-            Stat::make('UTILIDAD NETA', '$ '.number_format($utilidad_neta, 2, '.', ','))
-                ->extraAttributes([
-                    'class' => 'bg-[#D9C3C1]',
-                ])
+            // Stat::make('UTILIDAD NETA', '$ '.number_format($utilidad_neta, 2, '.', ','))
+            //     ->extraAttributes([
+            //         'class' => 'bg-[#D9C3C1]',
+            //     ])
                 //--------------------------------------------------------------------------------------
         ];
     }

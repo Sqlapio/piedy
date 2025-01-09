@@ -36,7 +36,29 @@ class ServiciosChart extends ChartWidget
                     [
                         'label' => 'Average de servicios',
                         'data' => $data->map(fn ($data) => $data->venta),
-                        'backgroundColor' => ['#22c55e', '#ed0000'],
+                        'backgroundColor' => [
+                            '#a16d69', 
+                            '#99bcbf',
+                            '#bf99a9', 
+                            '#bfaf99',
+                            '#99a9bf', 
+                            '#99bfaf',
+                            '#9c99bf', 
+                            '#99bf9c',
+                            '#bf9c99', 
+                            '#bf99bc',
+                            '#c7a8a5', 
+                            '#ab7e7a',
+                            '#7ba69d', 
+                            '#7b9aa6',
+                            '#a6877b', 
+                            '#7b85a6',
+                            '#a69d7b',
+                            '#a67b85',
+                            '#9aa67b',
+                            '#7ba687',
+                            '#a67b9a',
+                            '#56737f'],
                         // 'borderColor' => '#22c55e',
                         // 'fill' => true,
                     ],
@@ -56,6 +78,12 @@ class ServiciosChart extends ChartWidget
                 'display' => false,
             ],
         ],
+        'plugins' => [
+            'legend' => [
+                'position' => 'left',
+                'align' => 'start',
+            ],
+        ],
     ];   // protected function getOptions(): RawJs
 
 
@@ -66,6 +94,6 @@ class ServiciosChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'doughnut';
+        return 'pie';
     }
 }

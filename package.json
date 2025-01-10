@@ -21,6 +21,7 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
-        "alpinejs": "^3.12.3"
+        "alpinejs": "^3.12.3",
+        "chartjs-plugin-datalabels": "^2.2.0"
     }
 }

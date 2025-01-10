@@ -72,8 +72,6 @@ class ServiciosChart extends ChartWidget
 
     }
 
-
-
     protected static ?array $options = [
         'scales' => [
             'x' => [
@@ -84,15 +82,23 @@ class ServiciosChart extends ChartWidget
             ],
         ],
         'plugins' => [
-            
+
             'legend' => [
                 'position' => 'left',
                 'align' => 'start',
             ],
+            'datalabels' => [
+                'display' => true,
+                'borderColor'=> '#363636',
+                'borderRadius'=> 25,
+                'borderWidth'=> 2,
+                'color'=> 'white',
+            ],
         ],
 
 
-    ];   // protected function getOptions(): RawJs
+
+    ];
 
 
     public function getDescription(): ?string

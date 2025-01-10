@@ -294,37 +294,37 @@ class StatsGeneral extends BaseWidget
                 ->description('4%')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#4a9ac98a]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#7B9AA6]']),
 
             Stat::make('TOTAL PRODUCTOS', '10.5K')
                 ->description('4%')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#4a9ac98a]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#7B9AA6]']),
 
             Stat::make('PROMEDIO PRODUCTO/CLIENTE', '10.5M')
                 ->description('4%')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#4a9ac98a]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#7B9AA6]']),
 
             Stat::make('CLIENTES ATENDIDOS', '15K')
                 ->description('4%')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#4a77c98a]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#bf9c999e]']),
 
             Stat::make('CLIENTES NUEVOS', '10.5K')
                 ->description('4%')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#4a77c98a]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#bf9c999e]']),
 
             Stat::make('CLIENTES ATENDIDOS', '10.5M')
                 ->description('4%')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#4a77c98a]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#bf9c999e]']),
 
 
             // Stat::make('Estadística Grande', $servicios_vip)

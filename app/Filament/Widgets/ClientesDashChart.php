@@ -31,6 +31,12 @@ class ClientesDashChart extends ChartWidget
         ->groupBy('producto_id')
         ->get();
 
+        $labels = $data->map(fn ($data) => $data->descripcion);
+
+        $shortenedLabels = $labels->map(function($label) {
+            return substr($label, 0, 10) . (strlen($label) > 10 ? '...' : '');
+        });
+
         return [
            'datasets' => [
                 [
@@ -59,12 +65,12 @@ class ClientesDashChart extends ChartWidget
                         '#7ba687',
                         '#a67b9a',
                         '#56737f'],
-                    // 'borderColor' => '#22c55e',
+                    'borderColor' => '#ffff',
                     // 'fill' => true,
                 ],
 
             ],
-            'labels' => $data->map(fn ($data) => $data->descripcion),
+            'labels' => $shortenedLabels,
 
         ];
 

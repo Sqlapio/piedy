@@ -20,7 +20,7 @@ class ServiciosDashChart extends ChartWidget
 
     protected static ?string $heading = 'Servicios';
 
-    protected static ?string $maxHeight = '190px';
+    protected static ?string $maxHeight = '198px';
 
     protected function getData(): array
     {
@@ -33,6 +33,12 @@ class ServiciosDashChart extends ChartWidget
 
         $totalVentas = $data->sum('venta');
         $percentages = $data->map(fn ($item) => round(($item->venta / $totalVentas) * 100, 2));
+
+        $labels = $data->map(fn ($data) => $data->descripcion);
+
+        $shortenedLabels = $labels->map(function($label) {
+            return substr($label, 0, 10) . (strlen($label) > 10 ? '...' : '');
+        });
 
         return [
            'datasets' => [
@@ -62,12 +68,12 @@ class ServiciosDashChart extends ChartWidget
                             '#7ba687',
                             '#a67b9a',
                             '#56737f'],
-                        // 'borderColor' => '#22c55e',
+                        'borderColor' => '#ffff',
                         // 'fill' => true,
                     ],
 
                 ],
-                'labels' => $data->map(fn ($data) => $data->descripcion),
+                'labels' => $shortenedLabels,
             ];
 
     }

@@ -110,7 +110,8 @@ class ClienteNuevoChart extends ChartWidget
                 //     'borderColor' => '#36A2EB',
                 // ],
             ],
-            'labels' => ($data3->map(fn ($data3) => $data3->producto_id)),
+            'labels' => ($data1->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray()),
+
 
             // 'labels' => ($data1->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray()),
         ];

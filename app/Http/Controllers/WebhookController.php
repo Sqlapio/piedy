@@ -55,7 +55,7 @@ class WebhookController extends Controller
                 ->where('status', 1)
                 ->first();
 
-            if(isset($cliente_restric_one) && count($cliente_restric_one) > 0){
+            if (isset($cliente_restric_one) && count($cliente_restric_one) > 0) {
                 Log::error('Error al agendar cita por PiedyBot: El cliente ya tiene una cita agendada para el mismo servicio en la misma hora');
                 return response()->json(['message' => 'El cliente ya tiene una cita agendada para el mismo servicio en la misma hora, por favor intente agendar una hora diferente'], 400);
             }
@@ -106,7 +106,7 @@ class WebhookController extends Controller
                                     //         'hora_cita'         => $hora,
                                     //     ];
                                     //     $notificacionWebHook = NotificacionesController::notificacion_cita_wp($data);
-                                        
+
                                     //     if($notificacionWebHook['success'] == 200) {
                                     //         Log::info('Notificacion enviada por Webhook para PiedyBot de forma exitosa. Cita:' . $citas->cod_cita);
                                     //     }else{
@@ -137,7 +137,6 @@ class WebhookController extends Controller
             LogController::log(1, 'PiedyBot', $th->getMessage(), $response = null);
             return response()->json(['message' => 'Se produjo un error al agendar la cita, por favor intente mas tarde'], 500);
         }
-        
     }
     //
 }

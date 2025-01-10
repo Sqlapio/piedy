@@ -2,16 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ConsumoTecnicoResource\Pages;
-use App\Filament\Resources\ConsumoTecnicoResource\RelationManagers;
-use App\Models\ConsumoTecnico;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\ConsumoTecnico;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\ConsumoTecnicoResource\Pages;
+use App\Filament\Resources\ConsumoTecnicoResource\RelationManagers;
 
 class ConsumoTecnicoResource extends Resource
 {
@@ -27,9 +29,13 @@ class ConsumoTecnicoResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('producto_id')
-                    ->required()
-                    ->numeric(),
+                Select::make('producto_id')
+                    ->prefixIcon('heroicon-m-list-bullet')
+                    ->label('Producto')
+                    ->relationship('producto', 'descripcion')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
                 Forms\Components\TextInput::make('contenido')
                     ->required()
                     ->numeric(),

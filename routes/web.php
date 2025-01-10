@@ -348,15 +348,25 @@ Route::get('/detalle/srv/{codigo}', [CajaController::class, 'detalleServicio'])-
 
 Route::get('/ex', function () {
 
-    $clientes = Cliente::all();
+    // $clientes = Cliente::all();
 
-    foreach ($clientes as $cliente) {
-        $nombre = $cliente->nombre;
-        $apellido = $cliente->apellido;
-        $cliente->update([
-            'nombre' => $nombre. ' ' . $apellido
+    // foreach ($clientes as $cliente) {
+    //     $nombre = $cliente->nombre;
+    //     $apellido = $cliente->apellido;
+    //     $cliente->update([
+    //         'nombre' => $nombre. ' ' . $apellido
+    //     ]);
+    // }
+
+    $ps = InventarioSucursal::all();
+    foreach ($ps as $item) {
+        $p = Producto::where('id', $item->producto_id)->first();
+        // dd($p->cod_producto);
+        InventarioSucursal::where('producto_id', $p->id)->update([
+            'cod_producto' => $p->cod_producto
         ]);
     }
+    
 
     dd(1);
 

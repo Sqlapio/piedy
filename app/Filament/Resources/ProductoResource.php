@@ -61,129 +61,129 @@ class ProductoResource extends Resource
         return $form
             ->schema([
                 Section::make('REGISTRO DE PRODUCTOS')
-                ->description('Formulario de registro de productos para la venta y de consumo interno')
-                ->icon('heroicon-m-list-bullet')
-                ->schema([
-                    //Imagen del producto
-                    Section::make()
+                    ->description('Formulario de registro de productos para la venta y de consumo interno')
+                    ->icon('heroicon-m-list-bullet')
                     ->schema([
-                        FileUpload::make('image')
-                        ->label('Imagen del Producto')
-                        ->imageEditor()
-                        ->imageEditorAspectRatios([
-                            '16:9',
-                            '4:3',
-                            '1:1',
-                        ]),
-                    ])->columns(2),
-                    
-                    TextInput::make('descripcion')
-                    ->prefixIcon('heroicon-s-pencil')
-                    ->label('Descripción')
-                    ->required(),
+                        //Imagen del producto
+                        Section::make()
+                            ->schema([
+                                FileUpload::make('image')
+                                    ->label('Imagen del Producto')
+                                    ->imageEditor()
+                                    ->imageEditorAspectRatios([
+                                        '16:9',
+                                        '4:3',
+                                        '1:1',
+                                    ]),
+                            ])->columns(2),
 
-                    Select::make('categoria_id')
-                    ->prefixIcon('heroicon-m-list-bullet')
-                        ->label('Categoría')
-                        ->relationship('categoria', 'descripcion')
-                        ->searchable()
-                        ->preload()
-                        ->createOptionForm([
-                            TextInput::make('descripcion')
+                        TextInput::make('descripcion')
+                            ->prefixIcon('heroicon-s-pencil')
+                            ->label('Descripción')
                             ->required(),
-                        ])
-                        ->required()
-                        ->live(onBlur: true)
-                        ->afterStateUpdated(function (Set $set, ?string $state) {
-                            $sigla = Categoria::find($state)->siglas;
-                            $set('cod_producto', 'Ppro-'.$sigla.'-'.random_int(11111, 99999));
-                        }),
-                        
-                    TextInput::make('cod_producto')
-                        ->prefixIcon('heroicon-c-tag')
-                        ->label('Codigo del Producto'),
 
-                    TextInput::make('precio_venta')
-                        ->prefixIcon('heroicon-s-currency-dollar')
-                        ->label('Precio de Venta')
-                        ->prefix('$')
-                        ->numeric()
-                        ->inputMode('decimal'),
+                        Select::make('categoria_id')
+                            ->prefixIcon('heroicon-m-list-bullet')
+                            ->label('Categoría')
+                            ->relationship('categoria', 'descripcion')
+                            ->searchable()
+                            ->preload()
+                            ->createOptionForm([
+                                TextInput::make('descripcion')
+                                    ->required(),
+                            ])
+                            ->required()
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (Set $set, ?string $state) {
+                                $sigla = Categoria::find($state)->siglas;
+                                $set('cod_producto', 'Ppro-' . $sigla . '-' . random_int(11111, 99999));
+                            }),
 
-                    TextInput::make('costo')
-                        ->prefixIcon('heroicon-s-currency-dollar')
-                        ->label('Costo')
-                        ->numeric()
-                        ->inputMode('decimal'),
+                        TextInput::make('cod_producto')
+                            ->prefixIcon('heroicon-c-tag')
+                            ->label('Codigo del Producto'),
 
-                    Select::make('tipo_empaquetado')
-                        ->prefixIcon('heroicon-m-list-bullet')
-                        ->label('Empaquetado en/por:')
-                        ->required()
-                        ->options([
-                            'caja'    => 'Caja',
-                            'unidad'  => 'Unidad',
-                            'bulto'   => 'Bulto',
-                            'paquete' => 'Paquete',
-                        ]),
-                        
-                    TextInput::make('contenido_neto')
-                        ->prefixIcon('heroicon-m-list-bullet')
-                        ->label('Contenido Neto')
-                        ->required()
-                        ->numeric(),
-                    
-                    Select::make('unidad')
-                        ->prefixIcon('heroicon-m-list-bullet')
-                        ->label('Unidad')
-                        ->required()
-                        ->options([
-                            'gr'        => 'Gramos',
-                            'ml'        => 'Mililitros',
-                            'oz'        => 'Onzas',
-                            'par'       => 'Pares',
-                            'pzas'      => 'Piezas',
-                            'hojas'     => 'Hojas',
-                            'und'       => 'Unidad',
-                            'litros'    => 'Litros',
-                            'galon'     => 'Galon',
-                            'kl'        => 'Kilos',
-                        ]),
-                        
-                    Select::make('uso')
-                        ->prefixIcon('heroicon-s-inbox-arrow-down')
-                        ->label('Uso')
-                        ->options([
-                            'consumo-interno' => 'Consumo Interno',
-                            'venta' => 'Venta',
-                        ])->required(),
+                        TextInput::make('precio_venta')
+                            ->prefixIcon('heroicon-s-currency-dollar')
+                            ->label('Precio de Venta')
+                            ->prefix('$')
+                            ->numeric()
+                            ->inputMode('decimal'),
 
-                    TextInput::make('responsable')->default(Auth::user()->name)
-                        ->prefixIcon('heroicon-c-user-circle')
-                        ->label('Creado por:'),
-                ])->columns(2),
-                
+                        TextInput::make('costo')
+                            ->prefixIcon('heroicon-s-currency-dollar')
+                            ->label('Costo')
+                            ->numeric()
+                            ->inputMode('decimal'),
+
+                        Select::make('tipo_empaquetado')
+                            ->prefixIcon('heroicon-m-list-bullet')
+                            ->label('Empaquetado en/por:')
+                            ->required()
+                            ->options([
+                                'caja'    => 'Caja',
+                                'unidad'  => 'Unidad',
+                                'bulto'   => 'Bulto',
+                                'paquete' => 'Paquete',
+                            ]),
+
+                        TextInput::make('contenido_neto')
+                            ->prefixIcon('heroicon-m-list-bullet')
+                            ->label('Contenido Neto')
+                            ->required()
+                            ->numeric(),
+
+                        Select::make('unidad')
+                            ->prefixIcon('heroicon-m-list-bullet')
+                            ->label('Unidad')
+                            ->required()
+                            ->options([
+                                'gr'        => 'Gramos',
+                                'ml'        => 'Mililitros',
+                                'oz'        => 'Onzas',
+                                'par'       => 'Pares',
+                                'pzas'      => 'Piezas',
+                                'hojas'     => 'Hojas',
+                                'und'       => 'Unidad',
+                                'litros'    => 'Litros',
+                                'galon'     => 'Galon',
+                                'kl'        => 'Kilos',
+                            ]),
+
+                        Select::make('uso')
+                            ->prefixIcon('heroicon-s-inbox-arrow-down')
+                            ->label('Uso')
+                            ->options([
+                                'consumo-interno' => 'Consumo Interno',
+                                'venta' => 'Venta',
+                            ])->required(),
+
+                        TextInput::make('responsable')->default(Auth::user()->name)
+                            ->prefixIcon('heroicon-c-user-circle')
+                            ->label('Creado por:'),
+                    ])->columns(2),
+
                 Section::make('MANEJO DE INVENTARIO')
-                ->description('Informacion para el manejo de las cantiddes maximas y minimas de inventario')
-                ->icon('heroicon-m-list-bullet')
-                ->schema([
-                    // TextInput::make('max')
-                    //     ->prefixIcon('heroicon-s-pencil')
-                    //     ->label('Cantidad Maxima en existencia')
-                    //     ->numeric(),
-                        
-                    TextInput::make('min')
-                        ->prefixIcon('heroicon-s-pencil')
-                        ->label('Cantidad Minima en existencia')
-                        ->numeric(),
+                    ->description('Informacion para el manejo de las cantiddes maximas y minimas de inventario')
+                    ->icon('heroicon-m-list-bullet')
+                    ->schema([
+                        // TextInput::make('max')
+                        //     ->prefixIcon('heroicon-s-pencil')
+                        //     ->label('Cantidad Maxima en existencia')
+                        //     ->numeric(),
 
-                    TextInput::make('existencia_min_sucursal')
-                        ->prefixIcon('heroicon-s-pencil')
-                        ->label('Cantidad Minima en existencia en sucursal')
-                        ->default(5)
-                        ->helperText('Este dato sera utilizado para el envio de notificaciones cuando el producto llegue a la cantidad minima en el almacen de la sucursal')
-                        ->numeric(),
-                ])->columns(2),
+                        TextInput::make('min')
+                            ->prefixIcon('heroicon-s-pencil')
+                            ->label('Cantidad Minima en existencia')
+                            ->numeric(),
+
+                        TextInput::make('existencia_min_sucursal')
+                            ->prefixIcon('heroicon-s-pencil')
+                            ->label('Cantidad Minima en existencia en sucursal')
+                            ->default(5)
+                            ->helperText('Este dato sera utilizado para el envio de notificaciones cuando el producto llegue a la cantidad minima en el almacen de la sucursal')
+                            ->numeric(),
+                    ])->columns(2),
             ]);
     }
 
@@ -198,7 +198,7 @@ class ProductoResource extends Resource
                     ->searchable(),
 
                 ImageColumn::make('image')
-                ->toggleable(isToggledHiddenByDefault: true)
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->circular()
                     ->searchable(),
 
@@ -237,7 +237,7 @@ class ProductoResource extends Resource
 
                 TextColumn::make('contenido_neto')
                     ->toggleable(isToggledHiddenByDefault: false)
-                    ->numeric()
+                    ->decimal(2)
                     ->alignCenter()
                     ->searchable(),
 
@@ -247,7 +247,7 @@ class ProductoResource extends Resource
                     ->alignCenter()
                     ->searchable(),
 
-                    TextColumn::make('tipo_empaquetado')
+                TextColumn::make('tipo_empaquetado')
                     ->toggleable(isToggledHiddenByDefault: false)
 
                     ->label('Empaquetado en:')
@@ -327,8 +327,8 @@ class ProductoResource extends Resource
                 ActionGroup::make([
                     Tables\Actions\EditAction::make(),
                     Action::make('Entrada')
-                    ->icon('heroicon-s-calendar-days')
-                    ->model(Producto::class)
+                        ->icon('heroicon-s-calendar-days')
+                        ->model(Producto::class)
                         ->form([
                             Section::make('Formulario')
                                 ->description(function (Producto $record) {
@@ -337,27 +337,27 @@ class ProductoResource extends Resource
                                 ->icon('heroicon-s-clipboard-document-list')
                                 ->schema([
                                     Grid::make()
-                                    ->schema([
-                                        TextInput::make('min')
-                                            ->label('Exitencia Minima en Almacen')
-                                            ->prefixIcon('heroicon-s-queue-list')
-                                            ->numeric(),
+                                        ->schema([
+                                            TextInput::make('min')
+                                                ->label('Exitencia Minima en Almacen')
+                                                ->prefixIcon('heroicon-s-queue-list')
+                                                ->numeric(),
                                             // ->required(),
-                                        Select::make('almacen_id')
-                                            ->prefixIcon('heroicon-m-list-bullet')
-                                            ->relationship('almacenes', 'nombre')
-                                            ->searchable()
-                                            ->preload()
-                                            ->createOptionForm([
-                                                TextInput::make('nombre')
-                                                    ->required(),
-                                            ]),
+                                            Select::make('almacen_id')
+                                                ->prefixIcon('heroicon-m-list-bullet')
+                                                ->relationship('almacenes', 'nombre')
+                                                ->searchable()
+                                                ->preload()
+                                                ->createOptionForm([
+                                                    TextInput::make('nombre')
+                                                        ->required(),
+                                                ]),
                                             // ->required(),,
-                                        TextInput::make('cantidad')
-                                            ->prefixIcon('heroicon-s-queue-list')
-                                            ->required()
-                                            ->numeric(),
-                                    ]),
+                                            TextInput::make('cantidad')
+                                                ->prefixIcon('heroicon-s-queue-list')
+                                                ->required()
+                                                ->numeric(),
+                                        ]),
                                 ])
                         ])->action(function (Producto $record, array $data) {
                             InventarioController::entrada_directa(
@@ -368,7 +368,7 @@ class ProductoResource extends Resource
                                 $data['cantidad']
                             );
                         })
-                    
+
                 ])
             ])
             ->bulkActions([

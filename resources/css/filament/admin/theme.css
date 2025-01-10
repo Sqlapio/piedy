@@ -70,6 +70,63 @@
     @apply text-[#7B95A6] !important;
 }
 
+.fi-wi-stats-overview-stat .flex {
+    justify-content: center;
+}
+
+.fi-wi-stats-overview-stat-description {
+    @apply text-xs;
+
+}
+
+.fi-wi-stats-overview-stat-label {
+    @apply text-sm;
+    @apply text-black !important;
+}
+
+.fi-wi-stats-overview-stat-value {
+    @apply text-2xl;
+}
+
+.fi-wi-stats-overview-stat {
+    padding: 5px;
+}
+
+.fi-wi-stats-overview-stats-ctn {
+    @apply gap-3;
+}
+
+.bg-serv {
+    background-color: #3ec7d28a !important;
+}
+
+.bg-prod {
+    background-color: #4a9ac98a !important;
+}
+
+.bg-client {
+    background-color: #4a77c98a !important;
+}
+
+.serv header:nth-child(1) {
+    background-color: #3ec7d28a;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.prod header:nth-child(1) {
+    background-color: #4a9ac98a;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.client header:nth-child(1) {
+    background-color: #4a77c98a;
+    border-radius: 10px 10px 0px 0px;
+}
+
+/* .fi-wi-stats-overview-stats-ctn > div {
+    background-color: aqua;
+} */
+
 /* .fi-btn {
     @apply bg-[#F2F2F2] !important;
 } */

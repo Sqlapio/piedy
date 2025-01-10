@@ -26,17 +26,9 @@ class StatsGeneralDos extends BaseWidget
 
     protected function getStats(): array
     {
-        if($this->filters['activar'] == false)
-        {
-            $rangeStartDate = now()->startOfMonth();
-            $rangeEndDate = now()->endOfMonth();
-            $rango = date('d-m-Y', strtotime($rangeStartDate)).' al '.date('d-m-Y', strtotime($rangeEndDate));
+        $rangeStartDate = now()->startOfMonth();
+        $rangeEndDate = now()->endOfMonth();
 
-        }else{
-            $rangeStartDate = $this->filters['startDate'].' 00:00:00.000';
-            $rangeEndDate = $this->filters['endDate'].'. 23:59:59.000';
-            $rango = date('d-m-Y', strtotime($rangeStartDate)).' al '.date('d-m-Y', strtotime($rangeEndDate));
-        }
 
         /**
          * CALCULO PARA LA ULITIDAD NETA:
@@ -64,15 +56,15 @@ class StatsGeneralDos extends BaseWidget
 
         //Comisiones de gastos de bolivares a dolares
         $conver_gastos_bsd_usd = $gastos_bsd / $tasa;
-        
+
         $utilidad_neta      = $ventas - $comisiones_serv_usd - $comisiones_serv_usd_gte - $conver_comisiones_serv_bsd_usd - $comisiones_prod_emp_usd - $comisiones_prod_gte_usd - $gastos_usd - $conver_gastos_bsd_usd;
-        
+
         //----------------------------------------------------------------------------------------------------------------------------------
 
 
 
 
-        
+
         /**
          * TASA RETENCION DE CLINETES
          * -----------------------------------------
@@ -88,7 +80,7 @@ class StatsGeneralDos extends BaseWidget
         $tasa_retencion_clientes = ($clientes_recurentes / $clientes) * 100;
         //------------------------------------------------------------------------------------------------------------------
 
-        
+
         /**
          * % OCUPACION CITAS
          * -----------------------------------------
@@ -109,15 +101,15 @@ class StatsGeneralDos extends BaseWidget
             '08:00 pm',
             '09:00 pm',
         ];
-    
+
         $nro_citas_agendadas = [];
-    
-        for ($i=0; $i < count($array_hrs); $i++) { 
+
+        for ($i=0; $i < count($array_hrs); $i++) {
             # code...
             $count = Cita::where('hora', $array_hrs[$i])->whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->count();
             array_push($nro_citas_agendadas, $count);
         }
-        
+
         $ocupacion_citas = (array_sum($nro_citas_agendadas) / 44) * 100;
         //------------------------------------------------------------------------------------------------------------------
 
@@ -130,7 +122,7 @@ class StatsGeneralDos extends BaseWidget
         $clientes_nuevos = Cliente::whereBetween('created_at',[$rangeStartDate, $rangeEndDate])->count();
         //------------------------------------------------------------------------------------------------------------------
 
-        
+
         /**
          * TASA DE AUSENCIA DE LOS CLIENTES
          * -----------------------------------------
@@ -167,16 +159,34 @@ class StatsGeneralDos extends BaseWidget
         //cantidad de clientes que estan por sobre el promedio de visitas
 
 
-        
+
         //------------------------------------------------------------------------------------------------------------------
 
 
         return [
 
             /**
-             * GRUPO 5:
+             * GRUPO 3 CLIENTES:
              * -----------
              */
+
+            Stat::make('CLIENTES ATENDIDOS', '15478.59')
+                ->description('4% de descuento')
+                ->color('success')
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 border-2 border-gray-300 rounded-md text-center']),
+
+            Stat::make('CLIENTES NUEVOS', '10.5K')
+                ->description('4% de descuento')
+                ->color('success')
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 border-2 border-gray-300 rounded-md text-center']),
+
+            Stat::make('CLIENTES AGENDADOS', '10.5M')
+                ->description('4% de descuento')
+                ->color('success')
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 border-2 border-gray-300 rounded-md text-center']),
+
+
+
             // Stat::make('CLIENTES NUEVOS', $clientes_nuevos)
             //     // ->description($rango)
             //     ->descriptionIcon('heroicon-m-presentation-chart-line')
@@ -200,9 +210,9 @@ class StatsGeneralDos extends BaseWidget
             //     ->extraAttributes([
             //         'class' => 'border-2 border-[#7B9EA6]',
             //     ]),
-                
+
             //--------------------------------------------------------------------------------------
-            
+
             /**
              * GRUPO 6:
              * -----------
@@ -230,7 +240,7 @@ class StatsGeneralDos extends BaseWidget
             //     ->extraAttributes([
             //         'class' => 'border-2 border-[#7B9EA6]',
             //     ]),
-                
+
             //--------------------------------------------------------------------------------------
 
             /**
@@ -261,7 +271,7 @@ class StatsGeneralDos extends BaseWidget
             //         'class' => 'border-2 border-[#7B9EA6]',
             //     ]),
 
-                
+
             //--------------------------------------------------------------------------------------
         ];
     }

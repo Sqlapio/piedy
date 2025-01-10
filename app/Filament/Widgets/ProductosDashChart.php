@@ -1,40 +1,40 @@
 <?php
 
-namespace App\Filament\Resources\VentaResource\Widgets;
+namespace App\Filament\Widgets;
 
-use App\Models\Servicio;
-use Flowframe\Trend\Trend;
-use Filament\Support\RawJs;
+use App\Models\Frecuencia;
+use App\Models\VentaServicio;
+use App\Models\VentaProducto;
+
+// use Carbon\Carbon;
 use Illuminate\Support\Carbon;
-use Flowframe\Trend\TrendValue;
-use App\Models\DetalleAsignacion;
 use Filament\Widgets\ChartWidget;
-use Illuminate\Support\Facades\DB;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
+use Flowframe\Trend\Trend;
+use Flowframe\Trend\TrendValue;
+use Illuminate\Support\Facades\DB;
 
-class ServiciosChart extends ChartWidget
+class ProductosDashChart extends ChartWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $heading = 'Servicios';
+    protected static ?string $heading = 'Productos';
 
-    protected static ?string $maxHeight = '300px';
-
-    // protected int | string | array $columnSpan = '2';
+    protected static ?string $maxHeight = '190px';
 
     protected function getData(): array
     {
 
-        $data = DB::table('detalle_asignacions')
-        ->select(DB::raw('COUNT(servicio_id) as venta, servicio_id, servicios.descripcion as descripcion', 'created_at'))
-        ->join('servicios', 'detalle_asignacions.servicio_id', '=', 'servicios.id')
-        ->groupBy('servicio_id')
+        $data = DB::table('venta_productos')
+        ->select(DB::raw('COUNT(producto_id) as venta, producto_id, productos.descripcion as descripcion'))
+        ->join('productos', 'venta_productos.producto_id', '=', 'productos.id')
+        ->groupBy('producto_id')
         ->get();
 
         return [
            'datasets' => [
                     [
-                        'label' => 'Average de servicios',
+                        'label' => 'Average de Productos',
                         'data' => $data->map(fn ($data) => $data->venta),
                         'backgroundColor' => [
                             '#a16d69',
@@ -62,11 +62,15 @@ class ServiciosChart extends ChartWidget
                         // 'borderColor' => '#22c55e',
                         // 'fill' => true,
                     ],
-
                 ],
-                'labels' => $data->map(fn ($data) => $data->descripcion),
-            ];
+                'labels' => ($data->map(fn ($data) => $data->descripcion)),
+        ];
 
+    }
+
+    public function getDescription(): ?string
+    {
+        return 'Productos por la cantidad de ventas';
     }
 
     protected static ?array $options = [
@@ -78,13 +82,13 @@ class ServiciosChart extends ChartWidget
                 'display' => false,
             ],
         ],
+        'plugins' => [
+            'legend' => [
+                'position' => 'left',
+                'align' => 'start',
+            ],
+        ],
     ];   // protected function getOptions(): RawJs
-
-
-    public function getDescription(): ?string
-    {
-        return 'Servicios por la cantidad de ventas';
-    }
 
     protected function getType(): string
     {

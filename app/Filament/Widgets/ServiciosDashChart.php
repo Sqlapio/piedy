@@ -1,26 +1,26 @@
 <?php
 
-namespace App\Filament\Resources\VentaResource\Widgets;
+namespace App\Filament\Widgets;
 
-use App\Models\Servicio;
-use Flowframe\Trend\Trend;
-use Filament\Support\RawJs;
+use App\Models\Frecuencia;
+use App\Models\VentaServicio;
+use App\Models\VentaProducto;
+
+// use Carbon\Carbon;
 use Illuminate\Support\Carbon;
-use Flowframe\Trend\TrendValue;
-use App\Models\DetalleAsignacion;
 use Filament\Widgets\ChartWidget;
-use Illuminate\Support\Facades\DB;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
+use Flowframe\Trend\Trend;
+use Flowframe\Trend\TrendValue;
+use Illuminate\Support\Facades\DB;
 
-class ServiciosChart extends ChartWidget
+class ServiciosDashChart extends ChartWidget
 {
     use InteractsWithPageFilters;
 
     protected static ?string $heading = 'Servicios';
 
-    protected static ?string $maxHeight = '300px';
-
-    // protected int | string | array $columnSpan = '2';
+    protected static ?string $maxHeight = '190px';
 
     protected function getData(): array
     {
@@ -31,10 +31,13 @@ class ServiciosChart extends ChartWidget
         ->groupBy('servicio_id')
         ->get();
 
+        $totalVentas = $data->sum('venta');
+        $percentages = $data->map(fn ($item) => round(($item->venta / $totalVentas) * 100, 2));
+
         return [
            'datasets' => [
                     [
-                        'label' => 'Average de servicios',
+                        'label' => '',
                         'data' => $data->map(fn ($data) => $data->venta),
                         'backgroundColor' => [
                             '#a16d69',
@@ -72,13 +75,23 @@ class ServiciosChart extends ChartWidget
     protected static ?array $options = [
         'scales' => [
             'x' => [
-                'display' => false,
+                'display' => true,
+
+                'ticks' => [
+                    'stepSize'=> 1
+                ],
             ],
             'y' => [
-                'display' => false,
+                'display' => true,
             ],
         ],
-    ];   // protected function getOptions(): RawJs
+        'indexAxis' => 'y',
+        'plugins' => [
+            'legend' => [
+               'display' => false,
+            ]
+        ]
+    ];
 
 
     public function getDescription(): ?string
@@ -88,6 +101,6 @@ class ServiciosChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'pie';
+        return 'bar';
     }
 }

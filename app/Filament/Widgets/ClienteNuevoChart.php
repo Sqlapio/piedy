@@ -93,14 +93,14 @@ class ClienteNuevoChart extends ChartWidget
                 [
                     'label' => 'Clientes Nuevos',
                     'data' => $data1->map(fn (TrendValue $value) => $value->aggregate),
-                    'backgroundColor' => '#22c55e',
-                    'borderColor' => '#22c55e',
+                    'backgroundColor' => '#7B9AA6',
+                    'borderColor' => '#7B9AA6',
                 ],
                 [
                     'label' => 'Clientes Atendidos',
                     'data' => $data2->map(fn (TrendValue $value) => $value->aggregate),
-                    'backgroundColor' => '#36A2EB',
-                    'borderColor' => '#36A2EB',
+                    'backgroundColor' => '#BF9C99',
+                    'borderColor' => '#BF9C99',
                 ],
 
                 // [
@@ -124,6 +124,6 @@ class ClienteNuevoChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'line';
+         return 'line';
     }
 }

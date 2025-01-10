@@ -18,7 +18,7 @@ use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
 
-class StatsGeneral extends BaseWidget
+class StatsGeneralProd extends BaseWidget
 {
     use InteractsWithPageFilters;
 
@@ -268,84 +268,24 @@ class StatsGeneral extends BaseWidget
         return [
 
             /**
-             * GRUPO 1 SERVICIOS:
+             * GRUPO 2 PRODUCTOS:
              * -----------
              */
 
-            Stat::make('SERVICIOS', '15K')
-                ->description('4%')
+             Stat::make('PRDUCTOS VENDIDOS', '15478.59')
+                ->description('4% de descuento')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#3ec7d28a]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 border-2 border-gray-300 rounded-md text-center']),
 
-            Stat::make('TOTAL SERVICIOS($)', '10.5K')
-                ->description('4%')
+            Stat::make('TOTAL', '10.5K')
+                ->description('4% de descuento')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#3ec7d28a]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 border-2 border-gray-300 rounded-md text-center']),
 
-            Stat::make('PROMEDIO SERVCIO/CLIENTE', '10.5M')
-                ->description('4%')
+            Stat::make('PRODUCTOS CLIENTES', '10.5M')
+                ->description('4% de descuento')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#3ec7d28a]']),
-
-                Stat::make('PRODUCTOS VENDIDOS', '15K')
-                ->description('4%')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#4a9ac98a]']),
-
-            Stat::make('TOTAL PRODUCTOS', '10.5K')
-                ->description('4%')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#4a9ac98a]']),
-
-            Stat::make('PROMEDIO PRODUCTO/CLIENTE', '10.5M')
-                ->description('4%')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#4a9ac98a]']),
-
-            Stat::make('CLIENTES ATENDIDOS', '15K')
-                ->description('4%')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#4a77c98a]']),
-
-            Stat::make('CLIENTES NUEVOS', '10.5K')
-                ->description('4%')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#4a77c98a]']),
-
-            Stat::make('CLIENTES ATENDIDOS', '10.5M')
-                ->description('4%')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-2 border-[#4a77c98a]']),
-
-
-            // Stat::make('Estadística Grande', $servicios_vip)
-            //     ->descriptionIcon('heroicon-m-presentation-chart-line')
-            //     ->color('success')
-            //     ->extraAttributes(['class' => 'col-span-2 row-span-3 border-2 border-gray-300 rounded-md']),
-
-            // Stat::make('Estadística 4', $servicios_vip)
-            //     ->description('4% de descuento')
-            //     ->color('success')
-            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 border-2 border-gray-300 rounded-md text-center']),
-
-            // Stat::make('Estadística 3', $servicios_vip)
-            //     ->description('4% de descuento')
-            //     ->color('success')
-            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 border-2 border-gray-300 rounded-md text-center']),
-
-            // Stat::make('Estadística 4', $servicios_vip)
-            //     ->description('4% de descuento')
-            //     ->color('success')
-            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 border-2 border-gray-300 rounded-md text-center']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 border-2 border-gray-300 rounded-md text-center']),
 
 
             // Stat::make('SERVICIOS', $total_servicio_realizados)
@@ -438,6 +378,6 @@ class StatsGeneral extends BaseWidget
 
     public function getColumns(): int
     {
-        return 3;
+        return 1;
     }
 }

@@ -27,7 +27,7 @@ class AdminPanelProvider extends PanelProvider
     protected static ?string $title = 'Dashboard Piedy';
 
     protected static ?string $navigationIcon = 'heroicon-o-home';
-    
+
     public function panel(Panel $panel): Panel
     {
         return $panel
@@ -102,7 +102,7 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->spa()
-            // ->maxContentWidth(MaxWidth::Full)
+            ->maxContentWidth(MaxWidth::Full)
             ->viteTheme('resources/css/filament/admin/theme.css');
     }
 }

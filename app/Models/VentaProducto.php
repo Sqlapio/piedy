@@ -66,4 +66,9 @@ class VentaProducto extends Model
         return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
     }
 
+    //Uno a Uno clientes
+    public function cliente(): HasOne
+    {
+        return $this->hasOne(Cliente::class, 'id', 'cliente_id');
+    }
 }

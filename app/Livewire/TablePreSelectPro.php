@@ -9,6 +9,7 @@ use App\Models\TasaBcv;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Livewire\Component;
+use App\Models\Producto;
 use App\Models\Disponible;
 use App\Models\MetodoPago;
 use Filament\Tables\Table;
@@ -69,6 +70,12 @@ class TablePreSelectPro extends Component implements HasForms, HasTable
             ->query(CarProducto::query()->where('sucursal_id', Auth::user()->sucursal_id)->where('status', 1))
             ->columns([
 
+                TextColumn::make('producto.descripcion')
+                    ->label('Producto')
+                    ->icon('heroicon-c-shopping-bag')
+                    ->color('colorOne')
+                    ->sortable(),
+
                 TextColumn::make('precio_venta')
                     ->label('Precio')
                     ->icon('heroicon-m-currency-dollar')
@@ -78,7 +85,6 @@ class TablePreSelectPro extends Component implements HasForms, HasTable
 
                 TextColumn::make('cantidad')
                     ->label('Cantidad')
-                    ->icon('heroicon-c-shopping-bag')
                     ->color('primary')
                     ->numeric()
                     ->sortable(),

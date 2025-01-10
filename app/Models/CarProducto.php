@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CarProducto extends Model
 {
@@ -21,6 +22,7 @@ class CarProducto extends Model
      */
     protected $fillable = [
         'cod_prod_serv',
+        'cod_prod',
         'cod_pre_seleccion',
         'precio_venta',
         'cantidad',
@@ -30,4 +32,14 @@ class CarProducto extends Model
         'tipo'
 
     ];
+
+    /**
+     * Get the user associated with the CarProducto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function producto(): HasOne
+    {
+        return $this->hasOne(Producto::class, 'cod_producto', 'cod_prod');
+    }
 }

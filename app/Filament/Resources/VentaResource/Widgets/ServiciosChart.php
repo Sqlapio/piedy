@@ -89,10 +89,11 @@ class ServiciosChart extends ChartWidget
             ],
             'datalabels' => [
                 'display' => true,
-                'borderColor'=> '#363636',
-                'borderRadius'=> 25,
-                'borderWidth'=> 2,
-                'color'=> 'white',
+                'color' => '#ffffff',
+                'font' => [
+                    'size' => 14,
+                    'weight' => 'bold',
+                ]
             ],
         ],
 

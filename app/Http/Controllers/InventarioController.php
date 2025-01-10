@@ -29,7 +29,7 @@ class InventarioController extends Controller
             $inventario->cantidad += $cantidad;
             $inventario->save();
 
-            if($inventario->save()){
+            if ($inventario->save()) {
 
                 //Escribimos en la tabla de entradas
                 //la cantidad que fue movida del inventario principal al
@@ -43,7 +43,6 @@ class InventarioController extends Controller
                     ->iconColor('success')
                     ->send();
             }
-
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion-InventarioController(reposicion)', $th->getMessage(), $response = null);
             Notification::make()
@@ -63,15 +62,13 @@ class InventarioController extends Controller
             //Informacion del producto
             $producto = Producto::where('id', Inventario::find($inventario_id)->producto_id)->first();
 
-            if($cantidad <= 0)
-            {
+            if ($cantidad <= 0) {
                 throw new Exception("No puede realizar el movimiento ya que el inventario esta en 0. Por favor comuniquese con el Administrador", 401);
             }
 
             $inventario = Inventario::where('producto_id', $producto->id)->first();
             //Cantidad en inventario general
-            if($cantidad > $inventario->cantidad)
-            {
+            if ($cantidad > $inventario->cantidad) {
                 throw new Exception("No puede realizar el movimiento ya que la cantidad solicitada es mayor a la existencia total. Por favor comuniquese con el Administrador", 401);
             }
 
@@ -85,10 +82,10 @@ class InventarioController extends Controller
             $recepcion->responsable = Auth::user()->name;
             $recepcion->sucursal_id = Auth::user()->sucursal_id;
             $recepcion->save();
-            
+
             SalidaInventarioController::crear_salida($inventario_id, $sucursal_id, $cantidad, 'envio-sucursal');
-            
-            if($recepcion->save()) {
+
+            if ($recepcion->save()) {
                 $restaExistencia = Inventario::where('producto_id', $producto->id)->first();
                 $restaExistencia->update([
                     'cantidad' => $restaExistencia->cantidad - $cantidad
@@ -97,11 +94,10 @@ class InventarioController extends Controller
                 //Calculo del porcentaje de exitencia minima
                 $porcentaje = ($restaExistencia->cantidad * 20) / 100;
 
-                if($restaExistencia->cantidad <= $inventario->min)
-                {
+                if ($restaExistencia->cantidad <= $inventario->min) {
                     $notificacion = NotificacionesController::notificacion_exitencia_minima($restaExistencia->cantidad, $producto->id, $inventario->almacen->nombre);
                 }
-                
+
                 Notification::make()
                     ->title('El Movimiento se realizo con éxito.')
                     ->color('success')
@@ -109,8 +105,6 @@ class InventarioController extends Controller
                     ->iconColor('success')
                     ->send();
             }
-
-
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion-InventarioController(asignacion_sucursal)', $th->getMessage(), $response = null);
             Notification::make()
@@ -121,7 +115,6 @@ class InventarioController extends Controller
                 ->body($th->getMessage())
                 ->send();
         }
-
     }
 
     public static function entrada_directa($producto_id, $uso, $min, $almacen_id, $cantidad)
@@ -135,6 +128,7 @@ class InventarioController extends Controller
             $inventario->producto_id = $producto_id;
             $inventario->almacen_id  = $almacen_id;
             $inventario->cantidad    = $cantidad;
+            $inventario->unidad      = Producto::where('id', $producto_id)->first()->unidad;
             $inventario->uso         = $uso;
             $inventario->min         = $min;
             $inventario->responsable = Auth::user()->name;
@@ -143,15 +137,16 @@ class InventarioController extends Controller
 
             //Creamos la entrada en la tabla de inventario
             $entrada = new EntradaInventario();
-            $entrada->cod_movimiento    = 'Psi-'.random_int(11111, 99999);
+            $entrada->cod_movimiento    = 'Psi-' . random_int(11111, 99999);
             $entrada->almacen_id        = $almacen_id;
             $entrada->producto_id       = $producto_id;
             $entrada->cantidad          = $cantidad;
+            $entrada->unidad            = $inventario->unidad;
             $entrada->tipo_movimiento   = 'primera carga';
             $entrada->responsable       = Auth::user()->name;
             $entrada->save();
 
-            if($inventario->save() && $entrada->save()) {
+            if ($inventario->save() && $entrada->save()) {
                 Notification::make()
                     ->title('El carga directa se realizo con éxito.')
                     ->color('success')
@@ -159,8 +154,6 @@ class InventarioController extends Controller
                     ->iconColor('success')
                     ->send();
             }
-
-
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion-InventarioController(entrada_directa)', $th->getMessage(), $response = null);
             Notification::make()
@@ -171,6 +164,5 @@ class InventarioController extends Controller
                 ->body($th->getMessage())
                 ->send();
         }
-
     }
 }

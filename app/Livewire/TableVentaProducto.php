@@ -22,40 +22,36 @@ class TableVentaProducto extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->heading('VENTA DE PRODUCTOS')
+            ->heading('VENTA DIARIA')
             ->description('Tabla de venta de productos')
             ->query(VentaProducto::query()->whereBetween('created_at', [now()->startOfDay(), now()->endOfDay()]))
             ->columns([
                 Tables\Columns\TextColumn::make('cod_asignacion')
+                    ->label('Codigo Asignacion')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('gerente_id')
+                    ->label('Gerente')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('producto.descripcion')
+                    ->label('Producto')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('costo_producto')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('comision_empleado')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('comision_gerente')
-                    ->numeric()
+                    ->money('USD')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('fecha_venta')
+                    ->dateTime()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cantidad')
+                    ->alignCenter()
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_venta')
-                    ->numeric()
+                    ->label('Total Venta')
+                    ->money('USD')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('facturado')
-                    ->numeric()
-                    ->sortable(),
+                
+                
                 Tables\Columns\TextColumn::make('metodo_pago')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('metodoUsd')

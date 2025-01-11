@@ -2,17 +2,18 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Cita;
 use App\Models\Frecuencia;
-use App\Models\VentaServicio;
-use App\Models\VentaProducto;
+use Flowframe\Trend\Trend;
 
 // use Carbon\Carbon;
+use App\Models\VentaProducto;
+use App\Models\VentaServicio;
 use Illuminate\Support\Carbon;
-use Filament\Widgets\ChartWidget;
-use Filament\Widgets\Concerns\InteractsWithPageFilters;
-use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
+use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 
 class ClientesDashChart extends ChartWidget
 {
@@ -25,23 +26,43 @@ class ClientesDashChart extends ChartWidget
     protected function getData(): array
     {
 
-        $data = DB::table('venta_productos')
-        ->select(DB::raw('COUNT(producto_id) as venta, producto_id, productos.descripcion as descripcion'))
-        ->join('productos', 'venta_productos.producto_id', '=', 'productos.id')
-        ->groupBy('producto_id')
-        ->get();
+        // $data = DB::table('venta_productos')
+        // ->select(DB::raw('COUNT(producto_id) as venta, producto_id, productos.descripcion as descripcion'))
+        // ->join('productos', 'venta_productos.producto_id', '=', 'productos.id')
+        // ->groupBy('producto_id')
+        // ->get();
 
-        $labels = $data->map(fn ($data) => $data->descripcion);
+        $rangeStartDate = now()->startOfDay();
+        $rangeEndDate = now()->endOfDay();
 
-        $shortenedLabels = $labels->map(function($label) {
-            return substr($label, 0, 10) . (strlen($label) > 10 ? '...' : '');
-        });
+        $citas_agendadas_bot = Cita::where('responsable', 'PiedyBot')->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+
+        $citas_agendadas_sistema = Cita::where('responsable', '!=', 'PiedyBot')->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+
+        $array = [
+            $citas_agendadas_bot,
+             $citas_agendadas_sistema
+        ];
+
+        $labels = [
+            'PiedyBot', 
+            'Agendadas en Tienda'
+        ];
+        
+        // dd($array, $labels);
+        // dd($data);
+
+        $labels = $labels;
+
+        // $shortenedLabels = $labels->map(function($label) {
+        //     return substr($label, 0, 10) . (strlen($label) > 10 ? '...' : '');
+        // });
 
         return [
            'datasets' => [
                 [
                     'label' => '',
-                    'data' => $data->map(fn ($data) => $data->venta),
+                    'data' => $array,
                     'backgroundColor' => [
                         '#a16d69',
                         '#99bcbf',
@@ -70,7 +91,7 @@ class ClientesDashChart extends ChartWidget
                 ],
 
             ],
-            'labels' => $shortenedLabels,
+            'labels' => $labels,
 
         ];
 

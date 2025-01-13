@@ -67,6 +67,11 @@ class AsignacionController extends Controller
                 $detalle_asignacion->serv_asignacion = $servicio->asignacion;
                 $detalle_asignacion->save();
 
+                //Aumentamos el contador de visitas en la tabla de clientes
+                $cliente = Cliente::where('id', $cliente_id)->first();
+                $cliente->visitas += 1;
+                $cliente->save();
+
                 return true;
 
             }

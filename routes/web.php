@@ -164,7 +164,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('recepcion-inventario');
     })->name('recepcion-inventario');
 
-    
+
 
     /**
      * Ruta para cierre general
@@ -322,7 +322,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/{record}/edit', function () {
         return view('clientes');
     })->name('cliente.edit');
-
 });
 
 
@@ -358,16 +357,17 @@ Route::get('/ex', function () {
     //     ]);
     // }
 
-    $ps = InventarioSucursal::all();
-    foreach ($ps as $item) {
-        $p = Producto::where('id', $item->producto_id)->first();
-        // dd($p->cod_producto);
-        InventarioSucursal::where('producto_id', $p->id)->update([
-            'cod_producto' => $p->cod_producto
-        ]);
-    }
-    
+    // $ps = InventarioSucursal::all()
+    // foreach ($ps as $item) {
+    //     $p = Producto::where('id', $item->producto_id)->first();
+    //     // dd($p->cod_producto);
+    //     InventarioSucursal::where('producto_id', $p->id)->update([
+    //         'cod_producto' => $p->cod_producto
+    //     ]);
+    // }
 
-    dd(1);
 
+    // dd(1);
+
+    dd(now()->format('Y-m-d H:i:s.u'), date('Y-m-d H:i:s.u'));
 });

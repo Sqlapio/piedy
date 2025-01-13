@@ -12,7 +12,13 @@ use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
-    use BaseDashboard\Concerns\HasFiltersForm;
+    // use BaseDashboard\Concerns\HasFiltersForm;
+
+    protected static ?string $title = 'Dashboard Piedy';
+
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+
+    protected static string $view = 'filament.pages.dashboard-new';
 
     // public function filtersForm(Form $form): Form
     // {

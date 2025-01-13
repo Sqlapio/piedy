@@ -31,6 +31,14 @@ class ProductosDashChart extends ChartWidget
         ->groupBy('producto_id')
         ->get();
 
+        $labels = $data->map(fn ($data) => $data->descripcion);
+        $totalVentas = $data->sum('venta');
+        $percentages = $data->map(fn ($item) => round(($item->venta / $totalVentas) * 100, 2));
+
+        $labelsWithPercentages = $labels->map(function ($label, $index) use ($percentages) {
+            return $label . ' - (' . $percentages[$index] . '%)';
+        });
+
         return [
            'datasets' => [
                     [
@@ -63,7 +71,8 @@ class ProductosDashChart extends ChartWidget
                         // 'fill' => true,
                     ],
                 ],
-                'labels' => ($data->map(fn ($data) => $data->descripcion)),
+                'labels' => $labelsWithPercentages->toArray(),
+                'percentages' => $percentages,
         ];
 
     }

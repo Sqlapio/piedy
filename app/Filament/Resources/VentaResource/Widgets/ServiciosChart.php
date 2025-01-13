@@ -78,6 +78,12 @@ class ServiciosChart extends ChartWidget
                 'display' => false,
             ],
         ],
+        'plugins' => [
+            'legend' => [
+                'position' => 'left',
+                'align' => 'start',
+            ],
+        ],
     ];   // protected function getOptions(): RawJs
 
 

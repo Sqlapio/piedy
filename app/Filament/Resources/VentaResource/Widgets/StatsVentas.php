@@ -19,8 +19,8 @@ class StatsVentas extends BaseWidget
                 ->description('Total neto de ventas')
                 ->descriptionIcon('heroicon-m-presentation-chart-line')
                 ->extraAttributes(['class' => 'text-center'])
-                ->color('success')
-                ->chart([7, 2, 10, 3, 15, 4, 17]),
+                ->color('success'),
+                // ->chart([7, 2, 10, 3, 15, 4, 17]),
             // Stat::make('Total Ventas por Servicios', '$'.VentaServicio::sum('pago_usd'))
             //     ->description('Total de pagos en Dolares')
             //     ->descriptionIcon('heroicon-m-arrow-trending-down')

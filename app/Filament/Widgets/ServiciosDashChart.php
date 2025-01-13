@@ -20,7 +20,7 @@ class ServiciosDashChart extends ChartWidget
 
     protected static ?string $heading = 'Servicios';
 
-    protected static ?string $maxHeight = '198px';
+    protected static ?string $maxHeight = '192px';
 
     protected function getData(): array
     {

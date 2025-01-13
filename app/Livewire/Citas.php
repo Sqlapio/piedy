@@ -212,7 +212,8 @@ class Citas extends Component implements HasForms, HasActions
             ->modalIcon('heroicon-o-trash')
             ->action(function (array $arguments) {
                 $cita = Cita::find($arguments['cita']);
-                $cita?->delete();
+                $cita->status = 3;
+                $cita->save();
             });
     }
 

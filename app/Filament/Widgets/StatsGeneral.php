@@ -63,7 +63,7 @@ class StatsGeneral extends BaseWidget
                 ->color($servicios_usd['color'])
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a]']),
 
-            Stat::make('PROMEDIO SERVICIO/CLIENTE', round($promedio['promedio_hoy']))
+            Stat::make('PROMEDIO SERVICIO/CLIENTE', number_format($promedio['promedio_hoy'], 1))
                 ->description(round($promedio['porcentaje']) . '%')
                 ->descriptionIcon($promedio['icon'])
                 ->color($promedio['color'])
@@ -84,7 +84,7 @@ class StatsGeneral extends BaseWidget
                 ->color($productos_usd['color'])
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6]']),
 
-            Stat::make('PROMEDIO PRODUCTO/CLIENTE', round($promedio_prod['promedio_hoy']))
+            Stat::make('PROMEDIO PRODUCTO/CLIENTE', number_format($promedio_prod['promedio_hoy'], 1))
                 ->description(round($promedio_prod['porcentaje']) . '%')
                 ->descriptionIcon($promedio_prod['icon'])
                 ->color($promedio_prod['color'])

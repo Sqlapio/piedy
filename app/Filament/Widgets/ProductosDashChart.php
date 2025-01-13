@@ -26,55 +26,65 @@ class ProductosDashChart extends ChartWidget
     {
 
         $data = DB::table('venta_productos')
-        ->select(DB::raw('COUNT(producto_id) as venta, producto_id, productos.descripcion as descripcion'))
-        ->join('productos', 'venta_productos.producto_id', '=', 'productos.id')
-        ->groupBy('producto_id')
-        ->get();
+            ->select(DB::raw('SUM(cantidad) as venta, producto_id, productos.descripcion as descripcion'))
+            ->join('productos', 'venta_productos.producto_id', '=', 'productos.id')
+            ->whereBetween('venta_productos.created_at', [now()->startOfDay(), now()->endOfDay()])
+            ->groupBy('producto_id')
+            ->get();
+        // dd($data);
 
-        $labels = $data->map(fn ($data) => $data->descripcion);
+        // $processexist = VentaProducto::join('productos', 'venta_productos.producto_id', '=', 'productos.id')
+        // ->select(DB::raw('COUNT(producto_id) as venta, producto_id, productos.descripcion as descripcion'))
+        // ->where('bags.type', $bag->type)
+        // ->whereDate('processes.created_at', Carbon::today())
+        // ->latest()
+        // ->first();
+        // dd($data);
+
+        $labels = $data->map(fn($data) => $data->descripcion);
         $totalVentas = $data->sum('venta');
-        $percentages = $data->map(fn ($item) => round(($item->venta / $totalVentas) * 100, 2));
+        $percentages = $data->map(fn($item) => round(($item->venta / $totalVentas) * 100, 2));
 
         $labelsWithPercentages = $labels->map(function ($label, $index) use ($percentages) {
             return $label . ' - (' . $percentages[$index] . '%)';
         });
 
         return [
-           'datasets' => [
-                    [
-                        'label' => 'Average de Productos',
-                        'data' => $data->map(fn ($data) => $data->venta),
-                        'backgroundColor' => [
-                            '#a16d69',
-                            '#99bcbf',
-                            '#bf99a9',
-                            '#bfaf99',
-                            '#99a9bf',
-                            '#99bfaf',
-                            '#9c99bf',
-                            '#99bf9c',
-                            '#bf9c99',
-                            '#bf99bc',
-                            '#c7a8a5',
-                            '#ab7e7a',
-                            '#7ba69d',
-                            '#7b9aa6',
-                            '#a6877b',
-                            '#7b85a6',
-                            '#a69d7b',
-                            '#a67b85',
-                            '#9aa67b',
-                            '#7ba687',
-                            '#a67b9a',
-                            '#56737f'],
-                        // 'borderColor' => '#22c55e',
-                        // 'fill' => true,
+            'datasets' => [
+                [
+                    'label' => 'Average de Productos',
+                    'data' => $data->map(fn($data) => $data->venta),
+                    'backgroundColor' => [
+                        '#a16d69',
+                        '#99bcbf',
+                        '#bf99a9',
+                        '#bfaf99',
+                        '#99a9bf',
+                        '#99bfaf',
+                        '#9c99bf',
+                        '#99bf9c',
+                        '#bf9c99',
+                        '#bf99bc',
+                        '#c7a8a5',
+                        '#ab7e7a',
+                        '#7ba69d',
+                        '#7b9aa6',
+                        '#a6877b',
+                        '#7b85a6',
+                        '#a69d7b',
+                        '#a67b85',
+                        '#9aa67b',
+                        '#7ba687',
+                        '#a67b9a',
+                        '#56737f'
                     ],
+                    // 'borderColor' => '#22c55e',
+                    // 'fill' => true,
                 ],
-                'labels' => $labelsWithPercentages->toArray(),
-                'percentages' => $percentages,
+            ],
+            'labels' => $labelsWithPercentages->toArray(),
+            'percentages' => $percentages,
         ];
-
     }
 
     public function getDescription(): ?string

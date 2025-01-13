@@ -35,20 +35,32 @@ class ClientesDashChart extends ChartWidget
         $rangeStartDate = now()->startOfDay();
         $rangeEndDate = now()->endOfDay();
 
-        $citas_agendadas_bot = Cita::where('responsable', 'PiedyBot')->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+        $citas_agendadas_bot = Cita::where('responsable', 'PiedyBot')
+            ->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+            ->count();
 
-        $citas_agendadas_sistema = Cita::where('responsable', '!=', 'PiedyBot')->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+        $citas_agendadas_sistema = Cita::where('responsable', '!=', 'PiedyBot')
+            ->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+            ->count();
+
+        $citas_canceladas = Cita::where('responsable', '!=', 'PiedyBot')
+            ->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+            ->where('status', 3)
+            ->count();
+
 
         $array = [
             $citas_agendadas_bot,
-             $citas_agendadas_sistema
+            $citas_agendadas_sistema,
+            $citas_canceladas
         ];
 
         $labels = [
-            'PiedyBot', 
-            'Agendadas en Tienda'
+            'PiedyBot',
+            'Agendadas en Tienda',
+            'Canceladas'
         ];
-        
+
         // dd($array, $labels);
         // dd($data);
 
@@ -59,7 +71,7 @@ class ClientesDashChart extends ChartWidget
         // });
 
         return [
-           'datasets' => [
+            'datasets' => [
                 [
                     'label' => '',
                     'data' => $array,
@@ -85,7 +97,8 @@ class ClientesDashChart extends ChartWidget
                         '#9aa67b',
                         '#7ba687',
                         '#a67b9a',
-                        '#56737f'],
+                        '#56737f'
+                    ],
                     'borderColor' => '#ffff',
                     // 'fill' => true,
                 ],
@@ -94,7 +107,6 @@ class ClientesDashChart extends ChartWidget
             'labels' => $labels,
 
         ];
-
     }
 
     public function getDescription(): ?string
@@ -108,7 +120,7 @@ class ClientesDashChart extends ChartWidget
                 'display' => true,
 
                 'ticks' => [
-                    'stepSize'=> 1
+                    'stepSize' => 1
                 ],
             ],
             'y' => [
@@ -118,7 +130,7 @@ class ClientesDashChart extends ChartWidget
         'indexAxis' => 'y',
         'plugins' => [
             'legend' => [
-               'display' => false,
+                'display' => false,
             ]
         ]
     ];

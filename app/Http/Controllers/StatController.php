@@ -16,21 +16,22 @@ class StatController extends Controller
      * Grupo de funcion para sl calculo de los stat de servicios
      * ----------------------------------------------------------
      */
-    static function servicios_facturados() {
+    static function servicios_facturados()
+    {
         try {
-            
+
             //code...
             $rangeStartDate = now()->startOfDay();
             $rangeEndDate = now()->endOfDay();
-            $servicios_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+            $servicios_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
 
             //Caculo del porcentaje de servicios facturados comparado con el dia anterior
             $rangeStartDate = now()->subDay()->startOfDay();
             $rangeEndDate = now()->subDay()->endOfDay();
 
             $servicios_ayer = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
-            
-            if($servicios_hoy == 0 || $servicios_ayer == 0){
+
+            if ($servicios_hoy == 0 || $servicios_ayer == 0) {
                 $result = [
                     'servicios_hoy' => 0,
                     'porcentaje'    => 0,
@@ -38,11 +39,10 @@ class StatController extends Controller
                     'color'          => 'danger'
                 ];
 
-                return $result; 
+                return $result;
                 $icon = 'heroicon-c-arrow-long-right';
                 $color = 'warning';
-                
-            }else{
+            } else {
 
                 if ($servicios_hoy > $servicios_ayer) {
                     $porcentaje = ($servicios_ayer * 100) / $servicios_hoy;
@@ -74,7 +74,6 @@ class StatController extends Controller
 
                 return $result;
             }
-            
         } catch (\Throwable $th) {
             dd($th);
         }
@@ -87,16 +86,16 @@ class StatController extends Controller
             //code...
             $rangeStartDate = now()->startOfDay();
             $rangeEndDate = now()->endOfDay();
-            
+
             $total_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('total_USD');
-            
-            if($total_hoy > 1000)   {
+
+            if ($total_hoy > 1000) {
                 $total_hoy_div = round($total_hoy) / 1000;
                 $letra = 'K';
-            }elseif ($total_hoy > 1000000) {
+            } elseif ($total_hoy > 1000000) {
                 $total_hoy_div = round($total_hoy) / 1000000;
                 $letra = 'M';
-            }else{
+            } else {
                 $total_hoy_div = round($total_hoy);
                 $letra = '';
             }
@@ -117,8 +116,7 @@ class StatController extends Controller
                 ];
 
                 return $result;
-
-            }else{
+            } else {
                 if ($total_hoy > $total_ayer) {
                     $porcentaje = ($total_ayer * 100) / $total_hoy;
                     $porcentaje = number_format($porcentaje, 2);
@@ -149,9 +147,7 @@ class StatController extends Controller
                 ];
 
                 return $result;
-                
             }
-            
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -167,14 +163,14 @@ class StatController extends Controller
 
             //Servicios y clientes para hoy
             $nro_servicios_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
-            $clientes_hoy = Disponible::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
-            // ->groupBy('cliente_id')
-            ->count();
+            $clientes_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+                ->groupBy('cliente_id')
+                ->get();
+            $clientes_hoy = count($clientes_hoy);
 
-            if($clientes_hoy == 0){
+            if ($clientes_hoy == 0) {
                 $promedio_hoy = 0;
-                
-            }else{
+            } else {
                 $promedio_hoy = $nro_servicios_hoy / $clientes_hoy;
 
 
@@ -185,7 +181,7 @@ class StatController extends Controller
                 //Servicios y clientes para Ayer
                 $nro_servicios_ayer = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
                 $clientes_ayer = Disponible::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
-                    // ->groupBy('cliente_id')
+                    ->groupBy('cliente_id')
                     ->count();
 
                 $promedio_ayer = $nro_servicios_ayer / $clientes_ayer;
@@ -216,7 +212,6 @@ class StatController extends Controller
                         $color = 'warning';
                     }
                 }
-                
             }
 
             $result = [
@@ -233,9 +228,9 @@ class StatController extends Controller
     }
     /**Fin---------------------------------------------------- 
      * -------------------------------------------------------
-    */
+     */
 
-    
+
 
     /**
      * Grupo de funcion para sl calculo de los stat de productos
@@ -248,13 +243,13 @@ class StatController extends Controller
             //code...
             $rangeStartDate = now()->startOfDay();
             $rangeEndDate = now()->endOfDay();
-            $productos_hoy = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+            $productos_hoy = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('cantidad');
 
             //Caculo del porcentaje de productos facturados comparado con el dia anterior
             $rangeStartDate = now()->subDay()->startOfDay();
             $rangeEndDate = now()->subDay()->endOfDay();
 
-            $productos_ayer = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+            $productos_ayer = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('cantidad');
 
             if ($productos_hoy > $productos_ayer) {
                 $porcentaje = ($productos_ayer * 100) / $productos_hoy;
@@ -271,17 +266,15 @@ class StatController extends Controller
             }
 
             if ($productos_hoy == $productos_ayer) {
-                if($productos_hoy == 0 && $productos_ayer == 0) {
+                if ($productos_hoy == 0 && $productos_ayer == 0) {
                     $porcentaje = 0;
                     $icon = 'heroicon-c-arrow-long-right';
                     $color = 'danger';
-                    
-                }else{
+                } else {
                     $porcentaje = ($productos_ayer * 100) / $productos_hoy;
                     $porcentaje = number_format($porcentaje, 2);
                     $icon = 'heroicon-c-arrow-long-right';
                     $color = 'warning';
-                    
                 }
             }
 
@@ -346,15 +339,12 @@ class StatController extends Controller
                     $porcentaje = 0;
                     $icon = 'heroicon-c-arrow-long-right';
                     $color = 'danger';
-                    
-                }else {
+                } else {
                     $porcentaje = ($total_productos_ayer * 100) / $total_productos_hoy;
                     $porcentaje = number_format($porcentaje, 2);
                     $icon = 'heroicon-c-arrow-long-right';
                     $color = 'warning';
-                    
                 }
-                
             }
 
             $result = [
@@ -366,7 +356,6 @@ class StatController extends Controller
             ];
 
             return $result;
-            
         } catch (\Throwable $th) {
             dd($th);
         }
@@ -381,14 +370,16 @@ class StatController extends Controller
             $rangeEndDate = now()->endOfDay();
 
             //Servicios y clientes para hoy
-            $nro_productos_hoy = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count('cantidad');
-            $clientes_hoy = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count('cliente_id');
-            
+            $nro_productos_hoy = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('cantidad');
+            $clientes_hoy = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+                ->groupBy('cliente_id')
+                ->count('cliente_id');
 
-            if($clientes_hoy == 0){
+
+
+            if ($clientes_hoy == 0) {
                 $promedio_hoy = 0;
-                
-            }else{
+            } else {
 
                 $promedio_hoy = $nro_productos_hoy / $clientes_hoy;
 
@@ -422,12 +413,10 @@ class StatController extends Controller
                     $icon = 'heroicon-c-arrow-long-right';
                     $color = 'warning';
                 }
-
-                
             }
 
 
-            
+
             $result = [
                 'promedio_hoy' => $promedio_hoy,
                 'porcentaje' => $porcentaje ?? 0,
@@ -437,7 +426,6 @@ class StatController extends Controller
             ];
 
             return $result;
-            
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -458,17 +446,19 @@ class StatController extends Controller
             //code...
             $rangeStartDate = now()->startOfDay();
             $rangeEndDate = now()->endOfDay();
-            $clientes_atendidos_hoy = Disponible::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
-            ->groupBy('cliente_id')
-            ->count();
+            $clientes_atendidos_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+                ->groupBy('cliente_id')
+                ->get();
+            $clientes_atendidos_hoy = count($clientes_atendidos_hoy);
 
             //Caculo del porcentaje de productos facturados comparado con el dia anterior
             $rangeStartDate = now()->subDay()->startOfDay();
             $rangeEndDate = now()->subDay()->endOfDay();
 
-            $clientes_atendidos_ayer = Disponible::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
-            ->groupBy('cliente_id')
-            ->count();
+            $clientes_atendidos_ayer = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+                ->groupBy('cliente_id')
+                ->get();
+            $clientes_atendidos_ayer = count($clientes_atendidos_ayer);
 
             if ($clientes_atendidos_hoy > $clientes_atendidos_ayer) {
                 $porcentaje = ($clientes_atendidos_ayer * 100) / $clientes_atendidos_hoy;
@@ -609,7 +599,6 @@ class StatController extends Controller
                     $icon       = 'heroicon-c-arrow-long-right';
                     $color      = 'warning';
                 }
-                
             }
 
             $result = [

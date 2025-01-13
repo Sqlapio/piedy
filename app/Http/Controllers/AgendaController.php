@@ -223,13 +223,14 @@ class AgendaController extends Controller
         try {
 
             Cita::where('id', $cita_id)->first()->update([
-                'status' => 2,
+                'status' => 3,
                 'confirmacion' => 2
             ]);
 
             LogController::log(1, 'usuario externo', 'Usuario cancelo cita, id: ' . $cita_id, $response = null);
 
             return view('cancelacion');
+            
         } catch (\Throwable $th) {
             LogController::log(1, 'excepcion(cancelacion link externo)', $th->getMessage(), $response = null);
         }

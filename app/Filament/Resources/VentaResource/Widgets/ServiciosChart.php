@@ -20,7 +20,7 @@ class ServiciosChart extends ChartWidget
 
     protected static ?string $maxHeight = '300px';
 
-    // protected int | string | array $columnSpan = '2';
+    protected int | string | array $columnSpan = '1';
 
     protected function getData(): array
     {
@@ -30,6 +30,14 @@ class ServiciosChart extends ChartWidget
         ->join('servicios', 'detalle_asignacions.servicio_id', '=', 'servicios.id')
         ->groupBy('servicio_id')
         ->get();
+
+        $labels = $data->map(fn ($data) => $data->descripcion);
+        $totalVentas = $data->sum('venta');
+        $percentages = $data->map(fn ($item) => round(($item->venta / $totalVentas) * 100, 2));
+
+        $labelsWithPercentages = $labels->map(function ($label, $index) use ($percentages) {
+            return $label . ' - (' . $percentages[$index] . '%)';
+        });
 
         return [
            'datasets' => [
@@ -64,7 +72,7 @@ class ServiciosChart extends ChartWidget
                     ],
 
                 ],
-                'labels' => $data->map(fn ($data) => $data->descripcion),
+                'labels' => $labelsWithPercentages->toArray(),
             ];
 
     }

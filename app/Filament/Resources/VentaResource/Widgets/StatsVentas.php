@@ -15,22 +15,21 @@ class StatsVentas extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Total Ventas en Divisas', '$'.Venta::sum('total_venta'))
+            Stat::make('TOTAL SERVICIOS', '$'.VentaServicio::sum('pago_usd'))
+                ->description('Total de pagos en Dolares')
+                ->descriptionIcon('heroicon-m-arrow-trending-down')
+                ->extraAttributes(['class' => 'text-center col-span-1 row-span-1'])
+                ->color('warning'),
+            Stat::make('TOTAL PRODUCTOS', '$'.VentaServicio::sum('pago_bsd'))
+                ->description('Total de pagos en Bolívares')
+                ->descriptionIcon('heroicon-m-arrow-trending-down')
+                ->extraAttributes(['class' => 'text-center col-span-1 row-span-1'])
+                ->color('primary'),
+            Stat::make('TOTAL DE VENTAS', '$'.Venta::sum('total_venta'))
                 ->description('Total neto de ventas')
-                ->descriptionIcon('heroicon-m-presentation-chart-line')
-                ->extraAttributes(['class' => 'text-center'])
+                ->descriptionIcon('heroicon-m-arrow-trending-down')
+                ->extraAttributes(['class' => 'text-center col-span-2 row-span-1'])
                 ->color('success'),
-                // ->chart([7, 2, 10, 3, 15, 4, 17]),
-            // Stat::make('Total Ventas por Servicios', '$'.VentaServicio::sum('pago_usd'))
-            //     ->description('Total de pagos en Dolares')
-            //     ->descriptionIcon('heroicon-m-arrow-trending-down')
-            //     ->color('warning')
-            //     ->chart([7, 2, 10, 3, 15, 4, 17]),
-            // Stat::make('Total pagos(Bs)', 'Bs'.VentaServicio::sum('pago_bsd'))
-            //     ->description('Total de pagos en Bolívares')
-            //     ->descriptionIcon('heroicon-s-users')
-            //     ->color('primary')
-            //     ->chart([7, 2, 1, 1, 15, 4, 2]),
         ];
     }
 

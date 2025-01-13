@@ -21,7 +21,7 @@ class ProductosChart extends ChartWidget
 
     // protected int | string | array $columnSpan = '3';
 
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 2;
 
 
     // public ?string $filter = 'today';
@@ -45,27 +45,35 @@ class ProductosChart extends ChartWidget
         ->groupBy('producto_id')
         ->get();
 
+        $labels = $data->map(fn ($data) => $data->descripcion);
+        $totalVentas = $data->sum('venta');
+        $percentages = $data->map(fn ($item) => round(($item->venta / $totalVentas) * 100, 2));
+
+        $labelsWithPercentages = $labels->map(function ($label, $index) use ($percentages) {
+            return $label . ' - (' . $percentages[$index] . '%)';
+        });
+
         return [
            'datasets' => [
                     [
                         'label' => 'Average de Productos',
                         'data' => $data->map(fn ($data) => $data->venta),
                         'backgroundColor' => [
-                            '#a16d69', 
+                            '#a16d69',
                             '#99bcbf',
-                            '#bf99a9', 
+                            '#bf99a9',
                             '#bfaf99',
-                            '#99a9bf', 
+                            '#99a9bf',
                             '#99bfaf',
-                            '#9c99bf', 
+                            '#9c99bf',
                             '#99bf9c',
-                            '#bf9c99', 
+                            '#bf9c99',
                             '#bf99bc',
-                            '#c7a8a5', 
+                            '#c7a8a5',
                             '#ab7e7a',
-                            '#7ba69d', 
+                            '#7ba69d',
                             '#7b9aa6',
-                            '#a6877b', 
+                            '#a6877b',
                             '#7b85a6',
                             '#a69d7b',
                             '#a67b85',
@@ -77,7 +85,7 @@ class ProductosChart extends ChartWidget
                         // 'fill' => true,
                     ],
                 ],
-                'labels' => ($data->map(fn ($data) => $data->descripcion)),
+                'labels' => $labelsWithPercentages,
         ];
 
     }

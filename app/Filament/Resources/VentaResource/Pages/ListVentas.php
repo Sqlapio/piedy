@@ -10,7 +10,7 @@ use Filament\Pages\Concerns\ExposesTableToWidgets;
 class ListVentas extends ListRecords
 {
     use ExposesTableToWidgets;
-    
+
     protected static string $resource = VentaResource::class;
 
     protected ?string $heading = 'Dashboard de Ventas';
@@ -30,9 +30,9 @@ class ListVentas extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            VentaResource\Widgets\StatsVentas::class,
             VentaResource\Widgets\ServiciosChart::class,
             VentaResource\Widgets\ProductosChart::class,
+            VentaResource\Widgets\StatsVentas::class,
         ];
     }
 }

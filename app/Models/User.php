@@ -2,21 +2,27 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Sanctum\HasApiTokens;
-use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Laravel\Sanctum\HasApiTokens;
+use Filament\Models\Contracts\HasName;
+use Laravel\Jetstream\HasProfilePhoto;
+use Filament\Models\Contracts\HasAvatar;
+use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\FilamentUser;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class User extends Authenticatable implements FilamentUser
+// use Filament\Models\Contracts\HasName;
+
+
+//class User extends Authenticatable implements FilamentUser, HasName
+class User extends Authenticatable implements FilamentUser, HasName, HasAvatar
 {
     use HasApiTokens;
     use HasFactory;
@@ -78,6 +84,18 @@ class User extends Authenticatable implements FilamentUser
         // return str_ends_with($this->email, '@piedyadmin.com') && $this->hasVerifiedEmail();
         return $this->hasVerifiedEmail();
 
+    }
+
+    public function getFilamentName(): string
+    {
+        return "{$this->name}";
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar_url;
+        // dd($this->name);
+        // return $this->name;
     }
 
 

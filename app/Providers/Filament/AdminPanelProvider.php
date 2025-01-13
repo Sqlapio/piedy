@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
+use Pages\DashboardNew;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\MaxWidth;
@@ -35,6 +36,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->passwordReset()
+            ->profile()
             ->colors([
                 'primary' => '#7797a4',
             ])
@@ -43,7 +46,10 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                // Pages\Dashboard::class,
+            // 'namespace' => 'App\\Filament\\Pages',
+            // 'path' => app_path('Filament/Pages'),
+            // Pages\DashboardNew::class,
+            // Pages\Dashboard::class
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
@@ -63,15 +69,6 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            // ->navigationGroups([
-            //     'Administración',
-            //     'Movimientos de inventario',
-            //     'Tienda Sambil',
-            //     'Facturación',
-            //     'Contabilidad',
-            //     'Ventas',
-            //     'Sistema'
-            // ])
             ->navigationGroups([
                 NavigationGroup::make()
                     ->label('Administración')

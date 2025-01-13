@@ -29,39 +29,54 @@ class StatController extends Controller
             $rangeEndDate = now()->subDay()->endOfDay();
 
             $servicios_ayer = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+            
+            if($servicios_hoy == 0 || $servicios_ayer == 0){
+                $result = [
+                    'servicios_hoy' => 0,
+                    'porcentaje'    => 0,
+                    'icon'           => 'heroicon-c-arrow-long-right',
+                    'color'          => 'danger'
+                ];
 
-            if ($servicios_hoy > $servicios_ayer) {
-                $porcentaje = ($servicios_ayer * 100) / $servicios_hoy;
-                $porcentaje = number_format($porcentaje, 2);
-                $icon = 'heroicon-m-arrow-trending-up';
-                $color = 'success';
-            }
-
-            if ($servicios_hoy < $servicios_ayer) {
-                $porcentaje = ($servicios_hoy * 100) / $servicios_ayer;
-                $porcentaje = number_format($porcentaje, 2);
-                $icon = 'heroicon-m-arrow-trending-down';
-                $color = 'danger';
-            }
-
-            if ($servicios_hoy == $servicios_ayer) {
-                $porcentaje = ($servicios_ayer * 100) / $servicios_hoy;
-                $porcentaje = number_format($porcentaje, 2);
+                return $result; 
                 $icon = 'heroicon-c-arrow-long-right';
                 $color = 'warning';
+                
+            }else{
+
+                if ($servicios_hoy > $servicios_ayer) {
+                    $porcentaje = ($servicios_ayer * 100) / $servicios_hoy;
+                    $porcentaje = number_format($porcentaje, 2);
+                    $icon = 'heroicon-m-arrow-trending-up';
+                    $color = 'success';
+                }
+
+                if ($servicios_hoy < $servicios_ayer) {
+                    $porcentaje = ($servicios_hoy * 100) / $servicios_ayer;
+                    $porcentaje = number_format($porcentaje, 2);
+                    $icon = 'heroicon-m-arrow-trending-down';
+                    $color = 'danger';
+                }
+
+                if ($servicios_hoy == $servicios_ayer) {
+                    $porcentaje = ($servicios_ayer * 100) / $servicios_hoy;
+                    $porcentaje = number_format($porcentaje, 2);
+                    $icon = 'heroicon-c-arrow-long-right';
+                    $color = 'warning';
+                }
+
+                $result = [
+                    'servicios_hoy' => $servicios_hoy,
+                    'porcentaje' => $porcentaje,
+                    'icon' => $icon,
+                    'color' => $color
+                ];
+
+                return $result;
             }
             
-            $result = [
-                'servicios_hoy' => $servicios_hoy,
-                'porcentaje' => $porcentaje,
-                'icon' => $icon,
-                'color' => $color
-            ];
-            
-            return $result;
-            
         } catch (\Throwable $th) {
-            //throw $th;
+            dd($th);
         }
     }
 
@@ -92,36 +107,50 @@ class StatController extends Controller
 
             $total_ayer = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('total_USD');
 
-            if ($total_hoy > $total_ayer) {
-                $porcentaje = ($total_ayer * 100) / $total_hoy;
-                $porcentaje = number_format($porcentaje, 2);
-                $icon = 'heroicon-m-arrow-trending-up';
-                $color = 'success';
+            if ($total_hoy == 0 || $total_ayer == 0) {
+                $result = [
+                    'total_hoy'     => 0,
+                    'porcentaje'    => 0,
+                    'icon'          => 'heroicon-c-arrow-long-right',
+                    'color'         => 'danger',
+                    'letra'         => ''
+                ];
+
+                return $result;
+
+            }else{
+                if ($total_hoy > $total_ayer) {
+                    $porcentaje = ($total_ayer * 100) / $total_hoy;
+                    $porcentaje = number_format($porcentaje, 2);
+                    $icon = 'heroicon-m-arrow-trending-up';
+                    $color = 'success';
+                }
+
+                if ($total_hoy < $total_ayer) {
+                    $porcentaje = ($total_hoy * 100) / $total_ayer;
+                    $porcentaje = number_format($porcentaje, 2);
+                    $icon = 'heroicon-m-arrow-trending-down';
+                    $color = 'danger';
+                }
+
+                if ($total_hoy == $total_ayer) {
+                    $porcentaje = ($total_ayer * 100) / $total_hoy;
+                    $porcentaje = number_format($porcentaje, 2);
+                    $icon = 'heroicon-c-arrow-long-right';
+                    $color = 'warning';
+                }
+
+                $result = [
+                    'total_hoy' => $total_hoy_div,
+                    'porcentaje' => $porcentaje,
+                    'icon' => $icon,
+                    'color' => $color,
+                    'letra' => $letra
+                ];
+
+                return $result;
+                
             }
-
-            if ($total_hoy < $total_ayer) {
-                $porcentaje = ($total_hoy * 100) / $total_ayer;
-                $porcentaje = number_format($porcentaje, 2);
-                $icon = 'heroicon-m-arrow-trending-down';
-                $color = 'danger';
-            }
-
-            if ($total_hoy == $total_ayer) {
-                $porcentaje = ($total_ayer * 100) / $total_hoy;
-                $porcentaje = number_format($porcentaje, 2);
-                $icon = 'heroicon-c-arrow-long-right';
-                $color = 'warning';
-            }
-
-            $result = [
-                'total_hoy' => $total_hoy_div,
-                'porcentaje' => $porcentaje,
-                'icon' => $icon,
-                'color' => $color,
-                'letra' => $letra
-            ];
-
-            return $result;
             
         } catch (\Throwable $th) {
             //throw $th;

@@ -10,6 +10,7 @@ use App\Models\Producto;
 use App\Models\Servicio;
 use App\Models\Membresia;
 use App\Models\Disponible;
+use App\Models\Inventario;
 use Flowframe\Trend\Trend;
 use App\Models\ServicioUser;
 use App\Models\CierreGeneral;
@@ -368,6 +369,17 @@ Route::get('/ex', function () {
 
 
     // dd(1);
+
+    $in = Inventario::where('unidad', null)->get();
+    foreach ($in as $item) {
+        // dump($item);
+        $unidad = Producto::where('id', $item->producto_id)->first();
+        // dd($unidad);
+        Inventario::where('id', $item->id)->update([
+            'unidad' => $unidad->unidad
+        ]);
+    }
+    dd(1);
 
     dd(now()->format('Y-m-d H:i:s.u'), date('Y-m-d H:i:s.u'));
 });

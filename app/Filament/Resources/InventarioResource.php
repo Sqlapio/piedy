@@ -112,6 +112,13 @@ class InventarioResource extends Resource
                     ->numeric()
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('unidad')
+                    ->label('Unidad')
+                    // ->icon('heroicon-o-square-3-stack-3d')
+                    ->numeric()
+                    ->searchable()
+                    ->badge()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('min')
                     ->label('Exitencia Minima')
                     ->icon('heroicon-o-square-3-stack-3d')
@@ -218,7 +225,7 @@ class InventarioResource extends Resource
                                                     $id = $record->producto_id;
                                                     if (isset($id)) {
                                                         $existencia = Inventario::where('producto_id', $id)
-                                                        ->where('id', $record->id)
+                                                            ->where('id', $record->id)
                                                             ->first()
                                                             ->cantidad;
                                                         return 'Existencia actual: ' . $existencia;

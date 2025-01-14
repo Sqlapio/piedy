@@ -112,9 +112,14 @@ class InventarioResource extends Resource
                     ->numeric()
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('contenido_neto')
+                    ->label('Contenido Neto')
+                    ->numeric()
+                    ->searchable()
+                    ->badge()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('unidad')
                     ->label('Unidad')
-                    // ->icon('heroicon-o-square-3-stack-3d')
                     ->numeric()
                     ->searchable()
                     ->badge()

@@ -370,16 +370,14 @@ Route::get('/ex', function () {
 
     // dd(1);
 
-    $in = Inventario::where('unidad', null)->get();
+    $in = Inventario::where('unidad', '!=', null)->get();
     foreach ($in as $item) {
-        // dump($item);
         $unidad = Producto::where('id', $item->producto_id)->first();
-        // dd($unidad);
         Inventario::where('id', $item->id)->update([
             'contenido_neto' => $unidad->contenido_neto
         ]);
     }
-    dd(1);
+    dd('listo VB');
 
-    dd(now()->format('Y-m-d H:i:s.u'), date('Y-m-d H:i:s.u'));
+    // dd(now()->format('Y-m-d H:i:s.u'), date('Y-m-d H:i:s.u'));
 });

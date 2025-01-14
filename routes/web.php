@@ -376,7 +376,7 @@ Route::get('/ex', function () {
         $unidad = Producto::where('id', $item->producto_id)->first();
         // dd($unidad);
         Inventario::where('id', $item->id)->update([
-            'unidad' => $unidad->unidad
+            'contenido_neto' => $unidad->contenido_neto
         ]);
     }
     dd(1);

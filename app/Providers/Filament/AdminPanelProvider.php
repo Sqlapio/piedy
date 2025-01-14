@@ -41,15 +41,15 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => '#7797a4',
             ])
-            ->favicon(asset('images/favicon2.PNG'))
+            ->favicon(asset('images/favicon.ico'))
             ->sidebarCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-            // 'namespace' => 'App\\Filament\\Pages',
-            // 'path' => app_path('Filament/Pages'),
-            // Pages\DashboardNew::class,
-            // Pages\Dashboard::class
+                // 'namespace' => 'App\\Filament\\Pages',
+                // 'path' => app_path('Filament/Pages'),
+                // Pages\DashboardNew::class,
+                // Pages\Dashboard::class
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([

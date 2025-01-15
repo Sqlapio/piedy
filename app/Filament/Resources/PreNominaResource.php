@@ -94,31 +94,109 @@ class PreNominaResource extends Resource
                     ->money('USD')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('propinas_usd')
+                Tables\Columns\TextInputColumn::make('propinas_usd')
                     ->label('Propina(USD)')
-                    ->sortable(),
+                    ->sortable()
+                    ->afterStateUpdated(function ($record, $state) {
+                        $record->total_usd = $state + $record->total_usd;
+                        $record->save();
+                        //log
+                        LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego propina en dolares: ' . $state, $response = null);
+                    })
+                    ->disabled(function ($record) {
+                        if ($record->status == 2) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }),
 
-                Tables\Columns\TextColumn::make('propinas_bsd')
+                Tables\Columns\TextInputColumn::make('propinas_bsd')
                     ->label('Propina(Bs.)')
-                    ->sortable(),
+                    ->sortable()
+                    ->afterStateUpdated(function ($record, $state) {
+                        $record->total_bsd = $state + $record->total_bsd;
+                        $record->save();
+                        //log
+                        LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego propina en bolivares: ' . $state, $response = null);
+                    })
+                    ->disabled(function ($record) {
+                        if ($record->status == 2) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }),
 
-                Tables\Columns\TextColumn::make('asignaciones_usd')
+                Tables\Columns\TextInputColumn::make('asignaciones_usd')
                     ->label('Asignaciones(USD)')
                     ->sortable()
+                    ->afterStateUpdated(function ($record, $state) {
+                        $record->total_usd = $state + $record->total_usd;
+                        $record->save();
+                        //log
+                        LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego asignaciones en dolares: ' . $state, $response = null);
+                    })
+                    ->disabled(function ($record) {
+                        if ($record->status == 2) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    })
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                Tables\Columns\TextColumn::make('asignaciones_bsd')
+                Tables\Columns\TextInputColumn::make('asignaciones_bsd')
                     ->label('Asignaciones(Bs.)')
+                    ->afterStateUpdated(function ($record, $state) {
+                        $record->total_bsd = $state + $record->total_bsd;
+                        $record->save();
+                        //log
+                        LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego asignaciones en bolivares: ' . $state, $response = null);
+                    })
+                    ->disabled(function ($record) {
+                        if ($record->status == 2) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    })
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                Tables\Columns\TextColumn::make('deducciones_usd')
+                Tables\Columns\TextInputColumn::make('deducciones_usd')
                     ->label('Deducciones(USD)')
                     ->sortable()
+                    ->afterStateUpdated(function ($record, $state) {
+                        $record->total_usd = $record->total_usd - $state;
+                        $record->save();
+                        //log
+                        LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego deducciones en dolares: ' . $state, $response = null);
+                    })
+                    ->disabled(function ($record) {
+                        if ($record->status == 2) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    })
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                Tables\Columns\TextColumn::make('deducciones_bsd')
+                Tables\Columns\TextInputColumn::make('deducciones_bsd')
                     ->label('Deducciones(Bs.)')
                     ->sortable()
+                    ->afterStateUpdated(function ($record, $state) {
+                        $record->total_bsd = $record->total_bsd - $state;
+                        $record->save();
+                        //log
+                        LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego deducciones en bolivares: ' . $state, $response = null);
+                    })
+                    ->disabled(function ($record) {
+                        if ($record->status == 2) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    })
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('fecha_ini')
@@ -212,19 +290,77 @@ class PreNominaResource extends Resource
                     ->label('Filtros'),
             )
             ->actions([
-                Tables\Actions\Action::make('generar-pdf')
-                ->label('Generar PDF')
-                ->url(function (PreNomina $record) {
-                    $reporte = Reporte::where('cod_reporte', $record->cod_nomina)->first();
-                    return url('/' . $reporte->descripcion);
-                })
-                ->color('danger')
-                ->icon('heroicon-c-eye')
+                // Tables\Actions\Action::make('generar-pdf')
+                // ->label('Generar PDF')
+                // ->url(function (PreNomina $record) {
+                //     $reporte = Reporte::where('cod_reporte', $record->cod_nomina)->first();
+                //     return url('/' . $reporte->descripcion);
+                // })
+                // ->color('danger')
+                // ->icon('heroicon-c-eye')
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    BulkAction::make('totalizar')
+                        ->label('Totalizar Nómina')
+                        ->color('success')
+                        ->icon('heroicon-c-cog-8-tooth')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+
+                            $parametros = ConfiguracionNomina::first();
+
+                            foreach ($records as $item) {
+                                $item->status = 2;
+                                $item->total_venta_sin_iva = $item->total_bsd / $parametros->iva;
+                                $item->iva = $item->total_bsd - $item->total_venta_sin_iva;
+                                $item->retencion_isrl = $item->iva * $parametros->isrl;
+                                $item->total_pagar_bsd = $item->total_bsd - $item->retencion_isrl;
+                                $item->save();
+                            }
+
+                            //log
+                            LogController::log(Auth::user()->id, 'cierre de nomina', 'totalizo nomina', $response = null);
+
+                            // $this->resetTable();
+                        })->deselectRecordsAfterCompletion(),
+
+                    BulkAction::make('generar-pdf')
+                        ->label('Generar PDFs')
+                        ->color('danger')
+                        ->icon('heroicon-c-arrow-down-tray')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+                            try {
+                                $reporte = PreNominaController::reporteMasivoNomina($records);
+                                // $this->resetTable();
+                            } catch (\Throwable $th) {
+                                LogController::log(Auth::user()->id, 'excepcion: reporte masivo de nomina', $th->getMessage(), $response = null);
+                                Notification::make()
+                                    ->title('NOTIFICACIÓN')
+                                    ->icon('heroicon-o-shield-check')
+                                    ->iconColor('danger')
+                                    ->color('danger')
+                                    ->body($th->getMessage())
+                                    ->send();
+                            }
+                        })->deselectRecordsAfterCompletion(),
+
+                    BulkAction::make('delete')
+                        ->label('Reversar Cálculo')
+                        ->color('primary')
+                        ->icon('heroicon-c-arrow-uturn-left')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+                            $records->each->delete();
+                            //log
+                            LogController::log(Auth::user()->id, 'cierre de nomina', 'totalizo nomina', $response = null);
+
+                            // $this->resetTable();
+                        })->deselectRecordsAfterCompletion(),
+
                     ExportBulkAction::make()
+                        ->label('Exportar Excel')
                 ]),
             ])
             ->striped()

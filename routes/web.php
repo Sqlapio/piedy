@@ -305,6 +305,19 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
     /**-------------------------------------------------------*/
 
+    /**
+     * ---------------------------------------------------------
+     * RUTAS:
+     * Modulo de Nomina
+     * ---------------------------------------------------------
+     */
+    Route::get('/detalle/es/gan/per', function () {
+        return view('table-detalle-es-gan-per');
+    })->name('table-detalle-es-gan-per');
+
+    /**-------------------------------------------------------*/
+
+
 
     Route::get('/lista/clientes', [ApiClientesController::class, 'lista_clientes'])->name('api.clientes');
     Route::get('/lista/empleados', [ApiClientesController::class, 'lista_empleados'])->name('api.empleados');

@@ -58,4 +58,14 @@ class Requisicion extends Model
     {
         return $this->hasMany(DetalleRequisicion::class, 'requisicion_id', 'id');
     }
+
+    /**
+     * Get the user associated with the RequisicionStatu
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function statusRequisicion(): HasOne
+    {
+        return $this->hasOne(RequisicionStatu::class, 'id', 'status');
+    }
 }

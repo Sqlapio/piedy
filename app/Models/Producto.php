@@ -39,15 +39,16 @@ class Producto extends Model
         'marca',
         'min',
         'max',
-        'existencia_min_sucursal'
+        'existencia_min_sucursal',
+        'cant_req'
     ];
 
-    public function comision():BelongsTo
+    public function comision(): BelongsTo
     {
         return $this->belongsTo(Comision::class, 'comision_id', 'id');
     }
 
-    public function categoria():BelongsTo
+    public function categoria(): BelongsTo
     {
         return $this->belongsTo(Categoria::class, 'categoria_id', 'id');
     }
@@ -162,10 +163,8 @@ class Producto extends Model
         return $this->hasMany(Almacen::class);
     }
 
-    public function asignarProducto():BelongsTo
+    public function asignarProducto(): BelongsTo
     {
         return $this->belongsTo(AsignarProducto::class, 'producto_id', 'id');
     }
-
-
 }

@@ -221,6 +221,8 @@ class PreNominaController extends Controller
                 }       
             }
 
+            return true;
+
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion-PreNominaController(calculo_pre_nomina)', $th->getMessage(), $response = null);
             Notification::make()

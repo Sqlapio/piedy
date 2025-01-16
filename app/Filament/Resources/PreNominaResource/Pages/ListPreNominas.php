@@ -4,15 +4,21 @@ namespace App\Filament\Resources\PreNominaResource\Pages;
 
 use App\Models\Rol;
 use Filament\Actions;
+use App\Models\TasaBcv;
+use App\Models\Sucursal;
+use App\Models\PreNomina;
 use Filament\Actions\Action;
+use App\Models\DetalleEsGanPer;
 use Filament\Forms\Components\Grid;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
+use App\Http\Controllers\LogController;
+use Filament\Notifications\Notification;
 use Filament\Forms\Components\DatePicker;
 use Filament\Resources\Pages\ListRecords;
 use App\Filament\Resources\PreNominaResource;
 use App\Http\Controllers\PreNominaController;
-use App\Models\Sucursal;
 
 class ListPreNominas extends ListRecords
 {
@@ -69,12 +75,34 @@ class ListPreNominas extends ListRecords
                         ])
                 ])
                 ->action(function (array $data) {
-                    PreNominaController::calculo_pre_nomina(
+                    try {
+                    $calculo = PreNominaController::calculo_pre_nomina(
                         $data['fecha_ini'],
                         $data['fecha_fin'],
                         $data['rol_id'],
                         $data['sucursal_id'],
                     );
+
+                    if ($calculo == true) {
+
+                        Notification::make()
+                        ->title('Notificacion')
+                        ->icon('heroicon-o-shield-check')
+                        ->iconColor('danger')
+                        ->body('La nomina se ha calculado con exito')
+                        ->send();
+                    }
+                        //code...
+                    } catch (\Throwable $th) {
+                        LogController::log(Auth::user()->id, 'excepcion-PreNominaResource::ListPreNominas', $th->getMessage(), $response = null);
+                        Notification::make()
+                        ->title('Notificacion: CajaController::multiple() ')
+                        ->icon('heroicon-o-shield-check')
+                        ->iconColor('danger')
+                        ->body($th->getMessage())
+                        ->send();
+                    }
+
                 })
         ];
     }

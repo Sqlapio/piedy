@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\DetalleEsGanPerResource\Pages;
 
-use App\Filament\Resources\DetalleEsGanPerResource;
 use Filament\Actions;
+use Filament\Actions\Action;
+use App\Models\DetalleEsGanPer;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\DetalleEsGanPerResource;
 
 class ListDetalleEsGanPers extends ListRecords
 {
@@ -13,7 +15,16 @@ class ListDetalleEsGanPers extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->color('success'),
+            Action::make('Cerrar Asiento')
+            ->requiresConfirmation()
+            ->color('warning')
+            ->action(function () {
+                $detalles = DetalleEsGanPer::all()->last();
+                $detalles->status = 'cerrado';
+                $detalles->save();
+            })
         ];
     }
 }

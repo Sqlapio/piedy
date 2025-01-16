@@ -119,54 +119,73 @@ class DetalleEsGanPerResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('fecha_ini')
-                    ->numeric()
+                    ->label('Fecha Desde:')
+                    ->dateTime('d M Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('fecha_fin')
-                    ->numeric()
+                    ->label('Fecha Hasta:')
+                    ->dateTime('d M Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('ingresos_usd')
+                    ->label('Ingresos USD:')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('ingresos_bsd')
+                    ->label('Ingresos BSD:')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('mano_de_obra')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('otros_costos_directos')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('publicidad')
+                Tables\Columns\TextColumn::make('ingresos_totales_usd')
+                    ->label('Ingresos Totales USD:')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('comisiones_empleados')
+                    ->label('Comisiones Empleados:')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('sueldos_empleados')
+
+                //TextInputColumns
+                Tables\Columns\TextColumn::make('mano_de_obra')
+                    ->label('Mano de Obra:')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('otros_costos_directos')
+                    ->label('Otros Costos Directos:')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('publicidad')
+                    ->label('Publicidad:')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('alquiler')
+                    ->label('Alquiler:')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('telefono')
+                    ->label('Telefono:')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('internet')
+                    ->label('Internet:')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('gastos_financieros')
+                    ->label('Gastos Financieros:')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('perdidas_no_recurrentes')
+                    ->label('Perdidas No Recurrentes:')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('ingresos_financieros')
+                    ->label('Ingresos Financieros:')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('ganancias_no_recurrentes')
+                    ->label('Ganancias No Recurrentes:')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user_id')
+                    ->label('Usuario:')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -176,6 +195,14 @@ class DetalleEsGanPerResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Estatus:')
+                    ->badge()
+                    ->colors([
+                        'success' => 'abierto',
+                        'danger' => 'cerrado',
+                    ])
+                    ->color('success')
             ])
             ->filters([
                 //

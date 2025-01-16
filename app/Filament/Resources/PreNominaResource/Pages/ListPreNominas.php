@@ -2,9 +2,23 @@
 
 namespace App\Filament\Resources\PreNominaResource\Pages;
 
-use App\Filament\Resources\PreNominaResource;
+use App\Models\Rol;
 use Filament\Actions;
+use App\Models\TasaBcv;
+use App\Models\Sucursal;
+use App\Models\PreNomina;
+use Filament\Actions\Action;
+use App\Models\DetalleEsGanPer;
+use Filament\Forms\Components\Grid;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use App\Http\Controllers\LogController;
+use Filament\Notifications\Notification;
+use Filament\Forms\Components\DatePicker;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\PreNominaResource;
+use App\Http\Controllers\PreNominaController;
 
 class ListPreNominas extends ListRecords
 {
@@ -16,6 +30,80 @@ class ListPreNominas extends ListRecords
     {
         return [
             // Actions\CreateAction::make(),
+            Action::make('Calcular Nomina')
+                // ->label('Cálculo de Nomina')
+                ->modal()
+                ->color('colorOne')
+                ->form([
+                    Section::make('Formulario')
+                        ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
+                        ->icon('heroicon-s-newspaper')
+                        ->schema([
+                            Grid::make()
+                                ->schema([
+
+                                    //desde
+                                    DatePicker::make('fecha_ini')
+                                        ->label('Fecha Desde:')
+                                        ->prefixIcon('heroicon-m-calendar-days')
+                                        ->format('Y-m-d')
+                                        ->required(),
+
+                                    //hasta
+                                    DatePicker::make('fecha_fin')
+                                        ->label('Fecha Hasta:')
+                                        ->prefixIcon('heroicon-m-calendar-days')
+                                        ->format('Y-m-d')
+                                        ->required(),
+
+                                    //tipo de rol
+                                    Select::make('rol_id')
+                                        // ->relationship('rol', 'descripcion')
+                                        ->options(Rol::all()->pluck('descripcion', 'id'))
+                                        ->searchable()
+                                        ->preload()
+                                        ->required(),
+
+                                    Select::make('sucursal_id')
+                                        // ->relationship('sucursal', 'nombre')
+                                        ->options(Sucursal::all()->pluck('nombre', 'id'))
+                                        ->searchable()
+                                        ->preload()
+                                        ->required(),
+                                    // ...
+                                ]),
+                        ])
+                ])
+                ->action(function (array $data) {
+                    try {
+                    $calculo = PreNominaController::calculo_pre_nomina(
+                        $data['fecha_ini'],
+                        $data['fecha_fin'],
+                        $data['rol_id'],
+                        $data['sucursal_id'],
+                    );
+
+                    if ($calculo == true) {
+
+                        Notification::make()
+                        ->title('Notificacion')
+                        ->icon('heroicon-o-shield-check')
+                        ->iconColor('danger')
+                        ->body('La nomina se ha calculado con exito')
+                        ->send();
+                    }
+                        //code...
+                    } catch (\Throwable $th) {
+                        LogController::log(Auth::user()->id, 'excepcion-PreNominaResource::ListPreNominas', $th->getMessage(), $response = null);
+                        Notification::make()
+                        ->title('Notificacion: CajaController::multiple() ')
+                        ->icon('heroicon-o-shield-check')
+                        ->iconColor('danger')
+                        ->body($th->getMessage())
+                        ->send();
+                    }
+
+                })
         ];
     }
 }

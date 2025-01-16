@@ -10,6 +10,7 @@ use App\Models\Producto;
 use App\Models\Servicio;
 use App\Models\Membresia;
 use App\Models\Disponible;
+use App\Models\Inventario;
 use Flowframe\Trend\Trend;
 use App\Models\ServicioUser;
 use App\Models\CierreGeneral;
@@ -304,6 +305,19 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
     /**-------------------------------------------------------*/
 
+    /**
+     * ---------------------------------------------------------
+     * RUTAS:
+     * Modulo de Nomina
+     * ---------------------------------------------------------
+     */
+    Route::get('/detalle/es/gan/per', function () {
+        return view('table-detalle-es-gan-per');
+    })->name('table-detalle-es-gan-per');
+
+    /**-------------------------------------------------------*/
+
+
 
     Route::get('/lista/clientes', [ApiClientesController::class, 'lista_clientes'])->name('api.clientes');
     Route::get('/lista/empleados', [ApiClientesController::class, 'lista_empleados'])->name('api.empleados');
@@ -369,5 +383,14 @@ Route::get('/ex', function () {
 
     // dd(1);
 
-    dd(now()->format('Y-m-d H:i:s.u'), date('Y-m-d H:i:s.u'));
+    $in = Inventario::where('unidad', '!=', null)->get();
+    foreach ($in as $item) {
+        $unidad = Producto::where('id', $item->producto_id)->first();
+        Inventario::where('id', $item->id)->update([
+            'contenido_neto' => $unidad->contenido_neto
+        ]);
+    }
+    dd('listo VB');
+
+    // dd(now()->format('Y-m-d H:i:s.u'), date('Y-m-d H:i:s.u'));
 });

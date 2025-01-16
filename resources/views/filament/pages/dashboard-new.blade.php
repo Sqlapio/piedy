@@ -27,7 +27,7 @@ use Filament\Facades\Filament;
 
 </style>
 @endpushonce
-<div class="container grid lg:grid-cols-6 md:grid-cols-3 gap-3">
+<div class="container grid md:grid-cols-3 lg:grid-cols-6  gap-3">
         <!-- Primer widget -->
 
         <div class="col-span-3">

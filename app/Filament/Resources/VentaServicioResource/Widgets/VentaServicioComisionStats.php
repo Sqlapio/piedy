@@ -44,13 +44,25 @@ class VentaServicioComisionStats extends BaseWidget
                 ->description('Comisión total por pago en dolares (40%)')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
 
             Stat::make('COMISION EN BOLIVARES (BS.)', $this->getPageTableQuery()->sum('comision_bolivares'))
                 ->description('Comisión total por pago en bolivares (40%)')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('info')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#9bad699e]']),
+
+            Stat::make('PROPINAS EN DOLARES ($)', $this->getPageTableQuery()->sum('propina_usd'))
+                ->description('Total acumulado propinas en dolares')
+                ->descriptionIcon('heroicon-m-user-group')
+                ->color('success')
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
+
+            Stat::make('PROPINAS EN BOLIVARES (BS.)', $this->getPageTableQuery()->sum('propina_bsd'))
+                ->description('Total acumulado propinas en bolivares')
+                ->descriptionIcon('heroicon-m-user-group')
+                ->color('info')
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#9bad699e]']),
 
             // Stat::make('COMISION PRODUCTO ($)', $this->getPageTableQuery()->sum('comision_emp_venprod'))
             //     ->description('Comisión total por pago en bolivares (40%)')
@@ -66,6 +78,6 @@ class VentaServicioComisionStats extends BaseWidget
 
     public function getColumns(): int
     {
-        return 2;
+        return 4;
     }
 }

@@ -100,6 +100,11 @@ class ServiciosDashChart extends ChartWidget
             'legend' => [
                 'display' => false,
             ]
+            ],
+        'elements' => [
+            'bar' => [
+                'barThickness' => 30, 
+            ]
         ]
     ];
 

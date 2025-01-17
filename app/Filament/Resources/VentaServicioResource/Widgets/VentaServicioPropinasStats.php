@@ -51,6 +51,6 @@ class VentaServicioPropinasStats extends BaseWidget
 
     public function getColumns(): int
     {
-        return 2;
+        return 4;
     }
 }

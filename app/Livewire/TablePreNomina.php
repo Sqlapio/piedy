@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Carbon\Carbon;
 use Filament\Tables;
 use App\Models\Reporte;
+use App\Models\TasaBcv;
 use Livewire\Component;
 use App\Models\PreNomina;
 use Filament\Tables\Table;
@@ -242,8 +243,8 @@ class TablePreNomina extends Component implements HasForms, HasTable
                     ->label('Total(USD)')
                     ->money('USD')
                     ->summarize(Sum::make()
-                    ->money('USD')
-                    ->label('Neto Dolares($)'))
+                        ->money('USD')
+                        ->label('Neto Dolares($)'))
                     ->sortable(),
 
 
@@ -251,8 +252,18 @@ class TablePreNomina extends Component implements HasForms, HasTable
                     ->label('Total A Pagar(Bs.)')
                     ->money('VES')
                     ->summarize(Sum::make()
-                    ->money('VES')
-                    ->label('Neto Bolivares(Bs.)'))
+                        ->money('VES')
+                        ->label('Neto Bolivares(Bs.)'))
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('conversion_a_usd')
+                    ->label('Conversion($)')
+                    ->money('USD')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('total_general_usd')
+                    ->label('Total General($)')
+                    ->money('USD')
                     ->sortable(),
 
 
@@ -306,7 +317,7 @@ class TablePreNomina extends Component implements HasForms, HasTable
             )
             ->headerActions([
                 CreateAction::make()
-                ->label('Cálculo de Nomina')
+                    ->label('Cálculo de Nomina')
                     ->model(CierreDiario::class)
                     ->color('colorOne')
                     ->form([
@@ -371,8 +382,11 @@ class TablePreNomina extends Component implements HasForms, HasTable
                                 $item->status = 2;
                                 $item->total_venta_sin_iva = $item->total_bsd / $parametros->iva;
                                 $item->iva = $item->total_bsd - $item->total_venta_sin_iva;
-                                $item->retencion_isrl = $item->iva * $parametros->isrl;
+                                $item->retencion_isrl = $item->total_venta_sin_iva * $parametros->isrl;
                                 $item->total_pagar_bsd = $item->total_bsd - $item->retencion_isrl;
+                                //Calculo de la conversion a dolares
+                                $item->conversion_a_usd = $item->total_pagar_bsd / TasaBcv::all()->first()->tasa;
+                                $item->total_general_usd = $item->total_usd + $item->conversion_a_usd;
                                 $item->save();
                             }
 
@@ -390,18 +404,17 @@ class TablePreNomina extends Component implements HasForms, HasTable
                             try {
                                 $reporte = PreNominaController::reporteMasivoNomina($records);
                                 $this->resetTable();
-
                             } catch (\Throwable $th) {
-                                LogController::log(Auth::user()->id, 'excepcion: reporte masivo de nomina' , $th->getMessage(), $response = null);
+                                LogController::log(Auth::user()->id, 'excepcion: reporte masivo de nomina', $th->getMessage(), $response = null);
                                 Notification::make()
-                                ->title('NOTIFICACIÓN')
-                                ->icon('heroicon-o-shield-check')
-                                ->iconColor('danger')
-                                ->color('danger')
-                                ->body($th->getMessage())
-                                ->send();
+                                    ->title('NOTIFICACIÓN')
+                                    ->icon('heroicon-o-shield-check')
+                                    ->iconColor('danger')
+                                    ->color('danger')
+                                    ->body($th->getMessage())
+                                    ->send();
                             }
-                    }),
+                        }),
                     BulkAction::make('delete')
                         ->label('Reversar Cálculo')
                         ->color('primary')
@@ -415,7 +428,7 @@ class TablePreNomina extends Component implements HasForms, HasTable
                             $this->resetTable();
                         }),
                     ExportBulkAction::make()
-                    ->label('Exportar Excel')
+                        ->label('Exportar Excel')
                 ]),
                 // BulkAction::make('export')->button()->action(fn (Collection $records) => ...),
             ])

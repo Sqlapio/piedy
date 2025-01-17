@@ -19,10 +19,12 @@ class CreateDetalleEsGanPer extends CreateRecord
     //beforeCreated
     protected function beforeCreate(): void
     {
+        dd($this->data['sucursal_id'], $this->data['fecha_ini'] . ' 07:00:00.000', $this->data['fecha_fin'] . ' 23:59:59.000');
         $cal = PreNomina::where('sucursal_id', $this->data['sucursal_id'])
             ->where('status', 2)
-            ->whereBetween('created_at', [$this->data['fecha_ini'] . ' 07:00:00.000', $this->data['fecha_fin'] . ' 23:59:59.000'])
+            ->where('created_at', $this->data['fecha_fin'] . ' 07:00:00.000')
             ->get();
+        dd($cal);
         if (count($cal) <= 0) {
             $this->halt();
         }
@@ -92,6 +94,5 @@ class CreateDetalleEsGanPer extends CreateRecord
                 ->body($th->getMessage())
                 ->send();
         }
-        
     }
 }

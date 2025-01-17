@@ -19,6 +19,10 @@ class EstadoGananciaPerdidaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Administración';
+
+    protected static ?string $navigationLabel = 'Ganancias y Perdidas';
+
     public static function form(Form $form): Form
     {
         return $form

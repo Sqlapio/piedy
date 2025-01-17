@@ -31,12 +31,12 @@ class PreNomina extends Model
         'comision_prod',
         'propinas_usd',
         'propinas_bsd',
-        
+
         'asignaciones_usd',
         'asignaciones_bsd',
         'deducciones_usd',
         'deducciones_bsd',
-         
+
         'fecha_ini',
         'fecha_fin',
         'total_usd',
@@ -47,6 +47,9 @@ class PreNomina extends Model
         'iva',
         'retencion_isrl',
         'total_pagar_bsd',
+
+        'conversion_a_usd',
+        'total_general_usd',
     ];
 
     /**

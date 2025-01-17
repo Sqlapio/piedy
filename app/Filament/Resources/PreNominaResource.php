@@ -7,9 +7,11 @@ use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
 use App\Models\Reporte;
+use App\Models\TasaBcv;
 use Filament\Forms\Form;
 use App\Models\PreNomina;
 use Filament\Tables\Table;
+use App\Models\NominaGeneral;
 use Filament\Resources\Resource;
 use Filament\Actions\ImportAction;
 use Illuminate\Support\Collection;
@@ -240,6 +242,15 @@ class PreNominaResource extends Resource
                     ->money('Bs.')
                     ->sortable(),
 
+                Tables\Columns\TextColumn::make('conversion_a_usd')
+                    ->label('Conversion($)')
+                    ->money('USD')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('total_general_usd')
+                    ->label('Total General($)')
+                    ->money('USD')
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -289,16 +300,7 @@ class PreNominaResource extends Resource
                     ->button()
                     ->label('Filtros'),
             )
-            ->actions([
-                // Tables\Actions\Action::make('generar-pdf')
-                // ->label('Generar PDF')
-                // ->url(function (PreNomina $record) {
-                //     $reporte = Reporte::where('cod_reporte', $record->cod_nomina)->first();
-                //     return url('/' . $reporte->descripcion);
-                // })
-                // ->color('danger')
-                // ->icon('heroicon-c-eye')
-            ])
+            ->actions([])
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('totalizar')
@@ -307,20 +309,51 @@ class PreNominaResource extends Resource
                         ->icon('heroicon-c-cog-8-tooth')
                         ->requiresConfirmation()
                         ->action(function (Collection $records) {
-
+                            // dd($records->first()->fecha_ini);
                             $parametros = ConfiguracionNomina::first();
 
                             foreach ($records as $item) {
+                                //Status para cierre y totalizacion de nomina
                                 $item->status = 2;
-                                $item->total_venta_sin_iva = $item->total_bsd / $parametros->iva;
-                                $item->iva = $item->total_bsd - $item->total_venta_sin_iva;
-                                $item->retencion_isrl = $item->iva * $parametros->isrl;
-                                $item->total_pagar_bsd = $item->total_bsd - $item->retencion_isrl;
+
+                                if ($item->rol_id == 1 || $item->rol_id == 2) {
+
+                                    $item->total_venta_sin_iva = $item->total_bsd / $parametros->iva;
+                                    $item->iva = $item->total_bsd - $item->total_venta_sin_iva;
+                                    $item->retencion_isrl = $item->total_venta_sin_iva * $parametros->isrl;
+                                    $item->total_pagar_bsd = $item->total_bsd - $item->retencion_isrl;
+
+                                    //Calculo de la conversion a dolares
+                                    $item->conversion_a_usd = $item->total_pagar_bsd / TasaBcv::all()->first()->tasa;
+                                    $item->total_general_usd = $item->total_usd + $item->conversion_a_usd;
+                                }
+
+                                if ($item->rol_id == 3) {
+
+                                    $item->total_bsd = $parametros->sueldo_gerente_tienda_usd * TasaBcv::all()->first()->tasa;
+
+                                    //Calculo de la conversion a dolares
+                                    $item->conversion_a_usd = $parametros->sueldo_gerente_tienda_usd;
+                                    $item->total_general_usd = $item->total_usd + $item->conversion_a_usd;
+                                }
+
                                 $item->save();
                             }
 
                             //log
                             LogController::log(Auth::user()->id, 'cierre de nomina', 'totalizo nomina', $response = null);
+
+                            //Se crea el registro para los totales de nomina
+                            $nomina_calculada = PreNomina::where('status', 2)
+                                ->whereBetween('created_at', [$records->first()->fecha_ini . ' 07:00:00.000', $records->first()->fecha_fin . ' 23:59:59.000'])
+                                ->get();
+
+                            dd($nomina_calculada);
+
+                            $nomina_general = NominaGeneral::create([
+                                'pre_nomina_id' => $item->id,
+                                'total_usd' => $item->total_usd,
+                            ]);
 
                             // $this->resetTable();
                         })->deselectRecordsAfterCompletion(),

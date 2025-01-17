@@ -383,14 +383,15 @@ Route::get('/ex', function () {
 
     // dd(1);
 
-    $in = Inventario::where('unidad', '!=', null)->get();
-    foreach ($in as $item) {
-        $unidad = Producto::where('id', $item->producto_id)->first();
-        Inventario::where('id', $item->id)->update([
-            'contenido_neto' => $unidad->contenido_neto
-        ]);
-    }
-    dd('listo VB');
+    // $in = Inventario::where('unidad', '!=', null)->get();
+    // foreach ($in as $item) {
+    //     $unidad = Producto::where('id', $item->producto_id)->first();
+    //     Inventario::where('id', $item->id)->update([
+    //         'contenido_neto' => $unidad->contenido_neto
+    //     ]);
+    // }
+    // dd('listo VB');
+    dd(TasaBcv::all()->first()->tasa);
 
     // dd(now()->format('Y-m-d H:i:s.u'), date('Y-m-d H:i:s.u'));
 });

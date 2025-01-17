@@ -15,16 +15,19 @@ class ListDetalleEsGanPers extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
+            Actions\CreateAction::make('Crear Asiento')
+                ->label('Crear Asiento')
                 ->color('success'),
+            
             Action::make('Cerrar Asiento')
-            ->requiresConfirmation()
-            ->color('warning')
-            ->action(function () {
-                $detalles = DetalleEsGanPer::all()->last();
-                $detalles->status = 'cerrado';
-                $detalles->save();
-            })
+                ->label('Cerrar Asiento')
+                ->requiresConfirmation()
+                ->color('danger')
+                ->action(function () {
+                    $detalles = DetalleEsGanPer::all()->last();
+                    $detalles->status = 'cerrado';
+                    $detalles->save();
+                })
         ];
     }
 }

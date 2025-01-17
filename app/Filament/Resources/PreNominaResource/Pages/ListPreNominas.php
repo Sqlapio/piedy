@@ -58,13 +58,16 @@ class ListPreNominas extends ListRecords
 
                                     //tipo de rol
                                     Select::make('rol_id')
+                                        ->label('Tipo de Rol')
                                         // ->relationship('rol', 'descripcion')
                                         ->options(Rol::all()->pluck('descripcion', 'id'))
                                         ->searchable()
                                         ->preload()
+                                        ->multiple()
                                         ->required(),
 
                                     Select::make('sucursal_id')
+                                        ->label('Sucursal')
                                         // ->relationship('sucursal', 'nombre')
                                         ->options(Sucursal::all()->pluck('nombre', 'id'))
                                         ->searchable()
@@ -75,34 +78,37 @@ class ListPreNominas extends ListRecords
                         ])
                 ])
                 ->action(function (array $data) {
+                    // dd($data['rol_id'], $data['rol_id'][1]);
                     try {
-                    $calculo = PreNominaController::calculo_pre_nomina(
-                        $data['fecha_ini'],
-                        $data['fecha_fin'],
-                        $data['rol_id'],
-                        $data['sucursal_id'],
-                    );
+                        for ($i = 0; $i < count($data['rol_id']); $i++) {
+                            # code...
+                            $calculo = PreNominaController::calculo_pre_nomina(
+                                $data['fecha_ini'],
+                                $data['fecha_fin'],
+                                $data['rol_id'][$i],
+                                $data['sucursal_id'],
+                            );
+                        }
 
-                    if ($calculo == true) {
+                        if ($calculo == true) {
 
-                        Notification::make()
-                        ->title('Notificacion')
-                        ->icon('heroicon-o-shield-check')
-                        ->iconColor('danger')
-                        ->body('La nomina se ha calculado con exito')
-                        ->send();
-                    }
+                            Notification::make()
+                                ->title('Notificacion')
+                                ->icon('heroicon-o-shield-check')
+                                ->iconColor('danger')
+                                ->body('La nomina se ha calculado con exito')
+                                ->send();
+                        }
                         //code...
                     } catch (\Throwable $th) {
                         LogController::log(Auth::user()->id, 'excepcion-PreNominaResource::ListPreNominas', $th->getMessage(), $response = null);
                         Notification::make()
-                        ->title('Notificacion: CajaController::multiple() ')
-                        ->icon('heroicon-o-shield-check')
-                        ->iconColor('danger')
-                        ->body($th->getMessage())
-                        ->send();
+                            ->title('Notificacion: CajaController::multiple() ')
+                            ->icon('heroicon-o-shield-check')
+                            ->iconColor('danger')
+                            ->body($th->getMessage())
+                            ->send();
                     }
-
                 })
         ];
     }

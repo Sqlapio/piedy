@@ -23,17 +23,16 @@ class StatController extends Controller
             //code...
             $rangeStartDate = now()->startOfDay();
             $rangeEndDate = now()->endOfDay();
-            $servicios_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
-            ->where('status', 2)
+            $servicios_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
             ->count();
-            // dd($servicios_hoy);
+            
 
             //Caculo del porcentaje de servicios facturados comparado con el dia anterior
             $rangeStartDate = now()->subDay()->startOfDay();
             $rangeEndDate = now()->subDay()->endOfDay();
 
-            $servicios_ayer = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
-            ->where('status', 2)
+            $servicios_ayer = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+            // ->where('status', 2)
             ->count();
 
             if ($servicios_hoy == 0 || $servicios_ayer == 0) {

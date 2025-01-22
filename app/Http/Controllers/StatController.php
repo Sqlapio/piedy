@@ -184,7 +184,7 @@ class StatController extends Controller
 
                 //Servicios y clientes para Ayer
                 $nro_servicios_ayer = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
-                $clientes_ayer = Disponible::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+                $clientes_ayer = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
                     ->groupBy('cliente_id')
                     ->count();
 

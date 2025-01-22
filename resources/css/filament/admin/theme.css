@@ -81,7 +81,7 @@
 
 .fi-wi-stats-overview-stat-label {
     @apply text-xs;
-    @apply text-black !important;
+    /* @apply text-black !important; */
 }
 
 .fi-wi-stats-overview-stat-value {

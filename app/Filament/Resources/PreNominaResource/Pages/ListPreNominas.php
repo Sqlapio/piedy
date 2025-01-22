@@ -8,6 +8,7 @@ use App\Models\TasaBcv;
 use App\Models\Sucursal;
 use App\Models\PreNomina;
 use Filament\Actions\Action;
+use App\Models\NominaGeneral;
 use App\Models\DetalleEsGanPer;
 use Filament\Forms\Components\Grid;
 use Illuminate\Support\Facades\Auth;
@@ -79,7 +80,23 @@ class ListPreNominas extends ListRecords
                 ])
                 ->action(function (array $data) {
                     // dd($data['rol_id'], $data['rol_id'][1]);
+                    $cod_nomina = rand('111111', '999999');
+
+                    //Creamos el asiento inicial para el pre calculo de la nomina
+                    $asiento = new NominaGeneral();
+                    $asiento->cod_nomina = $cod_nomina;
+                    $asiento->total_bolivares = 0.00;
+                    $asiento->total_dolares = 0.00;
+                    $asiento->total_general = 0.00;
+                    $asiento->tasa_bcv = TasaBcv::where("fecha", date('d-m-Y'))->first()->tasa;
+                    $asiento->fecha_ini = $data['fecha_ini'];
+                    $asiento->fecha_fin = $data['fecha_fin'];
+                    $asiento->responsable = Auth::user()->name;
+                    $asiento->sucursal_id = Auth::user()->sucursal_id;
+                    $asiento->save();
+
                     try {
+
                         for ($i = 0; $i < count($data['rol_id']); $i++) {
                             # code...
                             $calculo = PreNominaController::calculo_pre_nomina(
@@ -87,19 +104,22 @@ class ListPreNominas extends ListRecords
                                 $data['fecha_fin'],
                                 $data['rol_id'][$i],
                                 $data['sucursal_id'],
+                                $cod_nomina
                             );
+
+                            $rol = Rol::find($data['rol_id'][$i]);
+
+                            if($calculo == true) {
+                                Notification::make()
+                                    ->title('Notificacion')
+                                    ->icon('heroicon-o-shield-check')
+                                    ->iconColor('success')
+                                    ->color('success')
+                                    ->body('La nomina de rol. '.$rol->descripcion.' se ha calculado con exito')
+                                    ->send();
+                            }
                         }
 
-                        if ($calculo == true) {
-
-                            Notification::make()
-                                ->title('Notificacion')
-                                ->icon('heroicon-o-shield-check')
-                                ->iconColor('danger')
-                                ->body('La nomina se ha calculado con exito')
-                                ->send();
-                        }
-                        //code...
                     } catch (\Throwable $th) {
                         LogController::log(Auth::user()->id, 'excepcion-PreNominaResource::ListPreNominas', $th->getMessage(), $response = null);
                         Notification::make()

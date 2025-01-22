@@ -23,13 +23,18 @@ class StatController extends Controller
             //code...
             $rangeStartDate = now()->startOfDay();
             $rangeEndDate = now()->endOfDay();
-            $servicios_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+            $servicios_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+            ->where('status', 2)
+            ->count();
+            // dd($servicios_hoy);
 
             //Caculo del porcentaje de servicios facturados comparado con el dia anterior
             $rangeStartDate = now()->subDay()->startOfDay();
             $rangeEndDate = now()->subDay()->endOfDay();
 
-            $servicios_ayer = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+            $servicios_ayer = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+            ->where('status', 2)
+            ->count();
 
             if ($servicios_hoy == 0 || $servicios_ayer == 0) {
                 $result = [
@@ -446,16 +451,17 @@ class StatController extends Controller
             //code...
             $rangeStartDate = now()->startOfDay();
             $rangeEndDate = now()->endOfDay();
-            $clientes_atendidos_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+            $clientes_atendidos_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
                 ->groupBy('cliente_id')
                 ->get();
+                // dd($clientes_atendidos_hoy);
             $clientes_atendidos_hoy = count($clientes_atendidos_hoy);
 
             //Caculo del porcentaje de productos facturados comparado con el dia anterior
             $rangeStartDate = now()->subDay()->startOfDay();
             $rangeEndDate = now()->subDay()->endOfDay();
 
-            $clientes_atendidos_ayer = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+            $clientes_atendidos_ayer = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
                 ->groupBy('cliente_id')
                 ->get();
             $clientes_atendidos_ayer = count($clientes_atendidos_ayer);

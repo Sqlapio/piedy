@@ -12,6 +12,7 @@ use Filament\Forms\Form;
 use App\Models\PreNomina;
 use Filament\Tables\Table;
 use App\Models\NominaGeneral;
+use App\Models\VentaServicio;
 use Filament\Resources\Resource;
 use Filament\Actions\ImportAction;
 use Illuminate\Support\Collection;
@@ -33,6 +34,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\BulkActionGroup;
 use App\Http\Controllers\PreNominaController;
 use App\Filament\Resources\PreNominaResource\Pages;
+use App\Http\Controllers\DetalleEsGanPerController;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\PreNominaResource\RelationManagers;
@@ -309,7 +311,7 @@ class PreNominaResource extends Resource
                         ->icon('heroicon-c-cog-8-tooth')
                         ->requiresConfirmation()
                         ->action(function (Collection $records) {
-                            // dd($records->first()->fecha_ini);
+                            // dd($records);
                             $parametros = ConfiguracionNomina::first();
 
                             foreach ($records as $item) {
@@ -333,6 +335,7 @@ class PreNominaResource extends Resource
                                     $item->total_bsd = $parametros->sueldo_gerente_tienda_usd * TasaBcv::all()->first()->tasa;
 
                                     //Calculo de la conversion a dolares
+                                    $item->total_pagar_bsd = $item->total_bsd;
                                     $item->conversion_a_usd = $parametros->sueldo_gerente_tienda_usd;
                                     $item->total_general_usd = $item->total_usd + $item->conversion_a_usd;
                                 }
@@ -344,16 +347,21 @@ class PreNominaResource extends Resource
                             LogController::log(Auth::user()->id, 'cierre de nomina', 'totalizo nomina', $response = null);
 
                             //Se crea el registro para los totales de nomina
-                            $nomina_calculada = PreNomina::where('status', 2)
-                                ->whereBetween('created_at', [$records->first()->fecha_ini . ' 07:00:00.000', $records->first()->fecha_fin . ' 23:59:59.000'])
-                                ->get();
+                            $nomina_general = NominaGeneral::where('fecha_ini', $records->first()->fecha_ini)
+                            ->where('fecha_fin', $records->first()->fecha_fin)
+                            ->where('status', 1)
+                            ->first();
+                            
+                            $nomina_general->total_dolares = $records->sum('total_usd');
+                            $nomina_general->total_bolivares = $records->sum('total_bsd');
+                            $nomina_general->total_general = $records->sum('total_general_usd');
+                            $nomina_general->status = 2;
+                            $nomina_general->save();
 
-                            dd($nomina_calculada);
+                            //Se crea el registro para los totales de ganancias y perdidas
+                            $asiento_ganancias_perdidas = DetalleEsGanPerController::asiento($nomina_general->cod_nomina, $records->first()->fecha_ini, $records->first()->fecha_fin);
 
-                            $nomina_general = NominaGeneral::create([
-                                'pre_nomina_id' => $item->id,
-                                'total_usd' => $item->total_usd,
-                            ]);
+                           
 
                             // $this->resetTable();
                         })->deselectRecordsAfterCompletion(),
@@ -385,7 +393,12 @@ class PreNominaResource extends Resource
                         ->icon('heroicon-c-arrow-uturn-left')
                         ->requiresConfirmation()
                         ->action(function (Collection $records) {
+                            //Eliminamos los datos seleccionados
                             $records->each->delete();
+
+                            //Eliminamos el asiente generado por el calculo de nomina
+                            $nomina_general = NominaGeneral::where('cod_nomina', $records->first()->cod_nomina)->first();
+                            $nomina_general->delete();
                             //log
                             LogController::log(Auth::user()->id, 'cierre de nomina', 'totalizo nomina', $response = null);
 

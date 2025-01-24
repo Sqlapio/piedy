@@ -10,9 +10,10 @@ use App\Models\CierreDiario;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\Summarizers\Sum;
 use App\Filament\Resources\CierreDiarioResource\Pages;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
@@ -23,11 +24,11 @@ class CierreDiarioResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-chart-pie';
 
-    protected static ?string $navigationLabel = 'Cierre diario';
+    protected static ?string $navigationLabel = 'Cierre Diario(Tienda)';
 
-    protected static ?string $navigationGroup = 'Contabilidad';
+    protected static ?string $navigationGroup = 'Modulo Administrativo';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 9;
 
     public static function form(Form $form): Form
     {
@@ -192,6 +193,9 @@ class CierreDiarioResource extends Resource
 
                         return $indicators;
                     }),
+            SelectFilter::make('tienda')
+            ->relationship('sucursal', 'nombre')
+            ->attribute('sucursal_id')
             ])
             ->filtersTriggerAction(
                 fn(Action $action) => $action

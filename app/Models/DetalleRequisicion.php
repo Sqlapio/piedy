@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class DetalleRequisicion extends Model
@@ -17,7 +18,11 @@ class DetalleRequisicion extends Model
         'producto_id',
         'cantidad',
         'uso',
-        'status'
+        'status',
+        'costo',
+        'existencia',
+        'almacen_id',
+        'observacion'
     ];
 
     /**
@@ -40,8 +45,23 @@ class DetalleRequisicion extends Model
         return $this->hasOne(Producto::class, 'id', 'producto_id');
     }
 
-    // public function requisicion(): HasOne
-    // {
-    //     return $this->hasOne(Requisicion::class, 'id', 'requisicion_id');
-    // }
+    /**
+     * Get the user that owns the DetalleRequisicion
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function requisicion(): BelongsTo
+    {
+        return $this->belongsTo(Requisicion::class, 'id', 'requisicion_id');
+    }
+
+    /**
+     * Get the user associated with the Requisicion
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function almacen(): HasOne
+    {
+        return $this->hasOne(Almacen::class, 'id', 'almacen_id');
+    }
 }

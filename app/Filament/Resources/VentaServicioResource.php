@@ -11,14 +11,15 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Support\Enums\VerticalAlignment;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use App\Filament\Resources\VentaServicioResource\Pages;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\VentaServicioResource\Widgets\VentaServicioStats;
 use App\Filament\Resources\VentaServicioResource\Widgets\VentaServicioComisionStats;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 
 class VentaServicioResource extends Resource
@@ -29,9 +30,9 @@ class VentaServicioResource extends Resource
 
     protected static ?string $navigationLabel = 'Servícios';
 
-    protected static ?string $navigationGroup = 'Ventas';
+    protected static ?string $navigationGroup = 'Modulo Administrativo';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 6;
 
     public static function table(Table $table): Table
     {
@@ -206,6 +207,9 @@ class VentaServicioResource extends Resource
 
                         return $indicators;
                     }),
+            SelectFilter::make('tienda')
+            ->relationship('sucursal', 'nombre')
+            ->attribute('sucursal_id')
             ])
             ->filtersTriggerAction(
                 fn(Action $action) => $action

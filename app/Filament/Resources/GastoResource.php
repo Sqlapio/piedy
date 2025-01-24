@@ -16,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\GastoResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -28,9 +29,9 @@ class GastoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-c-arrow-trending-down';
 
-    protected static ?string $navigationGroup = 'Contabilidad';
+    protected static ?string $navigationGroup = 'Modulo Administrativo';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -234,6 +235,9 @@ class GastoResource extends Resource
                 ->searchable()
                 ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->groups([
+                'sucursal.nombre'
+            ])
             ->filters([
                 Filter::make('created_at')
                 ->form([
@@ -262,12 +266,16 @@ class GastoResource extends Resource
 
                     return $indicators;
                 }),
+                SelectFilter::make('tienda')
+                ->relationship('sucursal', 'nombre')
+                ->attribute('sucursal_id')
             ])
             ->filtersTriggerAction(
                 fn (Action $action) => $action
                     ->button()
                     ->label('Filtros'),
             )
+            
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])

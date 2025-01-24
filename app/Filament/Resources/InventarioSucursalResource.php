@@ -12,6 +12,7 @@ use App\Models\InventarioSucursal;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -26,7 +27,7 @@ class InventarioSucursalResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-building-office';
 
-    protected static ?string $navigationGroup = 'Manejo de Inventario';
+    protected static ?string $navigationGroup = 'Modulo de Inventario';
 
     protected static ?string $navigationLabel = 'Inventario Sucursales';
 
@@ -130,6 +131,9 @@ class InventarioSucursalResource extends Resource
 
                     return $indicators;
                 }),
+            SelectFilter::make('sucursal')
+            ->relationship('sucursal', 'nombre')
+            ->attribute('sucursal_id')
             ])
             ->filtersTriggerAction(
                 fn (Action $action) => $action

@@ -13,6 +13,7 @@ use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
+use App\Filament\Resources\VentaServicioResource;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
@@ -71,25 +72,25 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 NavigationGroup::make()
-                    ->label('Administración')
+                    ->label('Modulo Administrativo')
                     ->icon('heroicon-m-building-office-2'),
                 NavigationGroup::make()
-                    ->label('Contabilidad')
+                    ->label('Modulo de Inventario')
                     ->icon('heroicon-m-building-library'),
                 NavigationGroup::make()
-                    ->label('Ventas')
+                    ->label('Módulo Contable')
                     ->icon('heroicon-m-presentation-chart-bar'),
                 NavigationGroup::make()
-                    ->label('Manejo de Inventario')
+                    ->label('Configuración')
                     ->icon('heroicon-s-square-3-stack-3d'),
                 NavigationGroup::make()
-                    ->label('Clientes')
+                    ->label('Sistema')
                     ->icon('heroicon-s-user-group'),
                 NavigationGroup::make()
-                    ->label('Sistema')
+                    ->label('Notificaciones')
                     ->icon('heroicon-m-tv'),
                 NavigationGroup::make()
-                    ->label('GiftCard')
+                    ->label('Metodos Prepagados')
                     ->icon('heroicon-m-gift'),
                 NavigationGroup::make()
                     ->label('Membresias')

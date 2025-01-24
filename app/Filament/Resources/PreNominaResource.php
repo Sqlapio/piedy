@@ -30,6 +30,7 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Columns\Layout\Grid;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\BulkActionGroup;
 use App\Http\Controllers\PreNominaController;
@@ -45,9 +46,11 @@ class PreNominaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Administración';
+    protected static ?string $navigationGroup = 'Modulo Administrativo';
 
-    protected static ?string $navigationLabel = 'Nomina';
+    protected static ?string $navigationLabel = 'Nomina(RRHH)';
+
+    protected static ?int $navigationSort = 8;
 
     public static function table(Table $table): Table
     {
@@ -296,6 +299,9 @@ class PreNominaResource extends Resource
 
                         return $indicators;
                     }),
+                    SelectFilter::make('tienda')
+                ->relationship('sucursal', 'nombre')
+                ->attribute('sucursal_id')
             ])
             ->filtersTriggerAction(
                 fn(Action $action) => $action
@@ -359,7 +365,7 @@ class PreNominaResource extends Resource
                             $nomina_general->save();
 
                             //Se crea el registro para los totales de ganancias y perdidas
-                            $asiento_ganancias_perdidas = DetalleEsGanPerController::asiento($nomina_general->cod_nomina, $records->first()->fecha_ini, $records->first()->fecha_fin);
+                            // $asiento_ganancias_perdidas = DetalleEsGanPerController::asiento($nomina_general->cod_nomina, $records->first()->fecha_ini, $records->first()->fecha_fin);
 
                            
 

@@ -26,9 +26,9 @@ class ProveedorResource extends Resource
 
     protected static ?string $navigationLabel = 'Proveedores';
 
-    protected static ?string $navigationGroup = 'Contabilidad';
+    protected static ?string $navigationGroup = 'Modulo Administrativo';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 2;
 
     public static function getNavigationBadge(): ?string
     {

@@ -6,6 +6,7 @@ use App\Models\User;
 use Filament\Tables;
 use App\Models\Cliente;
 use Livewire\Component;
+use App\Models\Inventario;
 use Filament\Tables\Table;
 use App\Models\Requisicion;
 use Filament\Support\RawJs;
@@ -21,6 +22,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
 use App\Http\Controllers\LogController;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
@@ -115,6 +117,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                                 'numeric' => 'Campo numerico',
                                                 'integer' => 'Debe ser un número entero',
                                             ]),
+                                        
                                     ]),
                             ])
                     ])
@@ -161,14 +164,12 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                                         Select::make('producto_id')
                                                             ->label('Producto')
                                                             ->options(function () {
-
                                                                 $productos = DB::table('inventario_sucursals')
                                                                     ->select(DB::raw('producto_id as id, productos.descripcion as descripcion'))
                                                                     ->where('sucursal_id', Auth::user()->sucursal_id)
                                                                     ->join('productos', 'inventario_sucursals.producto_id', '=', 'productos.id')
                                                                     ->groupBy('producto_id')
                                                                     ->get();
-
                                                                 return $productos->pluck('descripcion', 'id');
                                                             })
                                                             ->rules(['required'])
@@ -186,11 +187,10 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                                                 'integer' => 'Debe ser un número entero',
                                                             ])
                                                             ->default(1),
+                                                        Textarea::make('observacion')->rows(1)->columnSpanFull()
                                                     ])
-
-
                                             ])->columnSpanFull(),
-                                    ])->columns(2),
+                                    ])->columns(3),
                             ])->collapsible(),
                     ])
                     ->action(function (array $data) {

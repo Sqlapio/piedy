@@ -12,6 +12,7 @@ use App\Models\EntradaInventario;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
@@ -24,11 +25,11 @@ class EntradaInventarioResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Manejo de Inventario';
+    protected static ?string $navigationGroup = 'Modulo de Inventario';
 
     protected static ?string $navigationLabel = 'Entradas';
 
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {
@@ -111,6 +112,9 @@ class EntradaInventarioResource extends Resource
 
                         return $indicators;
                     }),
+            SelectFilter::make('Almacen')
+            ->relationship('almacen', 'nombre')
+            ->attribute('almacen_id')
             ])
             ->filtersTriggerAction(
                 fn(Action $action) => $action

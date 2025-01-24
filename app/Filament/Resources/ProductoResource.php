@@ -42,7 +42,7 @@ class ProductoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-shopping-cart';
 
-    protected static ?string $navigationGroup = 'Manejo de Inventario';
+    protected static ?string $navigationGroup = 'Modulo de Inventario';
 
     protected static ?int $navigationSort = 3;
 

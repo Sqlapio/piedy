@@ -26,9 +26,9 @@ class DetalleEsGanPerResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Administración';
+    // protected static ?string $navigationGroup = 'Administración';
 
-    protected static ?string $navigationLabel = 'Asiento EGP';
+    // protected static ?string $navigationLabel = 'Asiento EGP';
 
     public static function form(Form $form): Form
     {

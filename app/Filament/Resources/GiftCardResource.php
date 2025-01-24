@@ -20,9 +20,9 @@ class GiftCardResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-gift-top';
 
-    protected static ?string $navigationGroup = 'GiftCard';
+    protected static ?string $navigationGroup = 'Metodos Prepagados';
 
-    protected static ?string $navigationLabel = 'Registro';
+    protected static ?string $navigationLabel = 'Registro GiftCard';
 
     public static function form(Form $form): Form
     {

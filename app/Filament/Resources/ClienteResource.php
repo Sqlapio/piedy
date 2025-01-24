@@ -23,7 +23,9 @@ class ClienteResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-user-group';
 
-    protected static ?string $navigationGroup = 'Clientes';
+    protected static ?string $navigationGroup = 'Modulo Administrativo';
+
+    protected static ?int $navigationSort = 1;
 
     public static function getNavigationBadge(): ?string
     {

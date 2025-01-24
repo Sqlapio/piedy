@@ -58,4 +58,5 @@ class Requisicion extends Model
     {
         return $this->hasMany(DetalleRequisicion::class, 'requisicion_id', 'id');
     }
+
 }

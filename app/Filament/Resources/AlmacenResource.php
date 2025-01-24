@@ -19,7 +19,7 @@ class AlmacenResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-home-modern';
 
-    protected static ?string $navigationGroup = 'Manejo de Inventario';
+    protected static ?string $navigationGroup = 'Modulo de Inventario';
 
     protected static ?string $navigationLabel = 'Almacenes';
 

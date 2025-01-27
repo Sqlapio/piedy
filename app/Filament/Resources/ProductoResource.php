@@ -256,17 +256,6 @@ class ProductoResource extends Resource
                     ->alignCenter()
                     ->searchable(),
 
-                // IconColumn::make('status')
-                //     ->alignCenter()
-                //     ->options([
-                //         'heroicon-s-check-circle' => fn ($state, $record): bool => $record->status === 'activo',
-                //         'heroicon-m-minus-circle' => fn ($state, $record): bool => $record->status === 'inactivo',
-                //     ])
-                //     ->colors([
-                //         'danger' => 'inactivo',
-                //         'success' => 'activo',
-                //     ]),
-
                 TextColumn::make('responsable')
                     ->toggleable(isToggledHiddenByDefault: false)
 

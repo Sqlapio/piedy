@@ -137,61 +137,60 @@ class ModalTableDetalleRequisicion extends Component implements HasForms, HasTab
                 //
             ])
             ->actions([
-            //
+                //
             ])
             ->headerActions([
-            Tables\Actions\Action::make('Añadir Producto')
-            ->icon('heroicon-c-arrow-uturn-down')
-            // ->iconColor('success')
-            ->form([
-                Section::make('Formulario')
-                ->description('Formulario para sustir un producto dentro de la requisicion')
-                ->relationship('requisicion')
-                    ->icon('heroicon-s-clipboard-document-list')
-                    ->schema([
-                        Grid::make()
+                Tables\Actions\Action::make('Añadir Producto')
+                    ->icon('heroicon-c-arrow-uturn-down')
+                    ->form([
+                        Section::make('Formulario')
+                        ->description('Formulario para sustir un producto dentro de la requisicion')
+                        ->relationship('requisicion')
+                            ->icon('heroicon-s-clipboard-document-list')
                             ->schema([
-                                Select::make('producto_id')
-                                    ->label('Producto')
-                                    ->options(function () {
-                                        $productos = DB::table('inventarios')
-                                            ->select(DB::raw('producto_id as id, productos.descripcion as descripcion'))
-                                            ->where('cantidad', '>', 0)
-                                            ->join('productos', 'inventarios.producto_id', '=', 'productos.id')
-                                            ->groupBy('producto_id')
-                                            ->get();
+                                Grid::make()
+                                    ->schema([
+                                        Select::make('producto_id')
+                                            ->label('Producto')
+                                            ->options(function () {
+                                                $productos = DB::table('inventarios')
+                                                    ->select(DB::raw('producto_id as id, productos.descripcion as descripcion'))
+                                                    ->where('cantidad', '>', 0)
+                                                    ->join('productos', 'inventarios.producto_id', '=', 'productos.id')
+                                                    ->groupBy('producto_id')
+                                                    ->get();
 
-                                        return $productos->pluck('id', 'id');
-                                    })
-                                    ->rules(['required'])
-                                    ->validationMessages([
-                                        'required' => 'Debe selecionar un producto de la lista',
+                                                return $productos->pluck('id', 'id');
+                                            })
+                                            ->rules(['required'])
+                                            ->validationMessages([
+                                                'required' => 'Debe selecionar un producto de la lista',
+                                            ]),
+                                        TextInput::make('cantidad')
+                                            ->label('Cantidad')
+                                            ->prefixIcon('heroicon-c-credit-card')
+                                            ->hint('Nota: solo números enteros')
+                                            ->rules(['required', 'numeric', 'integer'])
+                                            ->validationMessages([
+                                                'required' => 'Debe selecionar un tecnico',
+                                                'numeric' => 'Campo numerico',
+                                                'integer' => 'Debe ser un número entero',
+                                            ])
+                                            ->default(1),
+
+                                        Textarea::make('observacion')->rows(1)->columnSpanFull()
+
                                     ]),
-                                TextInput::make('cantidad')
-                                    ->label('Cantidad')
-                                    ->prefixIcon('heroicon-c-credit-card')
-                                    ->hint('Nota: solo números enteros')
-                                    ->rules(['required', 'numeric', 'integer'])
-                                    ->validationMessages([
-                                        'required' => 'Debe selecionar un tecnico',
-                                        'numeric' => 'Campo numerico',
-                                        'integer' => 'Debe ser un número entero',
-                                    ])
-                                    ->default(1),
-
-                                Textarea::make('observacion')->rows(1)->columnSpanFull()
-
-                            ]),
+                            ])
                     ])
-            ])
-                ->action(function (DetalleRequisicion $record, array $data) {
+                    ->action(function (DetalleRequisicion $record, array $data) {
 
-                    $update = RequisicionController::updateDetalleRequisicion($data, $record, $this->codigo);
+                        $update = RequisicionController::updateDetalleRequisicion($data, $record, $this->codigo);
 
-                    if ($update) {
-                        $this->resetTable();
-                    }
-                })
+                        if ($update) {
+                            $this->resetTable();
+                        }
+                    })
             ])
             ->bulkActions([
                 BulkAction::make('aceptar')

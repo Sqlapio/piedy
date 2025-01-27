@@ -87,9 +87,9 @@ class Producto extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function inventario(): HasOne
+    public function inventario(): BelongsTo
     {
-        return $this->hasOne(Inventario::class, 'id', 'producto_id');
+        return $this->belongsTo(Inventario::class, 'id', 'producto_id');
     }
 
     /**

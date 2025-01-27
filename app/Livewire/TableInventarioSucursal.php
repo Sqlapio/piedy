@@ -6,6 +6,7 @@ use App\Models\User;
 use Filament\Tables;
 use App\Models\Cliente;
 use Livewire\Component;
+use App\Models\Producto;
 use App\Models\Inventario;
 use Filament\Tables\Table;
 use App\Models\Requisicion;
@@ -163,19 +164,26 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                                     ->schema([
                                                         Select::make('producto_id')
                                                             ->label('Producto')
-                                                            ->options(function () {
-                                                                $productos = DB::table('inventario_sucursals')
-                                                                    ->select(DB::raw('producto_id as id, productos.descripcion as descripcion'))
-                                                                    ->where('sucursal_id', Auth::user()->sucursal_id)
-                                                                    ->join('productos', 'inventario_sucursals.producto_id', '=', 'productos.id')
-                                                                    ->groupBy('producto_id')
-                                                                    ->get();
-                                                                return $productos->pluck('descripcion', 'id');
-                                                            })
-                                                            ->rules(['required'])
-                                                            ->validationMessages([
-                                                                'required' => 'Debe selecionar un producto de la lista',
-                                                            ]),
+                                                            ->options(Producto::all()->pluck('descripcion', 'id'))
+                                                                // ->searchable()
+                                                                // ->options(function () {
+                                                                //     $productos = DB::table('inventario_sucursals')
+                                                                //     ->select(DB::raw('producto_id as id, productos.descripcion as descripcion'))
+                                                                //     ->where('sucursal_id', Auth::user()->sucursal_id)
+                                                                //         ->join('productos', 'inventario_sucursals.producto_id', '=', 'productos.id')
+                                                                //         ->groupBy('producto_id')
+                                                                //         ->get();
+                                                                //     return $productos->pluck('descripcion', 'id');
+                                                                // })
+                                                                ->relationship(
+                                                                    name: 'producto',
+                                                                    modifyQueryUsing: fn(Builder $query) => $query->orderBy('descripcion'),
+                                                                )
+                                                                ->rules(['required'])
+                                                                ->getOptionLabelFromRecordUsing(fn(Producto $record) => "{$record->descripcion} - {$record->contenido_neto}{$record->unidad}")
+                                                                ->validationMessages([
+                                                                    'required' => 'Debe selecionar un producto de la lista',
+                                                                ]),
                                                         TextInput::make('cantidad')
                                                             ->label('Cantidad')
                                                             ->prefixIcon('heroicon-c-credit-card')

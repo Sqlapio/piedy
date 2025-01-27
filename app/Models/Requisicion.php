@@ -16,7 +16,8 @@ class Requisicion extends Model
         'sucursal_id',
         'fecha',
         'status',
-        'user_id'
+        'user_id',
+        'status_id'
     ];
 
     /**
@@ -58,5 +59,16 @@ class Requisicion extends Model
     {
         return $this->hasMany(DetalleRequisicion::class, 'requisicion_id', 'id');
     }
+
+    /**
+     * Get the user that owns the Statu
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function status(): HasOne
+    {
+        return $this->hasOne(Statu::class, 'id', 'status_id');
+    }
+
 
 }

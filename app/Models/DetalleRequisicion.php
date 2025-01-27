@@ -18,11 +18,11 @@ class DetalleRequisicion extends Model
         'producto_id',
         'cantidad',
         'uso',
-        'status',
+        'status_id',
         'costo',
-        'existencia',
-        'almacen_id',
-        'observacion'
+        'observacion',
+        'contenido',
+        'sub_total'
     ];
 
     /**
@@ -63,5 +63,15 @@ class DetalleRequisicion extends Model
     public function almacen(): HasOne
     {
         return $this->hasOne(Almacen::class, 'id', 'almacen_id');
+    }
+
+    /**
+     * Get the user associated with the Requisicion
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function estatus(): HasOne
+    {
+        return $this->hasOne(Statu::class, 'id', 'status_id');
     }
 }

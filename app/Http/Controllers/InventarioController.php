@@ -122,6 +122,12 @@ class InventarioController extends Controller
 
         try {
 
+            //Validamos si el producto ya esxite en el almacen, para evitar productos duplicados
+            $exite = Inventario::where('producto_id', $producto_id)->where('almacen_id', $almacen_id)->first();
+            if (isset($exite)) {
+                Throw new Exception("El producto ya exite en el almacen", 401);
+            }
+
             //Si el producto no exite en la sucursal
             //creamos un nuevo inventario
             $inventario = new Inventario();
@@ -154,6 +160,7 @@ class InventarioController extends Controller
                     ->iconColor('success')
                     ->send();
             }
+            
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion-InventarioController(entrada_directa)', $th->getMessage(), $response = null);
             Notification::make()

@@ -199,10 +199,10 @@ class GastoResource extends Resource
                 ->icon('heroicon-m-document-check')
                 ->searchable(),
 
-                Tables\Columns\TextColumn::make('proveedor_id')
-                ->label('Proveedor')
-                ->icon('heroicon-m-document-check')
-                ->searchable(),
+                // Tables\Columns\TextColumn::make('proveedor_id')
+                // ->label('Proveedor')
+                // ->icon('heroicon-m-document-check')
+                // ->searchable(),
 
                 Tables\Columns\TextColumn::make('monto_usd')
                 ->icon('heroicon-s-currency-dollar')

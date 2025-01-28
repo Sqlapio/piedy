@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
 use Illuminate\Contracts\View\View;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
@@ -228,6 +229,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                             }
                         }
                     })
+                    ->modalWidth(MaxWidth::TwoExtraLarge)
                     ->slideOver(),
             ])->striped();
     }

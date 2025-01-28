@@ -30,13 +30,19 @@ class RequisicionController extends Controller
             ]);
     
             for ($i = 0; $i < count($data['productos']); $i++) {
-                
-                $exite_en_almacen = Inventario::where('producto_id', $data['productos'][$i]['producto_id'])->first();
 
+                //El producto debe tener costo asignado
+                $info_producto = Producto::where('id', $data['productos'][$i]['producto_id'])->first();
+                if ($info_producto->costo == null) {
+                    Requisicion::where('codigo', $data['codigo'])->delete();
+                    throw new Exception("El producto " . ProductoController::get_dscripcion($data['productos'][$i]['producto_id']) . " debe tener costo asociado, por favor verifique y actualize la informacion", 400);
+                }
+                
                 //El producto debe estar en el inventario
+                $exite_en_almacen = Inventario::where('producto_id', $data['productos'][$i]['producto_id'])->first();
                 if (!isset($exite_en_almacen)) {
                     Requisicion::where('codigo', $data['codigo'])->delete();
-                    throw new Exception("El producto no se encuentra en el almacen, por favor comuniquese con el administrador del sistema", 400);
+                    throw new Exception("El producto " . ProductoController::get_dscripcion($data['productos'][$i]['producto_id']) . " no se encuentra en el almacen, por favor comuniquese con el administrador del sistema", 400);
                     
                 }else {
                     $info_producto = Producto::where('id', $data['productos'][$i]['producto_id'])->first();
@@ -101,20 +107,20 @@ class RequisicionController extends Controller
                     //El producto debe estar en el inventario
                     $exite_en_almacen = Inventario::where('producto_id', $data['productos'][$i]['producto_id'])->first();
                     if (!isset($exite_en_almacen)) {
-                        throw new Exception("El producto no se encuentra en el almacen, por favor comuniquese con el administrador del sistema", 400);
+                        throw new Exception("El producto ".ProductoController::get_dscripcion($data['productos'][$i]['producto_id'])." no se encuentra en el almacen, por favor comuniquese con el administrador del sistema", 400);
                     }
                     
                     //El producto debe tener costo asignado
                     $info_producto = Producto::where('id', $data['productos'][$i]['producto_id'])->first();
                     if($info_producto->costo == null) {
-                        throw new Exception("El producto debe tener costo asociado, por favor verifique y actualize la informacion", 400);
+                        throw new Exception("El producto " . ProductoController::get_dscripcion($data['productos'][$i]['producto_id']) . "  debe tener costo asociado, por favor verifique y actualize la informacion", 400);
                         
                     }
                     
                     //El producto no puede estar duplicado
                     $existe_producto = DetalleRequisicion::where('codigo', $data['codigo'])->where('producto_id', $data['productos'][$i]['producto_id'])->first();
                     if (isset($existe_producto)) {
-                        throw new Exception("El producto ya existe, por favor verifique y elija uno diferente", 400);
+                        throw new Exception("El producto " . ProductoController::get_dscripcion($data['productos'][$i]['producto_id']) . " ya existe, por favor verifique y elija uno diferente", 400);
                         
                     }
                     // $info_producto_inventario = Inventario::where('producto_id', $data['productos'][$i]['producto_id'])->first();
@@ -170,7 +176,7 @@ class RequisicionController extends Controller
                 //Validamos la exitencia del producto en el inventario, mayor a 0
                 $producto_inventario = Inventario::where('producto_id', $records[$i]['producto_id'])->first();
                 if ($producto_inventario->cantidad <= 0) {
-                    throw new Exception("El producto id = ".$records[$i]['producto_id']." esta en 0. Por favor comuniquese con el Administrador", 401);
+                    throw new Exception("El producto " . ProductoController::get_dscripcion($records[$i]['producto_id']) . " esta en 0. Por favor comuniquese con el Administrador", 401);
                 }
 
                 //Despues de validar creamos el producto en la tabla de recepcion de inventario

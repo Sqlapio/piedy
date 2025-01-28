@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Closure;
+use App\Models\User;
 use Filament\Tables;
 use App\Models\TasaBcv;
 use Filament\Forms\Get;
@@ -767,13 +768,63 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     ->body('Clave incorrecta, por favor valide su clave e intente nuevamente.')
                                     ->send();
                             }
+                        }),
+                    Action::make('editar')
+                        ->label('Editar Técnico')
+                        ->icon('heroicon-c-document-plus')
+                        ->color('danger')
+                        ->hidden(! (auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2 || auth()->user()->rol_id == 5))
+                        ->model(DetalleAsignacion::class)
+                        ->form([
+                            Section::make('tecnico')
+                                ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
+                                ->icon('heroicon-c-finger-print')
+                                ->schema([
+                                    //Seleccion de empleado
+                                    Select::make('user_id')
+                                    ->label('Selección del Técnico')
+                                    ->options(User::whereBetween('rol_id', [1, 2])->where('status', 1)->pluck('name', 'id'))
+                                    ->required()
+                                    ->live()
+                                    ->searchable(),
+                                ])
+                        ])->action(function (array $data) {
+                            $editar = AsignacionController::editar_tecnico(
+                                $data['user_id'],
+                                $this->cod_asignacion,
+                            );
+
+                            if ($editar) {
+                                LogController::log(Auth::user()->id, 'tecnico editado', 'se edita el tecnico para el servicio: ' . $this->cod_asignacion, $response = null);
+                                return redirect()->route('cabinas');
+                            }
+                        }),
+                    Action::make('eliminar')
+                        ->label('Eliminar Asignación')
+                        ->icon('heroicon-c-document-plus')
+                        ->color('danger')
+                        ->hidden(! (auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2 || auth()->user()->rol_id == 5))
+                        ->action(function (array $data) {
+                            $servicios_asignados = DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)->count();
+                            if ($servicios_asignados == 0) {  
+                                Disponible::where('cod_asignacion', $this->cod_asignacion)->delete();
+                                return redirect()->route('cabinas');
+                                
+                            }else{
+                                Notification::make()
+                                    ->title('Notificacion')
+                                    ->icon('heroicon-o-shield-check')
+                                    ->iconColor('danger')
+                                    ->body('Debe eliminar todos los items asociados al tecnico para poder eliminar la asignación')
+                                    ->send();
+                            }
                         })
                 ])
-                    ->label('Menú')
-                    ->icon('heroicon-c-adjustments-horizontal')
-                    ->size(ActionSize::Small)
-                    ->color('colorOne')
-                    ->button()
+                ->label('Menú')
+                ->icon('heroicon-c-adjustments-horizontal')
+                ->size(ActionSize::Small)
+                ->color('colorOne')
+                ->button()
             ]);
     }
 

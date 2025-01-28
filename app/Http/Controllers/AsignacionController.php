@@ -290,4 +290,79 @@ class AsignacionController extends Controller
         }
 
     }
+
+    public static function editar_tecnico($user_id, $cod_asignacion)
+    {
+        try {
+
+            //Rol del usuario seleccionado
+            $user_rol = User::find($user_id)->rol_id;
+            
+            //Servicio asignado
+            $srv_asignado = Disponible::where('cod_asignacion', $cod_asignacion)
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->where('status', 'activo')
+            ->with('servicio')
+            ->first();
+
+
+            //Validamos qie tipo de servicio es para evitar que asignen un servicio a un tecnico equivocado
+            if($user_rol != $srv_asignado->servicio->rol_id){
+                throw new Exception("El tecnico no puede ser asignado a un servicio que no le pertenezca, verifique y vuelva a intentar", 401);
+                
+            } else {
+                $update_disponible = Disponible::where('cod_asignacion', $cod_asignacion)
+                    ->where('sucursal_id', Auth::user()->sucursal_id)
+                    ->where('status', 'activo')
+                    ->first()
+                    ->update([
+                        'empleado_id' => $user_id,
+                    ]);
+    
+                $update_detalleAsignacion = DetalleAsignacion::where('cod_asignacion', $cod_asignacion)
+                    ->where('sucursal_id', Auth::user()->sucursal_id)
+                    ->where('status', 1)
+                    ->first()
+                    ->update([
+                        'empleado_id' => $user_id,
+                    ]);
+    
+                if($update_disponible && $update_detalleAsignacion)
+                {
+                    return true;
+                }
+                
+            }
+
+
+            //code...
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-AsignacionController(cerrar_servicio)', $th->getMessage(), $response = null);
+            Notification::make()
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+        }
+    }
+
+    public static function eliminar_asignacion($cod_asignacion)
+    {
+        try {
+
+            
+
+
+            //code...
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-AsignacionController(cerrar_servicio)', $th->getMessage(), $response = null);
+            Notification::make()
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+        }
+    }
 }

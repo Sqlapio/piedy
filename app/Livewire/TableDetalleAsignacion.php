@@ -773,7 +773,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                         ->label('Editar Técnico')
                         ->icon('heroicon-c-document-plus')
                         ->color('danger')
-                        ->hidden(! (auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2 || auth()->user()->rol_id == 5))
+                        ->hidden(! (auth()->user()->rol_id == 3 || auth()->user()->rol_id == 5))
                         ->model(DetalleAsignacion::class)
                         ->form([
                             Section::make('tecnico')
@@ -803,7 +803,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                         ->label('Eliminar Asignación')
                         ->icon('heroicon-c-document-plus')
                         ->color('danger')
-                        ->hidden(! (auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2 || auth()->user()->rol_id == 5))
+                        ->hidden(! ( auth()->user()->rol_id == 3 || auth()->user()->rol_id == 5))
                         ->action(function (array $data) {
                             $servicios_asignados = DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)->count();
                             if ($servicios_asignados == 0) {  

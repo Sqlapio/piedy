@@ -121,9 +121,6 @@ class DetalleRequisicionRelationManager extends RelationManager
                 )
                 ->sortable(),
             ])
-            ->filters([
-                //
-            ])
             ->actions([
                 Tables\Actions\DeleteAction::make(),
                 //

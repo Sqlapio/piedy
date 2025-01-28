@@ -805,8 +805,10 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                         ->color('danger')
                         ->hidden(! ( auth()->user()->rol_id == 3 || auth()->user()->rol_id == 5))
                         ->action(function (array $data) {
+                            
                             $servicios_asignados = DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)->count();
-                            if ($servicios_asignados == 0) {  
+                            
+                            if ($servicios_asignados == 0 && Disponible::where('cod_asignacion', $this->cod_asignacion)->first()->status == 'activo') {  
                                 Disponible::where('cod_asignacion', $this->cod_asignacion)->delete();
                                 return redirect()->route('cabinas');
                                 

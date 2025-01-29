@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\TasaBcv;
 use App\Models\Disponible;
 use App\Models\Frecuencia;
 use Illuminate\Http\Request;
@@ -23,8 +24,7 @@ class StatController extends Controller
             //code...
             $rangeStartDate = now()->startOfDay();
             $rangeEndDate = now()->endOfDay();
-            $servicios_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
-            ->count();
+            $servicios_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
             
 
             //Caculo del porcentaje de servicios facturados comparado con el dia anterior
@@ -87,11 +87,17 @@ class StatController extends Controller
     {
         try {
 
+            $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
+
             //code...
             $rangeStartDate = now()->startOfDay();
             $rangeEndDate = now()->endOfDay();
 
-            $total_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('total_USD');
+            $total_hoy_usd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
+            $total_hoy_bsd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
+            $conversion_hoy = $total_hoy_bsd / $tasa;
+
+            $total_hoy = $total_hoy_usd + $conversion_hoy;
 
             if ($total_hoy > 1000) {
                 $total_hoy_div = round($total_hoy) / 1000;
@@ -108,7 +114,11 @@ class StatController extends Controller
             $rangeStartDate = now()->subDay()->startOfDay();
             $rangeEndDate = now()->subDay()->endOfDay();
 
-            $total_ayer = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('total_USD');
+            $total_ayer_usd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
+            $total_ayer_bsd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
+            $conversion_ayer = $total_hoy_bsd / $tasa;
+
+            $total_ayer = $total_ayer_usd + $conversion_ayer;
 
             if ($total_hoy == 0 || $total_ayer == 0) {
                 $result = [
@@ -166,10 +176,9 @@ class StatController extends Controller
             $rangeEndDate = now()->endOfDay();
 
             //Servicios y clientes para hoy
-            $nro_servicios_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
-            $clientes_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
-                ->groupBy('cliente_id')
-                ->get();
+            $nro_servicios_hoy  = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+            $clientes_hoy       = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get();
+                
             $clientes_hoy = count($clientes_hoy);
 
             if ($clientes_hoy == 0) {
@@ -177,16 +186,13 @@ class StatController extends Controller
             } else {
                 $promedio_hoy = $nro_servicios_hoy / $clientes_hoy;
 
-
                 //Fechas de Ayer
                 $rangeStartDate = now()->subDay()->startOfDay();
-                $rangeEndDate = now()->subDay()->endOfDay();
+                $rangeEndDate   = now()->subDay()->endOfDay();
 
                 //Servicios y clientes para Ayer
-                $nro_servicios_ayer = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
-                $clientes_ayer = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
-                    ->groupBy('cliente_id')
-                    ->count();
+                $nro_servicios_ayer = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+                $clientes_ayer      = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get();
 
                 $promedio_ayer = $nro_servicios_ayer / $clientes_ayer;
 

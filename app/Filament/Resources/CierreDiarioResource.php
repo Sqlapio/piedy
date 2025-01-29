@@ -138,30 +138,30 @@ class CierreDiarioResource extends Resource
                 ->searchable()
                 ->toggleable(isToggledHiddenByDefault: true),
 
-            TextColumn::make('efectivo_usd_real')
-                ->numeric(decimalPlaces: 0)
-                ->icon('heroicon-m-currency-dollar')
-                ->color('success')
-                ->label('Efectivo($) Recibido')
-                ->searchable(),
+            // TextColumn::make('efectivo_usd_real')
+            //     ->numeric(decimalPlaces: 0)
+            //     ->icon('heroicon-m-currency-dollar')
+            //     ->color('success')
+            //     ->label('Efectivo($) Recibido')
+            //     ->searchable(),
 
-            TextColumn::make('recibido_por')
-            ->label('Recibido por')
-                ->icon('heroicon-s-user')
-                ->color('colorOne')
-                ->searchable(),
+            // TextColumn::make('recibido_por')
+            // ->label('Recibido por')
+            //     ->icon('heroicon-s-user')
+            //     ->color('colorOne')
+            //     ->searchable(),
 
-            TextColumn::make('received_at')
-                ->label('Fecha de Recepcion')
-                ->icon('heroicon-s-user')
-                ->color('colorOne')
-                ->searchable(),
+            // TextColumn::make('received_at')
+            //     ->label('Fecha de Recepcion')
+            //     ->icon('heroicon-s-user')
+            //     ->color('colorOne')
+            //     ->searchable(),
 
-            TextColumn::make('observ_recepcion')
-                ->label('Observaciones de Recepcion')
-                ->icon('heroicon-s-user')
-                ->color('colorOne')
-                ->searchable()
+            // TextColumn::make('observ_recepcion')
+            //     ->label('Observaciones de Recepcion')
+            //     ->icon('heroicon-s-user')
+            //     ->color('colorOne')
+            //     ->searchable()
 
 
         ])

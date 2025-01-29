@@ -104,39 +104,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                 //
             ])
             ->actions([
-                // Action::make('eliminar')
-                //     ->requiresConfirmation()
-                //     ->action(function (DetalleAsignacion $record) {
 
-                //         $serv_disponible = Disponible::where('cod_asignacion', $record->cod_asignacion)
-                //         ->where('cliente_id',  $record->cliente_id)
-                //         ->where('sucursal_id', Auth::user()->sucursal_id)
-                //         ->first();
-
-                //         if($record->tipo == 'servicio'){
-                //             $serv_disponible->acu_servicios = $serv_disponible->acu_servicios - $record->costo;
-                //             $serv_disponible->venta_total   = $serv_disponible->venta_total - $record->costo;
-                //             $serv_disponible->save();
-
-                //         }
-
-                //         if($record->tipo == 'producto'){
-                //             $serv_disponible->acu_productos = $serv_disponible->acu_productos - $record->costo;
-                //             $serv_disponible->venta_total   = $serv_disponible->venta_total - $record->costo;
-                //             $serv_disponible->save();
-                //         }
-
-                //         $record->delete();
-
-                //     })
-                //     ->icon('heroicon-c-trash')
-                //     ->color('danger')
-                //     //UI - Modal
-                //     ->modalIcon('heroicon-m-shopping-cart')
-                //     ->modalHeading('Eliminar Item')
-                //     ->modalDescription('Estas seguro que desea eliminar el item')
-                //     ->modalSubmitActionLabel('Si, eliminar item!')
-                //
             ])
             ->bulkActions([
                 BulkAction::make('Eliminar items')
@@ -200,7 +168,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                 ActionGroup::make([
                     Action::make('Añadir Servicios')
                         ->label('Añadir Servicios')
-                        ->icon('heroicon-c-document-plus')
+                        ->icon('heroicon-c-swatch')
                         ->color('success')
                         ->hidden(! (auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2 || auth()->user()->rol_id == 5))
                         ->model(DetalleAsignacion::class)
@@ -226,7 +194,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->required()
                                         ->searchable(),
                                 ])
-                        ])->action(function (array $data) {
+                        ])
+                        ->action(function (array $data) {
                             AsignacionController::asigna_servicio_adicional(
                                 $data['servicio_id'],
                                 $this->cod_asignacion,
@@ -459,7 +428,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ])
 
                                 ])
-                        ])->action(function (array $data) {
+                        ])
+                        ->action(function (array $data) {
 
                             //Dolares
                             if ($data['metodo_pago'] != '' &&  $data['metodo_pago_dos'] == '') {
@@ -650,7 +620,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
 
                     Action::make('Añadir Productos')
                         ->label('Añadir Productos')
-                        ->icon('heroicon-c-document-plus')
+                        ->icon('heroicon-c-shopping-bag')
                         ->color('success')
                         ->model(DetalleAsignacion::class)
                         ->form([
@@ -722,7 +692,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                             },
                                         ])
                                 ])->columns(2)
-                        ])->action(function (array $data) {
+                        ])
+                        ->action(function (array $data) {
                             AsignacionController::asigna_producto(
                                 $data['producto_id'],
                                 $data['cantidad'],
@@ -733,7 +704,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
 
                     Action::make('cerrar')
                         ->label('Cerrar Servicio')
-                        ->icon('heroicon-c-document-plus')
+                        ->icon('heroicon-s-key')
                         ->color('danger')
                         ->hidden(! (auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2 || auth()->user()->rol_id == 5))
                         ->model(DetalleAsignacion::class)
@@ -751,7 +722,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->autofocus()
                                         ->required(),
                                 ])
-                        ])->action(function (array $data) {
+                        ])
+                        ->action(function (array $data) {
                             $cierre = AsignacionController::cerrar_servicio(
                                 $data['clave'],
                                 $this->cod_asignacion,
@@ -769,9 +741,10 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     ->send();
                             }
                         }),
+                        
                     Action::make('editar')
                         ->label('Editar Técnico')
-                        ->icon('heroicon-c-document-plus')
+                        ->icon('heroicon-m-pencil-square')
                         ->color('danger')
                         ->hidden(! (auth()->user()->rol_id == 3 || auth()->user()->rol_id == 5))
                         ->model(DetalleAsignacion::class)
@@ -788,7 +761,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     ->live()
                                     ->searchable(),
                                 ])
-                        ])->action(function (array $data) {
+                        ])
+                        ->action(function (array $data) {
                             $editar = AsignacionController::editar_tecnico(
                                 $data['user_id'],
                                 $this->cod_asignacion,
@@ -799,6 +773,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                 return redirect()->route('cabinas');
                             }
                         }),
+                        
                     Action::make('eliminar')
                         ->label('Eliminar Asignación')
                         ->icon('heroicon-c-document-plus')
@@ -807,8 +782,10 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                         ->action(function (array $data) {
                             
                             $servicios_asignados = DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)->count();
+                            $status_de_asignacion = Disponible::where('cod_asignacion', $this->cod_asignacion)->first()->status;
                             
-                            if ($servicios_asignados == 0 && Disponible::where('cod_asignacion', $this->cod_asignacion)->first()->status == 'activo') {  
+                            if ($servicios_asignados == 0 && $status_de_asignacion == 'activo') { 
+                                 
                                 Disponible::where('cod_asignacion', $this->cod_asignacion)->delete();
                                 return redirect()->route('cabinas');
                                 
@@ -816,8 +793,9 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                 Notification::make()
                                     ->title('Notificacion')
                                     ->icon('heroicon-o-shield-check')
+                                    ->color('danger')
                                     ->iconColor('danger')
-                                    ->body('Debe eliminar todos los items asociados al tecnico para poder eliminar la asignación')
+                                    ->body('No puede eliminar un servicio que haya sido cerrado. Por favor comuniquese con el Administrador del Sistema')
                                     ->send();
                             }
                         })

@@ -113,7 +113,7 @@ class PreNominaResource extends Resource
                         LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego propina en dolares: ' . $state, $response = null);
                     })
                     ->disabled(function ($record) {
-                        if ($record->status == 2) {
+                        if ($record->status_id == 8) {
                             return true;
                         } else {
                             return false;
@@ -130,7 +130,7 @@ class PreNominaResource extends Resource
                         LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego propina en bolivares: ' . $state, $response = null);
                     })
                     ->disabled(function ($record) {
-                        if ($record->status == 2) {
+                        if ($record->status_id == 8) {
                             return true;
                         } else {
                             return false;
@@ -147,7 +147,7 @@ class PreNominaResource extends Resource
                         LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego asignaciones en dolares: ' . $state, $response = null);
                     })
                     ->disabled(function ($record) {
-                        if ($record->status == 2) {
+                        if ($record->status_id == 8) {
                             return true;
                         } else {
                             return false;
@@ -164,7 +164,7 @@ class PreNominaResource extends Resource
                         LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego asignaciones en bolivares: ' . $state, $response = null);
                     })
                     ->disabled(function ($record) {
-                        if ($record->status == 2) {
+                        if ($record->status_id == 8) {
                             return true;
                         } else {
                             return false;
@@ -182,7 +182,7 @@ class PreNominaResource extends Resource
                         LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego deducciones en dolares: ' . $state, $response = null);
                     })
                     ->disabled(function ($record) {
-                        if ($record->status == 2) {
+                        if ($record->status_id == 8) {
                             return true;
                         } else {
                             return false;
@@ -200,7 +200,7 @@ class PreNominaResource extends Resource
                         LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego deducciones en bolivares: ' . $state, $response = null);
                     })
                     ->disabled(function ($record) {
-                        if ($record->status == 2) {
+                        if ($record->status_id == 8) {
                             return true;
                         } else {
                             return false;

@@ -11,6 +11,8 @@
                             <span class="text-sm">Cliente: {{ $item->cliente->nombre }}</span>
                             <span class="text-sm">Técnico: {{ $item->empleado->name }}</span>
                             <span class="text-sm">Codigo: {{ $item->cod_asignacion }}</span>
+                            <span class="text-sm">Fecha: {{ $item->created_at }}</span>
+
                         </div>
                     </button>
                 </h2>

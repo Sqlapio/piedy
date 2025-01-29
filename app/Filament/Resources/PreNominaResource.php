@@ -231,18 +231,15 @@ class PreNominaResource extends Resource
                     ->money('Bs.')
                     ->sortable(),
 
-
                 Tables\Columns\TextColumn::make('iva')
                     ->label('IVA')
                     ->money('Bs.')
                     ->sortable(),
 
-
                 Tables\Columns\TextColumn::make('retencion_isrl')
                     ->label('Retencion ISRL')
                     ->money('Bs.')
                     ->sortable(),
-
 
                 Tables\Columns\TextColumn::make('total_pagar_bsd')
                     ->label('Total A Pagar(Bs.)')
@@ -304,9 +301,9 @@ class PreNominaResource extends Resource
 
                         return $indicators;
                     }),
-                    SelectFilter::make('tienda')
-                ->relationship('sucursal', 'nombre')
-                ->attribute('sucursal_id')
+                SelectFilter::make('tienda')
+                    ->relationship('sucursal', 'nombre')
+                    ->attribute('sucursal_id')
             ])
             ->filtersTriggerAction(
                 fn(Action $action) => $action
@@ -359,9 +356,9 @@ class PreNominaResource extends Resource
 
                             //Se crea el registro para los totales de nomina
                             $nomina_general = NominaGeneral::where('fecha_ini', $records->first()->fecha_ini)
-                            ->where('fecha_fin', $records->first()->fecha_fin)
-                            ->where('status_id', 7)
-                            ->first();
+                                ->where('fecha_fin', $records->first()->fecha_fin)
+                                ->where('status_id', 7)
+                                ->first();
                             
                             $nomina_general->total_dolares = $records->sum('total_usd');
                             $nomina_general->total_bolivares = $records->sum('total_bsd');
@@ -387,9 +384,6 @@ class PreNominaResource extends Resource
                             ]);
                             
 
-                           
-
-                            // $this->resetTable();
                         })->deselectRecordsAfterCompletion(),
 
                     BulkAction::make('generar-pdf')
@@ -457,9 +451,9 @@ class PreNominaResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPreNominas::route('/'),
+            'index'  => Pages\ListPreNominas::route('/'),
             'create' => Pages\CreatePreNomina::route('/create'),
-            'edit' => Pages\EditPreNomina::route('/{record}/edit'),
-        ];
+            'edit'   => Pages\EditPreNomina::route('/{record}/edit'),
+        ]; 
     }
 }

@@ -261,15 +261,15 @@ class PreNominaController extends Controller
                     'total_comi_mem_atendidas' => 0,
                 ]
             )
-                // ->withBrowsershot(function (Browsershot $browsershot) {
-                //     // $browsershot->setNodeBinary(env('NODE')); //location of node
-                //     // $browsershot->setNpmBinary(env('NPM'));
-                //     // $browsershot->setChromePath(env('CHROMIUM'));
-                // })
-                ->format(Format::Letter)
-                ->margins(5, 0, 18, 0)
-                ->footerView('pdf.footer')
-                ->save($pdf);
+            ->withBrowsershot(function (Browsershot $browsershot) {
+                $browsershot->setNodeBinary(env('NODE')); //location of node
+                $browsershot->setNpmBinary(env('NPM'));
+                $browsershot->setChromePath(env('CHROMIUM'));
+            })
+            ->format(Format::Letter)
+            ->margins(5, 0, 18, 0)
+            ->footerView('pdf.footer')
+            ->save($pdf);
 
             /**Guardo el reporte en la tabla de reportes para tener el historico */
             $reporte = new Reporte();
@@ -334,14 +334,14 @@ class PreNominaController extends Controller
                     ]
                 )
                 ->withBrowsershot(function (Browsershot $browsershot) {
-                //     // $browsershot->setNodeBinary(env('NODE')); //location of node
-                //     // $browsershot->setNpmBinary(env('NPM'));
-                //     // $browsershot->setChromePath(env('CHROMIUM'));
-                    })
-                    ->format(Format::Letter)
-                    ->margins(5, 0, 18, 0)
-                    ->footerView('pdf.footer')
-                    ->save($pdf);
+                    $browsershot->setNodeBinary(env('NODE')); //location of node
+                    $browsershot->setNpmBinary(env('NPM'));
+                    $browsershot->setChromePath(env('CHROMIUM'));   
+                })
+                ->format(Format::Letter)
+                ->margins(5, 0, 18, 0)
+                ->footerView('pdf.footer')
+                ->save($pdf);
 
                 /**Guardo el reporte en la tabla de reportes para tener el historico */
                 $reporte = new Reporte();

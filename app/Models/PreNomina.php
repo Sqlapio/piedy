@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PreNomina extends Model
 {
@@ -50,6 +51,9 @@ class PreNomina extends Model
 
         'conversion_a_usd',
         'total_general_usd',
+
+        'cod_nomina',
+        'nomina_general_id'
     ];
 
     /**
@@ -80,5 +84,15 @@ class PreNomina extends Model
     public function sucursal(): HasOne
     {
         return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
+    }
+
+    /**
+     * Get the user that owns the PreNomina
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function nominaGeneral(): BelongsTo
+    {
+        return $this->belongsTo(NominaGeneral::class, 'id', 'nomina_general_id');
     }
 }

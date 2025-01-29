@@ -40,30 +40,6 @@ class RequisicionResource extends Resource
         return static::getModel()::where('status_id', 5)->get()->count() > 10 ? 'warning' : 'success';
     }
 
-
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('codigo')
-                ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('sucursal_id')
-                ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('fecha')
-                ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('status')
-                ->required()
-                    ->numeric()
-                    ->default(1),
-                Forms\Components\TextInput::make('user_id')
-                ->required()
-                    ->numeric(),
-            ]);
-    }
-
     public static function table(Table $table): Table
     {
         return $table

@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\RequisicionResource\Pages;
+namespace App\Filament\Resources\NominaGeneralResource\Pages;
 
+use App\Filament\Resources\NominaGeneralResource;
 use Filament\Actions;
-use Filament\Pages\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
-use App\Filament\Resources\RequisicionResource;
 
-class EditRequisicion extends EditRecord
+class EditNominaGeneral extends EditRecord
 {
-    protected static string $resource = RequisicionResource::class;
+    protected static string $resource = NominaGeneralResource::class;
 
     protected function getHeaderActions(): array
     {

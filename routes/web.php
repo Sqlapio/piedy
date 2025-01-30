@@ -315,6 +315,11 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         return view('table-detalle-es-gan-per');
     })->name('table-detalle-es-gan-per');
 
+    //Ruta para que los empleados vean sus servicios
+    Route::get('/srv/emp', function () {
+        return view('table-srv-empleado');
+    })->name('table-srv-empleado');
+
     /**-------------------------------------------------------*/
 
 

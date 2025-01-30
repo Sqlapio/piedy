@@ -37,6 +37,7 @@ use App\Http\Controllers\CajaController;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
+use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\GiftCardController;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Illuminate\Database\Eloquent\Collection;
@@ -457,6 +458,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
 
                                     LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en dolares: ' . $this->cod_asignacion, $response = null);
 
+                                    ClienteController::add_visita($this->cliente_id);
+
                                     //Envio una notificacion por whatsaap
                                     $notificacion = NotificacionesController::notificacion_servicio_facturado($this->cod_asignacion);
 
@@ -514,7 +517,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->send();
 
                                     LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en bolivares: ' . $this->cod_asignacion, $response = null);
-                                    
+
+                                    ClienteController::add_visita($this->cliente_id);
 
                                     //Envio una notificacion por whatsaap
                                     $notificacion = NotificacionesController::notificacion_servicio_facturado($this->cod_asignacion);
@@ -583,7 +587,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->send();
 
                                     LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en bolivares y dolares: ' . $this->cod_asignacion, $response = null);
-                                    
+
+                                    ClienteController::add_visita($this->cliente_id);
 
                                     //Envio una notificacion por whatsaap
                                     $notificacion = NotificacionesController::notificacion_servicio_facturado($this->cod_asignacion);

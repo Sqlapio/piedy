@@ -87,7 +87,7 @@ class StatController extends Controller
     {
         try {
 
-            $tasa = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
+            $tasa = TasaBcv::all()->first()->tasa;
 
             //code...
             $rangeStartDate = now()->startOfDay();
@@ -178,7 +178,7 @@ class StatController extends Controller
             //Servicios y clientes para hoy
             $nro_servicios_hoy  = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
             $clientes_hoy       = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get();
-                
+    
             $clientes_hoy = count($clientes_hoy);
 
             if ($clientes_hoy == 0) {
@@ -194,6 +194,8 @@ class StatController extends Controller
                 $nro_servicios_ayer = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
                 $clientes_ayer      = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get();
 
+                $clientes_ayer = count($clientes_ayer);
+                // dd($nro_servicios_ayer, $clientes_ayer);
                 $promedio_ayer = $nro_servicios_ayer / $clientes_ayer;
 
                 if ($promedio_hoy > $promedio_ayer) {

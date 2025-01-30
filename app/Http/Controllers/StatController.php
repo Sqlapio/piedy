@@ -31,27 +31,23 @@ class StatController extends Controller
             $rangeStartDate = now()->subDay()->startOfDay();
             $rangeEndDate = now()->subDay()->endOfDay();
 
-            $servicios_ayer = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
-            // ->where('status', 2)
-            ->count();
+            $servicios_ayer = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
 
             if ($servicios_hoy == 0 || $servicios_ayer == 0) {
                 $result = [
-                    'servicios_hoy' => 0,
-                    'porcentaje'    => 0,
+                    'servicios_hoy'  => 0,
+                    'porcentaje'     => 0,
                     'icon'           => 'heroicon-c-arrow-long-right',
                     'color'          => 'danger'
                 ];
 
                 return $result;
-                $icon = 'heroicon-c-arrow-long-right';
-                $color = 'warning';
             } else {
 
                 if ($servicios_hoy > $servicios_ayer) {
                     $porcentaje = ($servicios_ayer * 100) / $servicios_hoy;
                     $porcentaje = number_format($porcentaje, 2);
-                    $icon = 'heroicon-m-arrow-trending-up';
+                    $icon   = 'heroicon-m-arrow-trending-up';
                     $color = 'success';
                 }
 
@@ -387,8 +383,6 @@ class StatController extends Controller
                 ->groupBy('cliente_id')
                 ->count('cliente_id');
 
-
-
             if ($clientes_hoy == 0) {
                 $promedio_hoy = 0;
             } else {
@@ -402,32 +396,37 @@ class StatController extends Controller
                 //Servicios y clientes para Ayer
                 $nro_productos_ayer = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count('cantidad');
                 $clientes_ayer = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count('cliente_id');
-                $promedio_ayer = $nro_productos_ayer / $clientes_ayer;
+                
+                if($clientes_ayer == 0) {
+                    $promedio_ayer = 0;
+                }else {
+                    
+                    $promedio_ayer = $nro_productos_ayer / $clientes_ayer;
+                    if ($promedio_hoy > $promedio_ayer) {
+                        $porcentaje = ($promedio_ayer * 100) / $promedio_hoy;
+                        $porcentaje = number_format($porcentaje, 2);
+                        $icon = 'heroicon-m-arrow-trending-up';
+                        $color = 'success';
+                    }
 
+                    if ($promedio_hoy < $promedio_ayer) {
+                        $porcentaje = ($promedio_hoy * 100) / $promedio_ayer;
+                        $porcentaje = number_format($porcentaje, 2);
+                        $icon = 'heroicon-m-arrow-trending-down';
+                        $color = 'danger';
+                    }
 
-                if ($promedio_hoy > $promedio_ayer) {
-                    $porcentaje = ($promedio_ayer * 100) / $promedio_hoy;
-                    $porcentaje = number_format($porcentaje, 2);
-                    $icon = 'heroicon-m-arrow-trending-up';
-                    $color = 'success';
+                    if ($promedio_hoy == $promedio_ayer) {
+                        $porcentaje = ($promedio_ayer * 100) / $promedio_hoy;
+                        $porcentaje = number_format($porcentaje, 2);
+                        $icon = 'heroicon-c-arrow-long-right';
+                        $color = 'warning';
+                    }
+                    
                 }
 
-                if ($promedio_hoy < $promedio_ayer) {
-                    $porcentaje = ($promedio_hoy * 100) / $promedio_ayer;
-                    $porcentaje = number_format($porcentaje, 2);
-                    $icon = 'heroicon-m-arrow-trending-down';
-                    $color = 'danger';
-                }
-
-                if ($promedio_hoy == $promedio_ayer) {
-                    $porcentaje = ($promedio_ayer * 100) / $promedio_hoy;
-                    $porcentaje = number_format($porcentaje, 2);
-                    $icon = 'heroicon-c-arrow-long-right';
-                    $color = 'warning';
-                }
+                
             }
-
-
 
             $result = [
                 'promedio_hoy' => $promedio_hoy,
@@ -521,13 +520,13 @@ class StatController extends Controller
             $rangeStartDate = now()->startOfDay();
             $rangeEndDate = now()->endOfDay();
 
-            $total_clientes_hoy = Frecuencia::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+            $total_clientes_hoy = Cliente::where('visitas', '=', 1)->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
 
             //Caculo del porcentaje de servicios facturados comparado con el dia anterior
             $rangeStartDate = now()->subDay()->startOfDay();
             $rangeEndDate = now()->subDay()->endOfDay();
 
-            $total_clientes_ayer = Frecuencia::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+            $total_clientes_ayer = Cliente::where('visitas', '=', 1)->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
 
             if ($total_clientes_hoy > $total_clientes_ayer) {
                 $porcentaje = ($total_clientes_ayer * 100) / $total_clientes_hoy;

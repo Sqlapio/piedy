@@ -31,20 +31,6 @@ class RequisicionController extends Controller
     
             for ($i = 0; $i < count($data['productos']); $i++) {
 
-                //El producto debe tener costo asignado
-                $info_producto = Producto::where('id', $data['productos'][$i]['producto_id'])->first();
-                if ($info_producto->costo == null) {
-                    Requisicion::where('codigo', $data['codigo'])->delete();
-                    throw new Exception("El producto " . ProductoController::get_dscripcion($data['productos'][$i]['producto_id']) . " debe tener costo asociado, por favor verifique y actualize la informacion", 400);
-                }
-                
-                //El producto debe estar en el inventario
-                $exite_en_almacen = Inventario::where('producto_id', $data['productos'][$i]['producto_id'])->first();
-                if (!isset($exite_en_almacen)) {
-                    Requisicion::where('codigo', $data['codigo'])->delete();
-                    throw new Exception("El producto " . ProductoController::get_dscripcion($data['productos'][$i]['producto_id']) . " no se encuentra en el almacen, por favor comuniquese con el administrador del sistema", 400);
-                    
-                }else {
                     $info_producto = Producto::where('id', $data['productos'][$i]['producto_id'])->first();
                     DetalleRequisicion::create([
                         'codigo'         => $data['codigo'],
@@ -59,8 +45,6 @@ class RequisicionController extends Controller
                         'sub_total'      => $data['productos'][$i]['cantidad'] * $info_producto->costo,
                     ]);
                     
-                }
-                
             }
 
             return true;

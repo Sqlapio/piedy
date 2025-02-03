@@ -33,9 +33,9 @@ class Inventario extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function producto(): BelongsTo
+    public function producto(): HasOne
     {
-        return $this->belongsTo(Producto::class, 'producto_id', 'id');
+        return $this->hasOne(Producto::class, 'id', 'producto_id');
     }
 
     /**

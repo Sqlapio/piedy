@@ -16,7 +16,7 @@ use Filament\Notifications\Notification;
 
 class PreNominaController extends Controller
 {
-    static function calculo_pre_nomina($fecha_ini, $fecha_fin, $rol_id, $sucursal_id, $cod_nomina)
+    static function calculo_pre_nomina($fecha_ini, $fecha_fin, $rol_id, $sucursal_id, $cod_nomina, $nomina_general_id)
     {
 
         try {
@@ -31,6 +31,7 @@ class PreNominaController extends Controller
 
                     $preNomina = new PreNomina();
 
+                    $preNomina->nomina_general_id = $nomina_general_id;
                     $preNomina->user_id = $item->id;
                     // dump($item->id);
                     $preNomina->rol_id = $item->rol_id;
@@ -131,6 +132,7 @@ class PreNominaController extends Controller
 
                     $preNomina = new PreNomina();
 
+                    $preNomina->nomina_general_id = $nomina_general_id;
                     $preNomina->user_id = $item->id;
                     // dump($item->id);
                     $preNomina->rol_id = $item->rol_id;
@@ -261,18 +263,20 @@ class PreNominaController extends Controller
                     'total_comi_mem_atendidas' => 0,
                 ]
             )
-                // ->withBrowsershot(function (Browsershot $browsershot) {
-                //     // $browsershot->setNodeBinary(env('NODE')); //location of node
-                //     // $browsershot->setNpmBinary(env('NPM'));
-                //     // $browsershot->setChromePath(env('CHROMIUM'));
-                // })
-                ->format(Format::Letter)
-                ->margins(5, 0, 18, 0)
-                ->footerView('pdf.footer')
-                ->save($pdf);
+            ->withBrowsershot(function (Browsershot $browsershot) {
+                $browsershot->setNodeBinary(env('NODE')); //location of node
+                $browsershot->setNpmBinary(env('NPM'));
+                $browsershot->setChromePath(env('CHROMIUM'));
+            })
+            ->format(Format::Letter)
+            ->margins(5, 0, 18, 0)
+            ->footerView('pdf.footer')
+            ->save($pdf);
 
             /**Guardo el reporte en la tabla de reportes para tener el historico */
             $reporte = new Reporte();
+            $reporte->cod_nomina = $record->cod_nomina;
+            $reporte->nomina_general_id = $record->nomina_general_id;
             $reporte->user_id = $record->user->id;
             $reporte->cod_reporte = $record->cod_nomina;
             $reporte->fecha_ini = $record->fecha_ini;
@@ -333,18 +337,20 @@ class PreNominaController extends Controller
                         'total_comi_mem_atendidas' => 0,
                     ]
                 )
-                    // ->withBrowsershot(function (Browsershot $browsershot) {
-                    //     // $browsershot->setNodeBinary(env('NODE')); //location of node
-                    //     // $browsershot->setNpmBinary(env('NPM'));
-                    //     // $browsershot->setChromePath(env('CHROMIUM'));
-                    // })
-                    ->format(Format::Letter)
-                    ->margins(5, 0, 18, 0)
-                    ->footerView('pdf.footer')
-                    ->save($pdf);
+                ->withBrowsershot(function (Browsershot $browsershot) {
+                    $browsershot->setNodeBinary(env('NODE')); //location of node
+                    $browsershot->setNpmBinary(env('NPM'));
+                    $browsershot->setChromePath(env('CHROMIUM'));
+                })
+                ->format(Format::Letter)
+                ->margins(5, 0, 18, 0)
+                ->footerView('pdf.footer')
+                ->save($pdf);
 
                 /**Guardo el reporte en la tabla de reportes para tener el historico */
                 $reporte = new Reporte();
+                $reporte->cod_nomina = $record->cod_nomina;
+                $reporte->nomina_general_id = $record->nomina_general_id;
                 $reporte->user_id = $record->user->id;
                 $reporte->cod_reporte = $record->cod_nomina;
                 $reporte->fecha_ini = $record->fecha_ini;

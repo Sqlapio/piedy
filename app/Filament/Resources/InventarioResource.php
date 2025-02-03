@@ -10,6 +10,7 @@ use Filament\Forms\Set;
 use App\Models\Producto;
 use App\Models\Sucursal;
 use Filament\Forms\Form;
+use Filament\Pages\Page;
 use App\Models\Inventario;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
@@ -24,6 +25,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms\Components\DatePicker;
+use Filament\Pages\SubNavigationPosition;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Http\Controllers\InventarioController;
 use App\Filament\Resources\InventarioResource\Pages;
@@ -37,11 +40,13 @@ class InventarioResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-square-3-stack-3d';
 
-    protected static ?string $navigationGroup = 'Manejo de Inventario';
+    protected static ?string $navigationGroup = 'Modulo de Inventario';
 
     protected static ?string $navigationLabel = 'Inventario General';
 
     protected static ?int $navigationSort = 4;
+
+    // protected static SubNavigationPosition $SubNavigationPosition = SubNavigationPosition::Start;
 
     public static function form(Form $form): Form
     {
@@ -99,9 +104,9 @@ class InventarioResource extends Resource
         return $table
             ->query(Inventario::query()->orderBy('created_at', 'desc'))
             ->columns([
-                Tables\Columns\ImageColumn::make('producto.image')
-                    ->label('Imagen')
-                    ->circular(),
+                // Tables\Columns\ImageColumn::make('producto.image')
+                //     ->label('Imagen')
+                //     ->circular(),
                 Tables\Columns\TextColumn::make('producto.descripcion')
                     ->icon('heroicon-s-shopping-bag')
                     ->numeric()
@@ -191,6 +196,9 @@ class InventarioResource extends Resource
 
                         return $indicators;
                     }),
+                    SelectFilter::make('Almacen')
+                ->relationship('almacen', 'nombre')
+                ->attribute('almacen_id')
             ])
             ->filtersTriggerAction(
                 fn(Action $action) => $action

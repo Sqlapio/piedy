@@ -20,9 +20,9 @@ class MembresiaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-c-identification';
 
-    protected static ?string $navigationGroup = 'Membresias';
+    protected static ?string $navigationGroup = 'Metodos Prepagados';
 
-    protected static ?string $navigationLabel = 'Registro';
+    protected static ?string $navigationLabel = 'Registro Membresia';
 
     public static function form(Form $form): Form
     {

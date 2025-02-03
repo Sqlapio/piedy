@@ -35,7 +35,8 @@ class Gasto extends Model
         'fecha',
         'metodo_pago',
         'observacion',
-        'tasa_bcv'
+        'tasa_bcv',
+        'almacen_id'
     ];
 
     /**
@@ -46,6 +47,16 @@ class Gasto extends Model
     public function sucursal(): HasOne
     {
         return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
+    }
+
+    /**
+     * Get the compra that owns the Proveedor
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function almacen(): HasOne
+    {
+        return $this->hasOne(Almacen::class, 'id', 'almacen_id');
     }
 
         /**

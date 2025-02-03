@@ -6,6 +6,8 @@ use App\Models\User;
 use Filament\Tables;
 use App\Models\Cliente;
 use Livewire\Component;
+use App\Models\Producto;
+use App\Models\Inventario;
 use Filament\Tables\Table;
 use App\Models\Requisicion;
 use Filament\Support\RawJs;
@@ -15,12 +17,14 @@ use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
 use Illuminate\Contracts\View\View;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
 use App\Http\Controllers\LogController;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
@@ -115,6 +119,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                                 'numeric' => 'Campo numerico',
                                                 'integer' => 'Debe ser un número entero',
                                             ]),
+                                        
                                     ]),
                             ])
                     ])
@@ -160,21 +165,26 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                                     ->schema([
                                                         Select::make('producto_id')
                                                             ->label('Producto')
-                                                            ->options(function () {
-
-                                                                $productos = DB::table('inventario_sucursals')
-                                                                    ->select(DB::raw('producto_id as id, productos.descripcion as descripcion'))
-                                                                    ->where('sucursal_id', Auth::user()->sucursal_id)
-                                                                    ->join('productos', 'inventario_sucursals.producto_id', '=', 'productos.id')
-                                                                    ->groupBy('producto_id')
-                                                                    ->get();
-
-                                                                return $productos->pluck('descripcion', 'id');
-                                                            })
-                                                            ->rules(['required'])
-                                                            ->validationMessages([
-                                                                'required' => 'Debe selecionar un producto de la lista',
-                                                            ]),
+                                                            ->options(Producto::all()->pluck('descripcion', 'id'))
+                                                                // ->searchable()
+                                                                // ->options(function () {
+                                                                //     $productos = DB::table('inventario_sucursals')
+                                                                //     ->select(DB::raw('producto_id as id, productos.descripcion as descripcion'))
+                                                                //     ->where('sucursal_id', Auth::user()->sucursal_id)
+                                                                //         ->join('productos', 'inventario_sucursals.producto_id', '=', 'productos.id')
+                                                                //         ->groupBy('producto_id')
+                                                                //         ->get();
+                                                                //     return $productos->pluck('descripcion', 'id');
+                                                                // })
+                                                                ->relationship(
+                                                                    name: 'producto',
+                                                                    modifyQueryUsing: fn(Builder $query) => $query->orderBy('descripcion'),
+                                                                )
+                                                                ->rules(['required'])
+                                                                ->getOptionLabelFromRecordUsing(fn(Producto $record) => "{$record->descripcion} - {$record->contenido_neto}{$record->unidad}")
+                                                                ->validationMessages([
+                                                                    'required' => 'Debe selecionar un producto de la lista',
+                                                                ]),
                                                         TextInput::make('cantidad')
                                                             ->label('Cantidad')
                                                             ->prefixIcon('heroicon-c-credit-card')
@@ -186,11 +196,10 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                                                 'integer' => 'Debe ser un número entero',
                                                             ])
                                                             ->default(1),
+                                                        Textarea::make('observacion')->rows(1)->columnSpanFull()
                                                     ])
-
-
                                             ])->columnSpanFull(),
-                                    ])->columns(2),
+                                    ])->columns(3),
                             ])->collapsible(),
                     ])
                     ->action(function (array $data) {
@@ -220,6 +229,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                             }
                         }
                     })
+                    ->modalWidth(MaxWidth::TwoExtraLarge)
                     ->slideOver(),
             ])->striped();
     }

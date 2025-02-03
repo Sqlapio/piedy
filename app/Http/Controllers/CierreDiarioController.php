@@ -29,19 +29,19 @@ class CierreDiarioController extends Controller
                 $user = Auth::user();
                 
                 /** totales de pagos en Dolares*/
-                $total_efectivo_usd = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Efectivo Usd')->sum('pago_usd');
-                $total_efectivo_usd_productos = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodoUsd', 'Efectivo Usd')->sum('montoUsd');
-
-                $total_zelle = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Zelle')->sum('pago_usd');
-                $total_zelle_productos = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodoUsd', 'Zelle')->sum('montoUsd');
+                $total_efectivo_usd             = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Efectivo Usd')->sum('pago_usd');
+                $total_efectivo_usd_productos   = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodoUsd', 'Efectivo Usd')->sum('montoUsd');
+                $total_zelle                    = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago', 'Zelle')->sum('pago_usd');
+                $total_zelle_productos          = VentaProducto::where('fecha_venta', date('d-m-Y'))->where('metodoUsd', 'Zelle')->sum('montoUsd');
+                $total_propinas_usd             = VentaProducto::where('fecha_venta', date('d-m-Y'))->sum('propina_usd');
 
                 /** totales de pagos en Bolivares*/
                 $total_bs                   = VentaServicio::where('fecha_venta', date('d-m-Y'))->sum('pago_bsd');
-
                 $total_efectivo_bsd         = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago_dos', 'Efectivo Bsd')->sum('pago_bsd');
                 $total_pago_movil_bsd       = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago_dos', 'Pago movil')->sum('pago_bsd');
                 $total_punto_venta_bsd      = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago_dos', 'Punto de venta')->sum('pago_bsd');
                 $total_transferencia_bsd    = VentaServicio::where('fecha_venta', date('d-m-Y'))->where('metodo_pago_dos', 'Transferencia')->sum('pago_bsd');
+                $total_propinas_bsd         = VentaProducto::where('fecha_venta', date('d-m-Y'))->sum('propina_bsd');
 
                 /** Total de pago en bolivares para venta de productos */
                 $totalprod_bsd               = VentaProducto::where('fecha_venta', date('d-m-Y'))->sum('montoBsd');
@@ -63,9 +63,9 @@ class CierreDiarioController extends Controller
                 }
 
                 $cierre = new CierreDiario();
-                $cierre->total_dolares_efectivo  = $total_efectivo_usd + $total_efectivo_usd_productos;
+                $cierre->total_dolares_efectivo  = $total_efectivo_usd + $total_efectivo_usd_productos + $total_propinas_usd;
                 $cierre->total_dolares_zelle     = $total_zelle + $total_zelle_productos;
-                $cierre->total_bolivares         = $total_bs + $totalprod_bsd;
+                $cierre->total_bolivares         = $total_bs + $totalprod_bsd + $total_propinas_bsd;
                 
                 $cierre->total_pago_movil_bsd    = $total_pago_movil_bsd + $totalprod_pago_movil_bsd;
                 $cierre->total_punto_venta_bsd   = $total_punto_venta_bsd + $totalprod_punto_venta_bsd;

@@ -30,11 +30,11 @@ class VentaProductoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-presentation-chart-bar';
 
-    protected static ?string $navigationGroup = 'Ventas';
+    protected static ?string $navigationGroup = 'Modulo Administrativo';
 
     protected static ?string $navigationLabel = 'Productos';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 7;
 
     public static function form(Form $form): Form
     {
@@ -202,7 +202,10 @@ class VentaProductoResource extends Resource
                         }
 
                         return $indicators;
-                    }),      
+                    }),
+                    SelectFilter::make('tienda')
+                    ->relationship('sucursal', 'nombre')
+                    ->attribute('sucursal_id')      
             ])
             ->filtersTriggerAction(
                 fn (Action $action) => $action

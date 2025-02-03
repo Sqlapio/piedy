@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -27,53 +28,54 @@ class ResumenContableResource extends Resource
 
     protected static ?string $navigationLabel = 'Resumen Contable';
 
-    protected static ?string $navigationGroup = 'Contabilidad';
+    protected static ?string $navigationGroup = 'Módulo Contable';
 
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 1;
 
     public static function table(Table $table): Table
     {
         return $table
-        ->query(ResumenContable::query()->orderBy('created_at', 'desc'))
+            ->query(ResumenContable::query()->orderBy('created_at', 'desc'))
             ->columns([
 
                 Tables\Columns\TextColumn::make('codigo')
-                ->label('Codigo')
+                    ->label('Codigo')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('descripcion')
-                ->label('Descripcion')
+                    ->label('Descripcion')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tipo')
-                ->label('Tipo')
+                    ->label('Tipo')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('sucursal.nombre')
+                    ->label('Sucursal')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('monto_usd')
-                ->label('Monto USD')
+                    ->label('Monto USD')
                     ->money('USD')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('monto_bsd')
-                ->label('Monto BSD')
-                ->money('VES')
+                    ->label('Monto BSD')
+                    ->money('VES')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tasa_bcv')
-                ->label('Tasa BCV')
-                ->money('VES')
+                    ->label('Tasa BCV')
+                    ->money('VES')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('conversion')
-                ->label('Conversion')
-                ->money('USD')
+                    ->label('Conversion')
+                    ->money('USD')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('total_operacion')
-                ->label('Total Operacion')
-                ->summarize(Sum::make()
+                    ->label('Total Operacion')
+                    ->summarize(Sum::make()
                         ->money('USD')
                         ->label(('Total')))
                     ->sortable(),
-                Tables\Columns\TextColumn::make('sucursal.nombre')
-                ->label('Sucursal')
-                    ->numeric()
-                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('responsable')
-                ->label('Responsable')
+                    ->label('Responsable')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('fecha')
@@ -89,35 +91,38 @@ class ResumenContableResource extends Resource
             ])
             ->filters([
                 Filter::make('created_at')
-                ->form([
-                    DatePicker::make('desde'),
-                    DatePicker::make('hasta'),
-                ])
-                ->query(function (Builder $query, array $data): Builder {
-                    return $query
-                        ->when(
-                            $data['desde'] ?? null,
-                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                        )
-                        ->when(
-                            $data['hasta'] ?? null,
-                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-                        );
-                })
-                ->indicateUsing(function (array $data): array {
-                    $indicators = [];
-                    if ($data['desde'] ?? null) {
-                        $indicators['desde'] = 'Venta desde ' . Carbon::parse($data['desde'])->toFormattedDateString();
-                    }
-                    if ($data['hasta'] ?? null) {
-                        $indicators['hasta'] = 'Venta hasta ' . Carbon::parse($data['hasta'])->toFormattedDateString();
-                    }
+                    ->form([
+                        DatePicker::make('desde'),
+                        DatePicker::make('hasta'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['desde'] ?? null,
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['hasta'] ?? null,
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['desde'] ?? null) {
+                            $indicators['desde'] = 'Venta desde ' . Carbon::parse($data['desde'])->toFormattedDateString();
+                        }
+                        if ($data['hasta'] ?? null) {
+                            $indicators['hasta'] = 'Venta hasta ' . Carbon::parse($data['hasta'])->toFormattedDateString();
+                        }
 
-                    return $indicators;
-                }),
+                        return $indicators;
+                    }),
+            SelectFilter::make('sucursal')
+            ->relationship('sucursal', 'nombre')
+            ->attribute('sucursal_id')
             ])
             ->filtersTriggerAction(
-                fn (Action $action) => $action
+                fn(Action $action) => $action
                     ->button()
                     ->label('Filtros'),
             )

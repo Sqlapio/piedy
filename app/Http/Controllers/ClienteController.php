@@ -66,5 +66,30 @@ class ClienteController extends Controller
                 ->body($th->getMessage())
                 ->send();
         }
+        
+    }
+
+    // public static function get_cliente($cod_asignacion)
+    // {
+        
+    // }
+
+    public static function add_visita($cliente_id) {
+        try {
+            
+            
+            $visitas = Cliente::find($cliente_id);
+            $visitas->visitas = $visitas->visitas + 1;
+            $visitas->save();
+            
+        } catch (\Throwable $th) {
+           Notification::make()
+            ->title('Notificacion')
+            ->icon('heroicon-o-shield-check')
+            ->color('danger')
+            ->iconColor('danger')
+            ->body($th->getMessage())
+            ->send();
+        }
     }
 }

@@ -19,9 +19,9 @@ class MovimientoGiftCardResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-c-ticket';
 
-    protected static ?string $navigationGroup = 'GiftCard';
+    protected static ?string $navigationGroup = 'Metodos Prepagados';
 
-    protected static ?string $navigationLabel = 'Detalle de Movimientos';
+    protected static ?string $navigationLabel = 'Movimientos GiftCard';
 
     public static function form(Form $form): Form
     {

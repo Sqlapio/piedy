@@ -30,6 +30,8 @@ class Reporte extends Model
         'tipo',
         'responsable',
         'sucursal_id',
+        'cod_nomina',
+        'nomina_general_id'
     ];
 
     /**
@@ -50,6 +52,16 @@ class Reporte extends Model
     public function user(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    /**
+     * Get the user that owns the PreNomina
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function nominaGeneral(): BelongsTo
+    {
+        return $this->belongsTo(NominaGeneral::class, 'id', 'nomina_general_id');
     }
 
 }

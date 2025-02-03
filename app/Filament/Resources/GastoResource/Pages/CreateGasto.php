@@ -16,8 +16,9 @@ class CreateGasto extends CreateRecord
     {
         //Creamos la entrada de inventario
         $entrada = new ResumenContable();
-        $entrada->sucursal_id       = $this->data['sucursal_id'];
-        $entrada->codigo            = $this->data['numero_factura'];
+        $entrada->sucursal_id       = $this->data['sucursal_id'] ?? $this->data['almacen_id'];
+        $entrada->sucursal_id       = $this->data['almacen_id'] ?? $this->data['sucursal_id'];
+        $entrada->codigo            = $this->data['numero_factura_gasto'];
         $entrada->tipo              = 'gasto';
         $entrada->monto_usd         = $this->data['monto_usd'] > 0 ? $this->data['monto_usd'] : 0.00;
         $entrada->monto_bsd         = $this->data['monto_bsd'] > 0 ? $this->data['monto_bsd'] : 0.00;

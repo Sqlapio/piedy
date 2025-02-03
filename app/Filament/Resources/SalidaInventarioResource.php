@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
@@ -23,11 +24,11 @@ class SalidaInventarioResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Manejo de Inventario';
+    protected static ?string $navigationGroup = 'Modulo de Inventario';
 
     protected static ?string $navigationLabel = 'Salidas';
 
-    protected static ?int $navigationSort = 7;
+    protected static ?int $navigationSort = 6;
 
     public static function form(Form $form): Form
     {
@@ -118,6 +119,13 @@ class SalidaInventarioResource extends Resource
 
                         return $indicators;
                     }),
+            SelectFilter::make('almacel')
+                ->relationship('almacen', 'nombre')
+                ->attribute('almacen_id'),
+            SelectFilter::make('sucursal')
+                ->relationship('sucursal', 'nombre')
+                ->attribute('sucursal_id'),
+
             ])
             ->filtersTriggerAction(
                 fn(Action $action) => $action

@@ -24,7 +24,7 @@ class NotificacionMasivaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-megaphone';
 
-    protected static ?string $navigationGroup = 'Sistema';
+    protected static ?string $navigationGroup = 'Notificaciones';
 
     protected static ?string $navigationLabel = 'Notificaciones Masivas';
 

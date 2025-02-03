@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Closure;
+use App\Models\User;
 use Filament\Tables;
 use App\Models\TasaBcv;
 use Filament\Forms\Get;
@@ -36,6 +37,7 @@ use App\Http\Controllers\CajaController;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
+use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\GiftCardController;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Illuminate\Database\Eloquent\Collection;
@@ -103,39 +105,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                 //
             ])
             ->actions([
-                // Action::make('eliminar')
-                //     ->requiresConfirmation()
-                //     ->action(function (DetalleAsignacion $record) {
 
-                //         $serv_disponible = Disponible::where('cod_asignacion', $record->cod_asignacion)
-                //         ->where('cliente_id',  $record->cliente_id)
-                //         ->where('sucursal_id', Auth::user()->sucursal_id)
-                //         ->first();
-
-                //         if($record->tipo == 'servicio'){
-                //             $serv_disponible->acu_servicios = $serv_disponible->acu_servicios - $record->costo;
-                //             $serv_disponible->venta_total   = $serv_disponible->venta_total - $record->costo;
-                //             $serv_disponible->save();
-
-                //         }
-
-                //         if($record->tipo == 'producto'){
-                //             $serv_disponible->acu_productos = $serv_disponible->acu_productos - $record->costo;
-                //             $serv_disponible->venta_total   = $serv_disponible->venta_total - $record->costo;
-                //             $serv_disponible->save();
-                //         }
-
-                //         $record->delete();
-
-                //     })
-                //     ->icon('heroicon-c-trash')
-                //     ->color('danger')
-                //     //UI - Modal
-                //     ->modalIcon('heroicon-m-shopping-cart')
-                //     ->modalHeading('Eliminar Item')
-                //     ->modalDescription('Estas seguro que desea eliminar el item')
-                //     ->modalSubmitActionLabel('Si, eliminar item!')
-                //
             ])
             ->bulkActions([
                 BulkAction::make('Eliminar items')
@@ -199,7 +169,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                 ActionGroup::make([
                     Action::make('Añadir Servicios')
                         ->label('Añadir Servicios')
-                        ->icon('heroicon-c-document-plus')
+                        ->icon('heroicon-c-swatch')
                         ->color('success')
                         ->hidden(! (auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2 || auth()->user()->rol_id == 5))
                         ->model(DetalleAsignacion::class)
@@ -225,7 +195,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->required()
                                         ->searchable(),
                                 ])
-                        ])->action(function (array $data) {
+                        ])
+                        ->action(function (array $data) {
                             AsignacionController::asigna_servicio_adicional(
                                 $data['servicio_id'],
                                 $this->cod_asignacion,
@@ -458,7 +429,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ])
 
                                 ])
-                        ])->action(function (array $data) {
+                        ])
+                        ->action(function (array $data) {
 
                             //Dolares
                             if ($data['metodo_pago'] != '' &&  $data['metodo_pago_dos'] == '') {
@@ -485,6 +457,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->send();
 
                                     LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en dolares: ' . $this->cod_asignacion, $response = null);
+
+                                    ClienteController::add_visita($this->cliente_id);
 
                                     //Envio una notificacion por whatsaap
                                     $notificacion = NotificacionesController::notificacion_servicio_facturado($this->cod_asignacion);
@@ -543,7 +517,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->send();
 
                                     LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en bolivares: ' . $this->cod_asignacion, $response = null);
-                                    
+
+                                    ClienteController::add_visita($this->cliente_id);
 
                                     //Envio una notificacion por whatsaap
                                     $notificacion = NotificacionesController::notificacion_servicio_facturado($this->cod_asignacion);
@@ -612,7 +587,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->send();
 
                                     LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en bolivares y dolares: ' . $this->cod_asignacion, $response = null);
-                                    
+
+                                    ClienteController::add_visita($this->cliente_id);
 
                                     //Envio una notificacion por whatsaap
                                     $notificacion = NotificacionesController::notificacion_servicio_facturado($this->cod_asignacion);
@@ -649,7 +625,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
 
                     Action::make('Añadir Productos')
                         ->label('Añadir Productos')
-                        ->icon('heroicon-c-document-plus')
+                        ->icon('heroicon-c-shopping-bag')
                         ->color('success')
                         ->model(DetalleAsignacion::class)
                         ->form([
@@ -721,7 +697,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                             },
                                         ])
                                 ])->columns(2)
-                        ])->action(function (array $data) {
+                        ])
+                        ->action(function (array $data) {
                             AsignacionController::asigna_producto(
                                 $data['producto_id'],
                                 $data['cantidad'],
@@ -732,7 +709,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
 
                     Action::make('cerrar')
                         ->label('Cerrar Servicio')
-                        ->icon('heroicon-c-document-plus')
+                        ->icon('heroicon-s-key')
                         ->color('danger')
                         ->hidden(! (auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2 || auth()->user()->rol_id == 5))
                         ->model(DetalleAsignacion::class)
@@ -750,7 +727,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->autofocus()
                                         ->required(),
                                 ])
-                        ])->action(function (array $data) {
+                        ])
+                        ->action(function (array $data) {
                             $cierre = AsignacionController::cerrar_servicio(
                                 $data['clave'],
                                 $this->cod_asignacion,
@@ -767,13 +745,71 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     ->body('Clave incorrecta, por favor valide su clave e intente nuevamente.')
                                     ->send();
                             }
+                        }),
+                        
+                    Action::make('editar')
+                        ->label('Editar Técnico')
+                        ->icon('heroicon-m-pencil-square')
+                        ->color('danger')
+                        ->hidden(! (auth()->user()->rol_id == 3 || auth()->user()->rol_id == 5))
+                        ->model(DetalleAsignacion::class)
+                        ->form([
+                            Section::make('tecnico')
+                                ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
+                                ->icon('heroicon-c-finger-print')
+                                ->schema([
+                                    //Seleccion de empleado
+                                    Select::make('user_id')
+                                    ->label('Selección del Técnico')
+                                    ->options(User::whereBetween('rol_id', [1, 2])->where('status', 1)->pluck('name', 'id'))
+                                    ->required()
+                                    ->live()
+                                    ->searchable(),
+                                ])
+                        ])
+                        ->action(function (array $data) {
+                            $editar = AsignacionController::editar_tecnico(
+                                $data['user_id'],
+                                $this->cod_asignacion,
+                            );
+
+                            if ($editar) {
+                                LogController::log(Auth::user()->id, 'tecnico editado', 'se edita el tecnico para el servicio: ' . $this->cod_asignacion, $response = null);
+                                return redirect()->route('cabinas');
+                            }
+                        }),
+                        
+                    Action::make('eliminar')
+                        ->label('Eliminar Asignación')
+                        ->icon('heroicon-c-document-plus')
+                        ->color('danger')
+                        ->hidden(! ( auth()->user()->rol_id == 3 || auth()->user()->rol_id == 5))
+                        ->action(function (array $data) {
+                            
+                            $servicios_asignados = DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)->count();
+                            $status_de_asignacion = Disponible::where('cod_asignacion', $this->cod_asignacion)->first()->status;
+                            
+                            if ($servicios_asignados == 0 && $status_de_asignacion == 'activo') { 
+                                 
+                                Disponible::where('cod_asignacion', $this->cod_asignacion)->delete();
+                                return redirect()->route('cabinas');
+                                
+                            }else{
+                                Notification::make()
+                                    ->title('Notificacion')
+                                    ->icon('heroicon-o-shield-check')
+                                    ->color('danger')
+                                    ->iconColor('danger')
+                                    ->body('No puede eliminar un servicio que haya sido cerrado. Por favor comuniquese con el Administrador del Sistema')
+                                    ->send();
+                            }
                         })
                 ])
-                    ->label('Menú')
-                    ->icon('heroicon-c-adjustments-horizontal')
-                    ->size(ActionSize::Small)
-                    ->color('colorOne')
-                    ->button()
+                ->label('Menú')
+                ->icon('heroicon-c-adjustments-horizontal')
+                ->size(ActionSize::Small)
+                ->color('colorOne')
+                ->button()
             ]);
     }
 

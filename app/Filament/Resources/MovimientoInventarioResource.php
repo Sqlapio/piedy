@@ -12,6 +12,7 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use App\Models\MovimientoInventario;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -26,9 +27,9 @@ class MovimientoInventarioResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-clipboard-document-list';
 
-    protected static ?string $navigationGroup = 'Manejo de Inventario';
+    protected static ?string $navigationGroup = 'Modulo de Inventario';
 
-    protected static ?int $navigationSort = 8;
+    protected static ?int $navigationSort = 9;
 
     public static function table(Table $table): Table
     {
@@ -107,6 +108,9 @@ class MovimientoInventarioResource extends Resource
 
                         return $indicators;
                     }),
+            SelectFilter::make('sucursal')
+            ->relationship('sucursal', 'nombre')
+            ->attribute('sucursal_id')
             ])
             ->filtersTriggerAction(
                 fn(Action $action) => $action

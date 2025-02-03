@@ -16,7 +16,7 @@ class Dashboard extends \Filament\Pages\Dashboard
 
     protected static ?string $title = 'Dashboard Piedy';
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-c-presentation-chart-bar';
 
     protected static string $view = 'filament.pages.dashboard-new';
 

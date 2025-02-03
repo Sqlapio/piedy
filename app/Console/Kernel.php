@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('app:appointment-reminder')
-        ->dailyAt('9:30')
+        ->dailyAt('8:30')
         ->emailOutputTo('gusta.acp@gmail.com');
 
         $schedule->command('app:recordatorio-cita-tecnico')

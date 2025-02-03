@@ -22,7 +22,7 @@ class MetodoPagoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-banknotes';
 
-    protected static ?string $navigationGroup = 'Administración';
+    protected static ?string $navigationGroup = 'Configuración';
 
     protected static ?string $navigationLabel = 'Métodos de pago';
 

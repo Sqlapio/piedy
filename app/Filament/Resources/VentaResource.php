@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\Summarizers\Sum;
 use App\Filament\Resources\VentaResource\Pages;
@@ -23,13 +24,13 @@ class VentaResource extends Resource
 {
     protected static ?string $model = Venta::class;
 
-    protected static ?string $navigationGroup = 'Ventas';
+    protected static ?string $navigationGroup = 'Modulo Administrativo';
 
-    protected static ?string $navigationLabel = 'Dashboard Ventas';
+    protected static ?string $navigationLabel = 'Ventas';
 
     protected static ?string $navigationIcon = 'heroicon-s-presentation-chart-line';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 5;
 
 
     public static function table(Table $table): Table
@@ -94,6 +95,9 @@ class VentaResource extends Resource
 
                     return $indicators;
                 }),
+            SelectFilter::make('tienda')
+            ->relationship('sucursal', 'nombre')
+            ->attribute('sucursal_id')
             ])
             ->filtersTriggerAction(
                 fn (Action $action) => $action

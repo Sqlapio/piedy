@@ -2,9 +2,8 @@
 
 namespace App\Filament\Resources\GastoResource\Pages;
 
-use Filament\Actions;
+use App\Models\TasaBcv;
 use App\Models\ResumenContable;
-use Illuminate\Support\Facades\Auth;
 use App\Filament\Resources\GastoResource;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -22,7 +21,7 @@ class CreateGasto extends CreateRecord
         $entrada->tipo              = 'gasto';
         $entrada->monto_usd         = $this->data['monto_usd'] > 0 ? $this->data['monto_usd'] : 0.00;
         $entrada->monto_bsd         = $this->data['monto_bsd'] > 0 ? $this->data['monto_bsd'] : 0.00;
-        $entrada->tasa_bcv          = $this->data['tasa_bcv'];
+        $entrada->tasa_bcv          = $this->data['tasa_bcv'] ?? TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
         $entrada->conversion        = $this->data['monto_bsd'] > 0 ? $this->data['monto_bsd'] / $this->data['tasa_bcv'] : 0.00;
         $entrada->total_operacion   = $entrada->conversion + $this->data['monto_usd'];
         $entrada->responsable       = $this->data['responsable'];

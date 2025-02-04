@@ -13,8 +13,11 @@ return new class extends Migration
     {
         Schema::create('analisis_reportes', function (Blueprint $table) {
             $table->id();
+            $table->integer('sucursal_id');
+            $table->integer('nomina_general_id');
             $table->string('fecha_calculo');
-            $table->string('rango_fechas');
+            $table->string('fecha_ini');
+            $table->string('fecha_fin');
             $table->string('cod_nomina');
             $table->decimal('gastos', 8,2)->default(0.00);
             $table->decimal('compras', 8, 2)->default(0.00);

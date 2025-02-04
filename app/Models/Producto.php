@@ -167,5 +167,15 @@ class Producto extends Model
         return $this->belongsTo(AsignarProducto::class, 'producto_id', 'id');
     }
 
+    /**
+     * Get the inventario that owns the Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function requisicion(): BelongsTo
+    {
+        return $this->belongsTo(Requisicion::class, 'requisicion_id', 'id');
+    }
+
 
 }

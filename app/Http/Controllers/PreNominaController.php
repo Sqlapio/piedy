@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\User;
+use App\Models\Gasto;
+use App\Models\Compra;
 use App\Models\Reporte;
 use App\Models\PreNomina;
 use Illuminate\Http\Request;
+use App\Models\NominaGeneral;
 use App\Models\VentaProducto;
 use App\Models\VentaServicio;
+use App\Models\AnalisisReporte;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Enums\Format;
@@ -384,5 +389,75 @@ class PreNominaController extends Controller
                 ->persistent()
                 ->send();
         }
+    }
+
+    static function reporteGeneral($records)
+    {
+        /**
+         * Para ejecutar el reporte debemos validar
+         * 1.- que la nomina este en estatus 8 (totalizada-cerrada)
+         * 2.- en la tabla de detalle de nomina, todos los registros asociados a esta nomina deben estar en estatus 8 (totalizada-cerrada)
+         */
+        try {
+
+            //Validamos 1
+            $nomina = NominaGeneral::where('cod_nomina', $records->cod_nomina)->first();
+            if ($nomina->status_id != 8) {
+                throw new Exception("La nomina no esta en estatus totalizada-cerrada", 401);
+            }
+
+            //Validamos 2
+            $detalle_nomina = PreNomina::where('cod_nomina', $records->cod_nomina)->get();
+            if (count($detalle_nomina) > 0) {
+                foreach ($detalle_nomina as $item) {
+                    if ($item->status_id != 8) {
+                        throw new Exception("Los registros asociados a esta nomina no estan en estatus totalizada-cerrada", 401);
+                    }
+                }
+            }
+
+            //creamos el asiento en la tabla de analisis_reportes
+            $asiento = new AnalisisReporte();
+            $asiento->cod_nomina = $records->cod_nomina;
+            $asiento->nomina_general_id = $records->nomina_general_id;
+            $asiento->sucursal_id = $records->sucursal_id;
+            $asiento->fecha_calculo = date('d-m-Y');
+            $asiento->fecha_ini = $records->fecha_ini;
+            $asiento->fecha_fin = $records->fecha_fin;
+            $asiento->gastos  = Gasto::whereBetween('created_at', [$records->fecha_ini.' 00:00:00', $records->fecha_fin.' 23:59:59'])->sum('conversion_a_usd');
+            $asiento->compras = Compra::whereBetween('created_at', [$records->fecha_ini . ' 00:00:00', $records->fecha_fin . ' 23:59:59'])->sum('conversion_a_usd');
+            $asiento->nomina_general_id = $records->nomina_general_id;
+            $asiento->nomina_general_id = $records->nomina_general_id;
+            $asiento->nomina_general_id = $records->nomina_general_id;
+            $asiento->nomina_general_id = $records->nomina_general_id;
+            $asiento->nomina_general_id = $records->nomina_general_id;
+            $asiento->nomina_general_id = $records->nomina_general_id;
+            $asiento->nomina_general_id = $records->nomina_general_id;
+            $asiento->nomina_general_id = $records->nomina_general_id;
+            $asiento->nomina_general_id = $records->nomina_general_id;
+            
+            
+
+
+            //Generamos el reporte
+            $reporte = new Reporte();
+            $reporte->cod_nomina = $records->cod_nomina;
+            $reporte->nomina_general_id = $records->nomina_general_id;
+            $reporte->user_id = $records->user->id;
+            $reporte->cod_reporte = $records->cod_nomina;
+            $reporte->fecha_ini = $records->fecha_ini;
+            $reporte->fecha_fin = $records->fecha_fin;
+            $reporte->descripcion = $records->descripcion;
+            $reporte->tipo = $records->rol->descripcion;
+            $reporte->responsable = Auth::user()->name;
+            $reporte->sucursal_id = $records->sucursal_id;
+            $reporte->save();
+            
+            
+            //code...
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    
     }
 }

@@ -20,6 +20,7 @@ use App\Models\DetalleAsignacion;
 use App\Models\InventarioSucursal;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\LogController;
+use App\Models\User;
 use Filament\Notifications\Notification;
 
 class UtilsController extends Controller
@@ -826,6 +827,25 @@ class UtilsController extends Controller
             LogController::log(Auth::user()->id, 'excepcion-UtilsController(array_servicios)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('Notificacion: UtilsController::array_servicios()')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+        }
+    }
+
+    static function total_empleados($sucursal_id)
+    {
+        try {
+            $empleados = User::where('sucursal_id', $sucursal_id)
+            ->where('status', 1)
+            ->whereBetween('rol_id', [1, 3])->get();
+
+            return count($empleados);
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-UtilsController(total_empleados)', $th->getMessage(), $response = null);
+            Notification::make()
+                ->title('Notificacion: UtilsController::total_empleados()')
                 ->icon('heroicon-o-shield-check')
                 ->iconColor('danger')
                 ->body($th->getMessage())

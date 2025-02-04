@@ -79,20 +79,12 @@ class RequisicionController extends Controller
         
         try {
 
-            $requisicion = Requisicion::where('codigo', $data['codigo'])->first();
-
             //Validamos si los productos asociados pertenecen a la requisicion seleccionada
+            $requisicion = Requisicion::where('codigo', $data['codigo'])->first();
             
-
             if (isset($requisicion)) {
 
                 for ($i = 0; $i < count($data['productos']); $i++) {
-                    
-                    //El producto debe estar en el inventario
-                    $exite_en_almacen = Inventario::where('producto_id', $data['productos'][$i]['producto_id'])->first();
-                    if (!isset($exite_en_almacen)) {
-                        throw new Exception("El producto ".ProductoController::get_dscripcion($data['productos'][$i]['producto_id'])." no se encuentra en el almacen, por favor comuniquese con el administrador del sistema", 400);
-                    }
                     
                     //El producto debe tener costo asignado
                     $info_producto = Producto::where('id', $data['productos'][$i]['producto_id'])->first();
@@ -149,17 +141,72 @@ class RequisicionController extends Controller
 
     static function enviarRequisicion($records)
     {
+        // dd($records);
+        /**
+         * NOTA:
+         * Para poder enviar los producto de la requisicion, deben cumplir las siguientes restricciones
+         * 1- el producto debe estar registrado en el almacen
+         * 2- el producto debe tener existencia mayor a la cantidad solicitada en la requisicion
+         */
         try {
             
             $records = json_decode($records, true);
 
             $total_requisicion = 0;
 
-            //Recorremos el array
+            /**
+             * Este FOR se encarga de separar los productos que estan aptos para ser enviados a la sucursal
+             * de los que no cumplen ccon requisitos del sistema
+             */
+            
             for ($i = 0; $i < count($records); $i++) {
-                //Validamos la exitencia del producto en el inventario, mayor a 0
+                
+                //Validamos que el producto este registrado en el almacen
                 $producto_inventario = Inventario::where('producto_id', $records[$i]['producto_id'])->first();
+                if (!isset($producto_inventario)) {
+                    $rollback = DetalleRequisicion::where('codigo', $records[$i]['codigo'])->get();
+                    foreach ($rollback as $item) {
+                        $item->status_id = 5;
+                        $item->sub_total = 0.00;
+                        $item->estado = 'en-revision';
+                        $item->save();
+                    }
+                    throw new Exception("El producto " . ProductoController::get_dscripcion($records[$i]['producto_id']) . " no se encuentra en el inventario. Por favor comuniquese con el Administrador", 401);
+                }
+
+                //Validamos que el producto tenga existencia suficiente
                 if ($producto_inventario->cantidad <= 0) {
+                    $rollback = DetalleRequisicion::where('codigo', $records[$i]['codigo'])->get();
+                    foreach ($rollback as $item) {
+                        $item->status_id = 5;
+                        $item->sub_total = 0.00;
+                        $item->estado = 'en-revision';
+                        $item->save();
+                    }
+                    throw new Exception("El producto " . ProductoController::get_dscripcion($records[$i]['producto_id']) . " esta en 0. Por favor comuniquese con el Administrador", 401);
+                }
+
+                //Validamos que la cantidad solicitada no supere la existencia del producto
+                if ($records[$i]['cantidad'] > $producto_inventario->cantidad) {
+                    $rollback = DetalleRequisicion::where('codigo', $records[$i]['codigo'])->get();
+                    foreach ($rollback as $item) {
+                        $item->status_id = 5;
+                        $item->sub_total = 0.00;
+                        $item->estado = 'en-revision';
+                        $item->save();
+                    }
+                    throw new Exception("El producto " . ProductoController::get_dscripcion($records[$i]['producto_id']) . " no tiene suficiente existencia. Por favor comuniquese con el Administrador", 401);
+                }
+
+                //Validamos que la cantidad solicitada sea mayor a 0
+                if ($records[$i]['cantidad'] <= 0) {
+                    $rollback = DetalleRequisicion::where('codigo', $records[$i]['codigo'])->get();
+                    foreach ($rollback as $item) {
+                        $item->status_id = 5;
+                        $item->sub_total = 0.00;
+                        $item->estado = 'en-revision';
+                        $item->save();
+                    }
                     throw new Exception("El producto " . ProductoController::get_dscripcion($records[$i]['producto_id']) . " esta en 0. Por favor comuniquese con el Administrador", 401);
                 }
 
@@ -176,8 +223,11 @@ class RequisicionController extends Controller
                 SalidaInventarioController::crear_salida($recepcion->inventario_id, $records[$i]['sucursal_id'], $records[$i]['cantidad'], 'envio-sucursal');
 
                 //Actualizacmos el estatus del producto en la requisicion
-                DetalleRequisicion::where('codigo', $records[$i]['codigo'])->update([
+                DetalleRequisicion::where('codigo', $records[$i]['codigo'])
+                ->where('producto_id', $records[$i]['producto_id'])
+                ->update([
                     'status_id' => 6,
+                    'estado'    => 'entregado',
                 ]);
 
                 //Realizamos la resta del inventario general
@@ -201,25 +251,25 @@ class RequisicionController extends Controller
             }
 
             //Actualizamos el satus de las requisicion
-            Requisicion::where('codigo', $records[0]['codigo'])->first()->update([
-                'status_id' => 6
-            ]);
+            $requisicion = Requisicion::where('codigo', $records[0]['codigo'])->first();
+            $requisicion->status_id = 6;
+            $requisicion->total_usd = $requisicion->total_usd + $total_requisicion;
+            $requisicion->save();
 
             //creamos el gasto asociado a la sucursal que envio la requisicion
             Gasto::create([
                 'sucursal_id'           => $records[0]['sucursal_id'],
                 'descripcion'           => 'Requisicion de inventario',
                 'forma_pago'            => 'dolares',
-                'monto_usd'             => $total_requisicion,
-                'monto_bsd'             => 0,
-                'fecha'                 => date('Y-m-d'),
+                'monto_usd'             => $requisicion->total_usd,
+                'monto_bsd'             => 0.00,
                 'fecha_factura'         => Requisicion::where('codigo', $records[0]['codigo'])->first()->fecha,
-                'numero_factura'        => 'Pcf-'.$records[0]['codigo'],
-                'numero_factura_gasto'  => 'Pcf-'.$records[0]['codigo'],
+                'numero_factura_gasto'  => $records[0]['codigo'],
                 'proveedor_id'          => 000,
                 'metodo_pago'           => 1,
                 'tasa_bcv'              => TasaBcv::where('id', 1)->first()->tasa,
                 'responsable'           => Auth::user()->name,
+                'conversion_a_usd'      => $requisicion->total_usd,
             ]);
 
             return true;
@@ -232,6 +282,7 @@ class RequisicionController extends Controller
                 ->color('danger')
                 ->iconColor('danger')
                 ->body($th->getMessage())
+                ->persistent()
                 ->send();
         }
     }

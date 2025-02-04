@@ -30,7 +30,10 @@ use HasFactory;
     'observacion',
     'metodo_pago',
     'sucursal_id',
-    'tasa_bcv'
+    'tasa_bcv',
+    'iva',
+    'total_compra_bsd',
+    'conversion_a_usd',
     ];
 
     /**

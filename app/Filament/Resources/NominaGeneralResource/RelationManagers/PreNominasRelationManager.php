@@ -43,13 +43,14 @@ class PreNominasRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                 ->icon('heroicon-c-cog-8-tooth')
-                ->numeric()
-                    ->sortable(),
+                ->searchable()
+                ->sortable(),
 
                 Tables\Columns\TextColumn::make('rol.descripcion')
                 ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ->searchable()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('sucursal.nombre')
                 ->numeric()
@@ -70,70 +71,70 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('comision_usd')
                 ->label('Comision(USD)')
-                ->money('USD')
+                ->numeric(decimalPlaces: 2, locale: 'es')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('comision_bsd')
                 ->label('Comision(BSD)')
-                ->money('Bs.')
+                ->numeric(decimalPlaces: 2, locale: 'es')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('comision_prod')
                 ->label('Comision Productos')
-                ->money('USD')
+                ->numeric(decimalPlaces: 2, locale: 'es')
                     ->sortable(),
 
                 Tables\Columns\TextInputColumn::make('propinas_usd')
                 ->label('Propina(USD)')
                 ->sortable()
-                    ->afterStateUpdated(function ($record, $state) {
-                        $record->total_usd = $state + $record->total_usd;
-                        $record->save();
-                        //log
-                        LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego propina en dolares: ' . $state, $response = null);
-                    })
-                    ->disabled(function ($record) {
-                        if ($record->status_id == 8) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }),
+                ->afterStateUpdated(function ($record, $state) {
+                    $record->total_usd = $state + $record->total_usd;
+                    $record->save();
+                    //log
+                    LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego propina en dolares: ' . $state, $response = null);
+                })
+                ->disabled(function ($record) {
+                    if ($record->status_id == 8) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }),
 
                 Tables\Columns\TextInputColumn::make('propinas_bsd')
                 ->label('Propina(Bs.)')
                 ->sortable()
-                    ->afterStateUpdated(function ($record, $state) {
-                        $record->total_bsd = $state + $record->total_bsd;
-                        $record->save();
-                        //log
-                        LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego propina en bolivares: ' . $state, $response = null);
-                    })
-                    ->disabled(function ($record) {
-                        if ($record->status_id == 8) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }),
+                ->afterStateUpdated(function ($record, $state) {
+                    $record->total_bsd = $state + $record->total_bsd;
+                    $record->save();
+                    //log
+                    LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego propina en bolivares: ' . $state, $response = null);
+                })
+                ->disabled(function ($record) {
+                    if ($record->status_id == 8) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }),
 
                 Tables\Columns\TextInputColumn::make('asignaciones_usd')
                 ->label('Asignaciones(USD)')
                 ->sortable()
-                    ->afterStateUpdated(function ($record, $state) {
-                        $record->total_usd = $state + $record->total_usd;
-                        $record->save();
-                        //log
-                        LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego asignaciones en dolares: ' . $state, $response = null);
-                    })
-                    ->disabled(function ($record) {
-                        if ($record->status_id == 8) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    })
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ->afterStateUpdated(function ($record, $state) {
+                    $record->total_usd = $state + $record->total_usd;
+                    $record->save();
+                    //log
+                    LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego asignaciones en dolares: ' . $state, $response = null);
+                })
+                ->disabled(function ($record) {
+                    if ($record->status_id == 8) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })
+                ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextInputColumn::make('asignaciones_bsd')
                 ->label('Asignaciones(Bs.)')
@@ -143,32 +144,32 @@ class PreNominasRelationManager extends RelationManager
                     //log
                     LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego asignaciones en bolivares: ' . $state, $response = null);
                 })
-                    ->disabled(function ($record) {
-                        if ($record->status_id == 8) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    })
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ->disabled(function ($record) {
+                    if ($record->status_id == 8) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })
+                ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextInputColumn::make('deducciones_usd')
                 ->label('Deducciones(USD)')
                 ->sortable()
-                    ->afterStateUpdated(function ($record, $state) {
-                        $record->total_usd = $record->total_usd - $state;
-                        $record->save();
-                        //log
-                        LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego deducciones en dolares: ' . $state, $response = null);
-                    })
-                    ->disabled(function ($record) {
-                        if ($record->status_id == 8) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    })
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ->afterStateUpdated(function ($record, $state) {
+                    $record->total_usd = $record->total_usd - $state;
+                    $record->save();
+                    //log
+                    LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego deducciones en dolares: ' . $state, $response = null);
+                })
+                ->disabled(function ($record) {
+                    if ($record->status_id == 8) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })
+                ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextInputColumn::make('deducciones_bsd')
                 ->label('Deducciones(Bs.)')
@@ -198,42 +199,44 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('total_usd')
                 ->label('Total(USD)')
-                ->money('USD')
+                ->numeric(decimalPlaces: 2, locale: 'es')
+                // ->money('USD')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_bsd')
                 ->label('Total(Bs.)')
-                ->money('Bs.')
+                ->numeric(decimalPlaces: 2, locale: 'es')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_venta_sin_iva')
                 ->label('Venta sin IVA')
-                ->money('Bs.')
+                ->numeric(decimalPlaces: 2, locale: 'es')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('iva')
                     ->label('IVA')
-                    ->money('Bs.')
+                    ->numeric(decimalPlaces: 2, locale: 'es')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('retencion_isrl')
                 ->label('Retencion ISRL')
-                ->money('Bs.')
+                ->numeric(decimalPlaces: 2, locale: 'es')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_pagar_bsd')
                 ->label('Total A Pagar(Bs.)')
-                ->money('Bs.')
+                ->numeric(decimalPlaces: 2, locale: 'es')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('conversion_a_usd')
-                ->label('Conversion($)')
-                ->money('USD')
+                    ->label('Conversion($)')
+                    ->numeric(decimalPlaces: 2, locale: 'es')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_general_usd')
                 ->label('Total General($)')
-                ->money('USD')
+                ->numeric(decimalPlaces: 2, locale: 'es')
                     ->summarize(Sum::make()
                         ->label(('Total($)'))
                         ->money('USD'))
@@ -308,7 +311,7 @@ class PreNominasRelationManager extends RelationManager
 
                             if ($item->rol_id == 1 || $item->rol_id == 2) {
 
-                                $item->total_venta_sin_iva = $item->total_bsd / $parametros->iva;
+                                $item->total_venta_sin_iva = $item->total_bsd / $parametros->iva_nomina;
                                 $item->iva = $item->total_bsd - $item->total_venta_sin_iva;
                                 $item->retencion_isrl = $item->total_venta_sin_iva * $parametros->isrl;
                                 $item->total_pagar_bsd = $item->total_bsd - $item->retencion_isrl;

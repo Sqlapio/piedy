@@ -17,7 +17,8 @@ class Requisicion extends Model
         'fecha',
         'status',
         'user_id',
-        'status_id'
+        'status_id',
+        'total_usd'
     ];
 
     /**
@@ -41,13 +42,13 @@ class Requisicion extends Model
     }
 
     /**
-     * Get the user associated with the Requisicion
+     * Get all of the comments for the Requisicion
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function producto(): HasOne
+    public function productos(): HasMany
     {
-        return $this->hasOne(User::class, 'id', 'producto_id');
+        return $this->hasMany(Producto::class, 'id', 'requisicion_id');
     }
 
     /**

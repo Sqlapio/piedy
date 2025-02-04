@@ -36,7 +36,10 @@ class Gasto extends Model
         'metodo_pago',
         'observacion',
         'tasa_bcv',
-        'almacen_id'
+        'almacen_id',
+        'total_gasto_bsd',
+        'iva',
+        'conversion_a_usd'
     ];
 
     /**

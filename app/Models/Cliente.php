@@ -34,10 +34,15 @@ class Cliente extends Model
 
     ];
 
-    public function get_citas(): HasMany
-    {
-        return $this->hasMany(Cita::class, 'cliente_id', 'id');
-    }
+/**
+ * Get all of the comments for the Cliente
+ *
+ * @return \Illuminate\Database\Eloquent\Relations\HasMany
+ */
+public function citas(): HasMany
+{
+    return $this->hasMany(Cita::class, 'cliente_id', 'id');
+}
 
     public function ventas():HasMany
     {

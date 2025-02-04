@@ -106,7 +106,6 @@ class ProductoResource extends Resource
                         TextInput::make('precio_venta')
                             ->prefixIcon('heroicon-s-currency-dollar')
                             ->label('Precio de Venta')
-                            ->prefix('$')
                             ->numeric()
                             ->inputMode('decimal'),
 
@@ -167,10 +166,6 @@ class ProductoResource extends Resource
                     ->description('Informacion para el manejo de las cantiddes maximas y minimas de inventario')
                     ->icon('heroicon-m-list-bullet')
                     ->schema([
-                        // TextInput::make('max')
-                        //     ->prefixIcon('heroicon-s-pencil')
-                        //     ->label('Cantidad Maxima en existencia')
-                        //     ->numeric(),
 
                         TextInput::make('min')
                             ->prefixIcon('heroicon-s-pencil')

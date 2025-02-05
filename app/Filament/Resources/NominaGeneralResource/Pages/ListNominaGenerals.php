@@ -26,6 +26,8 @@ class ListNominaGenerals extends ListRecords
 {
     protected static string $resource = NominaGeneralResource::class;
 
+    protected ?string $heading = 'Nómina General';
+
     protected function getHeaderActions(): array
     {
         return [

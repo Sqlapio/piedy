@@ -56,7 +56,7 @@ class ProductosChart extends ChartWidget
         }
 
         $data = DB::table('venta_productos')
-            ->select(DB::raw('COUNT(producto_id) as venta, producto_id, productos.descripcion as descripcion', 'created_at'))
+            ->select(DB::raw('COUNT(producto_id) as venta, producto_id, productos.nombre_corto as descripcion', 'created_at'))
             ->whereBetween('venta_productos.created_at', [$rangeStartDate, $rangeEndDate])
             ->join('productos', 'venta_productos.producto_id', '=', 'productos.id')
             ->groupBy('producto_id')

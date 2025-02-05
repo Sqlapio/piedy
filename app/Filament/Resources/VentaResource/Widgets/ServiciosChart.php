@@ -53,7 +53,7 @@ class ServiciosChart extends ChartWidget
         }
 
         $data = DB::table('detalle_asignacions')
-            ->select(DB::raw('COUNT(servicio_id) as venta, servicio_id, servicios.descripcion as descripcion', 'created_at'))
+            ->select(DB::raw('COUNT(servicio_id) as venta, servicio_id, servicios.nombre_corto as descripcion', 'created_at'))
             ->whereBetween('detalle_asignacions.created_at', [$rangeStartDate, $rangeEndDate])
             ->join('servicios', 'detalle_asignacions.servicio_id', '=', 'servicios.id')
             ->groupBy('servicio_id')

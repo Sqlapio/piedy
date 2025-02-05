@@ -12,7 +12,7 @@ class ListVentaServicios extends ListRecords
 {
     use ExposesTableToWidgets;
 
-    protected ?string $heading = 'Dashboard Ventas';
+    protected ?string $heading = 'Ventas Servicios';
 
     protected static string $resource = VentaServicioResource::class;
 

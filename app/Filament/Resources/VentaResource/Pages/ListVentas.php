@@ -13,7 +13,7 @@ class ListVentas extends ListRecords
 
     protected static string $resource = VentaResource::class;
 
-    protected ?string $heading = 'Dashboard de Ventas';
+    protected ?string $heading = 'Ventas Generales';
 
     protected int | string | array $columnSpan = [
         'md' => 2,

@@ -12,7 +12,7 @@ class ListVentaProductos extends ListRecords
 {
     use ExposesTableToWidgets;
 
-    protected ?string $heading = 'Modulo Venta Productos';
+    protected ?string $heading = 'Venta Productos';
     protected static string $resource = VentaProductoResource::class;
 
     protected function getHeaderActions(): array

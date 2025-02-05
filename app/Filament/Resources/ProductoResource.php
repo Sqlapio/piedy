@@ -343,7 +343,8 @@ class ProductoResource extends Resource
                                                 ->numeric(),
                                         ]),
                                 ])
-                        ])->action(function (Producto $record, array $data) {
+                        ])
+                        ->action(function (Producto $record, array $data) {
                             InventarioController::entrada_directa(
                                 $record->id,
                                 $record->uso,
@@ -351,7 +352,45 @@ class ProductoResource extends Resource
                                 $data['almacen_id'],
                                 $data['cantidad']
                             );
-                        })
+                        }),
+
+                Action::make('Mover a Consumible')
+                    ->icon('heroicon-s-calendar-days')
+                    ->model(Producto::class)
+                    ->form([
+                        Section::make('Formulario')
+                            ->description(function (Producto $record) {
+                                return 'Mover a sucursal: ' . $record->descripcion;
+                            })
+                            ->icon('heroicon-s-clipboard-document-list')
+                            ->schema([
+                                Grid::make()
+                                    ->schema([
+                                        TextInput::make('can_srv')
+                                            ->label('Cantidad por servicios')
+                                            ->prefixIcon('heroicon-s-queue-list')
+                                            ->required()
+                                            ->numeric(),
+                                        Select::make('tipo_uso')
+                                            ->prefixIcon('heroicon-m-list-bullet')
+                                            ->options([
+                                                'tecnico' => 'Uso Tecnico',
+                                                'gerencia' => 'En Gerencia',
+                                            ])
+                                            ->searchable()
+                                            ->required(),
+                                    ]),
+                            ])
+                    ])
+                    ->action(function (Producto $record, array $data) {
+                        InventarioController::mover_a_consumible(
+                            $record->id,
+                            $record->contenido_neto,
+                            $record->unidad,
+                            $data['can_srv'],
+                            $data['tipo_uso'],
+                        );
+                    })
 
                 ])
             ])

@@ -104,6 +104,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                         Select::make('user_id')
                                             ->label('Selección del Técnico')
                                             ->prefixIcon('heroicon-c-users')
+                                            ->required()
                                             ->options(User::whereBetween('rol_id', [1, 2])->where('status', 1)->pluck('name', 'id'))
                                             ->rules(['required'])
                                             ->validationMessages([
@@ -114,6 +115,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                             ->label('Cantidad asignada')
                                             ->prefixIcon('heroicon-c-credit-card')
                                             ->hint('Nota: solo números enteros')
+                                            ->required()
                                             ->rules(['required', 'numeric', 'integer'])
                                             ->validationMessages([
                                                 'required' => 'Debe introducir la cantidad',
@@ -128,7 +130,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                         InventarioSucursalController::asignar_producto(
                             $data['user_id'],
                             $data['cantidad'],
-                            $record->producto_i
+                            $record->producto_id
                         );
                     })
             ])
@@ -155,6 +157,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
 
                                     ]),
                             ]),
+                            
                         Section::make('Productos para requisicion')
                             ->icon('heroicon-c-users')
                             ->schema([

@@ -62,9 +62,9 @@ class AsignarProducto extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function producto(): HasOne
+    public function producto(): BelongsTo
     {
-        return $this->hasOne(Producto::class, 'id', 'producto_id');
+        return $this->belongsTo(Producto::class, 'producto_id', 'id');
     }
 
 

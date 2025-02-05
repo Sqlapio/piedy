@@ -23,17 +23,39 @@ class ClientesDashChart extends ChartWidget
 
     protected static ?string $maxHeight = '190px';
 
+    public ?string $filter = 'week';
+
+    protected function getFilters(): ?array
+    {
+        return [
+            'today' => 'Hoy',
+            'week'  => 'Semana',
+            'month' => 'Mes',
+            'year'  => 'Año',
+        ];
+    }
+
     protected function getData(): array
     {
 
-        // $data = DB::table('venta_productos')
-        // ->select(DB::raw('COUNT(producto_id) as venta, producto_id, productos.descripcion as descripcion'))
-        // ->join('productos', 'venta_productos.producto_id', '=', 'productos.id')
-        // ->groupBy('producto_id')
-        // ->get();
+        $activeFilter = $this->filter;
 
-        $rangeStartDate = now()->startOfDay();
-        $rangeEndDate = now()->endOfDay();
+        if ($activeFilter === 'today') {
+            $rangeStartDate = now()->startOfDay();
+            $rangeEndDate = now()->endOfDay();
+        } elseif ($activeFilter === 'week') {
+            $rangeStartDate = now()->subWeek()->startOfWeek();
+            $rangeEndDate = now()->endOfWeek();
+        } elseif ($activeFilter === 'month') {
+            $rangeStartDate = now()->subMonthNoOverflow()->startOfMonth();
+            $rangeEndDate = now()->endOfMonth();
+        } elseif ($activeFilter === 'year') {
+            $rangeStartDate = now()->subMonthNoOverflow()->startOfYear();
+            $rangeEndDate = now()->endOfYear();
+        }
+
+        // $rangeStartDate = now()->startOfDay();
+        // $rangeEndDate = now()->endOfDay();
 
         $citas_agendadas_bot = Cita::where('responsable', 'PiedyBot')
             ->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])

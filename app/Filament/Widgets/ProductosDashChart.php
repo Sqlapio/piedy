@@ -22,24 +22,45 @@ class ProductosDashChart extends ChartWidget
 
     protected static ?string $maxHeight = '190px';
 
+    public ?string $filter = 'week';
+
+    protected function getFilters(): ?array
+    {
+        return [
+            'today' => 'Hoy',
+            'week'  => 'Semana',
+            'month' => 'Mes',
+            'year'  => 'Año',
+        ];
+    }
+
     protected function getData(): array
     {
+
+        $activeFilter = $this->filter;
+
+        if ($activeFilter === 'today') {
+            $rangeStartDate = now()->startOfDay();
+            $rangeEndDate = now()->endOfDay();
+        } elseif ($activeFilter === 'week') {
+            $rangeStartDate = now()->subWeek()->startOfWeek();
+            $rangeEndDate = now()->endOfWeek();
+        } elseif ($activeFilter === 'month') {
+            $rangeStartDate = now()->subMonthNoOverflow()->startOfMonth();
+            $rangeEndDate = now()->endOfMonth();
+        } elseif ($activeFilter === 'year') {
+            $rangeStartDate = now()->subMonthNoOverflow()->startOfYear();
+            $rangeEndDate = now()->endOfYear();
+        }
+
 
         $data = DB::table('venta_productos')
             ->select(DB::raw('SUM(cantidad) as venta, producto_id, productos.nombre_corto as descripcion'))
             ->join('productos', 'venta_productos.producto_id', '=', 'productos.id')
-            ->whereBetween('venta_productos.created_at', [now()->startOfDay(), now()->endOfDay()])
+            ->whereBetween('venta_productos.created_at', [$rangeStartDate, $rangeEndDate])
             ->groupBy('producto_id')
             ->get();
-        // dd($data);
 
-        // $processexist = VentaProducto::join('productos', 'venta_productos.producto_id', '=', 'productos.id')
-        // ->select(DB::raw('COUNT(producto_id) as venta, producto_id, productos.descripcion as descripcion'))
-        // ->where('bags.type', $bag->type)
-        // ->whereDate('processes.created_at', Carbon::today())
-        // ->latest()
-        // ->first();
-        // dd($data);
 
         $labels = $data->map(fn($data) => $data->descripcion);
         $totalVentas = $data->sum('venta');

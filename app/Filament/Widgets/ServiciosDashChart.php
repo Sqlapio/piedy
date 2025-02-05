@@ -22,13 +22,41 @@ class ServiciosDashChart extends ChartWidget
 
     protected static ?string $maxHeight = '192px';
 
+    public ?string $filter = 'week';
+
+    protected function getFilters(): ?array
+    {
+        return [
+            'today' => 'Hoy',
+            'week'  => 'Semana',
+            'month' => 'Mes',
+            'year'  => 'Año',
+        ];
+    }
+
     protected function getData(): array
     {
+
+        $activeFilter = $this->filter;
+
+        if ($activeFilter === 'today') {
+            $rangeStartDate = now()->startOfDay();
+            $rangeEndDate = now()->endOfDay();
+        } elseif ($activeFilter === 'week') {
+            $rangeStartDate = now()->subWeek()->startOfWeek();
+            $rangeEndDate = now()->endOfWeek();
+        } elseif ($activeFilter === 'month') {
+            $rangeStartDate = now()->subMonthNoOverflow()->startOfMonth();
+            $rangeEndDate = now()->endOfMonth();
+        } elseif ($activeFilter === 'year') {
+            $rangeStartDate = now()->subMonthNoOverflow()->startOfYear();
+            $rangeEndDate = now()->endOfYear();
+        }
 
         $data = DB::table('detalle_asignacions')
             ->select(DB::raw('COUNT(servicio_id) as venta, servicio_id, servicios.nombre_corto as descripcion', 'created_at'))
             ->join('servicios', 'detalle_asignacions.servicio_id', '=', 'servicios.id')
-            ->whereBetween('detalle_asignacions.created_at', [now()->startOfDay(), now()->endOfDay()])
+            ->whereBetween('detalle_asignacions.created_at', [$rangeStartDate, $rangeEndDate])
             ->groupBy('servicio_id')
             ->orderBy('venta', 'desc')
             ->take(5)

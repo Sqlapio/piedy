@@ -111,14 +111,14 @@ class ClientesDashChart extends ChartWidget
 
     public function getDescription(): ?string
     {
-        return 'Clientes por la cantidad de ventas';
+        return 'Clientes agendados';
     }
 
     protected static ?array $options = [
         'scales' => [
             'x' => [
                 'display' => true,
-
+ 
                 'ticks' => [
                     'stepSize' => 1
                 ],

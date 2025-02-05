@@ -27,7 +27,7 @@ class ListVentas extends ListRecords
         ];
     }
 
-    protected function getHeaderWidgets(): array
+    protected function getFooterWidgets(): array
     {
         return [
             VentaResource\Widgets\ServiciosChart::class,

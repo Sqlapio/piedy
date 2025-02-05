@@ -40,7 +40,7 @@ class ProductosChart extends ChartWidget
     {
 
         $data = DB::table('venta_productos')
-            ->select(DB::raw('COUNT(producto_id) as venta, producto_id, productos.descripcion as descripcion'))
+            ->select(DB::raw('COUNT(producto_id) as venta, producto_id, productos.nombre_corto as descripcion'))
             ->join('productos', 'venta_productos.producto_id', '=', 'productos.id')
             ->groupBy('producto_id')
             ->take(10)

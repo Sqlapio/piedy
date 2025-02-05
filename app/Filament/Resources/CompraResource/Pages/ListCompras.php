@@ -9,7 +9,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListCompras extends ListRecords
 {
 
-    protected ?string $heading = 'Modulo de Compras';
+    protected ?string $heading = 'Compras';
 
     protected static string $resource = CompraResource::class;
 

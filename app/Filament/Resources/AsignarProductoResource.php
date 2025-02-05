@@ -19,6 +19,12 @@ class AsignarProductoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Modulo de Inventario';
+
+    protected static ?string $navigationLabel = 'Productos Asignados';
+
+    protected static ?int $navigationSort = 11;
+
     public static function table(Table $table): Table
     {
         return $table

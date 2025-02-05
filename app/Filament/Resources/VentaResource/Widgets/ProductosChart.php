@@ -24,23 +24,40 @@ class ProductosChart extends ChartWidget
     protected static ?int $sort = 2;
 
 
-    public ?string $filter = 'today';
+    public ?string $filter = 'week';
 
-    // protected function getFilters(): ?array
-    // {
-    //     return [
-    //         'today' => 'Hoy',
-    //         'week'  => 'Semana',
-    //         'month' => 'Mes',
-    //         'year'  => 'Año',
-    //     ];
-    // }
+    protected function getFilters(): ?array
+    {
+        return [
+            'today' => 'Hoy',
+            'week'  => 'Semana',
+            'month' => 'Mes',
+            'year'  => 'Año',
+        ];
+    }
 
     protected function getData(): array
     {
 
+        $activeFilter = $this->filter;
+
+        if ($activeFilter === 'today') {
+            $rangeStartDate = now()->startOfDay();
+            $rangeEndDate = now()->endOfDay();
+        } elseif ($activeFilter === 'week') {
+            $rangeStartDate = now()->subWeek()->startOfWeek();
+            $rangeEndDate = now()->endOfWeek();
+        } elseif ($activeFilter === 'month') {
+            $rangeStartDate = now()->subMonthNoOverflow()->startOfMonth();
+            $rangeEndDate = now()->endOfMonth();
+        } elseif ($activeFilter === 'year') {
+            $rangeStartDate = now()->subMonthNoOverflow()->startOfYear();
+            $rangeEndDate = now()->endOfYear();
+        }
+
         $data = DB::table('venta_productos')
-            ->select(DB::raw('COUNT(producto_id) as venta, producto_id, productos.descripcion as descripcion'))
+            ->select(DB::raw('COUNT(producto_id) as venta, producto_id, productos.descripcion as descripcion', 'created_at'))
+            ->whereBetween('venta_productos.created_at', [$rangeStartDate, $rangeEndDate])
             ->join('productos', 'venta_productos.producto_id', '=', 'productos.id')
             ->groupBy('producto_id')
             ->take(10)

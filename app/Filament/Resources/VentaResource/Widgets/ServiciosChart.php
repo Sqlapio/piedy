@@ -22,11 +22,39 @@ class ServiciosChart extends ChartWidget
 
     protected int | string | array $columnSpan = '1';
 
+    public ?string $filter = 'week';
+
+    protected function getFilters(): ?array
+    {
+        return [
+            'today' => 'Hoy',
+            'week'  => 'Semana',
+            'month' => 'Mes',
+            'year'  => 'Año',
+        ];
+    }
+
     protected function getData(): array
     {
+        $activeFilter = $this->filter;
+
+        if ($activeFilter === 'today') {
+            $rangeStartDate = now()->startOfDay();
+            $rangeEndDate = now()->endOfDay();
+        } elseif ($activeFilter === 'week') {
+            $rangeStartDate = now()->subWeek()->startOfWeek();
+            $rangeEndDate = now()->endOfWeek();
+        } elseif ($activeFilter === 'month') {
+            $rangeStartDate = now()->subMonthNoOverflow()->startOfMonth();
+            $rangeEndDate = now()->endOfMonth();
+        } elseif ($activeFilter === 'year') {
+            $rangeStartDate = now()->subMonthNoOverflow()->startOfYear();
+            $rangeEndDate = now()->endOfYear();
+        }
 
         $data = DB::table('detalle_asignacions')
             ->select(DB::raw('COUNT(servicio_id) as venta, servicio_id, servicios.descripcion as descripcion', 'created_at'))
+            ->whereBetween('detalle_asignacions.created_at', [$rangeStartDate, $rangeEndDate])
             ->join('servicios', 'detalle_asignacions.servicio_id', '=', 'servicios.id')
             ->groupBy('servicio_id')
             ->take(10)

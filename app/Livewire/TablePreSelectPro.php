@@ -248,7 +248,8 @@ class TablePreSelectPro extends Component implements HasForms, HasTable
                                         ])
 
                                 ])
-                        ])->action(function (array $data) {
+                        ])
+                        ->action(function (array $data) {
 
                             //Dolares
                             if($data['metodo_pago'] != '' &&  $data['metodo_pago_dos'] == '')

@@ -12,7 +12,8 @@ class ListVentaProductos extends ListRecords
 {
     use ExposesTableToWidgets;
 
-    protected ?string $heading = 'Modulo Venta Productos';
+    protected ?string $heading = 'Venta Productos';
+    
     protected static string $resource = VentaProductoResource::class;
 
     protected function getHeaderActions(): array
@@ -22,10 +23,12 @@ class ListVentaProductos extends ListRecords
         ];
     }
 
-    protected function getHeaderWidgets(): array
+    protected function getFooterWidgets(): array
     {
         return [
             VentaProductoResource\Widgets\VentaProductosStats::class,
+            VentaProductoResource\Widgets\ChartAverage::class,
+            
         ];
     }
 }

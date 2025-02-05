@@ -84,6 +84,7 @@ class ComisionResource extends Resource
         return $table
             ->heading('COMISIONES')
             ->description('Lista de Comisiones generales del sistema')
+            ->query(Comision::query()->orderBy('created_at', 'desc'))
             ->columns([
                 // TextColumn::make('cod_comision')->searchable()->label('Código'),
                 TextColumn::make('porcentaje')
@@ -139,9 +140,9 @@ class ComisionResource extends Resource
 
                         return $indicators;
                     }),
-                SelectFilter::make('tienda')
-                    ->relationship('sucursal', 'nombre')
-                    ->attribute('sucursal_id')
+                // SelectFilter::make('tienda')
+                //     ->relationship('sucursal', 'nombre')
+                //     ->attribute('sucursal_id')
             ])
             ->filtersTriggerAction(
                 fn(Action $action) => $action
@@ -161,12 +162,12 @@ class ComisionResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
+    // public static function getRelations(): array
+    // {
+    //     return [
+    //         //
+    //     ];
+    // }
 
     public static function getPages(): array
     {

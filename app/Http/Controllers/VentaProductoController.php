@@ -220,7 +220,7 @@ class VentaProductoController extends Controller
                 $venta_producto->sucursal_id        = Auth::user()->sucursal->id;
 
                 $venta_producto->cliente_id         = $cliente_id;
-                $venta_producto->empleado_id        = $empleado_id;
+                $venta_producto->empleado_id        = ($empleado_id == null) ? Auth::user()->id : $empleado_id;
                 $venta_producto->save();
 
                 //Descuento la cantidad vendida de la exitencia del producto por sucursal
@@ -371,7 +371,7 @@ class VentaProductoController extends Controller
                 $venta_producto->sucursal_id        = Auth::user()->sucursal->id;
 
                 $venta_producto->cliente_id         = $cliente_id;
-                $venta_producto->empleado_id        = $empleado_id;
+                $venta_producto->empleado_id        = ($empleado_id == null) ? Auth::user()->id : $empleado_id;
                 $venta_producto->save();
 
                 //Descuento la cantidad vendida de la exitencia del producto por sucursal

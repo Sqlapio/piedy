@@ -122,7 +122,7 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAvatar
      */
     public function asignaciones(): HasMany
     {
-        return $this->hasMany(AsignarProducto::class, 'id', 'user_id');
+        return $this->hasMany(AsignarProducto::class, 'user_id', 'id');
     }
 
     /**

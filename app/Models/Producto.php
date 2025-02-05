@@ -53,16 +53,6 @@ class Producto extends Model
     }
 
     /**
-     * Get all of the comments for the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function asignaciones(): HasMany
-    {
-        return $this->hasMany(AsignarProducto::class, 'id', 'producto_id');
-    }
-
-    /**
      * Get all of the ventas for the Producto
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -165,6 +155,26 @@ class Producto extends Model
     public function asignarProducto():BelongsTo
     {
         return $this->belongsTo(AsignarProducto::class, 'producto_id', 'id');
+    }
+
+    /**
+     * Get the inventario that owns the Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function requisicion(): BelongsTo
+    {
+        return $this->belongsTo(Requisicion::class, 'requisicion_id', 'id');
+    }
+
+    /**
+     * Get all of the comments for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function asignaciones(): HasMany
+    {
+        return $this->hasMany(AsignarProducto::class, 'user_id', 'id');
     }
 
 

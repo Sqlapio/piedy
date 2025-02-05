@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\User;
 use Filament\Tables;
 use App\Models\Cliente;
+use Filament\Forms\Set;
 use Livewire\Component;
 use App\Models\Producto;
 use App\Models\Inventario;
@@ -103,6 +104,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                         Select::make('user_id')
                                             ->label('Selección del Técnico')
                                             ->prefixIcon('heroicon-c-users')
+                                            ->required()
                                             ->options(User::whereBetween('rol_id', [1, 2])->where('status', 1)->pluck('name', 'id'))
                                             ->rules(['required'])
                                             ->validationMessages([
@@ -113,6 +115,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                             ->label('Cantidad asignada')
                                             ->prefixIcon('heroicon-c-credit-card')
                                             ->hint('Nota: solo números enteros')
+                                            ->required()
                                             ->rules(['required', 'numeric', 'integer'])
                                             ->validationMessages([
                                                 'required' => 'Debe introducir la cantidad',
@@ -154,6 +157,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
 
                                     ]),
                             ]),
+                            
                         Section::make('Productos para requisicion')
                             ->icon('heroicon-c-users')
                             ->schema([
@@ -166,25 +170,75 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                                         Select::make('producto_id')
                                                             ->label('Producto')
                                                             ->options(Producto::all()->pluck('descripcion', 'id'))
-                                                                // ->searchable()
-                                                                // ->options(function () {
-                                                                //     $productos = DB::table('inventario_sucursals')
-                                                                //     ->select(DB::raw('producto_id as id, productos.descripcion as descripcion'))
-                                                                //     ->where('sucursal_id', Auth::user()->sucursal_id)
-                                                                //         ->join('productos', 'inventario_sucursals.producto_id', '=', 'productos.id')
-                                                                //         ->groupBy('producto_id')
-                                                                //         ->get();
-                                                                //     return $productos->pluck('descripcion', 'id');
-                                                                // })
-                                                                ->relationship(
-                                                                    name: 'producto',
-                                                                    modifyQueryUsing: fn(Builder $query) => $query->orderBy('descripcion'),
-                                                                )
-                                                                ->rules(['required'])
-                                                                ->getOptionLabelFromRecordUsing(fn(Producto $record) => "{$record->descripcion} - {$record->contenido_neto}{$record->unidad}")
-                                                                ->validationMessages([
-                                                                    'required' => 'Debe selecionar un producto de la lista',
-                                                                ]),
+                                                            ->relationship(
+                                                                name: 'producto',
+                                                                modifyQueryUsing: fn(Builder $query) => $query->orderBy('descripcion'),
+                                                            )
+                                                            ->createOptionForm([
+                                                                Section::make('Formulario')
+                                                                ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
+                                                                ->icon('heroicon-c-users')
+                                                                ->schema([
+                                                                    Grid::make()
+                                                                        ->schema([
+
+                                                                            //Nombre y apellido
+                                                                            TextInput::make('cod_producto')
+                                                                            ->label('Codigo de Producto')
+                                                                            ->prefixIcon('heroicon-c-users')
+                                                                            ->required()
+                                                                            ->readOnly()
+                                                                            ->default('Ppro-' . random_int(11111, 99999)),
+
+                                                                            //Cedula
+                                                                            TextInput::make('descripcion')
+                                                                            ->label('Descripcion')
+                                                                            ->prefixIcon('heroicon-c-credit-card')
+                                                                            ->lazy()
+                                                                            ->afterStateUpdated(fn (string $state, Set $set) => $set('descripcion', strtoupper($state)))
+                                                                            ->required(),
+
+                                                                            Select::make('uso')
+                                                                            ->prefixIcon('heroicon-s-inbox-arrow-down')
+                                                                            ->label('Uso')
+                                                                            ->options([
+                                                                                'consumo-interno' => 'Consumo Interno',
+                                                                                'venta' => 'Venta',
+                                                                            ])->required(),
+
+                                                                            TextInput::make('contenido_neto')
+                                                                            ->prefixIcon('heroicon-m-list-bullet')
+                                                                            ->label('Contenido Neto')
+                                                                            // ->required()
+                                                                            ->numeric(),
+
+                                                                            Select::make('unidad')
+                                                                            ->prefixIcon('heroicon-m-list-bullet')
+                                                                            ->label('Unidad')
+                                                                            // ->required()
+                                                                            ->options([
+                                                                                'gr'        => 'Gramos',
+                                                                                'ml'        => 'Mililitros',
+                                                                                'oz'        => 'Onzas',
+                                                                                'par'       => 'Pares',
+                                                                                'pzas'      => 'Piezas',
+                                                                                'hojas'     => 'Hojas',
+                                                                                'und'       => 'Unidad',
+                                                                                'litros'    => 'Litros',
+                                                                                'galon'     => 'Galon',
+                                                                                'kl'        => 'Kilos',
+                                                                            ]),
+
+                                                                        ]),
+                                                                ])
+                                                            ])
+                                                            ->rules(['required'])
+                                                            ->getOptionLabelFromRecordUsing(fn(Producto $record) => "{$record->descripcion} - {$record->contenido_neto}{$record->unidad}")
+                                                            ->validationMessages([
+                                                                'required' => 'Debe selecionar un producto de la lista',
+                                                            ]),
+                                                            // ->relationship(name: 'author', titleAttribute: 'name')
+                                                            
                                                         TextInput::make('cantidad')
                                                             ->label('Cantidad')
                                                             ->prefixIcon('heroicon-c-credit-card')

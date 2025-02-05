@@ -2,21 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
 use Filament\Tables;
 use App\Models\Gasto;
-use Filament\Forms\Form;
 use App\Models\PreNomina;
 use Filament\Tables\Table;
 use App\Models\NominaGeneral;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\LogController;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Http\Controllers\AnalisisReporteController;
 use App\Filament\Resources\NominaGeneralResource\Pages;
-use App\Filament\Resources\NominaGeneralResource\RelationManagers;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\NominaGeneralResource\RelationManagers\PreNominasRelationManager;
 
 class NominaGeneralResource extends Resource
@@ -37,48 +35,67 @@ class NominaGeneralResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('cod_nomina')
                 ->label('Codigo')
-                    ->searchable(),
+                ->searchable(),
 
+                    
                 Tables\Columns\TextColumn::make('fecha_ini')
                 ->label('Fecha Inicio')
-                    ->searchable(),
+                ->searchable(),
+
+                    
                 Tables\Columns\TextColumn::make('fecha_fin')
                 ->label('Fecha Fin')
-                    ->searchable(),
+                ->searchable(),
+
+                    
                 Tables\Columns\TextColumn::make('sucursal.nombre')
-                    ->numeric()
-                    ->sortable(),
+                ->numeric(),
+
+                    
                 Tables\Columns\TextColumn::make('status.descripcion')
-                    ->badge()
-                    ->color(fn(string $state): string => match ($state) {
-                        'Nomina-pre-calculada'  => 'warning',
-                        'Nomina-totalizada'     => 'success',
-                    })
-                    ->numeric()
-                    ->sortable(),
+                ->badge()
+                ->color(fn(string $state): string => match ($state) {
+                    'Nomina-pre-calculada'  => 'warning',
+                    'Nomina-totalizada'     => 'success',
+                    'Periodo-cerrado'       => 'danger',
+                })
+                ->numeric(),
+
+                    
                 Tables\Columns\TextColumn::make('total_dolares')
-                    ->label('Total Dolares($)')
-                    ->money('USD')
-                    ->sortable(),
+                ->label('Total Dolares($)')
+                ->numeric(decimalPlaces: 2, locale: 'es')
+                ->alignCenter(),
+
+                    
                 Tables\Columns\TextColumn::make('total_bolivares')
-                    ->label('Total Bolivares')
-                    ->numeric()
-                    ->sortable(),
+                ->label('Total Bolivares')
+                ->alignCenter()
+                ->numeric(decimalPlaces: 2, locale: 'es'),
+
+                    
                 Tables\Columns\TextColumn::make('tasa_bcv')
-                    ->label('Tasa BCV')
-                    ->numeric()
-                    ->sortable(),
+                ->label('Tasa BCV')
+                ->alignCenter()
+                ->numeric(decimalPlaces: 2, locale: 'es'),
+
+                    
                 Tables\Columns\TextColumn::make('conversion_usd')
-                    ->label('Conversion($)')
-                    ->money('USD')
-                    ->sortable(),
+                ->label('Conversion($)')
+                ->alignCenter()
+                ->numeric(decimalPlaces: 2, locale: 'es'),
+
+                    
                 Tables\Columns\TextColumn::make('total_general')
-                    ->money('USD')
-                    ->sortable(),
+                ->alignCenter()
+                ->numeric(decimalPlaces: 2, locale: 'es'),
+
+                    
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Calculada el:')
-                    ->dateTime()
-                    ->sortable(),
+                ->label('Calculada el:')
+                ->dateTime(),
+
+                    
                 Tables\Columns\TextColumn::make('responsable')
                     ->searchable(),
                 ])
@@ -90,36 +107,76 @@ class NominaGeneralResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
+
                     Tables\Actions\BulkAction::make('delete')
-                        ->label('Reversar Cálculo')
-                        ->color('primary')
-                        ->icon('heroicon-c-arrow-uturn-left')
-                        ->requiresConfirmation()
-                        ->action(function (Collection $records) {
-                            //Eliminamos el pre calculo
-                            $pre_nominas = PreNomina::where('cod_nomina', $records->first()->cod_nomina)->get();
-                            $pre_nominas->each->delete();
+                    ->label('Reversar Cálculo')
+                    ->color('primary')
+                    ->icon('heroicon-c-arrow-uturn-left')
+                    ->requiresConfirmation()
+                    ->action(function (Collection $records) {
+                        //Eliminamos el pre calculo
+                        $pre_nominas = PreNomina::where('cod_nomina', $records->first()->cod_nomina)->get();
+                        $pre_nominas->each->delete();
 
-                            //log
-                            LogController::log(Auth::user()->id, 'reverso', 'reverso de calculo de nomina', $response = null);
+                        //log
+                        LogController::log(Auth::user()->id, 'reverso', 'reverso de calculo de nomina', $response = null);
 
-                            //Eliminamos el asiente generado por el calculo de nomina
-                            $nomina_general = NominaGeneral::where('cod_nomina', $records->first()->cod_nomina)->first();
-                            $nomina_general->delete();
-                            //log
-                            LogController::log(Auth::user()->id, 'reverso', 'reverso de nomina general', $response = null);
+                        //Eliminamos el asiente generado por el calculo de nomina
+                        $nomina_general = NominaGeneral::where('cod_nomina', $records->first()->cod_nomina)->first();
+                        $nomina_general->delete();
+                        //log
+                        LogController::log(Auth::user()->id, 'reverso', 'reverso de nomina general', $response = null);
 
-                            //Eliminamos el asiento creado en la tabla de gastos
-                            $gastos = Gasto::where('numero_factura_gasto', 'Nom-' . $nomina_general->cod_nomina)->first();
-                            if (isset($gastos)) {
-                                $gastos->delete();
-                            }
-                            //log
-                            LogController::log(Auth::user()->id, 'reverso', 'reverso de gasto de nomina', $response = null);
+                        //Eliminamos el asiento creado en la tabla de gastos
+                        $gastos = Gasto::where('numero_factura_gasto', 'Nom-' . $nomina_general->cod_nomina)->first();
+                        if (isset($gastos)) {
+                            $gastos->delete();
+                        }
+                        //log
+                        LogController::log(Auth::user()->id, 'reverso', 'reverso de gasto de nomina', $response = null);
 
-                            // $this->resetTable();
-                        })->deselectRecordsAfterCompletion(),
+                        // $this->resetTable();
+                    })->deselectRecordsAfterCompletion(),
+
+                    Tables\Actions\BulkAction::make('cerrar_periodo')
+                    ->label('Cerrar Periodo')
+                    ->color('success')
+                    ->icon('heroicon-m-lock-closed')
+                    ->requiresConfirmation()
+                    ->action(function (Collection $records) {
+                        // dd($records);
+                        $cierre_periodo = AnalisisReporteController::cierre($records, $records->first()->fecha_ini, $records->first()->fecha_fin, $records->first()->cod_nomina);
+                        
+                        if($cierre_periodo == true)
+                        {
+                            //Actualizamos el estatus de la nomina
+                            $records->first()->status_id = 9;
+                            $records->first()->save();
+                            
+                            LogController::log(Auth::user()->id, 'cierre de periodo', 'Cierre de periodo desde: '. $records->first()->fecha_ini.' hasta: '. $records->first()->fecha_fin, $response = null);
+                            Notification::make()
+                            ->title('NOTIFICACIÓN')
+                            ->icon('heroicon-o-shield-check')
+                            ->iconColor('success')
+                            ->color('success')
+                            ->body('El periodo comprendido entre el: ' . $records->first()->fecha_ini . ' - ' . $records->first()->fecha_fin . ' fue cerrado con exito')
+                            ->send();
+                        }else{
+                            Notification::make()
+                            ->title('NOTIFICACIÓN')
+                            ->icon('heroicon-o-shield-check')
+                            ->iconColor('danger')
+                            ->color('danger')
+                            ->body('La nomina debe estar es estatus Periodo-cerrado')
+                            ->send();
+                        }
+                         
+                    })->deselectRecordsAfterCompletion(),
+
+                    ExportBulkAction::make()
+                    ->label('Exportar')
+                    ->color('success'),
+                    
                 ]),
             ]);
     }
@@ -134,9 +191,9 @@ class NominaGeneralResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListNominaGenerals::route('/'),
+            'index'  => Pages\ListNominaGenerals::route('/'),
             'create' => Pages\CreateNominaGeneral::route('/create'),
-            'edit' => Pages\EditNominaGeneral::route('/{record}/edit'),
+            'edit'   => Pages\EditNominaGeneral::route('/{record}/edit'),
         ];
     }
 }

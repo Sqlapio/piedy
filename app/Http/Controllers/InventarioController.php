@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Models\Producto;
 use App\Models\Sucursal;
+use App\Models\Consumible;
 use App\Models\Inventario;
 use Illuminate\Http\Request;
 use App\Models\SalidaInventario;
@@ -165,6 +166,34 @@ class InventarioController extends Controller
             LogController::log(Auth::user()->id, 'excepcion-InventarioController(entrada_directa)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN: InventarioController(entrada_directa)')
+                ->icon('heroicon-c-x-circle')
+                ->color('danger')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+        }
+    }
+
+    public static function mover_a_consumible($producto_id, $contenido_neto, $unidad, $can_srv, $tipo_uso)
+    {
+
+        try {
+
+            $consumible = new Consumible();
+            $consumible->producto_id = $producto_id;
+            $consumible->contenido_neto = $contenido_neto;
+            $consumible->unidad = $unidad;
+            $consumible->can_srv = $can_srv;
+            $consumible->tipo_uso = $tipo_uso;
+            $consumible->contenido_neto = $contenido_neto;
+            $consumible->uso = round($contenido_neto / $can_srv);
+            $consumible->save();
+
+            
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-InventarioController(mover_a_consumible)', $th->getMessage(), $response = null);
+            Notification::make()
+                ->title('NOTIFICACIÓN: InventarioController(mover_a_consumible)')
                 ->icon('heroicon-c-x-circle')
                 ->color('danger')
                 ->iconColor('danger')

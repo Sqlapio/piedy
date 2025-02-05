@@ -7,6 +7,7 @@ use App\Models\Iva;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Compra;
+use App\Models\Almacen;
 use App\Models\TasaBcv;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -16,11 +17,14 @@ use App\Models\MetodoPago;
 use Filament\Tables\Table;
 use Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use App\Models\ConfiguracionNomina;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\ToggleButtons;
 use App\Filament\Resources\CompraResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
@@ -41,50 +45,42 @@ class CompraResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('REGISTRO DE COMPRAS')
-                ->description('Formulario para el registro de compras')
-                ->icon('heroicon-s-receipt-percent')
+                Forms\Components\Section::make('INFORMACION DE LA COMPRA')
+                ->description('Formulario de compras')
+                ->icon('heroicon-m-arrow-trending-down')
                 ->schema([
-                    Forms\Components\TextInput::make('cod_compra')
-                        ->prefixIcon('heroicon-c-tag')
-                        ->required()
-                        ->maxLength(255)
-                        ->default(function () {
-                            $ultimo_correlativo = Compra::where('cod_compra', 'like', '%Pcc-%')->latest()->first();
-
-                            if(isset($ultimo_correlativo))
-                            {
-                                $parte_entera = intval(str_replace('Pcc-', '', $ultimo_correlativo->cod_compra));
-                                $sum_correlativo = $parte_entera + 1;
-
-                            }else{
-                                $sum_correlativo = 1;
-                            }
-
-                            $numero_factura = 'Pcc-'.str_pad($sum_correlativo, 6, '0', STR_PAD_LEFT);
-                            return $numero_factura;
-                        }),
 
                     Forms\Components\TextInput::make('numero_factura_compra')
-                        ->prefixIcon('heroicon-s-document-check')
-                        ->label('Nro. Factura de Compra')
-                        ->required()
-                        ->maxLength(255),
+                    ->label('Nro. Factura')
+                    ->required()
+                    ->prefixIcon('heroicon-c-tag')
+                    ->rules(['required', 'numeric'])
+                    ->validationMessages([
+                        'required'  => 'Campo requerido',
+                        'numeric'    => 'Solo admite números',
+                    ]),
+
+                    Forms\Components\DatePicker::make('fecha_compra')
+                    ->label('Fecha de Factura de compra')
+                    ->prefixIcon('heroicon-m-calendar-days')
+                    ->required()
+                    ->format('d-m-Y'),
 
                     Forms\Components\TextInput::make('descripcion')
-                        ->prefixIcon('heroicon-s-pencil')
-                        ->required()
+                    ->label('Descripción de la compra')
+                    ->prefixIcon('heroicon-s-pencil')
+                    ->required()
                         ->maxLength(255),
 
                     Forms\Components\Select::make('proveedor_id')
-                        ->prefixIcon('heroicon-s-truck')
-                        ->relationship('proveedor', 'nombre')
-                        ->searchable()
+                    ->prefixIcon('heroicon-s-truck')
+                    ->relationship('proveedor', 'nombre')
+                    ->searchable()
                         ->preload()
                         ->createOptionForm([
                             Forms\Components\TextInput::make('rif')
-                            ->label('Rif')
-                            ->required(),
+                                ->label('Rif')
+                                ->required(),
                             Forms\Components\TextInput::make('nombre')
                             ->label('Nombre/Razon Social')
                             ->required(),
@@ -92,86 +88,172 @@ class CompraResource extends Resource
                         ->required(),
 
                     Forms\Components\Select::make('forma_pago')
-                    ->prefixIcon('heroicon-s-truck')
-                        ->label('Forma de Pago')
-                        ->required()
+                    ->label('Forma de Pago')
+                    ->prefixIcon('heroicon-m-list-bullet')
+                    ->required()
+                        ->live()
                         ->options([
                             'dolares' => 'Dolares',
                             'bolivares' => 'Bolivares',
-                        ])
-                        ->live(),
+                        ]),
 
                     Forms\Components\Select::make('metodo_pago')
-                        ->prefixIcon('heroicon-s-truck')
-                        ->label('Metodo de Pago')
-                        ->required()
+                    ->prefixIcon('heroicon-s-truck')
+                    ->label('Metodo de Pago')
+                    ->required()
                         ->options(function (Get $get) {
-                            if($get('forma_pago') == 'dolares'){
+                            if ($get('forma_pago') == 'dolares') {
                                 return MetodoPago::where('moneda', 'usd')->pluck('descripcion', 'id');
                             }
 
-                            if($get('forma_pago') == 'bolivares'){
+                            if ($get('forma_pago') == 'bolivares') {
                                 return MetodoPago::where('moneda', 'bsd')->pluck('descripcion', 'id');
                             }
-
                         })
                         ->live(),
-
-                    Forms\Components\TextInput::make('monto_usd')
-                        ->prefixIcon('heroicon-s-currency-dollar')
-                        ->label('Monto en USD($)')
-                        ->hint('Ejemplo: 1245.90($)')
-                        ->numeric()
-                        ->hidden(function (Get $get) {
-                            if($get('forma_pago') == 'dolares')
-                            {
-                                return false;
-                            }else{
-                                return true;
-                            }
-                        }),
-
-                    Forms\Components\TextInput::make('monto_bsd')
-                        ->prefixIcon('heroicon-m-credit-card')
-                        ->label('Monto en BSD(Bs.)')
-                        ->hint('Ejemplo: 120.78(Bs.)')
-                        ->numeric()
-                        ->hidden(function (Get $get) {
-                            if($get('forma_pago') == 'bolivares')
-                            {
-                                return false;
-                            }else{
-                                return true;
-                            }
-                        })
-                        ->live(),
-
-                    Forms\Components\DatePicker::make('fecha_compra')
-                        ->prefixIcon('heroicon-m-calendar-days')
-                        ->label('Fecha de Compra')
-                        ->format('d-m-Y'),
-                    
-                    Forms\Components\TextInput::make('tasa_bcv')
-                        ->required()
-                        ->default(TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa),
-                        
-                    Forms\Components\Select::make('sucursal_id')
-                            ->prefixIcon('heroicon-s-home')
-                            ->label('Sucursal')
-                            ->options(Sucursal::all()->pluck('nombre', 'id')),
 
                     Forms\Components\TextInput::make('responsable')
-                        ->prefixIcon('heroicon-c-user-circle')
-                        ->default(auth()->user()->name),
+                    ->prefixIcon('heroicon-s-home')
+                    ->label('Cargado por:')
+                    ->disabled()
+                        ->dehydrated()
+                        ->default(Auth::user()->name),
 
-                    
                     Forms\Components\Section::make()
                         ->schema([
-                        Forms\Components\Textarea::make('observacion')
+                            Forms\Components\Textarea::make('observacion')
                             ->label('Observaciones Relevante'),
                         ])
+                ])->columns(2),
+
+                Forms\Components\Section::make('ASOCIADO A:')
+                ->description('Formulario para la asociacion')
+                ->icon('heroicon-m-arrow-trending-down')
+                ->schema([
+                    Forms\Components\Select::make('almacen_id')
+                    ->prefixIcon('heroicon-s-home')
+                    ->live()
+                        ->label('Almacenes')
+                        ->options(Almacen::all()->pluck('nombre', 'id')),
+
+                    Forms\Components\Select::make('sucursal_id')
+                    ->prefixIcon('heroicon-s-home')
+                    ->live()
+                        ->label('Sucursal')
+                        ->options(Sucursal::all()->pluck('nombre', 'id')),
+                ])->columns(2),
+
+                Forms\Components\Section::make('COSTOS:')
+                ->description('Formulario para los costos de la compra')
+                ->icon('heroicon-m-arrow-trending-down')
+                ->schema([
+
+                    ToggleButtons::make('feedback')
+                    ->label('Maneja IVA?')
+                    ->boolean()
+                        ->inline()
+                        ->live()
+                        ->hidden(function (Get $get) {
+                            if ($get('forma_pago') == 'bolivares') {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        })
+                        ->default(false)
+                        ->columnSpanFull(),
+
+                    Forms\Components\TextInput::make('tasa_bcv')
+                    ->hidden(function (Get $get) {
+                        if ($get('forma_pago') == 'bolivares') {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    })
+                        ->live()
+                        ->numeric()
+                        ->required(),
+
+                    Forms\Components\TextInput::make('monto_usd')
+                    ->label('Monto en USD($)')
+                    ->prefixIcon('heroicon-s-currency-dollar')
+                    ->numeric()
+                    ->live(onBlur: true)
+                    ->hidden(function (Get $get) {
+                        if ($get('forma_pago') == 'dolares') {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    })
+                    ->afterStateUpdated(function (Get $get, Set $set) {
+                        self::updateTotales($get, $set);
+                    })
+                    ->placeholder('0.00'),
+                    
+
+                    Forms\Components\TextInput::make('monto_bsd')
+                    ->label('Monto en BSD(Bs.)')
+                    ->prefixIcon('heroicon-m-credit-card')
+                    ->hidden(function (Get $get) {
+                        if ($get('forma_pago') == 'bolivares') {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    })
+                    ->numeric()
+                    ->placeholder('0.00')
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function (Get $get, Set $set) {
+                        self::updateTotales($get, $set);
+                    }),
+                    
+
+                    Forms\Components\TextInput::make('iva')
+                        ->label('IVA(%)')
+                        ->prefixIcon('heroicon-m-credit-card')
+                        ->hidden(function (Get $get) {
+                            if ($get('feedback') == true) {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        })
+                        ->live()
+                        ->disabled()
+                        ->dehydrated()
+                        ->numeric()
+                        ->default(0.00),
+
+                    Forms\Components\TextInput::make('total_compra_bsd')
+                    ->label('Total Compra en Bolivares(Bs.)')
+                    ->prefixIcon('heroicon-m-credit-card')
+                    ->live()
+                    ->disabled()
+                    ->dehydrated()
+                    ->numeric()
+                    ->placeholder('0.00'),
+
+                    Forms\Components\TextInput::make('conversion_a_usd')
+                    ->label('Total Compra en Dolares($)')
+                    ->prefixIcon('heroicon-m-credit-card')
+                    ->live()
+                    ->disabled()
+                    ->dehydrated()
+                    ->numeric()
+                    ->placeholder('0.00'),
+
                 ])
-                ->columns(2),
+                    ->hidden(function (Get $get) {
+                        if ($get('sucursal_id')  || $get('almacen_id') != null) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    })
+                    ->columns(2),
             ]);
     }
 
@@ -258,6 +340,27 @@ class CompraResource extends Resource
                     ExportBulkAction::make()
                 ]),
             ])->striped();
+    }
+
+    public static function updateTotales(Get $get, Set $set): void
+    {
+        $parametro_iva = ConfiguracionNomina::first()->iva;
+
+        if ($get('feedback') == true) {
+            $iva = $get('monto_bsd') * $parametro_iva;
+            $set('iva', round($iva, 2));
+            $set('total_compra_bsd',  round(($get('monto_bsd') + $iva), 2));
+            $set('conversion_a_usd', round($get('total_compra_bsd') / $get('tasa_bcv'), 2));
+        }
+
+        if ($get('feedback') == false && $get('forma_pago') == 'dolares') {
+            $set('conversion_a_usd', round($get('monto_usd'), 2));
+        }
+
+        if ($get('feedback') == false && $get('forma_pago') == 'bolivares') {
+            $set('total_compra_bsd',  round($get('monto_bsd'), 2));
+            $set('conversion_a_usd', round($get('monto_bsd') / $get('tasa_bcv'), 2));
+        }
     }
 
     public static function getRelations(): array

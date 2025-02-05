@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AsignarProducto;
-use App\Models\Inventario;
-use App\Models\InventarioSucursal;
-use App\Models\Producto;
 use Exception;
-use Filament\Notifications\Notification;
+use App\Models\Producto;
+use App\Models\Inventario;
 use Illuminate\Http\Request;
+use App\Models\AsignarProducto;
+use App\Models\DetalleAsignacion;
+use App\Models\InventarioSucursal;
 use Illuminate\Support\Facades\Auth;
+use Filament\Notifications\Notification;
 
 class InventarioSucursalController extends Controller
 {
@@ -61,27 +62,41 @@ class InventarioSucursalController extends Controller
     public static function asignar_producto($user_id, $cantidad, $producto_id)
     {
         try {
+            // dump($user_id, $cantidad, $producto_id);
 
             $existencia_actual = InventarioSucursal::where('sucursal_id', Auth::user()->sucursal_id)
             ->where('producto_id', $producto_id)
             ->first()
             ->cantidad;
 
+            // dump($existencia_actual);
+
             //Validacion para saber si tenemos existencia para asignar el producto
             if($cantidad > $existencia_actual){
                 throw new Exception("No hay suficiente existencia para realizar la asigancion", 401);
             }
+ 
+            //Buscamos el ultimo registro del usuario
+            $ultimo_registro = AsignarProducto::where('user_id', $user_id)
+            ->where('producto_id', $producto_id)
+            ->latest()
+            ->first();
 
-            $cod_producto = Producto::find($producto_id)->first()->cod_producto;
+            //Calculamos el total de servicios realizados entre la ultima fecha de entrega y la fecha actual
+            $total_servicios = DetalleAsignacion::where('empleado_id', $user_id)
+            ->whereBetween('created_at', [$ultimo_registro->created_at->format('Y-m-d').' 06:00:00.000', now()->format('Y-m-d H:m:s.000')])
+            ->where('status', 2)
+            ->count();
+
             
             $producto_asignado = new AsignarProducto();
-            $producto_asignado->cod_producto = $cod_producto;
             $producto_asignado->user_id = $user_id;
             $producto_asignado->producto_id = $producto_id;
             $producto_asignado->cantidad = $cantidad;
             $producto_asignado->fecha_entrega = now()->format('d-m-Y');
             $producto_asignado->responsable = Auth::user()->name;
             $producto_asignado->sucursal_id = Auth::user()->sucursal_id;
+            $producto_asignado->servicios_facturados = $total_servicios;
             $producto_asignado->save();
 
             if($producto_asignado->save()){
@@ -103,6 +118,7 @@ class InventarioSucursalController extends Controller
 
             //code...
         } catch (\Throwable $th) {
+            dd($th);
             LogController::log(Auth::user()->id, 'excepcion-InventarioSucursalController(asignar_producto)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')

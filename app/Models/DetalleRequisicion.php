@@ -22,7 +22,8 @@ class DetalleRequisicion extends Model
         'costo',
         'observacion',
         'contenido',
-        'sub_total'
+        'sub_total',
+        'estado'
     ];
 
     /**

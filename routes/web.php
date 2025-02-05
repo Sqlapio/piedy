@@ -396,13 +396,15 @@ Route::get('/ex', function () {
     //     ]);
     // }
     // dd('listo VB');
-    $productos = DB::table('inventarios')
-                                            ->select(DB::raw('producto_id as id, productos.descripcion as descripcion'))
-                                            ->where('cantidad', '>', 0)
-                                            ->join('productos', 'inventarios.producto_id', '=', 'productos.id')
-                                            ->groupBy('producto_id')
-                                            ->get();
-    dd($productos);
+    // $productos = DB::table('inventarios')
+    //                                         ->select(DB::raw('producto_id as id, productos.descripcion as descripcion'))
+    //                                         ->where('cantidad', '>', 0)
+    //                                         ->join('productos', 'inventarios.producto_id', '=', 'productos.id')
+    //                                         ->groupBy('producto_id')
+    //                                         ->get();
+
+    $clientes = Cliente::with('citas')->first();
+    dd($clientes);
 
     // dd(now()->format('Y-m-d H:i:s.u'), date('Y-m-d H:i:s.u'));
 });

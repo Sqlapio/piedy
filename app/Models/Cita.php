@@ -36,9 +36,14 @@ class Cita extends Model
         'servicio_id'
     ];
 
+    /**
+     * Get the user that owns the Cita
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function cliente(): BelongsTo
     {
-        return $this->BelongsTo(Cliente::class, 'cliente_id', 'id');
+        return $this->belongsTo(User::class, 'id', 'cliente_id');
     }
 
     public function empleado(): BelongsTo
@@ -55,5 +60,15 @@ class Cita extends Model
     {
         return $this->belongsTo(Servicio::class, 'servicio_id', 'id');
     }
+
+    // /**
+    //  * Get the user that owns the Cita
+    //  *
+    //  * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+    //  */
+    // public function user(): BelongsTo
+    // {
+    //     return $this->belongsTo(User::class, 'foreign_key', 'other_key');
+    // }
 
 }

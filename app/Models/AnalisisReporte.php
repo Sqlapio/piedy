@@ -2,17 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AnalisisReporte extends Model
 {
     use HasFactory;
 
-    protected $table = 'analisis_reporte';
+    protected $table = 'analisis_reportes';
 
     protected $fillable = [
-        'fecha',
+        'sucursal_id',
+        'nomina_general_id',
+        'fecha_calculo',
+        'fecha_ini',
+        'fecha_fin',
+        'cod_nomina',
         'gastos',
         'compras',
         'productos_asignados',
@@ -23,10 +29,34 @@ class AnalisisReporte extends Model
         'venta_productos',
         'sub_total_ingresos',
         'neto',
-        'cod_nomina',
-        'nomina_general_id',
-        'fecha_ini',
-        'fecha_fin'
+
+        'total_srv',
+        'total_comisiones',
+        'total_prod',
+        'total_compras',
+        'total_gastos',
+        
         
     ];
+
+    /**
+     * Get the user associated with the AnalisisReporte
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function sucursal(): HasOne
+    {
+        return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
+    }
+
+    /**
+     * Get the user associated with the AnalisisReporte
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function nomina(): HasOne
+    {
+        return $this->hasOne(NominaGeneral::class, 'id', 'nomina_general_id');
+    }
+
 }

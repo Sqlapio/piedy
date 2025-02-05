@@ -10,6 +10,8 @@ class ListRequisicions extends ListRecords
 {
     protected static string $resource = RequisicionResource::class;
 
+    protected ?string $heading = 'Requisiciones';
+
     // protected function getHeaderActions(): array
     // {
     //     return [

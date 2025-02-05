@@ -145,3 +145,7 @@
 /* .fi-btn {
     @apply bg-[#F2F2F2] !important;
 } */
+
+.fi-page-header-widgets {
+    @apply gap-3
+}

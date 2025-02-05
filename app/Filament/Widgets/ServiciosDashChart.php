@@ -103,7 +103,7 @@ class ServiciosDashChart extends ChartWidget
             ],
         'elements' => [
             'bar' => [
-                'barThickness' => 30, 
+                'barThickness' => 30,
             ]
         ]
     ];
@@ -111,7 +111,7 @@ class ServiciosDashChart extends ChartWidget
 
     public function getDescription(): ?string
     {
-        return 'Servicios por la cantidad de ventas';
+        return 'Servicios vendidos';
     }
 
     protected function getType(): string

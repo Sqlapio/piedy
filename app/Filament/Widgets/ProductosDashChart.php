@@ -26,7 +26,7 @@ class ProductosDashChart extends ChartWidget
     {
 
         $data = DB::table('venta_productos')
-            ->select(DB::raw('SUM(cantidad) as venta, producto_id, productos.descripcion as descripcion'))
+            ->select(DB::raw('SUM(cantidad) as venta, producto_id, productos.nombre_corto as descripcion'))
             ->join('productos', 'venta_productos.producto_id', '=', 'productos.id')
             ->whereBetween('venta_productos.created_at', [now()->startOfDay(), now()->endOfDay()])
             ->groupBy('producto_id')
@@ -89,7 +89,7 @@ class ProductosDashChart extends ChartWidget
 
     public function getDescription(): ?string
     {
-        return 'Productos por la cantidad de ventas';
+        return 'Productos vendidos';
     }
 
     protected static ?array $options = [

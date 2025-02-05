@@ -19,7 +19,7 @@ class AnalisisReporteResource extends Resource
 {
     protected static ?string $model = AnalisisReporte::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-book-open';
 
     protected static ?string $navigationGroup = 'Módulo Contable';
 

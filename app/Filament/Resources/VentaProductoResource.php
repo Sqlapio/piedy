@@ -32,7 +32,7 @@ class VentaProductoResource extends Resource
 
     protected static ?string $navigationGroup = 'Modulo Administrativo';
 
-    protected static ?string $navigationLabel = 'Productos';
+    protected static ?string $navigationLabel = 'Venta Productos';
 
     protected static ?int $navigationSort = 7;
 

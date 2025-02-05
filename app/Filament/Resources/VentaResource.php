@@ -26,7 +26,7 @@ class VentaResource extends Resource
 
     protected static ?string $navigationGroup = 'Modulo Administrativo';
 
-    protected static ?string $navigationLabel = 'Ventas';
+    protected static ?string $navigationLabel = 'Ventas Generales';
 
     protected static ?string $navigationIcon = 'heroicon-s-presentation-chart-line';
 

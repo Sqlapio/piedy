@@ -51,7 +51,7 @@ class CierreDiarioResource extends Resource
                 ->searchable(),
             
             TextColumn::make('total_dolares_efectivo')
-                ->money('USD')
+                ->numeric(decimalPlaces: 2, locale: 'es')
                 ->icon('heroicon-m-currency-dollar')
                 ->color('success')
                 ->label('Efectivo($)')
@@ -59,7 +59,7 @@ class CierreDiarioResource extends Resource
                 ->searchable(),
 
             TextColumn::make('total_dolares_zelle')
-                ->money('USD')
+                ->numeric(decimalPlaces: 2, locale: 'es')
                 ->icon('heroicon-m-credit-card')
                 ->color('success')
                 ->label('Zelle($)')
@@ -70,33 +70,9 @@ class CierreDiarioResource extends Resource
                 ->label('Bolivares(Bs)')
                 ->icon('heroicon-m-credit-card')
                 ->color('info')
-                ->money('VES')
+                ->numeric(decimalPlaces: 2, locale: 'es')
                 ->sortable()
                 ->searchable(),
-            
-            Tables\Columns\TextColumn::make('monto_ref_debito')
-                ->color('info')
-                ->description(fn (CierreDiario $record): string => 'Lote: '.$record->ref_debito)
-                ->label('Monto Debito')
-                ->money('VES')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-
-            Tables\Columns\TextColumn::make('monto_ref_credito')
-                ->color('info')
-                ->description(fn (CierreDiario $record): string => 'Lote: '.$record->ref_credito)
-                ->label('Monto Crédito')
-                ->money('VES')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-
-            Tables\Columns\TextColumn::make('monto_ref_visaMaster')
-                ->color('info')
-                ->description(fn (CierreDiario $record): string => 'Lote: '.$record->ref_visaMaster)
-                ->label('Monto Debito')
-                ->money('VES')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
 
             TextColumn::make('created_at')
                 ->label('Fecha de cierre')
@@ -107,20 +83,41 @@ class CierreDiarioResource extends Resource
 
             Tables\Columns\TextColumn::make('total_cierre_usd')
                 ->color('success')
+                ->numeric(decimalPlaces: 2, locale: 'es')
                 ->label('Total del Dia($)')
                 ->summarize(Sum::make()
-                        ->money('USD')
+                        ->numeric(decimalPlaces: 2, locale: 'es')
                         ->label('Total($)'))
                     ->searchable()
                 ->sortable(),
 
+            Tables\Columns\TextColumn::make('total_pago_movil_bsd')
+            ->color('info')
+            ->numeric(decimalPlaces: 2, locale: 'es')
+                ->label('Total Pago Movil')
+                ->summarize(Sum::make()
+                    ->numeric(decimalPlaces: 2, locale: 'es')
+                    ->label('Total(Bs.)'))
+                ->searchable()
+                ->sortable(),
+
+            Tables\Columns\TextColumn::make('total_punto_venta_bsd')
+            ->color('info')
+            ->numeric(decimalPlaces: 2, locale: 'es')
+                ->label('Total Punto Venta')
+                ->summarize(Sum::make()
+                ->numeric(decimalPlaces: 2, locale: 'es')
+                    ->label('Total(Bs.)'))
+                ->searchable()
+                ->sortable(),
+
             Tables\Columns\TextColumn::make('total_cierre_bsd')
-                ->color('success')
-                ->money('VES')
+                ->color('info')
+                ->numeric(decimalPlaces: 2, locale: 'es')
                 ->label('Total del Dia(Bs.)')
                 ->summarize(Sum::make()
-                        ->money('VES')
-                        ->label('Total($)'))
+                ->numeric(decimalPlaces: 2, locale: 'es')
+                        ->label('Total(Bs.)'))
                     ->searchable()
                 ->sortable(),
 

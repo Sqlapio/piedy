@@ -119,7 +119,7 @@ class ServicioResource extends Resource
                     ->searchable()
                     ->label('Sucursal'),
                 TextColumn::make('descripcion')
-                    ->icon('heroicon-s-pencil')
+                    // ->icon('heroicon-s-pencil')
                     ->color('colorOne')
                     ->searchable(),
                 TextColumn::make('categoria')

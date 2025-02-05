@@ -198,7 +198,7 @@ class PreNominasRelationManager extends RelationManager
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('total_usd')
-                ->label('Total(USD)')
+                ->label('Total a Pagar(USD)')
                 ->numeric(decimalPlaces: 2, locale: 'es')
                 // ->money('USD')
                     ->sortable(),
@@ -321,7 +321,7 @@ class PreNominasRelationManager extends RelationManager
                                 $item->total_general_usd = $item->total_usd + $item->conversion_a_usd;
                             }
 
-                            if ($item->rol_id == 3) {
+                            if ($item->rol_id == 3 || $item->rol_id == 7) {
 
                                 $item->total_bsd = $parametros->sueldo_gerente_tienda_usd * TasaBcv::all()->first()->tasa;
 

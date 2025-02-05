@@ -131,7 +131,7 @@ class PreNominaController extends Controller
             }
 
             //Rol para los Gerentes de Tienda
-            if ($rol_id == 3) {
+            if ($rol_id == 3 || $rol_id == 7) {
                 //Hacemos un foreach para calcular la nomina
                 foreach ($empleados as $item) {
 

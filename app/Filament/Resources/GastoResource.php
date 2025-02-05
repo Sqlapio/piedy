@@ -36,6 +36,8 @@ class GastoResource extends Resource
 
     protected static ?string $navigationGroup = 'Modulo Administrativo';
 
+    protected static ?string $navigationLabel = 'Compras y Gastos';
+
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form

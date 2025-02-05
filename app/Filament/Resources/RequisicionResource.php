@@ -57,10 +57,10 @@ class RequisicionResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status.descripcion')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'Abierta' => 'success',
-                        'Cerrada' => 'danger',
-                    })
+                    // ->color(fn (string $state): string => match ($state) {
+                    //     'Abierta' => 'success',
+                    //     'Cerrada' => 'danger',
+                    // })
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')

@@ -90,27 +90,6 @@ class AnalisisReporteController extends Controller
                 //---------------------------------------------------------------------------------------------------------------------//
 
 
-                //COMPRAS
-                //---------------------------------------------------------------------------------------------------------------------//
-
-                //USD
-                $compras_usd = Compra::where('sucursal_id', $records[0]->sucursal_id)
-                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
-                    ->sum('monto_usd');
-                //BSD
-                $compras_bsd = Compra::where('sucursal_id', $records[0]->sucursal_id)
-                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
-                    ->sum('monto_bsd');
-
-                $total_compras_usd =Compra::where('sucursal_id', $records[0]->sucursal_id)
-                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
-                    ->sum('conversion_a_usd');
-
-                $conversion_compras = $compras_bsd / $tasa_bcv;
-
-                //---------------------------------------------------------------------------------------------------------------------//
-
-
                 //REQUISICIONES
                 //---------------------------------------------------------------------------------------------------------------------//
 
@@ -195,12 +174,6 @@ class AnalisisReporteController extends Controller
                 $analisis->total_comisiones         = $analisis->total_comisiones_usd + $conversion_comisiones;
 
 
-                $analisis->compras_usd              = $compras_usd;
-                $analisis->compras_bsd              = $compras_bsd;
-                $analisis->con_com_bsd_a_usd        = $conversion_compras;
-                $analisis->total_compras            = $analisis->compras_usd + $conversion_compras;
-
-
                 $analisis->gastos_usd               = $gastos_usd;
                 $analisis->gastos_bsd               = $gastos_bsd;
                 $analisis->con_gas_bsd_a_usd        = $conversion_gastos;
@@ -208,7 +181,7 @@ class AnalisisReporteController extends Controller
 
 
                 $analisis->sub_total_ingresos       = $analisis->venta_servicios_usd + $analisis->con_ven_srv_bsd_a_usd + $analisis->venta_productos_usd + $analisis->con_ven_prod_bsd_a_usd;
-                $analisis->sub_total_egresos        = $total_gastos_usd + $total_compras_usd + $requisiciones_usd + $nomina_usd + $total_general_comisiones;
+                $analisis->sub_total_egresos        = $total_gastos_usd + $requisiciones_usd + $nomina_usd;
 
                 $analisis->neto                     = $analisis->sub_total_ingresos - $analisis->sub_total_egresos;
                 $analisis->save();

@@ -13,6 +13,7 @@ use App\Models\NominaGeneral;
 use App\Models\VentaProducto;
 use App\Models\VentaServicio;
 use App\Models\AnalisisReporte;
+use App\Models\DetalleAsignacion;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Enums\Format;
@@ -42,19 +43,28 @@ class PreNominaController extends Controller
                     $preNomina->rol_id = $item->rol_id;
                     $preNomina->sucursal_id = $item->sucursal_id;
 
-                    //Total de servicio realizados
-                    $preNomina->total_servicios = VentaServicio::where('empleado_id', $item->id)
+                    //TOTAL SERVICIOS REALIZADOS
+                    //---------------------------------------------------------------------------------------------
+                    $preNomina->total_servicios = DetalleAsignacion::where('empleado_id', $item->id)
                         ->where('sucursal_id', $sucursal_id)
+                        ->where('tipo', 'servicio')
                         ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
                         ->count();
-                    // dump($preNomina->total_servicios);
 
-                    //Total productos vendidos
+                    //TOTAL PRODUCTOS VENDIDOS
+                    //---------------------------------------------------------------------------------------------
                     $preNomina->total_productos = VentaProducto::where('empleado_id', $item->id)
                         ->where('sucursal_id', $sucursal_id)
                         ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
                         ->count();
-                    // dump($preNomina->total_productos);
+
+                    //TOTAL CLIENTES ATENDIDOS
+                    //---------------------------------------------------------------------------------------------
+                    $preNomina->total_clientes_atendidos = VentaServicio::where('empleado_id', $item->id)
+                    ->where('sucursal_id', $sucursal_id)
+                    ->whereBetween('created_at', [$fecha_ini . ' 07:00:00.000', $fecha_fin . ' 23:59:59.000'])
+                        ->count();
+
 
                     /**
                      * CALCULO PARA LOS SERVICIOS REALIZADOS

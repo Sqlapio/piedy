@@ -57,17 +57,20 @@ class PreNominasRelationManager extends RelationManager
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                Tables\Columns\TextColumn::make('total_servicios')
-                ->label('Servicios')
+                Tables\Columns\TextColumn::make('total_clientes_atendidos')
+                ->label('Clientes Atendidos')
                 ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('total_servicios')
+                ->label('Servicios Realizados')
+                ->numeric()
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_productos')
-                ->label('Productos')
+                ->label('Productos Vendidos')
                 ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('comision_usd')
                 ->label('Comision(USD)')

@@ -109,7 +109,7 @@ class AsignacionController extends Controller
             $asigna_servicio = new DetalleAsignacion();
             $asigna_servicio->cod_asignacion     = $cod_asignacion;
             $asigna_servicio->cod_prod_serv      = $servicio->cod_servicio;
-            $asigna_servicio->empleado_id        = Auth::user()->id;
+            $asigna_servicio->empleado_id        = $serv_disponible->empleado_id;
             $asigna_servicio->cliente_id         = $serv_disponible->cliente_id;
 
             //Restriccion para servicios duplicados

@@ -153,7 +153,6 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                             ->schema([
                                 Grid::make()
                                     ->schema([
-
                                         //codigo de requisicion
                                         TextInput::make('codigo')
                                             ->label('Codigo de Requisicion')
@@ -161,7 +160,6 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                             ->required()
                                             ->readOnly()
                                             ->default('REQ-' . random_int(111111, 999999)),
-
                                     ]),
                             ]),
                             
@@ -235,6 +233,12 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                                                                 'galon'     => 'Galon',
                                                                                 'kl'        => 'Kilos',
                                                                             ]),
+                                                                            
+                                                                            TextInput::make('responsable')
+                                                                            ->prefixIcon('heroicon-m-list-bullet')
+                                                                            ->label('Creado por:')
+                                                                            ->default(Auth::user()->name)
+                                                                            ->readOnly(),
 
                                                                         ]),
                                                                 ])

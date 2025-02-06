@@ -197,11 +197,6 @@ class PreNominasRelationManager extends RelationManager
                 ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                Tables\Columns\TextColumn::make('total_usd')
-                ->label('Total a Pagar(USD)')
-                ->numeric(decimalPlaces: 2, locale: 'es')
-                // ->money('USD')
-                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_bsd')
                 ->label('Total(Bs.)')
@@ -223,9 +218,20 @@ class PreNominasRelationManager extends RelationManager
                 ->numeric(decimalPlaces: 2, locale: 'es')
                     ->sortable(),
 
+                Tables\Columns\TextColumn::make('total_usd')
+                ->label('Total a Pagar(USD)')
+                ->numeric(decimalPlaces: 2, locale: 'es')
+                ->summarize(Sum::make()
+                    ->label(('Total a Pagar($)'))
+                    ->numeric(decimalPlaces: 2, locale: 'es'))
+                ->sortable(),
+
                 Tables\Columns\TextColumn::make('total_pagar_bsd')
                 ->label('Total A Pagar(Bs.)')
                 ->numeric(decimalPlaces: 2, locale: 'es')
+                ->summarize(Sum::make()
+                    ->label(('Total a Pagar(Bs.)'))
+                    ->numeric(decimalPlaces: 2, locale: 'es'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('conversion_a_usd')
@@ -238,8 +244,8 @@ class PreNominasRelationManager extends RelationManager
                 ->label('Total General($)')
                 ->numeric(decimalPlaces: 2, locale: 'es')
                     ->summarize(Sum::make()
-                        ->label(('Total($)'))
-                        ->money('USD'))
+                    ->numeric(decimalPlaces: 2, locale: 'es')
+                    ->label('Total General($)'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')

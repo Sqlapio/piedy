@@ -159,6 +159,7 @@ class ProductoResource extends Resource
 
                         TextInput::make('responsable')->default(Auth::user()->name)
                             ->prefixIcon('heroicon-c-user-circle')
+                            ->hiddenOn('edit')
                             ->label('Creado por:'),
                     ])->columns(2),
 
@@ -253,7 +254,7 @@ class ProductoResource extends Resource
 
                 TextColumn::make('responsable')
                     ->toggleable(isToggledHiddenByDefault: false)
-
+                
                     ->label('Responsable')
                     ->color('primary')
                     ->icon('heroicon-m-user')

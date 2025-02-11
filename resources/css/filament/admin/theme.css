@@ -108,7 +108,7 @@
     background-color: #bf9c999e !important;
 }
 
-.serv header:nth-child(1) {
+.fi-wi-chart:nth-child(1) header:nth-child(1) {
     border-bottom: 2px solid #3ec7d28a;
     border-radius: 10px 10px 0px 0px;
 }
@@ -148,4 +148,16 @@
 
 .fi-page-header-widgets {
     @apply gap-3
+}
+
+.fi-wi {
+    @apply gap-3
+}
+
+.auto-cols-fr {
+    @apply gap-y-3
+}
+
+.flex-col {
+    @apply gap-y-3
 }

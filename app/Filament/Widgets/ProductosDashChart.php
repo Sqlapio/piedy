@@ -22,6 +22,8 @@ class ProductosDashChart extends ChartWidget
 
     protected static ?string $maxHeight = '190px';
 
+    protected static ?int $sort = 3;
+
     public ?string $filter = 'week';
 
     protected function getFilters(): ?array

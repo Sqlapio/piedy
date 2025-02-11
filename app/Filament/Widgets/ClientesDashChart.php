@@ -25,6 +25,10 @@ class ClientesDashChart extends ChartWidget
 
     public ?string $filter = 'week';
 
+
+
+    protected static ?int $sort = 4;
+
     protected function getFilters(): ?array
     {
         return [
@@ -140,7 +144,7 @@ class ClientesDashChart extends ChartWidget
         'scales' => [
             'x' => [
                 'display' => true,
- 
+
                 'ticks' => [
                     'stepSize' => 1
                 ],

@@ -41,6 +41,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 use App\Http\Controllers\NotificacionesController;
 use App\Http\Controllers\InventarioSucursalController;
+use App\Models\Sucursal;
 
 class TableInventarioSucursal extends Component implements HasForms, HasTable
 {
@@ -104,12 +105,17 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                         Select::make('user_id')
                                             ->label('Selección del Técnico')
                                             ->prefixIcon('heroicon-c-users')
-                                            ->required()
                                             ->options(User::whereBetween('rol_id', [1, 2])->where('status', 1)->pluck('name', 'id'))
-                                            ->rules(['required'])
-                                            ->validationMessages([
-                                                'required' => 'Debe selecionar un tecnico',
-                                            ])
+                                            ->searchable(),
+                                        Select::make('sucursal')
+                                            ->label('Selección de Sucursal')
+                                            ->prefixIcon('heroicon-c-users')
+                                            ->options(function () {
+                                                $user_auth = Auth::user()->sucursal_id;
+                                                return Sucursal::where('id', $user_auth)->pluck('nombre', 'nombre');
+                                                
+                                            })
+                                            ->hidden(fn () => Auth::user()->rol_id != 5 && Auth::user()->rol_id != 7)
                                             ->searchable(),
                                         TextInput::make('cantidad')
                                             ->label('Cantidad asignada')
@@ -130,7 +136,8 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                         InventarioSucursalController::asignar_producto(
                             $data['user_id'],
                             $data['cantidad'],
-                            $record->producto_id
+                            $record->producto_id,
+                            $data['sucursal']
                         );
                     })
             ])
@@ -146,7 +153,6 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                             ->schema([
                                 Grid::make()
                                     ->schema([
-
                                         //codigo de requisicion
                                         TextInput::make('codigo')
                                             ->label('Codigo de Requisicion')
@@ -154,7 +160,6 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                             ->required()
                                             ->readOnly()
                                             ->default('REQ-' . random_int(111111, 999999)),
-
                                     ]),
                             ]),
                             
@@ -228,6 +233,12 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                                                                 'galon'     => 'Galon',
                                                                                 'kl'        => 'Kilos',
                                                                             ]),
+                                                                            
+                                                                            TextInput::make('responsable')
+                                                                            ->prefixIcon('heroicon-m-list-bullet')
+                                                                            ->label('Creado por:')
+                                                                            ->default(Auth::user()->name)
+                                                                            ->readOnly(),
 
                                                                         ]),
                                                                 ])
@@ -284,6 +295,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                         }
                     })
                     ->modalWidth(MaxWidth::TwoExtraLarge)
+                    ->hidden(fn() => Auth::user()->rol_id != 5 && Auth::user()->rol_id != 7)
                     ->slideOver(),
             ])->striped();
     }

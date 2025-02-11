@@ -57,17 +57,20 @@ class PreNominasRelationManager extends RelationManager
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                Tables\Columns\TextColumn::make('total_servicios')
-                ->label('Servicios')
+                Tables\Columns\TextColumn::make('total_clientes_atendidos')
+                ->label('Clientes Atendidos')
                 ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('total_servicios')
+                ->label('Servicios Realizados')
+                ->numeric()
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_productos')
-                ->label('Productos')
+                ->label('Productos Vendidos')
                 ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('comision_usd')
                 ->label('Comision(USD)')
@@ -197,11 +200,6 @@ class PreNominasRelationManager extends RelationManager
                 ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                Tables\Columns\TextColumn::make('total_usd')
-                ->label('Total(USD)')
-                ->numeric(decimalPlaces: 2, locale: 'es')
-                // ->money('USD')
-                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_bsd')
                 ->label('Total(Bs.)')
@@ -223,9 +221,20 @@ class PreNominasRelationManager extends RelationManager
                 ->numeric(decimalPlaces: 2, locale: 'es')
                     ->sortable(),
 
+                Tables\Columns\TextColumn::make('total_usd')
+                ->label('Total a Pagar(USD)')
+                ->numeric(decimalPlaces: 2, locale: 'es')
+                ->summarize(Sum::make()
+                    ->label(('Total a Pagar($)'))
+                    ->numeric(decimalPlaces: 2, locale: 'es'))
+                ->sortable(),
+
                 Tables\Columns\TextColumn::make('total_pagar_bsd')
                 ->label('Total A Pagar(Bs.)')
                 ->numeric(decimalPlaces: 2, locale: 'es')
+                ->summarize(Sum::make()
+                    ->label(('Total a Pagar(Bs.)'))
+                    ->numeric(decimalPlaces: 2, locale: 'es'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('conversion_a_usd')
@@ -238,8 +247,8 @@ class PreNominasRelationManager extends RelationManager
                 ->label('Total General($)')
                 ->numeric(decimalPlaces: 2, locale: 'es')
                     ->summarize(Sum::make()
-                        ->label(('Total($)'))
-                        ->money('USD'))
+                    ->numeric(decimalPlaces: 2, locale: 'es')
+                    ->label('Total General($)'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
@@ -321,7 +330,7 @@ class PreNominasRelationManager extends RelationManager
                                 $item->total_general_usd = $item->total_usd + $item->conversion_a_usd;
                             }
 
-                            if ($item->rol_id == 3) {
+                            if ($item->rol_id == 3 || $item->rol_id == 7) {
 
                                 $item->total_bsd = $parametros->sueldo_gerente_tienda_usd * TasaBcv::all()->first()->tasa;
 

@@ -40,13 +40,13 @@ class ChartAverage extends ChartWidget
             $rangeStartDate = now()->startOfDay();
             $rangeEndDate = now()->endOfDay();
         } elseif ($activeFilter === 'week') {
-            $rangeStartDate = now()->subWeek()->startOfWeek();
+            $rangeStartDate = now()->startOfWeek();
             $rangeEndDate = now()->endOfWeek();
         } elseif ($activeFilter === 'month') {
-            $rangeStartDate = now()->subMonthNoOverflow()->startOfMonth();
+            $rangeStartDate = now()->startOfMonth();
             $rangeEndDate = now()->endOfMonth();
         } elseif ($activeFilter === 'year') {
-            $rangeStartDate = now()->subMonthNoOverflow()->startOfYear();
+            $rangeStartDate = now()->startOfYear();
             $rangeEndDate = now()->endOfYear();
         }
 

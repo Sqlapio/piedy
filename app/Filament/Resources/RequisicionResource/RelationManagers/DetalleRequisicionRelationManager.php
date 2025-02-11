@@ -54,6 +54,16 @@ class DetalleRequisicionRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('codigo')
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('#ID')
+                    ->alignCenter()
+                    ->badge()
+                    ->color(function ($record) {
+                        if ($record->status_id == 6) {
+                            return 'colorDisabled';
+                        }
+                    })
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('producto.descripcion')
                     ->description(fn($record) => $record->observacion)
                     ->icon('heroicon-c-truck')
@@ -256,7 +266,7 @@ class DetalleRequisicionRelationManager extends RelationManager
                     }
                 })
             ])
-            ->checkIfRecordIsSelectableUsing(fn(DetalleRequisicion $record): bool => $record->status_id == 5)
+            // ->checkIfRecordIsSelectableUsing(fn(DetalleRequisicion $record): bool => $record->status_id == 6)
             ->striped();
     }
 }

@@ -193,7 +193,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                             return $servicio_user;
                                         })
                                         ->required()
-                                        ->searchable(),
+                                        ->searchable(), 
                                 ])
                         ])
                         ->action(function (array $data) {
@@ -800,7 +800,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     ->icon('heroicon-o-shield-check')
                                     ->color('danger')
                                     ->iconColor('danger')
-                                    ->body('No puede eliminar un servicio que haya sido cerrado. Por favor comuniquese con el Administrador del Sistema')
+                                    ->body('No puede eliminar una cabina que tenga servicios activos o que se encuentre en estatus de "cerrada", debe eliminar todos los servicios asociados y luego eliminar la asigancion. Si la cabina ya fue cerrada debe comunicarse con el administrador.')
                                     ->send();
                             }
                         })

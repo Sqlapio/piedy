@@ -23,6 +23,7 @@ class ManejoEfectivoController extends Controller
             return $asiento->id;
             //code...
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-ManejoEfectivoController(crear_asiento)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')

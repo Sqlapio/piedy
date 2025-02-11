@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
+use App\Models\User;
+use App\Models\TasaBcv;
 use App\Models\CajaChica;
 use App\Models\CierreDiario;
-use App\Models\DetalleAsignacion;
-use App\Models\TasaBcv;
 use App\Models\VentaProducto;
 use App\Models\VentaServicio;
-use Exception;
-use Filament\Notifications\Notification;
+use App\Models\DetalleAsignacion;
 use Illuminate\Support\Facades\Auth;
+use Filament\Notifications\Notification;
 
 class CierreDiarioController extends Controller
 {
     public static function cierreDiario($ref_debito, $monto_ref_debito, $ref_credito, $monto_ref_credito, $ref_visaMaster, $monto_ref_visaMaster, $observaciones = null)
     {
+
         try {
 
             $query = CierreDiario::where('fecha', date('d-m-Y'))->count();
@@ -134,6 +136,18 @@ class CierreDiarioController extends Controller
                     ->color('success')
                     ->body('El Cierre Diario fue realizado con éxito')
                     ->send();
+
+                //Notificacion para Admin
+                $recipient = User::where('rol_id', 5)->get();
+                foreach ($recipient as $user) {
+                    $recipient_for_user = User::find($user->id); 
+                    Notification::make()
+                    ->title('NOTIFICACIÓN')
+                    ->color('success')
+                    ->body(Auth::user()->name.', ejecuto Cierre Diario. Fecha: '.$cierre->fecha.' Total USD: $'.$cierre->total_cierre_usd.' Total BSD: Bs.'.$cierre->total_cierre_bsd)
+                    ->sendToDatabase($recipient_for_user);
+                    
+                }
 
             }
 

@@ -181,6 +181,18 @@ class TableManejoEfectivo extends Component implements HasForms, HasTable
                         }
                         
                         if($asiento_id > 0 ) {
+                            
+                            //Notificacion para Admin
+                            $recipient = User::where('rol_id', 5)->get();
+                            foreach ($recipient as $user) {
+                                $recipient_for_user = User::find($user->id);
+                                Notification::make()
+                                    ->title('NOTIFICACIÓN')
+                                    ->color('success')
+                                    ->body(Auth::user()->name . ', retiro en efectivo: ' . '$' . $monto_total . ', Fecha: ' . date('d-m-Y H:m:s') . ', en la sucursal: ' . Auth::user()->sucursal->nombre)
+                                    ->sendToDatabase($recipient_for_user);
+                            }
+                            
                             Notification::make()
                                 ->title('NOTIFICACIÓN')
                                 ->icon('heroicon-c-check-circle')

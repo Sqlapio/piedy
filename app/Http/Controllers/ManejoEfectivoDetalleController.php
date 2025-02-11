@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\ManejoEfectivoDetalle;
 use Filament\Notifications\Notification;
 
@@ -22,17 +23,16 @@ class ManejoEfectivoDetalleController extends Controller
             $detalle->observacion = $observacion;
             $detalle->total = $total;
             $detalle->save();
-
+            
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-ManejoEfectivoDetalleController(crear_detalle)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')
                 ->color('danger')
                 ->iconColor('danger')
-                ->body('El registrio fue creado con exito.')
+                ->body($th->getMessage())
                 ->send();
-            
-        } catch (\Throwable $th) {
-            dd($th);
         }
         
     }

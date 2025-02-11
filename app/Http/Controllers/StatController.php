@@ -17,7 +17,7 @@ class StatController extends Controller
      * Grupo de funcion para sl calculo de los stat de servicios
      * ----------------------------------------------------------
      */
-    static function servicios_facturados($start, $end)
+    static function servicios_facturados($start, $end, $sucursal_id)
     {
         // dd($start, $end);
         try {
@@ -30,7 +30,9 @@ class StatController extends Controller
             // dd($rangeStartDate, $rangeEndDate);
             $servicios_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
             ->where('status', 2)
+            ->where('tipo', 'servicio')
             ->count();
+            // dd($servicios_hoy);
 
             //Caculo del porcentaje de servicios facturados comparado con el dia anterior
             $rangeStartDate = now()->subMonth()->startOfDay();
@@ -38,6 +40,7 @@ class StatController extends Controller
 
             $servicios_ayer = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
             ->where('status', 2)
+            ->where('tipo', 'servicio')
             ->count();
 
             // dd($servicios_hoy, $servicios_ayer);
@@ -88,7 +91,7 @@ class StatController extends Controller
         }
     }
 
-    static function total_servicios_usd($start, $end)
+    static function total_servicios_usd($start, $end, $sucursal_id)
     {
         try {
 
@@ -175,7 +178,7 @@ class StatController extends Controller
         }
     }
 
-    static function promedio_servicio_cliente($start, $end)
+    static function promedio_servicio_cliente($start, $end, $sucursal_id)
     {
         try {
 
@@ -259,7 +262,7 @@ class StatController extends Controller
      * Grupo de funcion para sl calculo de los stat de productos
      * ----------------------------------------------------------
      */
-    static function productos_facturados($start, $end)
+    static function productos_facturados($start, $end, $sucursal_id)
     {
         try {
 
@@ -318,7 +321,7 @@ class StatController extends Controller
         }
     }
 
-    static function total_productos_usd($start, $end)
+    static function total_productos_usd($start, $end, $sucursal_id)
     {
         try {
 
@@ -391,7 +394,7 @@ class StatController extends Controller
         }
     }
 
-    static function promedio_productos_cliente($start, $end)
+    static function promedio_productos_cliente($start, $end, $sucursal_id)
     {
         try {
 
@@ -475,7 +478,7 @@ class StatController extends Controller
      * Grupo de funcion para sl calculo de los clientes
      * ----------------------------------------------------------
      */
-    static function clientes_atendidos($start, $end)
+    static function clientes_atendidos($start, $end, $sucursal_id)
     {
         try {
 
@@ -542,7 +545,7 @@ class StatController extends Controller
         }
     }
 
-    static function clientes_nuevos($start, $end)
+    static function clientes_nuevos($start, $end, $sucursal_id)
     {
         try {
 
@@ -627,7 +630,7 @@ class StatController extends Controller
         }
     }
 
-    static function clientes_recurrentes($start, $end)
+    static function clientes_recurrentes($start, $end, $sucursal_id)
     {
         try {
 

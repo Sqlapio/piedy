@@ -32,18 +32,19 @@ class StatsGeneral extends BaseWidget
 
         $start = $this->filters['startDate'] == null ? now()->startOfDay() : $this->filters['startDate'].' 05:00:00';
         $end = $this->filters['endDate'] == null ? now()->endOfDay() : $this->filters['endDate'].' 23:59:59';
+        $sucursal_id = $this->filters['sucursal_id'] == null ? null : $this->filters['sucursal_id'];
 
-        $servicios              = StatController::servicios_facturados($start, $end);
-        $servicios_usd          = StatController::total_servicios_usd($start, $end);
-        $promedio               = StatController::promedio_servicio_cliente($start, $end);
+        $servicios              = StatController::servicios_facturados($start, $end, $sucursal_id =  null);
+        $servicios_usd          = StatController::total_servicios_usd($start, $end, $sucursal_id =  null);
+        $promedio               = StatController::promedio_servicio_cliente($start, $end, $sucursal_id =  null);
 
-        $productos              = StatController::productos_facturados($start, $end);
-        $productos_usd          = StatController::total_productos_usd($start, $end);
-        $promedio_prod          = StatController::promedio_productos_cliente($start, $end);
+        $productos              = StatController::productos_facturados($start, $end, $sucursal_id =  null);
+        $productos_usd          = StatController::total_productos_usd($start, $end, $sucursal_id =  null);
+        $promedio_prod          = StatController::promedio_productos_cliente($start, $end, $sucursal_id =  null);
 
-        $clientes_atendidos     = StatController::clientes_atendidos($start, $end);
-        $clientes_nuevos        = StatController::clientes_nuevos($start, $end);
-        $clientes_recurrentes   = StatController::clientes_recurrentes($start, $end);
+        $clientes_atendidos     = StatController::clientes_atendidos($start, $end, $sucursal_id =  null);
+        $clientes_nuevos        = StatController::clientes_nuevos($start, $end, $sucursal_id =  null);
+        $clientes_recurrentes   = StatController::clientes_recurrentes($start, $end, $sucursal_id =  null);
 
         return [
 

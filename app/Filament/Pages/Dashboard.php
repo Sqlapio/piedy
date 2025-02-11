@@ -2,15 +2,16 @@
 
 namespace App\Filament\Pages;
 
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Section;
+use Filament\Forms\Get;
+use App\Models\Sucursal;
+use Filament\Forms\Form;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Pages\Dashboard as BaseDashboard;
+use Filament\Forms\Components\Section;
 
-use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\DatePicker;
+use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
@@ -50,8 +51,11 @@ class Dashboard extends \Filament\Pages\Dashboard
                     ->schema([
                         DatePicker::make('startDate')->label('Inicio'),
                         DatePicker::make('endDate')->label('Fin'),
+                        Select::make('sucursal_id')
+                        ->label('Sucursal')
+                        ->options(Sucursal::all()->pluck('nombre', 'id'))
                         ])
-                        ->columns(2),
+                        ->columns(3),
                         // ->visible(fn(Get $get):bool => $get('activar')),
             ]);
     }

@@ -27,17 +27,17 @@ class ServiciosDashChart extends ChartWidget
 
     protected function getData(): array
     {
-        $start = $this->filters['startDate'] == null ? now()->startOfDay() : $this->filters['startDate'] . ' 05:00:00';
+        $start = $this->filters['startDate'] == null ? now()->startOfDay() : $this->filters['startDate'] . ' 00:00:00';
         $end = $this->filters['endDate'] == null ? now()->endOfDay() : $this->filters['endDate'] . ' 23:59:59';
 
         $data = DB::table('detalle_asignacions')
-            ->select(DB::raw('COUNT(servicio_id) as venta, servicio_id, servicios.nombre_corto as descripcion', 'status', 'created_at'))
+            ->select(DB::raw('COUNT(servicio_id) as venta, servicio_id, servicios.nombre_corto as descripcion', 'status', 'created_at', 'tipo'))
             ->join('servicios', 'detalle_asignacions.servicio_id', '=', 'servicios.id')
             ->where('detalle_asignacions.status', 2)
+            ->where('detalle_asignacions.tipo', 'servicio')
             ->whereBetween('detalle_asignacions.created_at', [$start, $end])
             ->groupBy('servicio_id')
             ->orderBy('venta', 'desc')
-            ->take(5)
             ->get();
 
 

@@ -577,14 +577,16 @@ class StatController extends Controller
             $rangeEndDate   = now()->endOfDay();
 
             //clientes para hoy
-            $recurrentes_hoy  = Cliente::where('visitas', '>=', 2)->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+            $recurrentes_hoy  = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->count();
+            // $recurrentes_hoy  = Cliente::where('visitas', '>=', 2)->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
 
             //Fechas de Ayer
             $rangeStartDate = now()->subMonth()->startOfDay();
             $rangeEndDate   = now()->subMonth()->endOfDay();
 
             //clientes para Ayer
-            $recurrentes_ayer = Cliente::where('visitas', '>=', 2)->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+            $recurrentes_ayer  = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->count();
+            // $recurrentes_ayer = Cliente::where('visitas', '>=', 2)->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
 
             if ($recurrentes_hoy > $recurrentes_ayer) {
                 $porcentaje = ($recurrentes_ayer * 100) / $recurrentes_hoy;

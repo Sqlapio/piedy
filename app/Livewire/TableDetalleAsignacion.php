@@ -792,6 +792,18 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                             if ($servicios_asignados == 0 && $status_de_asignacion == 'activo') { 
                                  
                                 Disponible::where('cod_asignacion', $this->cod_asignacion)->delete();
+                                
+                                //Notificacion para Admin
+                                $recipient = User::where('rol_id', 5)->get();
+                                foreach ($recipient as $user) {
+                                    $recipient_for_user = User::find($user->id);
+                                    Notification::make()
+                                    ->title('NOTIFICACIÓN')
+                                    ->color('danger')
+                                    ->body(Auth::user()->name . ', elimino la cabina: ' . $this->cod_asignacion)
+                                    ->sendToDatabase($recipient_for_user);
+                                }
+                                
                                 return redirect()->route('cabinas');
                                 
                             }else{

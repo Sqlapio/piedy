@@ -293,7 +293,6 @@ class PreNominaController extends Controller
             $reporte->cod_nomina = $record->cod_nomina;
             $reporte->nomina_general_id = $record->nomina_general_id;
             $reporte->user_id = $record->user->id;
-            $reporte->cod_reporte = $record->cod_nomina;
             $reporte->fecha_ini = $record->fecha_ini;
             $reporte->fecha_fin = $record->fecha_fin;
             $reporte->descripcion = $pdf;
@@ -367,7 +366,6 @@ class PreNominaController extends Controller
                 $reporte->cod_nomina = $record->cod_nomina;
                 $reporte->nomina_general_id = $record->nomina_general_id;
                 $reporte->user_id = $record->user->id;
-                $reporte->cod_reporte = $record->cod_nomina;
                 $reporte->fecha_ini = $record->fecha_ini;
                 $reporte->fecha_fin = $record->fecha_fin;
                 $reporte->descripcion = $pdf;
@@ -454,7 +452,6 @@ class PreNominaController extends Controller
             $reporte->cod_nomina = $records->cod_nomina;
             $reporte->nomina_general_id = $records->nomina_general_id;
             $reporte->user_id = $records->user->id;
-            $reporte->cod_reporte = $records->cod_nomina;
             $reporte->fecha_ini = $records->fecha_ini;
             $reporte->fecha_fin = $records->fecha_fin;
             $reporte->descripcion = $records->descripcion;

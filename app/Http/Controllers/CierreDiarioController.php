@@ -143,7 +143,9 @@ class CierreDiarioController extends Controller
                     $recipient_for_user = User::find($user->id); 
                     Notification::make()
                     ->title('NOTIFICACIÓN')
-                    ->color('success')
+                    // ->color('success')
+                    ->icon('heroicon-s-bell-alert')
+                    ->iconColor('success')
                     ->body(Auth::user()->name.', ejecuto Cierre Diario. Fecha: '.$cierre->fecha.' Total USD: $'.$cierre->total_cierre_usd.' Total BSD: Bs.'.$cierre->total_cierre_bsd)
                     ->sendToDatabase($recipient_for_user);
                     

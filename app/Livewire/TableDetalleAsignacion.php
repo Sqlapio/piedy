@@ -799,7 +799,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     $recipient_for_user = User::find($user->id);
                                     Notification::make()
                                     ->title('NOTIFICACIÓN')
-                                    ->color('danger')
+                                    ->icon('heroicon-c-shield-exclamation')
+                                    ->iconColor('danger')
                                     ->body(Auth::user()->name . ', elimino la cabina: ' . $this->cod_asignacion)
                                     ->sendToDatabase($recipient_for_user);
                                 }

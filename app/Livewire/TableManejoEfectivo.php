@@ -62,15 +62,24 @@ class TableManejoEfectivo extends Component implements HasForms, HasTable
             ->query(ManejoEfectivo::query())
             ->columns([
 
-            Tables\Columns\TextColumn::make('monto')
-                ->label('Costo($)')
-                ->money('USD')
-                ->summarize(Sum::make()
+                
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Fecha de Retiro')
+                    ->alignCenter()
+                    ->dateTime(),
+
+                Tables\Columns\TextColumn::make('responsable')
+                    ->label('Retirado por:')
+                    ->alignCenter()
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('monto')
+                    ->label('Monto Retirado($)')
+                    ->money('USD')
+                    ->alignCenter()
+                    ->summarize(Sum::make()
                     ->money('USD')
                     ->label('Total pagar($)')),
-            Tables\Columns\TextColumn::make('created_at')
-                ->label('Fecha')
-                ->dateTime()
                 //
             ])
             ->filters([
@@ -119,14 +128,16 @@ class TableManejoEfectivo extends Component implements HasForms, HasTable
                                                         self::updateTotales($get, $set);
                                                     })
                                                     ->placeholder('0.00'),
+                                                    
                                                 TextInput::make('deduccion')
                                                     ->label('Deduccion')
-                                                    ->live()
+                                                    ->live(onBlur: true)
                                                     ->prefixIcon('heroicon-c-credit-card')
                                                     ->afterStateUpdated(function (Get $get, Set $set) {
                                                         self::updateTotales($get, $set);
                                                     })
                                                     ->placeholder('0.00'),
+                                                    
                                                 TextInput::make('total')
                                                     ->label('Monto Total Recibido ($)')
                                                     ->prefixIcon('heroicon-c-credit-card')
@@ -135,6 +146,7 @@ class TableManejoEfectivo extends Component implements HasForms, HasTable
                                                     ->dehydrated()
                                                     ->numeric()
                                                     ->default(0.00),
+                                                    
                                                 Textarea::make('observacion')->rows(1)->columnSpanFull()
                                             ])->columns(3),
                                             

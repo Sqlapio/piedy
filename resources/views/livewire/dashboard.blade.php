@@ -248,10 +248,10 @@
                 </div>
                 <div class="ml-12 text-right">
                     <div class="sm:hidden md:hidden lg:block mt-2 text-xl text-black text- leading-7 font-bold">
-                        MATERIAL
+                        EFECTIVO
                     </div>
                     <div class="text-right text-sm font-semibold text-black">
-                        <div>Control de materiales asignados para uso diario</div>
+                        <div>Control diario para el retiro de efectivo</div>
                     </div>
                 </div>
             </a>

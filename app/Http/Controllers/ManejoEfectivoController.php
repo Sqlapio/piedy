@@ -23,7 +23,6 @@ class ManejoEfectivoController extends Controller
             return $asiento->id;
             //code...
         } catch (\Throwable $th) {
-            dd($th);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-c-x-circle')

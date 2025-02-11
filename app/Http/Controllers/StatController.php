@@ -17,25 +17,30 @@ class StatController extends Controller
      * Grupo de funcion para sl calculo de los stat de servicios
      * ----------------------------------------------------------
      */
-    static function servicios_facturados()
+    static function servicios_facturados($start, $end)
     {
+        // dd($start, $end);
         try {
 
             //code...
-            $rangeStartDate = now()->startOfDay();
-            $rangeEndDate = now()->endOfDay();
+            
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate = $end == null ? now()->endOfDay() : $end;
+
+            // dd($rangeStartDate, $rangeEndDate);
             $servicios_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
             ->where('status', 2)
             ->count();
-            // dd($servicios_hoy);
 
             //Caculo del porcentaje de servicios facturados comparado con el dia anterior
-            $rangeStartDate = now()->subDay()->startOfDay();
-            $rangeEndDate = now()->subDay()->endOfDay();
+            $rangeStartDate = now()->subMonth()->startOfDay();
+            $rangeEndDate = now()->subMonth()->endOfDay();
 
             $servicios_ayer = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
             ->where('status', 2)
             ->count();
+
+            // dd($servicios_hoy, $servicios_ayer);
 
             if ($servicios_hoy == 0 || $servicios_ayer == 0) {
                 $result = [
@@ -44,7 +49,7 @@ class StatController extends Controller
                     'icon'           => 'heroicon-c-arrow-long-right',
                     'color'          => 'danger'
                 ];
-
+                // dd($result);
                 return $result;
             } else {
 
@@ -75,7 +80,7 @@ class StatController extends Controller
                     'icon' => $icon,
                     'color' => $color
                 ];
-
+                // dd($result);
                 return $result;
             }
         } catch (\Throwable $th) {
@@ -83,15 +88,18 @@ class StatController extends Controller
         }
     }
 
-    static function total_servicios_usd()
+    static function total_servicios_usd($start, $end)
     {
         try {
 
             $tasa = TasaBcv::all()->first()->tasa;
 
             //code...
-            $rangeStartDate = now()->startOfDay();
-            $rangeEndDate = now()->endOfDay();
+            // $rangeStartDate = now()->startOfDay();
+            // $rangeEndDate = now()->endOfDay();
+
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate = $end == null ? now()->endOfDay() : $end;
 
             $total_hoy_usd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
             $total_hoy_bsd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
@@ -111,8 +119,8 @@ class StatController extends Controller
             }
 
             //Caculo del porcentaje de servicios facturados comparado con el dia anterior
-            $rangeStartDate = now()->subDay()->startOfDay();
-            $rangeEndDate = now()->subDay()->endOfDay();
+            $rangeStartDate = now()->subMonth()->startOfDay();
+            $rangeEndDate = now()->subMonth()->endOfDay();
 
             $total_ayer_usd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
             $total_ayer_bsd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
@@ -167,13 +175,16 @@ class StatController extends Controller
         }
     }
 
-    static function promedio_servicio_cliente()
+    static function promedio_servicio_cliente($start, $end)
     {
         try {
 
             //code...
-            $rangeStartDate = now()->startOfDay();
-            $rangeEndDate = now()->endOfDay();
+            // $rangeStartDate = now()->startOfDay();
+            // $rangeEndDate = now()->endOfDay();
+
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate = $end == null ? now()->endOfDay() : $end;
 
             //Servicios y clientes para hoy
             $nro_servicios_hoy  = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
@@ -187,8 +198,8 @@ class StatController extends Controller
                 $promedio_hoy = $nro_servicios_hoy / $clientes_hoy;
 
                 //Fechas de Ayer
-                $rangeStartDate = now()->subDay()->startOfDay();
-                $rangeEndDate   = now()->subDay()->endOfDay();
+                $rangeStartDate = now()->subMonth()->startOfDay();
+                $rangeEndDate   = now()->subMonth()->endOfDay();
 
                 //Servicios y clientes para Ayer
                 $nro_servicios_ayer = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
@@ -248,18 +259,22 @@ class StatController extends Controller
      * Grupo de funcion para sl calculo de los stat de productos
      * ----------------------------------------------------------
      */
-    static function productos_facturados()
+    static function productos_facturados($start, $end)
     {
         try {
 
             //code...
-            $rangeStartDate = now()->startOfDay();
-            $rangeEndDate = now()->endOfDay();
+            // $rangeStartDate = now()->startOfDay();
+            // $rangeEndDate = now()->endOfDay();
+
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate = $end == null ? now()->endOfDay() : $end;
+            
             $productos_hoy = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('cantidad');
 
             //Caculo del porcentaje de productos facturados comparado con el dia anterior
-            $rangeStartDate = now()->subDay()->startOfDay();
-            $rangeEndDate = now()->subDay()->endOfDay();
+            $rangeStartDate = now()->subMonth()->startOfDay();
+            $rangeEndDate = now()->subMonth()->endOfDay();
 
             $productos_ayer = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('cantidad');
 
@@ -303,13 +318,16 @@ class StatController extends Controller
         }
     }
 
-    static function total_productos_usd()
+    static function total_productos_usd($start, $end)
     {
         try {
 
             //code...
-            $rangeStartDate = now()->startOfDay();
-            $rangeEndDate = now()->endOfDay();
+            // $rangeStartDate = now()->startOfDay();
+            // $rangeEndDate = now()->endOfDay();
+
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate = $end == null ? now()->endOfDay() : $end;
 
             $total_productos_hoy = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('total_venta');
 
@@ -327,8 +345,8 @@ class StatController extends Controller
             }
 
             //Caculo del porcentaje de servicios facturados comparado con el dia anterior
-            $rangeStartDate = now()->subDay()->startOfDay();
-            $rangeEndDate = now()->subDay()->endOfDay();
+            $rangeStartDate = now()->subMonth()->startOfDay();
+            $rangeEndDate = now()->subMonth()->endOfDay();
 
             $total_productos_ayer = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('total_venta');
 
@@ -373,13 +391,16 @@ class StatController extends Controller
         }
     }
 
-    static function promedio_productos_cliente()
+    static function promedio_productos_cliente($start, $end)
     {
         try {
 
             //code...
-            $rangeStartDate = now()->startOfDay();
-            $rangeEndDate = now()->endOfDay();
+            // $rangeStartDate = now()->startOfDay();
+            // $rangeEndDate = now()->endOfDay();
+
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate = $end == null ? now()->endOfDay() : $end;
 
             //Servicios y clientes para hoy
             $nro_productos_hoy = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('cantidad');
@@ -394,8 +415,8 @@ class StatController extends Controller
                 $promedio_hoy = $nro_productos_hoy / $clientes_hoy;
 
                 //Fechas de Ayer
-                $rangeStartDate = now()->subDay()->startOfDay();
-                $rangeEndDate = now()->subDay()->endOfDay();
+                $rangeStartDate = now()->subMonth()->startOfDay();
+                $rangeEndDate = now()->subMonth()->endOfDay();
 
                 //Servicios y clientes para Ayer
                 $nro_productos_ayer = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count('cantidad');
@@ -454,13 +475,18 @@ class StatController extends Controller
      * Grupo de funcion para sl calculo de los clientes
      * ----------------------------------------------------------
      */
-    static function clientes_atendidos()
+    static function clientes_atendidos($start, $end)
     {
         try {
 
             //code...
-            $rangeStartDate = now()->startOfDay();
-            $rangeEndDate = now()->endOfDay();
+            // $rangeStartDate = now()->startOfDay();
+            // $rangeEndDate = now()->endOfDay();
+
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate = $end == null ? now()->endOfDay() : $end;
+
+            
             $clientes_atendidos_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
                 ->groupBy('cliente_id')
                 ->get();
@@ -468,8 +494,8 @@ class StatController extends Controller
             $clientes_atendidos_hoy = count($clientes_atendidos_hoy);
 
             //Caculo del porcentaje de productos facturados comparado con el dia anterior
-            $rangeStartDate = now()->subDay()->startOfDay();
-            $rangeEndDate = now()->subDay()->endOfDay();
+            $rangeStartDate = now()->subMonth()->startOfDay();
+            $rangeEndDate = now()->subMonth()->endOfDay();
 
             $clientes_atendidos_ayer = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
                 ->groupBy('cliente_id')
@@ -516,13 +542,16 @@ class StatController extends Controller
         }
     }
 
-    static function clientes_nuevos()
+    static function clientes_nuevos($start, $end)
     {
         try {
 
             //code...
-            $rangeStartDate = now()->startOfDay();
-            $rangeEndDate = now()->endOfDay();
+            // $rangeStartDate = now()->startOfDay();
+            // $rangeEndDate = now()->endOfDay();
+
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate = $end == null ? now()->endOfDay() : $end;
 
             $clientes_nuevos_hoy = [];
 
@@ -598,13 +627,16 @@ class StatController extends Controller
         }
     }
 
-    static function clientes_recurrentes()
+    static function clientes_recurrentes($start, $end)
     {
         try {
 
             //code...
-            $rangeStartDate = now()->startOfDay();
-            $rangeEndDate   = now()->endOfDay();
+            // $rangeStartDate = now()->startOfDay();
+            // $rangeEndDate = now()->endOfDay();
+
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate = $end == null ? now()->endOfDay() : $end;
 
             $clientes_recurrentes_hoy = [];
 

@@ -108,7 +108,7 @@
     background-color: #bf9c999e !important;
 }
 
-.fi-wi-chart:nth-child(1) header:nth-child(1) {
+.fi-wi > div:first-child header:first-child {
     border-bottom: 2px solid #3ec7d28a;
     border-radius: 10px 10px 0px 0px;
 }

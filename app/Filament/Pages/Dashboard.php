@@ -51,7 +51,7 @@ class Dashboard extends \Filament\Pages\Dashboard
                         DatePicker::make('startDate')->label('Inicio'),
                         DatePicker::make('endDate')->label('Fin'),
                         ])
-                        ->columns(2),
+                        ->columns(4),
                         // ->visible(fn(Get $get):bool => $get('activar')),
             ]);
     }

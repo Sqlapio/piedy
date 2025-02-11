@@ -24,14 +24,18 @@ class StatController extends Controller
             //code...
             $rangeStartDate = now()->startOfDay();
             $rangeEndDate = now()->endOfDay();
-            $servicios_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
-            
+            $servicios_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+            ->where('status', 2)
+            ->count();
+            // dd($servicios_hoy);
 
             //Caculo del porcentaje de servicios facturados comparado con el dia anterior
             $rangeStartDate = now()->subDay()->startOfDay();
             $rangeEndDate = now()->subDay()->endOfDay();
 
-            $servicios_ayer = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+            $servicios_ayer = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+            ->where('status', 2)
+            ->count();
 
             if ($servicios_hoy == 0 || $servicios_ayer == 0) {
                 $result = [
@@ -520,13 +524,39 @@ class StatController extends Controller
             $rangeStartDate = now()->startOfDay();
             $rangeEndDate = now()->endOfDay();
 
-            $total_clientes_hoy = Cliente::where('visitas', '=', 1)->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+            $clientes_nuevos_hoy = [];
 
-            //Caculo del porcentaje de servicios facturados comparado con el dia anterior
-            $rangeStartDate = now()->subDay()->startOfDay();
-            $rangeEndDate = now()->subDay()->endOfDay();
+            //clientes para hoy
+            $nuevos_hoy  = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get();
+            for ($i = 0; $i < count($nuevos_hoy); $i++) {
 
-            $total_clientes_ayer = Cliente::where('visitas', '=', 1)->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+                $nuevos_hoy[$i] = $nuevos_hoy[$i]->cliente_id;
+                $cliente = Cliente::where('id', $nuevos_hoy[$i])->first();
+                if ($cliente->visitas == 1) {
+                    array_push($clientes_nuevos_hoy, $cliente->id);
+                }
+            }
+
+
+            //Fechas de Ayer
+            $rangeStartDate = now()->subMonth()->startOfDay();
+            $rangeEndDate   = now()->subMonth()->endOfDay();
+
+            $clientes_nuevos_ayer = [];
+
+            //Cliente recurrente ayer
+            $nuevos_ayer  = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get();
+            for ($i = 0; $i < count($nuevos_ayer); $i++) {
+
+                $nuevos_ayer[$i] = $nuevos_ayer[$i]->cliente_id;
+                $cliente = Cliente::where('id', $nuevos_ayer[$i])->first();
+                if ($cliente->visitas == 1) {
+                    array_push($clientes_nuevos_ayer, $cliente->id);
+                }
+            }
+
+            $total_clientes_hoy = count($clientes_nuevos_hoy);
+            $total_clientes_ayer = count($clientes_nuevos_ayer);
 
             if ($total_clientes_hoy > $total_clientes_ayer) {
                 $porcentaje = ($total_clientes_ayer * 100) / $total_clientes_hoy;

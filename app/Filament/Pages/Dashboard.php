@@ -17,7 +17,7 @@ class Dashboard extends \Filament\Pages\Dashboard
     use BaseDashboard\Concerns\HasFiltersForm;
 
 
-    protected static ?string $title = 'Hola, Piedy';
+    protected static ?string $title = 'Dashboard Piedy';
 
     public function getTitle(): string
     {

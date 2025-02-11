@@ -108,32 +108,32 @@
     background-color: #bf9c999e !important;
 }
 
-.serv header:nth-child(1) {
-    border-bottom: 2px solid #3ec7d28a;
-    border-radius: 10px 10px 0px 0px;
-}
-
-.serv section:nth-child(1) {
+.fi-wi > div:nth-child(2) section {
     border: 4px solid #3ec7d38a;
     border-radius: 10px 10px 10px 10px;
 }
 
-.prod header:nth-child(1) {
+.fi-wi > div:nth-child(2) header {
+    border-bottom: 2px solid #3ec7d28a;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.fi-wi > div:nth-child(3) header {
     border-bottom: 2px solid #7B9AA6;
     border-radius: 10px 10px 0px 0px;
 }
 
-.prod section:nth-child(1) {
+.fi-wi > div:nth-child(3) section {
     border: 4px solid #7B9AA6;
     border-radius: 10px 10px 10px 10px;
 }
 
-.client header:nth-child(1) {
+.fi-wi > div:nth-child(4) header {
     border-bottom: 2px solid #bf9c999e;
     border-radius: 10px 10px 0px 0px;
 }
 
-.client section:nth-child(1) {
+.fi-wi > div:nth-child(4) section {
     border: 4px solid #bf9c999e;
     border-radius: 10px 10px 10px 10px;
 }
@@ -149,3 +149,16 @@
 .fi-page-header-widgets {
     @apply gap-3
 }
+
+.fi-wi {
+    @apply gap-3
+}
+
+.fi-dashboard-page section {
+    @apply gap-y-3
+}
+
+.auto-cols-fr {
+    @apply gap-y-3
+}
+

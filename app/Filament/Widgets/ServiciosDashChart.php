@@ -22,6 +22,8 @@ class ServiciosDashChart extends ChartWidget
 
     protected static ?string $maxHeight = '192px';
 
+    protected static ?int $sort = 2;
+
     public ?string $filter = 'week';
 
     protected function getFilters(): ?array

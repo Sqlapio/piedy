@@ -23,54 +23,24 @@ class ClientesDashChart extends ChartWidget
 
     protected static ?string $maxHeight = '190px';
 
-    public ?string $filter = 'week';
-
-
-
     protected static ?int $sort = 4;
-
-    protected function getFilters(): ?array
-    {
-        return [
-            'today' => 'Hoy',
-            'week'  => 'Semana',
-            'month' => 'Mes',
-            'year'  => 'Año',
-        ];
-    }
 
     protected function getData(): array
     {
 
-        $activeFilter = $this->filter;
+        $start = $this->filters['startDate'] == null ? now()->startOfDay()->format('Y-m-d') : date('Y-m-d', strtotime($this->filters['startDate']));
 
-        if ($activeFilter === 'today') {
-            $rangeStartDate = now()->startOfDay();
-            $rangeEndDate = now()->endOfDay();
-        } elseif ($activeFilter === 'week') {
-            $rangeStartDate = now()->startOfWeek();
-            $rangeEndDate = now()->endOfWeek();
-        } elseif ($activeFilter === 'month') {
-            $rangeStartDate = now()->startOfMonth();
-            $rangeEndDate = now()->endOfMonth();
-        } elseif ($activeFilter === 'year') {
-            $rangeStartDate = now()->startOfYear();
-            $rangeEndDate = now()->endOfYear();
-        }
-
-        // $rangeStartDate = now()->startOfDay();
-        // $rangeEndDate = now()->endOfDay();
 
         $citas_agendadas_bot = Cita::where('responsable', 'PiedyBot')
-            ->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+            ->where('fecha_formateada', $start)
             ->count();
 
         $citas_agendadas_sistema = Cita::where('responsable', '!=', 'PiedyBot')
-            ->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+            ->where('fecha_formateada', $start)
             ->count();
 
         $citas_canceladas = Cita::where('responsable', '!=', 'PiedyBot')
-            ->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+            ->where('fecha_formateada', $start)
             ->where('status', 3)
             ->count();
 

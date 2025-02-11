@@ -24,42 +24,17 @@ class ProductosDashChart extends ChartWidget
 
     protected static ?int $sort = 3;
 
-    public ?string $filter = 'week';
-
-    protected function getFilters(): ?array
-    {
-        return [
-            'today' => 'Hoy',
-            'week'  => 'Semana',
-            'month' => 'Mes',
-            'year'  => 'Año',
-        ];
-    }
-
     protected function getData(): array
     {
 
-        $activeFilter = $this->filter;
-
-        if ($activeFilter === 'today') {
-            $rangeStartDate = now()->startOfDay();
-            $rangeEndDate = now()->endOfDay();
-        } elseif ($activeFilter === 'week') {
-            $rangeStartDate = now()->startOfWeek();
-            $rangeEndDate = now()->endOfWeek();
-        } elseif ($activeFilter === 'month') {
-            $rangeStartDate = now()->startOfMonth();
-            $rangeEndDate = now()->endOfMonth();
-        } elseif ($activeFilter === 'year') {
-            $rangeStartDate = now()->startOfYear();
-            $rangeEndDate = now()->endOfYear();
-        }
+        $start = $this->filters['startDate'] == null ? now()->startOfDay() : $this->filters['startDate'] . ' 05:00:00';
+        $end = $this->filters['endDate'] == null ? now()->endOfDay() : $this->filters['endDate'] . ' 23:59:59';
 
 
         $data = DB::table('venta_productos')
             ->select(DB::raw('SUM(cantidad) as venta, producto_id, productos.nombre_corto as descripcion'))
             ->join('productos', 'venta_productos.producto_id', '=', 'productos.id')
-            ->whereBetween('venta_productos.created_at', [$rangeStartDate, $rangeEndDate])
+            ->whereBetween('venta_productos.created_at', [$start, $end])
             ->groupBy('producto_id')
             ->get();
 

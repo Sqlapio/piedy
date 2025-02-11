@@ -30,17 +30,20 @@ class StatsGeneral extends BaseWidget
     protected function getStats(): array
     {
 
-        $servicios              = StatController::servicios_facturados();
-        $servicios_usd          = StatController::total_servicios_usd();
-        $promedio               = StatController::promedio_servicio_cliente();
+        $start = $this->filters['startDate'] == null ? now()->startOfDay() : $this->filters['startDate'].' 05:00:00';
+        $end = $this->filters['endDate'] == null ? now()->endOfDay() : $this->filters['endDate'].' 23:59:59';
 
-        $productos              = StatController::productos_facturados();
-        $productos_usd          = StatController::total_productos_usd();
-        $promedio_prod          = StatController::promedio_productos_cliente();
+        $servicios              = StatController::servicios_facturados($start, $end);
+        $servicios_usd          = StatController::total_servicios_usd($start, $end);
+        $promedio               = StatController::promedio_servicio_cliente($start, $end);
 
-        $clientes_atendidos     = StatController::clientes_atendidos();
-        $clientes_nuevos        = StatController::clientes_nuevos();
-        $clientes_recurrentes   = StatController::clientes_recurrentes();
+        $productos              = StatController::productos_facturados($start, $end);
+        $productos_usd          = StatController::total_productos_usd($start, $end);
+        $promedio_prod          = StatController::promedio_productos_cliente($start, $end);
+
+        $clientes_atendidos     = StatController::clientes_atendidos($start, $end);
+        $clientes_nuevos        = StatController::clientes_nuevos($start, $end);
+        $clientes_recurrentes   = StatController::clientes_recurrentes($start, $end);
 
         return [
 

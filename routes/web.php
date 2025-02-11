@@ -145,6 +145,17 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     });
 
     /**
+     * Ruta creadas para el manejo de efectivo
+     */
+    Route::prefix('me')->group(function () {
+
+        Route::get('/manejo/efectivo', function () {
+            return view('table-manejo-efectivo');
+        })->name('manejo-efectivo');
+
+    });
+
+    /**
      * Rutas para cierres parciales
      */
     Route::get('/cierre/diario', function () {

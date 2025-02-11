@@ -193,7 +193,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                             return $servicio_user;
                                         })
                                         ->required()
-                                        ->searchable(),
+                                        ->searchable(), 
                                 ])
                         ])
                         ->action(function (array $data) {

@@ -93,7 +93,10 @@ class AsignacionController extends Controller
 
             $tasaBcv = TasaBcv::all()->first()->tasa;
 
-            $servicio = Servicio::where('id', $servicio_id)->where('sucursal_id', Auth::user()->sucursal_id)->first();
+            $servicio = Servicio::where('id', $servicio_id)
+            ->where('sucursal_id', Auth::user()->sucursal_id)
+            ->where('status', 'activo')
+            ->first();
 
             $serv_disponible = Disponible::where('cod_asignacion', $cod_asignacion)
             ->where('cliente_id', $cliente_id)

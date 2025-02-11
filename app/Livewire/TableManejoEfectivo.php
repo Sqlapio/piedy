@@ -188,7 +188,8 @@ class TableManejoEfectivo extends Component implements HasForms, HasTable
                                 $recipient_for_user = User::find($user->id);
                                 Notification::make()
                                     ->title('NOTIFICACIÓN')
-                                    ->color('success')
+                                    ->icon('heroicon-o-currency-dollar')
+                                    ->iconColor('success')
                                     ->body(Auth::user()->name . ', retiro en efectivo: ' . '$' . $monto_total . ', Fecha: ' . date('d-m-Y H:m:s') . ', en la sucursal: ' . Auth::user()->sucursal->nombre)
                                     ->sendToDatabase($recipient_for_user);
                             }

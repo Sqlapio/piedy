@@ -576,17 +576,41 @@ class StatController extends Controller
             $rangeStartDate = now()->startOfDay();
             $rangeEndDate   = now()->endOfDay();
 
+            $clientes_recurrentes_hoy = [];
+
             //clientes para hoy
-            $recurrentes_hoy  = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->count();
-            // $recurrentes_hoy  = Cliente::where('visitas', '>=', 2)->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+            $recurrentes_hoy  = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get();
+            for ($i = 0; $i < count($recurrentes_hoy); $i++) {
+                
+                $recurrentes_hoy[$i] = $recurrentes_hoy[$i]->cliente_id;
+                $cliente = Cliente::where('id', $recurrentes_hoy[$i])->first();
+                if($cliente->visitas > 1){
+                    array_push($clientes_recurrentes_hoy, $cliente->id);
+                }
+            }
+
 
             //Fechas de Ayer
             $rangeStartDate = now()->subMonth()->startOfDay();
             $rangeEndDate   = now()->subMonth()->endOfDay();
 
-            //clientes para Ayer
-            $recurrentes_ayer  = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->count();
-            // $recurrentes_ayer = Cliente::where('visitas', '>=', 2)->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
+            $clientes_recurrentes_ayer = [];
+
+            //Cliente recurrente ayer
+            $recurrentes_ayer  = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get();
+            for ($i = 0; $i < count($recurrentes_ayer); $i++) {
+                
+                $recurrentes_ayer[$i] = $recurrentes_ayer[$i]->cliente_id;
+                $cliente = Cliente::where('id', $recurrentes_ayer[$i])->first();
+                if ($cliente->visitas > 1) {
+                    array_push($clientes_recurrentes_ayer, $cliente->id);
+                }
+
+            }
+
+            $recurrentes_hoy = count($clientes_recurrentes_hoy);
+            $recurrentes_ayer = count($clientes_recurrentes_ayer);
+
 
             if ($recurrentes_hoy > $recurrentes_ayer) {
                 $porcentaje = ($recurrentes_ayer * 100) / $recurrentes_hoy;

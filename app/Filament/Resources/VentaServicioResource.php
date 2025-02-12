@@ -54,11 +54,6 @@ class VentaServicioResource extends Resource
                     ->numeric()
                     ->searchable(),
 
-                TextColumn::make('user.name')
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->searchable()
-                    ->sortable(),
-
                 TextColumn::make('created_at')->searchable()
                     ->label('Fecha de venta')
                     ->toggleable(isToggledHiddenByDefault: false),
@@ -78,11 +73,6 @@ class VentaServicioResource extends Resource
                     })
                     ->alignCenter()
                     ->listWithLineBreaks(),
-
-                TextColumn::make('membresia_exp')
-                    ->label('Membresia EXP')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
 
 
                 TextColumn::make('total_USD')
@@ -135,13 +125,6 @@ class VentaServicioResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('comision_emp_venprod')
-                    ->label(('Comision Producto($)'))
-                    ->summarize(Sum::make()
-                        ->label('Neto Comision Producto(Bs.)'))
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('propina_usd')
                     ->money('USD')
@@ -159,10 +142,6 @@ class VentaServicioResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('referencia_propina')
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('duracion')
                     ->label('Duración(Minutos)')

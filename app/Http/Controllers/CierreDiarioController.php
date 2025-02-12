@@ -127,6 +127,18 @@ class CierreDiarioController extends Controller
                         'responsable'           => $cierre->responsable,
                     ];
 
+                //Notificacion para Admin
+                $recipient = User::where('rol_id', 5)->get();
+                foreach ($recipient as $user) {
+                    $recipient_for_user = User::find($user->id);
+                    Notification::make()
+                        ->title('NOTIFICACIÓN')
+                        ->icon('heroicon-s-bell-alert')
+                        ->iconColor('success')
+                        ->body(Auth::user()->name . ', ejecuto Cierre Diario. Fecha: ' . $cierre->fecha . ' Total USD: $' . $cierre->total_cierre_usd . ' Total BSD: Bs.' . $cierre->total_cierre_bsd)
+                        ->sendToDatabase($recipient_for_user);
+                }
+
                 NotificacionesController::notification($mailData, $type);
 
                 Notification::make()
@@ -136,20 +148,6 @@ class CierreDiarioController extends Controller
                     ->color('success')
                     ->body('El Cierre Diario fue realizado con éxito')
                     ->send();
-
-                //Notificacion para Admin
-                $recipient = User::where('rol_id', 5)->get();
-                foreach ($recipient as $user) {
-                    $recipient_for_user = User::find($user->id); 
-                    Notification::make()
-                    ->title('NOTIFICACIÓN')
-                    // ->color('success')
-                    ->icon('heroicon-s-bell-alert')
-                    ->iconColor('success')
-                    ->body(Auth::user()->name.', ejecuto Cierre Diario. Fecha: '.$cierre->fecha.' Total USD: $'.$cierre->total_cierre_usd.' Total BSD: Bs.'.$cierre->total_cierre_bsd)
-                    ->sendToDatabase($recipient_for_user);
-                    
-                }
 
             }
 

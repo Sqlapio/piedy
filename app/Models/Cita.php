@@ -43,7 +43,7 @@ class Cita extends Model
      */
     public function cliente(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id', 'cliente_id');
+        return $this->belongsTo(Cliente::class, 'cliente_id', 'id');
     }
 
     public function empleado(): BelongsTo

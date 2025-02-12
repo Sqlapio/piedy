@@ -235,4 +235,37 @@ class AgendaController extends Controller
             LogController::log(1, 'excepcion(cancelacion link externo)', $th->getMessage(), $response = null);
         }
     }
+
+    static function reagendar($cita_id, $nueva_fecha, $nueva_hora)
+    {
+
+        try {
+
+            $nueva_cita = Cita::where('id', $cita_id)->first();
+            $nueva_cita->fecha = Carbon::parse($nueva_fecha)->isoFormat('dddd, D MMM');
+            $nueva_cita->fecha_formateada = $nueva_fecha;
+            $nueva_cita->hora = date('h:i a', strtotime($nueva_hora));
+            $nueva_cita->save();
+
+            $data = [
+                'id'                => $nueva_cita->id,
+                'cliente_fullname'  => $nueva_cita->cliente,
+                'fecha_cita'        => $nueva_cita->fecha,
+                'hora_cita'         => $nueva_cita->hora,
+                'telefono'          => $nueva_cita->telefono,
+            ];
+
+            return $data;
+
+            
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-AgendaController(reagendar)', $th->getMessage(), $response = null);
+            Notification::make()
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-o-shield-check')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
+        }
+    }
 }

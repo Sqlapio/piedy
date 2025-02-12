@@ -77,10 +77,11 @@ class ClienteController extends Controller
     public static function add_visita($cliente_id) {
         try {
             
-            
-            $visitas = Cliente::find($cliente_id);
-            $visitas->visitas = $visitas->visitas + 1;
-            $visitas->save();
+            $visita = Cliente::where('id', $cliente_id)->first();
+            $visita->visitas = $visita->visitas + 1;
+            $visita->save();
+
+            return true;
             
         } catch (\Throwable $th) {
            Notification::make()

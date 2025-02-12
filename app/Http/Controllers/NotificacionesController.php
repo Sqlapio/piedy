@@ -194,6 +194,94 @@ class NotificacionesController extends Controller
         }
     }
 
+    static function notificacion_reagendar_cita_wp(array $data)
+    {
+
+        try {
+
+            $link_confirmar = env('LINK_CONFIRMACION') . $data['id'];
+            $link_cancelar = env('LINK_CANCELACION') . $data['id'];
+
+            $ubication = 'https://maps.google.com/maps?q=Piedy%20Sambil%20Chacao,%20Distrito%20Capital&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=&amp;output=embed';
+
+            $body = <<<HTML
+
+            *Sr(a):* {$data['cliente_fullname']}
+
+            Le informamos que Usted acaba de agendar una cita en Piedy. Te esperamos...
+
+            *Detalle:*
+            *Fecha:* {$data['fecha_cita']}
+            *Hora:* {$data['hora_cita']}
+
+            *Para confirmar su asistencia por favor ingrese al link:*
+            {$link_confirmar}
+
+            *Para cancelar su asistencia por favor ingrese al link:*
+            {$link_cancelar}
+
+            *Ubicación:* {$ubication}
+            HTML;
+
+            $params = array(
+                'token' => env('TOKEN_API_WHATSAPP'),
+                'to' => $data['telefono'],
+                'image' => env('IMAGE'),
+                'caption' => $body
+            );
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('CURLOPT_URL_IMAGE'),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_SSL_VERIFYHOST => 0,
+                CURLOPT_SSL_VERIFYPEER => 0,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => http_build_query($params),
+                CURLOPT_HTTPHEADER => array(
+                    "content-type: application/x-www-form-urlencoded"
+                ),
+            ));
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            $res = json_decode($response, true);
+
+            curl_close($curl);
+
+            if (isset($res['sent']) and $res['sent'] == 'true') {
+                // dd(1);
+                LogController::log(Auth::user()->id, 'sistema', 'envio exitoso', $response);
+                return $response = [
+                    'success' => true,
+                    'message' => 'Se acaba de enviar recordatorio via WhatsApp al cliente'
+                ];
+            }
+
+            if (isset($res['error'])) {
+                // dd(2);
+                LogController::log(Auth::user()->id, 'excepcion', 'falla de servicio WhatsApp', $response);
+                return $response = [
+                    'success' => false,
+                    'message' => 'El mensaje no fue enviado, pongase en contacto con el administrador del sistema'
+                ];
+            }
+        } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-NotificacionesController(notificacion_cita_wp)', $th->getMessage(), $response = null);
+            Notification::make()
+                ->title('NOTIFICACIÓN')
+                ->icon('heroicon-o-document-text')
+                ->iconColor('danger')
+                ->color('danger')
+                ->body($th->getMessage())
+                ->send();
+        }
+    }
+
     static function notificacion_masiva($image, $caption)
     {
 

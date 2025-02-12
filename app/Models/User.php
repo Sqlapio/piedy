@@ -247,6 +247,16 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAvatar
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
+    public function ventaServicios(): HasMany
+    {
+        return $this->hasMany(VentaServicio::class, 'empleado_id', 'id');
+    }
+
+    /**
+     * Get all of the disponible for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function detalleAsignaciones(): HasMany
     {
         return $this->hasMany(DetalleAsignacion::class, 'empleado_id', 'id');

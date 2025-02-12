@@ -43,6 +43,12 @@ class VentaServicioResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
+                Tables\Columns\TextColumn::make('empleado.name')
+                    ->icon('heroicon-s-user-plus')
+                    ->color('colorTree')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('cliente.nombre')
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->searchable()

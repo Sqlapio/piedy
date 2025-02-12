@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class VentaServicio extends Model
@@ -67,6 +68,16 @@ class VentaServicio extends Model
     public function sucursal(): HasOne
     {
         return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
+    }
+
+    /**
+     * Get the user that owns the VentaServicio
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function empleado(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'empleado_id', 'id');
     }
 
 }

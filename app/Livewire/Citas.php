@@ -23,6 +23,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use App\Http\Controllers\UtilsController;
+use Filament\Forms\Components\DatePicker;
 use App\Http\Controllers\AgendaController;
 use Filament\Actions\Contracts\HasActions;
 use App\Http\Controllers\AsignacionController;
@@ -276,6 +277,53 @@ class Citas extends Component implements HasForms, HasActions
             });
     }
 
+    public function ReagendarAction(): Action
+    {
+        return Action::make('reagendar')
+        ->color('success')
+        ->icon('heroicon-s-arrow-path')
+        ->modalHeading(function (array $arguments) {
+            $data = Cita::where('id', $arguments['cita'])->with('cliente')->first();
+            return 'Cliente: ' . strtoupper($data->cliente) . ' - Cita Nro.: ' . $data->id;
+        })
+        ->form([
+            Section::make('Formulario Reagendar Cita')
+                ->description('Debe llenar los campos de forma correcta. Campos Requeridos(*)')
+                ->icon('heroicon-s-calendar-days')
+                ->schema([
+                    DatePicker::make('nueva_fecha')
+                        ->label('Nueva Fecha de cita')
+                        ->prefixIcon('heroicon-s-calendar-days')
+                        ->minDate(now())
+                        ->format('Y-m-d')
+                        ->required(),
+                    Select::make('nueva_hora')
+                        ->label('Nueva Hora')
+                        ->prefixIcon('heroicon-s-calendar-days')
+                        ->options(Horario::all()->pluck('hora', 'id'))
+                        ->searchable()
+                        ->required(),
+                ])->columns(2)
+        ])
+        ->action(function (array $arguments, array $data) {
+            // dd($data, $arguments);
+            $reagendar = AgendaController::reagendar($arguments['cita'], $data['nueva_fecha'], $data['nueva_hora']);
+
+            if ($reagendar) {
+                /**Notificacion por Whatsapp */
+                NotificacionesController::notificacion_reagendar_cita_wp($reagendar);
+                
+                Notification::make()
+                    ->title('NOTIFICACIÓN')
+                    ->icon('heroicon-o-shield-check')
+                    ->iconColor('success')
+                    ->color('success')
+                    ->body('Cita reagendada con exito!!!')
+                    ->send();
+            }
+        });
+    }
+
     public function filtro()
     {
         if ($this->opcion == 'semana') {
@@ -292,6 +340,13 @@ class Citas extends Component implements HasForms, HasActions
             $this->fin = now()->endOfDay()->month($this->mes);
         }
     }
+
+    // public function click_selection($id){
+    //     //Guardo en la variable de session el valor del id
+    //     session(['seleted_id' => $id]);
+
+    //     dd(session('seleted_id'), session()->all());
+    // }
 
     public function div_largo()
     {

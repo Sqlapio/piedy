@@ -48,7 +48,10 @@
                         @foreach ($data_citas as $items)
                             <div class="max-w-md space-y-2 text-gray-700 list-inside dark:text-gray-400">
                                 @if($items->fecha == $item )
-                                    <li class=" flex justify-between items-center p-1 text-2xs border text-gray-700 font-extrabold rounded-lg bg-[#D9C3C1] " >
+                                    <li class=" flex justify-between items-center p-1 text-2xs border font-extrabold rounded-lg bg-[#D9C3C1] text-gray-700">
+
+
+
                                         <div class="hover:flex flex-col group p-1">
                                             @if($items->confirmacion == 1)
                                                 <div class="flex justify-start items-center py-1">
@@ -68,7 +71,7 @@
                                                   </svg> --}}
                                                   <img src="{{ asset('images/chat-bot.png') }}" class="w-5 h-auto" alt="">
                                                 @endif
-                                                <span class="line-clamp-1 ml-1">{{ $items->cliente }}</span>
+                                                <span class="line-clamp-1">{{ $items->cliente }}</span>
                                             </div>
                                             <span>Hora: {{$items->hora}}</span>
                                         </div>
@@ -78,7 +81,8 @@
                                                     :actions="[
                                                         ($this->asignarAction)(['cita' => $items->id]),
                                                         ($this->eliminarAction)(['cita' => $items->id]),
-                                                        ($this->recordarAction)(['cita' => $items->id])
+                                                        ($this->recordarAction)(['cita' => $items->id]),
+                                                        ($this->reagendarAction)(['cita' => $items->id])
                                                     ]"
                                                     icon="heroicon-m-ellipsis-vertical"
                                                     color="colorOne"
@@ -88,7 +92,8 @@
                                                     :actions="[
                                                         ($this->activarAction)(['cita' => $items->id]),
                                                         ($this->eliminarAction)(['cita' => $items->id]),
-                                                        ($this->recordarAction)(['cita' => $items->id])
+                                                        ($this->recordarAction)(['cita' => $items->id]),
+                                                        ($this->reagendarAction)(['cita' => $items->id])
                                                     ]"
                                                     icon="heroicon-m-ellipsis-vertical"
                                                     color="colorOne"
@@ -129,7 +134,7 @@
                                             @endif
                                             <span class="hidden group-hover:block line-clamp-1 uppercase">{{ $items->empleado_id == null ? '.....' : $items->empleado->name }}</span>
                                             <span class="hidden group-hover:block line-clamp-1">{{ $items->servicio_id == null ? '.....' : $items->servicio->descripcion  }}</span>
-                                            <span class="line-clamp-1 ml-1">{{ $items->cliente }}</span>
+                                            <span class="line-clamp-1">{{ $items->cliente }}</span>
                                             <span>Hora: {{$items->hora}}</span>
                                         </div>
                                         <div class="text-black">

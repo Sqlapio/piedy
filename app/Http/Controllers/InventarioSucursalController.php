@@ -73,7 +73,7 @@ class InventarioSucursalController extends Controller
             if($cantidad > $existencia_actual){
                 throw new Exception("No hay suficiente existencia para realizar la asigancion", 401);
             }
- 
+
             //Buscamos el ultimo registro del usuario
             $ultimo_registro = AsignarProducto::where('user_id', $user_id)
             ->where('producto_id', $producto_id)
@@ -105,7 +105,7 @@ class InventarioSucursalController extends Controller
                     $existencia->cantidad = $existencia->cantidad - $cantidad;
                     $existencia->save();
                 }
-                
+
             }else{
                 $producto_asignado = new AsignarProducto();
                 $producto_asignado->user_id = $user_id;
@@ -117,7 +117,7 @@ class InventarioSucursalController extends Controller
                 $producto_asignado->servicios_facturados = 0;
                 $producto_asignado->sucursal = $sucursal;
                 $producto_asignado->save();
-    
+
                 if($producto_asignado->save()){
                     $existencia = InventarioSucursal::where('sucursal_id', Auth::user()->sucursal_id)
                     ->where('producto_id', $producto_id)
@@ -125,7 +125,7 @@ class InventarioSucursalController extends Controller
                     $existencia->cantidad = $existencia->cantidad - $cantidad;
                     $existencia->save();
                 }
-                
+
             }
 
             Notification::make()
@@ -137,7 +137,6 @@ class InventarioSucursalController extends Controller
 
             //code...
         } catch (\Throwable $th) {
-            dd($th);
             LogController::log(Auth::user()->id, 'excepcion-InventarioSucursalController(asignar_producto)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')

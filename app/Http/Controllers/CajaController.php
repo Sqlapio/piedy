@@ -522,7 +522,7 @@ class CajaController extends Controller
 
 
     /**
-     * Logica para el pago multiple 
+     * Logica para el pago multiple
      */
     static function calculo_porcentajes_srv($cod_asigancion, $pago_usd, $pago_bsd)
     {
@@ -606,6 +606,7 @@ class CajaController extends Controller
                 ->first();
             return view('detalle-servicio-facturado', compact('detalle'));
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-CajaController(detalleServicio)', $th->getMessage(), $response = null);
         }
     }
 }

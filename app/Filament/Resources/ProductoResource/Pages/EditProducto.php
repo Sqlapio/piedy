@@ -7,6 +7,8 @@ use App\Models\DetalleRequisicion;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\ProductoResource;
+use App\Http\Controllers\LogController;
+use Illuminate\Support\Facades\Auth;
 
 class EditProducto extends EditRecord
 {
@@ -28,7 +30,7 @@ class EditProducto extends EditRecord
     //         ->title('Notificacion')
     //         ->body('La cantidad maxima y minima de existencia del producto no pueden ser iguales')
     //         ->send();
-    
+
     //         $this->halt();
     //     }
     // }
@@ -54,9 +56,9 @@ class EditProducto extends EditRecord
             }
 
         } catch (\Throwable $th) {
-            dd($th);
+            LogController::log(Auth::user()->id, 'excepcion-EditProducto(afterSave)', $th->getMessage(), $response = null);
         }
-        
+
     }
 
     protected function getRedirectUrl(): string
@@ -72,5 +74,5 @@ class EditProducto extends EditRecord
         ->body('El producto fue editado con exito.');
     }
 
-    
+
 }

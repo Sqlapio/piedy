@@ -12,6 +12,7 @@ use App\Models\VentaProducto;
 use App\Models\VentaServicio;
 use App\Models\AnalisisReporte;
 use App\Models\Compra;
+use Illuminate\Support\Facades\Auth;
 
 class AnalisisReporteController extends Controller
 {
@@ -42,7 +43,7 @@ class AnalisisReporteController extends Controller
                 $venta_srv_bsd = VentaServicio::where('sucursal_id', $records[0]->sucursal_id)
                     ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
                     ->sum('pago_bsd');
-                    
+
                 $conversion_srv = $venta_srv_bsd / $tasa_bcv;
 
                 $total_venta_srv_usd = $venta_srv_usd + $conversion_srv;
@@ -154,7 +155,7 @@ class AnalisisReporteController extends Controller
                 $analisis->fecha_fin                = $records[0]->fecha_fin;
 
                 $analisis->productos_asignados      = $requisiciones_usd;
-                
+
                 $analisis->nomina                   = $nomina_usd;
 
                 $analisis->venta_servicios_usd      = $venta_srv_usd;
@@ -196,7 +197,7 @@ class AnalisisReporteController extends Controller
             }
 
         } catch (\Throwable $th) {
-            dd($th);
+            LogController::log(Auth::user()->id, 'excepcion-AnalisisReporteController(cierre)', $th->getMessage(), $response = null);
         }
     }
 }

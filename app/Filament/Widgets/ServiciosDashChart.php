@@ -20,7 +20,7 @@ class ServiciosDashChart extends ChartWidget
 
     protected static ?string $heading = 'Servicios';
 
-    protected static ?string $maxHeight = '192px';
+    protected static ?string $maxHeight = '190px';
 
     protected static ?int $sort = 2;
 
@@ -101,7 +101,6 @@ class ServiciosDashChart extends ChartWidget
                 'display' => true,
             ],
         ],
-        'indexAxis' => 'y',
         'plugins' => [
             'legend' => [
                 'display' => false,

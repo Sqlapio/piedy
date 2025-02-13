@@ -146,7 +146,7 @@ class VentaProductoController extends Controller
                 return false;
             }
         } catch (\Throwable $th) {
-            dd($th);
+            LogController::log(Auth::user()->id, 'excepcion-VentaProductoController(facturarProducto_usd)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-document-text')
@@ -279,6 +279,8 @@ class VentaProductoController extends Controller
                 return false;
             }
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-VentaProductoController(facturarProducto_bsd)', $th->getMessage(), $response = null);
+
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-document-text')
@@ -430,6 +432,7 @@ class VentaProductoController extends Controller
                 return false;
             }
         } catch (\Throwable $th) {
+            LogController::log(Auth::user()->id, 'excepcion-VentaProductoController(facturarProducto_multiple)', $th->getMessage(), $response = null);
             Notification::make()
                 ->title('NOTIFICACIÓN')
                 ->icon('heroicon-o-document-text')

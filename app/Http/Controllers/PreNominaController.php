@@ -68,7 +68,7 @@ class PreNominaController extends Controller
 
                     /**
                      * CALCULO PARA LOS SERVICIOS REALIZADOS
-                     * ------------------------------------------------------------------------------------- 
+                     * -------------------------------------------------------------------------------------
                      */
 
                     //Comisiones en dolares (USD) de los servicios realizados
@@ -89,7 +89,7 @@ class PreNominaController extends Controller
 
                     /**
                      * CALCULO PARA LOS PRODUCTOS VENDIDOS
-                     * --------------------------------------------------------------------------------------- 
+                     * ---------------------------------------------------------------------------------------
                      */
 
                     //Comisiones en dolares (USD) de los productos vendidos
@@ -102,7 +102,7 @@ class PreNominaController extends Controller
 
                     /**
                      * CALCULO PARA LAS PROPINAS
-                     * --------------------------------------------------------------------------------------- 
+                     * ---------------------------------------------------------------------------------------
                      */
 
                     //Propinas en Dolares (USD) de los servicios realizados
@@ -124,7 +124,7 @@ class PreNominaController extends Controller
 
                     /**
                      * CALCULO PARA LOS TOTALES
-                     * --------------------------------------------------------------------------------------- 
+                     * ---------------------------------------------------------------------------------------
                      */
 
                     $preNomina->total_usd = $preNomina->comision_usd + $preNomina->comision_prod + $preNomina->propinas_usd;
@@ -171,7 +171,7 @@ class PreNominaController extends Controller
 
                     /**
                      * CALCULO PARA LOS SERVICIOS REALIZADOS
-                     * ------------------------------------------------------------------------------------- 
+                     * -------------------------------------------------------------------------------------
                      */
 
                     //Comisiones en dolares (USD) de los servicios realizados
@@ -189,7 +189,7 @@ class PreNominaController extends Controller
 
                     /**
                      * CALCULO PARA LOS PRODUCTOS VENDIDOS
-                     * --------------------------------------------------------------------------------------- 
+                     * ---------------------------------------------------------------------------------------
                      */
 
                     //Comisiones en dolares (USD) de los productos vendidos
@@ -202,7 +202,7 @@ class PreNominaController extends Controller
 
                     /**
                      * CALCULO PARA LAS PROPINAS
-                     * --------------------------------------------------------------------------------------- 
+                     * ---------------------------------------------------------------------------------------
                      */
 
                     //Propinas en Dolares (USD) de los servicios realizados
@@ -218,7 +218,7 @@ class PreNominaController extends Controller
 
                     /**
                      * CALCULO PARA LOS TOTALES
-                     * --------------------------------------------------------------------------------------- 
+                     * ---------------------------------------------------------------------------------------
                      */
 
                     $preNomina->total_usd = $preNomina->comision_usd + $preNomina->comision_prod;
@@ -443,8 +443,8 @@ class PreNominaController extends Controller
             $asiento->nomina_general_id = $records->nomina_general_id;
             $asiento->nomina_general_id = $records->nomina_general_id;
             $asiento->nomina_general_id = $records->nomina_general_id;
-            
-            
+
+
 
 
             //Generamos el reporte
@@ -459,12 +459,12 @@ class PreNominaController extends Controller
             $reporte->responsable = Auth::user()->name;
             $reporte->sucursal_id = $records->sucursal_id;
             $reporte->save();
-            
-            
+
+
             //code...
         } catch (\Throwable $th) {
-            //throw $th;
+            LogController::log(Auth::user()->id, 'excepcion-PreNominaController(reporteGeneral)', $th->getMessage(), $response = null);
         }
-    
+
     }
 }

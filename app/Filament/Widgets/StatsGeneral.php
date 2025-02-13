@@ -59,19 +59,19 @@ class StatsGeneral extends BaseWidget
                 ->description(round($servicios['porcentaje']) . '%')
                 ->descriptionIcon($servicios['icon'])
                 ->color($servicios['color'])
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
 
             Stat::make('TOTAL SERVICIOS($)', $servicios_usd['total_hoy'] . $servicios_usd['letra'])
                 ->description(round($servicios_usd['porcentaje']) . '%')
                 ->descriptionIcon($servicios_usd['icon'])
                 ->color($servicios_usd['color'])
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
 
             Stat::make('PROMEDIO SERVICIO/CLIENTE', number_format($promedio['promedio_hoy'], 1))
                 ->description(round($promedio['porcentaje']) . '%')
                 ->descriptionIcon($promedio['icon'])
                 ->color($promedio['color'])
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
 
 
             //Stat Productos -----------------------------------------------------------------------------------------------
@@ -80,40 +80,40 @@ class StatsGeneral extends BaseWidget
                 ->description(round($productos['porcentaje']) . '%')
                 ->descriptionIcon($productos['icon'])
                 ->color($productos['color'])
-                ->extraAttributes(['class' => 'col-span-2 row-span-1 rounded-md text-center border-4 border-[#7B9AA6]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
 
             Stat::make('TOTAL PRODUCTOS($)', $productos_usd['total_productos_hoy'] . $productos_usd['letra'])
                 ->description(round($productos_usd['porcentaje']) . '%')
                 ->descriptionIcon($productos_usd['icon'])
                 ->color($productos_usd['color'])
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
 
-            // Stat::make('PROMEDIO PRODUCTO/CLIENTE', number_format($promedio_prod['promedio_hoy'], 1))
-            //     ->description(round($promedio_prod['porcentaje']) . '%')
-            //     ->descriptionIcon($promedio_prod['icon'])
-            //     ->color($promedio_prod['color'])
-            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6]']),
+            Stat::make('PROMEDIO PRODUCTO/CLIENTE', number_format($promedio_prod['promedio_hoy'], 1))
+                ->description(round($promedio_prod['porcentaje']) . '%')
+                ->descriptionIcon($promedio_prod['icon'])
+                ->color($promedio_prod['color'])
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
 
 
             //Stat Clientes -----------------------------------------------------------------------------------------------
             //-------------------------------------------------------------------------------------------------------------
-            Stat::make('CLIENTES ATENDIDOS', $clientes_atendidos['clientes_atendidos_hoy'])
-                ->description(round($clientes_atendidos['porcentaje']) . '%')
-                ->descriptionIcon($clientes_atendidos['icon'])
-                ->color($clientes_atendidos['color'])
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
+            // Stat::make('CLIENTES ATENDIDOS', $clientes_atendidos['clientes_atendidos_hoy'])
+            //     ->description(round($clientes_atendidos['porcentaje']) . '%')
+            //     ->descriptionIcon($clientes_atendidos['icon'])
+            //     ->color($clientes_atendidos['color'])
+            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
 
-            Stat::make('CLIENTES NUEVOS', $clientes_nuevos['total_clientes_hoy'])
-                ->description(round($clientes_nuevos['porcentaje']) . '%')
-                ->descriptionIcon($clientes_nuevos['icon'])
-                ->color($clientes_nuevos['color'])
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
+            // Stat::make('CLIENTES NUEVOS', $clientes_nuevos['total_clientes_hoy'])
+            //     ->description(round($clientes_nuevos['porcentaje']) . '%')
+            //     ->descriptionIcon($clientes_nuevos['icon'])
+            //     ->color($clientes_nuevos['color'])
+            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
 
-            Stat::make('CLIENTES RECURRENTES', $clientes_recurrentes['recurrentes_hoy'])
-                ->description(round($clientes_recurrentes['porcentaje']) . '%')
-                ->descriptionIcon($clientes_recurrentes['icon'])
-                ->color($clientes_recurrentes['color'])
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
+            // Stat::make('CLIENTES RECURRENTES', $clientes_recurrentes['recurrentes_hoy'])
+            //     ->description(round($clientes_recurrentes['porcentaje']) . '%')
+            //     ->descriptionIcon($clientes_recurrentes['icon'])
+            //     ->color($clientes_recurrentes['color'])
+            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Cliente;
 use App\Models\Frecuencia;
 use App\Models\VentaServicio;
 use App\Models\VentaProducto;
@@ -18,25 +19,13 @@ class ClienteNuevoChart extends ChartWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $heading = 'Clientes Registrados(Nuevos) / Clientes Atendidos';
+    protected static ?string $heading = 'Clientes';
 
-    // protected static ?string $maxHeight = '300px';
+    protected static ?string $maxHeight = '300px';
 
-    // protected int | string | array $columnSpan = '3';
+    protected int | string | array $columnSpan = '2';
 
-    protected static ?int $sort = 4;
-
-    // public ?string $filter = 'today';
-
-    // protected function getFilters(): ?array
-    // {
-    //     return [
-    //         'today' => 'Hoy',
-    //         'week'  => 'Semana',
-    //         'month' => 'Mes',
-    //         'year'  => 'Año',
-    //     ];
-    // }
+    protected static ?int $sort = 5;
 
     protected function getData(): array
     {
@@ -91,26 +80,29 @@ class ClienteNuevoChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Clientes Nuevos',
+                    'label' => 'Clientes Atendidos',
                     'data' => $data1->map(fn (TrendValue $value) => $value->aggregate),
-                    'backgroundColor' => '#7B9AA6',
-                    'borderColor' => '#7B9AA6',
+                    'backgroundColor' => '#00ce0026',
+                    'borderColor' => '#00ce00',
+                    'fill' => true,
                 ],
                 [
-                    'label' => 'Clientes Atendidos',
+                    'label' => 'Clientes Recurentes',
+                    'data' => $data3->map(fn ($data3) => $data3->cantidad),
+                    // 'backgroundColor' => '#ffeb3ba6',
+                    'borderColor' => '#ff0000',
+                    // 'fill' => true,
+                ],
+                [
+                    'label' => 'Clientes Nuevos',
                     'data' => $data2->map(fn (TrendValue $value) => $value->aggregate),
-                    'backgroundColor' => '#BF9C99',
-                    'borderColor' => '#BF9C99',
+                    // 'backgroundColor' => '#7b9aa666',
+                    'borderColor' => '#0a0aff',
+                    // 'fill' => true,
                 ],
 
-                // [
-                //     'label' => 'Ventas',
-                //     'data' => $data3->map(fn ($data3) => $data3->cantidad),
-                //     'backgroundColor' => '#36A2EB',
-                //     'borderColor' => '#36A2EB',
-                // ],
             ],
-            'labels' => ($data1->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray()),
+            'labels' => ($data1->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dd, D'))->toArray()),
 
 
             // 'labels' => ($data1->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray()),
@@ -119,7 +111,7 @@ class ClienteNuevoChart extends ChartWidget
 
     public function getDescription(): ?string
     {
-        return 'Clientes Nuevos';
+        return 'Clientes Nuevos/Recurentes/Atendidos';
     }
 
     protected function getType(): string

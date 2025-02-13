@@ -20,7 +20,7 @@ class ProductosDashChart extends ChartWidget
 
     protected static ?string $heading = 'Productos';
 
-    protected static ?string $maxHeight = '190px';
+    protected static ?string $maxHeight = '230px';
 
     protected static ?int $sort = 3;
 

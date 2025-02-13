@@ -88,6 +88,16 @@ class DetalleRequisicionRelationManager extends RelationManager
                     })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('contenido')
+                    ->description(function ($record) {
+                        
+                        $exitencia = Inventario::where('producto_id', $record->producto_id)->where('uso', $record->uso)->first();
+                        
+                        if ($exitencia) {
+                            return 'Existencia: ' .$exitencia->cantidad;
+                        } else {
+                            return 'No hay inventario';
+                        }
+                    })
                     ->alignCenter()
                     ->color(function ($record) {
                         if ($record->status_id == 6) {

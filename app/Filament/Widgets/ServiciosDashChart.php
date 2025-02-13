@@ -20,7 +20,7 @@ class ServiciosDashChart extends ChartWidget
 
     protected static ?string $heading = 'Servicios';
 
-    protected static ?string $maxHeight = '230px';
+    protected static ?string $maxHeight = '250px';
 
     protected static ?int $sort = 4;
 
@@ -80,7 +80,7 @@ class ServiciosDashChart extends ChartWidget
                         '#56737f'
                     ],
                     'borderColor' => '#ffff',
-                    // 'fill' => true,
+                    'barPercentage' => 0.5,
                 ],
 
             ],
@@ -101,12 +101,7 @@ class ServiciosDashChart extends ChartWidget
             'legend' => [
                 'display' => false,
             ]
-            ],
-        'elements' => [
-            'bar' => [
-                'barThickness' => 30,
-            ]
-        ]
+        ],
     ];
 
 

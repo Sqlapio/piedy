@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 use App\Models\Cita;
 use App\Models\User;
+use GuzzleHttp\Client;
 use App\Livewire\Login;
 use App\Models\Cliente;
 use App\Models\TasaBcv;
@@ -13,6 +14,8 @@ use App\Models\Disponible;
 use App\Models\Inventario;
 use Flowframe\Trend\Trend;
 use App\Models\ServicioUser;
+use DeepSeek\DeepSeekClient;
+use GuzzleHttp\Psr7\Request;
 use App\Models\CierreGeneral;
 use App\Models\PeriodoNomina;
 use App\Models\VentaServicio;
@@ -35,6 +38,8 @@ use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\ApiClientesController;
 use App\Http\Controllers\RequisicionController;
 use App\Http\Controllers\NotificacionesController;
+
+use DeepseekClient as DeepseekClientApi;
 
 /*
 |--------------------------------------------------------------------------
@@ -377,45 +382,57 @@ Route::get('/detalle/srv/{codigo}', [CajaController::class, 'detalleServicio'])-
 
 Route::get('/ex', function () {
 
-    // $clientes = Cliente::all();
+// $curl = curl_init();
 
-    // foreach ($clientes as $cliente) {
-    //     $nombre = $cliente->nombre;
-    //     $apellido = $cliente->apellido;
-    //     $cliente->update([
-    //         'nombre' => $nombre. ' ' . $apellido
-    //     ]);
-    // }
+// curl_setopt_array($curl, array(
+//     CURLOPT_URL => 'https://api.deepseek.com/chat/completions',
+//     CURLOPT_RETURNTRANSFER => true,
+//     CURLOPT_ENCODING => '',
+//     CURLOPT_MAXREDIRS => 10,
+//     CURLOPT_TIMEOUT => 0,
+//     CURLOPT_FOLLOWLOCATION => true,
+//     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+//     CURLOPT_CUSTOMREQUEST => 'POST',
+//     CURLOPT_POSTFIELDS => '{
+//         "messages": [
+//             {
+//             "role": "system",
+//             "content": "You are a helpful assistant."
+//             },
+//             {
+//             "role": "user",
+//             "content": "Hello!"
+//             }
+//         ],
+//         "model": "deepseek-chat", 
+//         "frequency_penalty": 0,
+//         "max_tokens": 100
+//     }',
+//     CURLOPT_HTTPHEADER => array(
+//         'Content-Type: application/json',
+//         'Authorization: Bearer sk-1f7b76869e7b4a6b9ef3399fee7b6879',
+//         'Cookie: __cf_bm=2PIp0pAlYRZ7JstxiSygHSrwj1.65aZnmRsd6hzapq0-1739457112-1.0.1.1-tH_Ptqj9fekKoBpKGV3kWT4SHln1.b0..ZQ8lPWzLrYm4bBWOaqSF3ULYbrRMPUMQ.Cf4yO8pWkw0V50AY0QqA; HWWAFSESID=9c32c736807cf81aed; HWWAFSESTIME=1739457111994'
+//     ),
+// ));
 
-    // $ps = InventarioSucursal::all()
-    // foreach ($ps as $item) {
-    //     $p = Producto::where('id', $item->producto_id)->first();
-    //     // dd($p->cod_producto);
-    //     InventarioSucursal::where('producto_id', $p->id)->update([
-    //         'cod_producto' => $p->cod_producto
-    //     ]);
-    // }
+// $response = curl_exec($curl);
 
+// curl_close($curl);
+// dd($response);
 
-    // dd(1);
+    
 
-    // $in = Inventario::where('unidad', '!=', null)->get();
-    // foreach ($in as $item) {
-    //     $unidad = Producto::where('id', $item->producto_id)->first();
-    //     Inventario::where('id', $item->id)->update([
-    //         'contenido_neto' => $unidad->contenido_neto
-    //     ]);
-    // }
-    // dd('listo VB');
-    // $productos = DB::table('inventarios')
-    //                                         ->select(DB::raw('producto_id as id, productos.descripcion as descripcion'))
-    //                                         ->where('cantidad', '>', 0)
-    //                                         ->join('productos', 'inventarios.producto_id', '=', 'productos.id')
-    //                                         ->groupBy('producto_id')
-    //                                         ->get();
+    $deepseek = app(DeepseekClientApi::class);
 
-    $clientes = Cliente::with('citas')->first();
-    dd($clientes);
+    // Another way, with customization
+    $response = $deepseek
+        ->query('Hello deepseek, how are you ?', 'system')
+        ->query('Hello deepseek, my name is PHP ', 'user')
+        ->withModel("deepseek-chat")
+        ->setTemperature(1.5)
+        ->run();
 
-    // dd(now()->format('Y-m-d H:i:s.u'), date('Y-m-d H:i:s.u'));
+    dd($response);  
+
+    
 });

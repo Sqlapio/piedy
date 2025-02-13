@@ -93,7 +93,7 @@ class DetalleRequisicionRelationManager extends RelationManager
                         $exitencia = Inventario::where('producto_id', $record->producto_id)->where('uso', $record->uso)->first();
                         
                         if ($exitencia) {
-                            return $exitencia->cantidad;
+                            return 'Existencia: ' .$exitencia->cantidad;
                         } else {
                             return 'No hay inventario';
                         }

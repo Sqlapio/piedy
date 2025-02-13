@@ -108,12 +108,22 @@
     background-color: #bf9c999e !important;
 }
 
-.fi-wi > div:nth-child(2) section {
+.fi-wi > div:nth-child(4) section {
     border: 4px solid #3ec7d38a;
     border-radius: 10px 10px 10px 10px;
 }
 
-.fi-wi > div:nth-child(2) header {
+.fi-wi > div:nth-child(4) header {
+    border-bottom: 2px solid #3ec7d28a;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.fi-wi > div:nth-child(1) section {
+    border: 4px solid #3ec7d38a;
+    border-radius: 10px 10px 10px 10px;
+}
+
+.fi-wi > div:nth-child(1) header {
     border-bottom: 2px solid #3ec7d28a;
     border-radius: 10px 10px 0px 0px;
 }
@@ -128,16 +138,25 @@
     border-radius: 10px 10px 10px 10px;
 }
 
-.fi-wi > div:nth-child(4) header {
+.fi-wi > div:nth-child(2) header {
     border-bottom: 2px solid #bf9c999e;
     border-radius: 10px 10px 0px 0px;
 }
 
-.fi-wi > div:nth-child(4) section {
+.fi-wi > div:nth-child(2) section {
     border: 4px solid #bf9c999e;
     border-radius: 10px 10px 10px 10px;
 }
 
+.fi-wi > div:nth-child(5) header {
+    border-bottom: 2px solid #bf9c999e;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.fi-wi > div:nth-child(5) section {
+    border: 4px solid #bf9c999e;
+    border-radius: 10px 10px 10px 10px;
+}
 /* .fi-wi-stats-overview-stats-ctn > div {
     background-color: aqua;
 } */
@@ -164,6 +183,13 @@
 
 .fi-dashboard-page header h1 {
     @apply text-xl
-
 }
 
+.fi-fo-component-ctn section {
+    border: 4px solid #9c99bf;
+    border-radius: 10px 10px 10px 10px;
+}
+
+.fi-wi-stats-overview-stats-ctn {
+    height: 100%;
+}

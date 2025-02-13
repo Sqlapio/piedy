@@ -21,9 +21,9 @@ class ClientesDashChart extends ChartWidget
 
     protected static ?string $heading = 'Clientes';
 
-    protected static ?string $maxHeight = '190px';
+    protected static ?string $maxHeight = '110px';
 
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 2;
 
     protected function getData(): array
     {

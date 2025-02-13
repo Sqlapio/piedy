@@ -20,9 +20,9 @@ class ServiciosDashChart extends ChartWidget
 
     protected static ?string $heading = 'Servicios';
 
-    protected static ?string $maxHeight = '190px';
+    protected static ?string $maxHeight = '230px';
 
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 4;
 
 
     protected function getData(): array
@@ -92,10 +92,6 @@ class ServiciosDashChart extends ChartWidget
         'scales' => [
             'x' => [
                 'display' => true,
-
-                'ticks' => [
-                    'stepSize' => 1
-                ],
             ],
             'y' => [
                 'display' => true,

@@ -66,31 +66,32 @@ class ClienteController extends Controller
                 ->body($th->getMessage())
                 ->send();
         }
-        
+
     }
 
     // public static function get_cliente($cod_asignacion)
     // {
-        
+
     // }
 
     public static function add_visita($cliente_id) {
         try {
-            
+
             $visita = Cliente::where('id', $cliente_id)->first();
             $visita->visitas = $visita->visitas + 1;
             $visita->save();
 
             return true;
-            
+
         } catch (\Throwable $th) {
-           Notification::make()
-            ->title('Notificacion')
-            ->icon('heroicon-o-shield-check')
-            ->color('danger')
-            ->iconColor('danger')
-            ->body($th->getMessage())
-            ->send();
+            LogController::log(Auth::user()->id, 'excepcion-ClienteController(add_visita)', $th->getMessage(), $response = null);
+            Notification::make()
+                ->title('Notificacion')
+                ->icon('heroicon-o-shield-check')
+                ->color('danger')
+                ->iconColor('danger')
+                ->body($th->getMessage())
+                ->send();
         }
     }
 }

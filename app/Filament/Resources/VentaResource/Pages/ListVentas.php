@@ -32,7 +32,7 @@ class ListVentas extends ListRecords
         return [
             VentaResource\Widgets\ServiciosChart::class,
             VentaResource\Widgets\ProductosChart::class,
-            VentaResource\Widgets\StatsVentas::class,
+            VentaResource\Widgets\VentasNetasChart::class,
         ];
     }
 }

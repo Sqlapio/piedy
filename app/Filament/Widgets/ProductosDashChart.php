@@ -28,10 +28,8 @@ class ProductosDashChart extends ChartWidget
 
     protected function getData(): array
     {
-
         $start = $this->filters['startDate'] == null ? now()->startOfDay() : $this->filters['startDate'] . ' 05:00:00';
         $end = $this->filters['endDate'] == null ? now()->endOfDay() : $this->filters['endDate'] . ' 23:59:59';
-
 
         $data = DB::table('venta_productos')
             ->select(DB::raw('SUM(cantidad) as venta, producto_id, productos.nombre_corto as descripcion'))
@@ -39,7 +37,6 @@ class ProductosDashChart extends ChartWidget
             ->whereBetween('venta_productos.created_at', [$start, $end])
             ->groupBy('producto_id')
             ->get();
-
 
         $labels = $data->map(fn($data) => $data->descripcion);
         $totalVentas = $data->sum('venta');
@@ -113,4 +110,8 @@ class ProductosDashChart extends ChartWidget
     {
         return 'pie';
     }
+
+
+    //how to hide ChartWidget for particular condition in filamentphp v3?
+
 }

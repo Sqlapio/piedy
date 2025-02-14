@@ -5,13 +5,20 @@ namespace App\Filament\Pages;
 use Filament\Forms\Get;
 use App\Models\Sucursal;
 use Filament\Forms\Form;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Section;
 
+use App\Filament\Widgets\StatsGeneral;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\DatePicker;
+use App\Filament\Widgets\ClienteNuevoChart;
+use App\Filament\Widgets\ClientesDashChart;
+use App\Filament\Widgets\ProductosDashChart;
+use App\Filament\Widgets\ServiciosDashChart;
 use Filament\Pages\Dashboard as BaseDashboard;
+use App\Filament\Resources\VentaResource\Widgets\VentasNetasChart;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
@@ -50,6 +57,40 @@ class Dashboard extends \Filament\Pages\Dashboard
                         ]) 
                         // ->visible(fn(Get $get):bool => $get('activar')),
             ]);
+    }
+
+    public function getWidgets(): array
+    {
+        $start = $this->filters['startDate'] == null ? now()->startOfDay() : $this->filters['startDate'] . ' 05:00:00';
+        $end = $this->filters['endDate'] == null ? now()->endOfDay() : $this->filters['endDate'] . ' 23:59:59';
+
+        $data = DB::table('venta_productos')
+        ->select(DB::raw('SUM(cantidad) as venta, producto_id, productos.nombre_corto as descripcion'))
+        ->join('productos', 'venta_productos.producto_id', '=', 'productos.id')
+        ->whereBetween('venta_productos.created_at', [$start, $end])
+            ->groupBy('producto_id')
+            ->get();
+
+        if(count($data) == 0){
+            $widgets = [
+                StatsGeneral::class,
+                ServiciosDashChart::class,
+                ClientesDashChart::class,
+                ClienteNuevoChart::class,
+
+            ];
+        }else{
+            $widgets = [
+                StatsGeneral::class,
+                ServiciosDashChart::class,
+                ProductosDashChart::class,
+                ClientesDashChart::class,
+                ClienteNuevoChart::class,
+
+            ];
+        }
+
+        return $widgets;
     }
 
 }

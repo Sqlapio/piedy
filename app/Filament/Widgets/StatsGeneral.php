@@ -117,11 +117,6 @@ class StatsGeneral extends BaseWidget
         ];
     }
 
-    // public function getColumns(): int
-    // {
-    //     return 3;
-    // }
-
     protected int | string | array $columnSpan = [
         // 'xs' => 3,
         'sm' => 3,

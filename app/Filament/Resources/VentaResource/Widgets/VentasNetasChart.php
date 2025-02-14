@@ -48,17 +48,6 @@ class VentasNetasChart extends ChartWidget
         //     $rangeEndDate = now()->endOfYear();
         // }
 
-        $data1 = Trend::model(Frecuencia::class)
-            ->between(
-                // start: (isset($start)) ? Carbon::parse($start) : now()->startOfMonth(),
-                // end: (isset($end)) ? Carbon::parse($end) : now()->endOfMonth(),
-                start: now()->startOfMonth(),
-                end: now()->endOfMonth(),
-            )
-
-            ->perDay()
-            ->count('cliente_id');
-
         $data2 = Trend::model(VentaServicio::class)
             ->between(
                 start: (isset($start)) ? Carbon::parse($start) : now()->startOfMonth(),
@@ -68,34 +57,38 @@ class VentasNetasChart extends ChartWidget
             )
             // ->perMonth()
             ->perDay()
-            ->count('cliente_id');
+            ->sum('pago_usd');
 
-        $data3 = DB::table('venta_productos')
-        ->select(DB::raw('count(cantidad) as cantidad, producto_id'))
-        ->groupBy('producto_id')
-        ->get();
-
-        // dd($data3, $data3->map(fn ($data3) => $value->cantidad));
+        $data3 = Trend::model(VentaServicio::class)
+        ->between(
+            start: (isset($start)) ? Carbon::parse($start) : now()->startOfMonth(),
+            end: (isset($end)) ? Carbon::parse($end) : now()->endOfMonth(),
+            // start: now()->startOfMonth(),
+            // end: now()->endOfMonth(),
+        )
+            // ->perMonth()
+            ->perDay()
+            ->sum('pago_bsd');
 
         return [
             'datasets' => [
                 [
                     'label' => 'Clientes Atendidos',
-                    'data' => $data1->map(fn (TrendValue $value) => $value->aggregate),
+                    'data' => $data2->map(fn (TrendValue $value) => $value->aggregate),
                     'backgroundColor' => '#00ce0026',
                     'borderColor' => '#00ce00',
                     'fill' => true,
                 ],
                 [
-                    'label' => 'Clientes Recurentes',
-                    'data' => $data3->map(fn ($data3) => $data3->cantidad),
-                    // 'backgroundColor' => '#ffeb3ba6',
-                    'borderColor' => '#ff0000',
-                    // 'fill' => true,
+                    'label' => 'Clientes Atendidos',
+                    'data' => $data3->map(fn(TrendValue $value) => $value->aggregate),
+                    'backgroundColor' => '#00ce0026',
+                    'borderColor' => '#00ce00',
+                    'fill' => true,
                 ],
 
             ],
-            'labels' => ($data1->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dd, D'))->toArray()),
+            'labels' => ($data2->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dd, D'))->toArray()),
 
 
             // 'labels' => ($data1->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray()),

@@ -407,15 +407,18 @@ class StatController extends Controller
 
             //Servicios y clientes para hoy
             $nro_productos_hoy = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('cantidad');
-            $clientes_hoy = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+            $clientes_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
                 ->groupBy('cliente_id')
-                ->count('cliente_id');
+                ->get();
+
+            $clientes_hoy = count($clientes_hoy);
 
             if ($clientes_hoy == 0) {
                 $promedio_hoy = 0;
             } else {
 
                 $promedio_hoy = $nro_productos_hoy / $clientes_hoy;
+                // dd($promedio_hoy);
 
                 //Fechas de Ayer
                 $rangeStartDate = now()->subMonth()->startOfDay();
@@ -423,7 +426,11 @@ class StatController extends Controller
 
                 //Servicios y clientes para Ayer
                 $nro_productos_ayer = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count('cantidad');
-                $clientes_ayer = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count('cliente_id');
+                $clientes_ayer = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+                ->groupBy('cliente_id')
+                ->get();
+
+                $clientes_ayer = count($clientes_ayer);
                 
                 if($clientes_ayer == 0) {
                     $promedio_ayer = 0;

@@ -371,51 +371,15 @@ Route::get('/requisicion/{codigo}/{sucursal_id}', [RequisicionController::class,
 
 Route::get('/detalle/srv/{codigo}', [CajaController::class, 'detalleServicio'])->name('detalle-servicio');
 
-
-
 /**FIN GRUPO DE RUTAS------------------------------------------------------------------------------------------*/
 
+
+
+
+
+/** Rta para ejecutar pruebs */
+/**-------------------------------------------------------*/
+
 Route::get('/ex', function () {
-
-    // $clientes = Cliente::all();
-
-    // foreach ($clientes as $cliente) {
-    //     $nombre = $cliente->nombre;
-    //     $apellido = $cliente->apellido;
-    //     $cliente->update([
-    //         'nombre' => $nombre. ' ' . $apellido
-    //     ]);
-    // }
-
-    // $ps = InventarioSucursal::all()
-    // foreach ($ps as $item) {
-    //     $p = Producto::where('id', $item->producto_id)->first();
-    //     // dd($p->cod_producto);
-    //     InventarioSucursal::where('producto_id', $p->id)->update([
-    //         'cod_producto' => $p->cod_producto
-    //     ]);
-    // }
-
-
-    // dd(1);
-
-    // $in = Inventario::where('unidad', '!=', null)->get();
-    // foreach ($in as $item) {
-    //     $unidad = Producto::where('id', $item->producto_id)->first();
-    //     Inventario::where('id', $item->id)->update([
-    //         'contenido_neto' => $unidad->contenido_neto
-    //     ]);
-    // }
-    // dd('listo VB');
-    // $productos = DB::table('inventarios')
-    //                                         ->select(DB::raw('producto_id as id, productos.descripcion as descripcion'))
-    //                                         ->where('cantidad', '>', 0)
-    //                                         ->join('productos', 'inventarios.producto_id', '=', 'productos.id')
-    //                                         ->groupBy('producto_id')
-    //                                         ->get();
-
-    $clientes = Cliente::with('citas')->first();
-    dd($clientes);
-
-    // dd(now()->format('Y-m-d H:i:s.u'), date('Y-m-d H:i:s.u'));
+        
 });

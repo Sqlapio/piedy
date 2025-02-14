@@ -29,83 +29,77 @@ class ClienteNuevoChart extends ChartWidget
 
     protected function getData(): array
     {
-        // $start = $this->filters['startDate'];
-        // $end = $this->filters['endDate'];
 
-        // $activeFilter = $this->filter;
+        $start  = $this->filters['startDate'] == null ? now()->startOfDay() : $this->filters['startDate'] . ' 00:00:00';
+        $end    = $this->filters['endDate'] == null ? now()->endOfDay() : $this->filters['endDate'] . ' 23:59:59';
 
-        // if ($activeFilter === 'today') {
-        //     $rangeStartDate = now()->startOfDay();
-        //     $rangeEndDate = now()->endOfDay();
-        // } elseif ($activeFilter === 'week') {
-        //     $rangeStartDate = now()->subWeek()->startOfWeek();
-        //     $rangeEndDate = now()->endOfWeek();
-        // } elseif ($activeFilter === 'month') {
-        //     $rangeStartDate = now()->subMonthNoOverflow()->startOfMonth();
-        //     $rangeEndDate = now()->endOfMonth();
-        // } elseif ($activeFilter === 'year'){
-        //     $rangeStartDate = now()->subMonthNoOverflow()->startOfYear();
-        //     $rangeEndDate = now()->endOfYear();
-        // }
-
-        $data1 = Trend::model(Frecuencia::class)
-            ->between(
-                // start: (isset($start)) ? Carbon::parse($start) : now()->startOfMonth(),
-                // end: (isset($end)) ? Carbon::parse($end) : now()->endOfMonth(),
-                start: now()->startOfMonth(),
-                end: now()->endOfMonth(),
-            )
-
-            ->perDay()
-            ->count('cliente_id');
-
-        $data2 = Trend::model(VentaServicio::class)
-            ->between(
-                start: (isset($start)) ? Carbon::parse($start) : now()->startOfMonth(),
-                end: (isset($end)) ? Carbon::parse($end) : now()->endOfMonth(),
-                // start: now()->startOfMonth(),
-                // end: now()->endOfMonth(),
-            )
-            // ->perMonth()
-            ->perDay()
-            ->count('cliente_id');
-
-        $data3 = DB::table('venta_productos')
-        ->select(DB::raw('count(cantidad) as cantidad, producto_id'))
-        ->groupBy('producto_id')
+        /**Clientes Atendidos */
+        /**********************************************************************************************************/
+        $clientes = DB::table('venta_servicios')
+        ->select(DB::raw('DATE(created_at) as fecha'), DB::raw('count(DISTINCT cliente_id) as clientes'))
+        ->whereBetween('venta_servicios.created_at', [$start, $end])
+        ->groupBy('fecha')
         ->get();
+        $data_clientes_atendidos = $clientes->map(fn($data) => $data->clientes);
+        /**********************************************************************************************************/
 
-        // dd($data3, $data3->map(fn ($data3) => $value->cantidad));
 
+        /**Clientes Recurrentes */
+        /*********************************************************************************************************************************/
+        $clientes_recurentes = DB::table('venta_servicios')
+        ->select(DB::raw('DATE(venta_servicios.created_at) as fecha'), DB::raw('count(DISTINCT venta_servicios.cliente_id) as clientes'))
+        ->join('clientes', 'venta_servicios.cliente_id', '=', 'clientes.id')
+        ->where('clientes.visitas', '>=', 2)
+        ->whereBetween('venta_servicios.created_at', [$start, $end])
+        ->groupBy('fecha')
+        ->get();
+        $data_clientes_recurentes = $clientes_recurentes->map(fn($data) => $data->clientes);
+        /*********************************************************************************************************************************/
+
+
+        /**Clientes Nuevos */
+        /*********************************************************************************************************************************/
+        $clientes_nuevos = DB::table('venta_servicios')
+        ->select(DB::raw('DATE(venta_servicios.created_at) as fecha'), DB::raw('count(DISTINCT venta_servicios.cliente_id) as clientes'))
+        ->join('clientes', 'venta_servicios.cliente_id', '=', 'clientes.id')
+        ->where('clientes.visitas', 1)
+        ->whereBetween('venta_servicios.created_at', [$start, $end])
+        ->groupBy('fecha')
+        ->get();
+        $data_clientes_nuevos = $clientes_nuevos->map(fn($data) => $data->clientes);
+        /*********************************************************************************************************************************/
+
+
+        /**Labels (Escala del eje X) */
+        /*********************************************************************************************************************************/
+        $labels = $clientes->map(fn($data) => Carbon::parse($data->fecha)->isoFormat('dd, D'));
+        /*********************************************************************************************************************************/
+        
         return [
             'datasets' => [
                 [
                     'label' => 'Clientes Atendidos',
-                    'data' => $data1->map(fn (TrendValue $value) => $value->aggregate),
+                    'data' => $data_clientes_atendidos,
                     'backgroundColor' => '#00ce0026',
                     'borderColor' => '#00ce00',
                     'fill' => true,
                 ],
                 [
                     'label' => 'Clientes Recurentes',
-                    'data' => $data3->map(fn ($data3) => $data3->cantidad),
-                    // 'backgroundColor' => '#ffeb3ba6',
+                    'data' => $data_clientes_recurentes,
                     'borderColor' => '#ff0000',
-                    // 'fill' => true,
                 ],
                 [
                     'label' => 'Clientes Nuevos',
-                    'data' => $data2->map(fn (TrendValue $value) => $value->aggregate),
-                    // 'backgroundColor' => '#7b9aa666',
+                    'data' => $data_clientes_nuevos,
                     'borderColor' => '#0a0aff',
-                    // 'fill' => true,
                 ],
 
             ],
-            'labels' => ($data1->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dd, D'))->toArray()),
+            'labels' => $labels,
 
+            // 'labels' => ($data_atendidos->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dd, D'))->toArray()),
 
-            // 'labels' => ($data1->map(fn (TrendValue $value) => Carbon::parse($value->date)->isoFormat('dddd, D MMM'))->toArray()),
         ];
     }
 

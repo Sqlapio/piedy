@@ -23,6 +23,8 @@ class ServiciosDashChart extends ChartWidget
     protected static ?string $maxHeight = '250px';
 
     protected static ?int $sort = 4;
+    
+    // protected int | string | array $columnSpan = '1';
 
 
     protected function getData(): array
@@ -38,6 +40,7 @@ class ServiciosDashChart extends ChartWidget
             ->whereBetween('detalle_asignacions.created_at', [$start, $end])
             ->groupBy('servicio_id')
             ->orderBy('venta', 'desc')
+            ->take(20)
             ->get();
 
 

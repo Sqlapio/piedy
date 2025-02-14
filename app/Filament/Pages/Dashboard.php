@@ -35,18 +35,6 @@ class Dashboard extends \Filament\Pages\Dashboard
     {
         return $form
             ->schema([
-                // Section::make()
-                //     ->schema([
-                //         Toggle::make('activar')
-                //         ->label('Rango de Fechas')
-                //         ->onColor('success')
-                //         ->onIcon('heroicon-c-check')
-                //         ->offColor('danger')
-                //         ->offIcon('heroicon-c-x-mark')
-                //         ->live()
-                //         ->declined(),
-                //     ])
-                //     ->columns(2),
                 Section::make()
                     ->schema([
                         DatePicker::make('startDate')->label('Inicio'),
@@ -55,8 +43,13 @@ class Dashboard extends \Filament\Pages\Dashboard
                         ->label('Sucursal')
                         ->options(Sucursal::all()->pluck('nombre', 'id'))
                         ])
-                        ->columns(3),
+                        ->columns([
+                            'sm' => 1,
+                            'md' => 3,
+                            'xl' => 3,
+                        ]) 
                         // ->visible(fn(Get $get):bool => $get('activar')),
             ]);
     }
+
 }

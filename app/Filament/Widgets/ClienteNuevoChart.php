@@ -23,7 +23,7 @@ class ClienteNuevoChart extends ChartWidget
 
     protected static ?string $maxHeight = '300px';
 
-    protected int | string | array $columnSpan = '2';
+    protected int | string | array $columnSpan = 'full';
 
     protected static ?int $sort = 5;
 
@@ -112,4 +112,5 @@ class ClienteNuevoChart extends ChartWidget
     {
          return 'line';
     }
+
 }

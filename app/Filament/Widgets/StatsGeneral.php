@@ -25,7 +25,7 @@ class StatsGeneral extends BaseWidget
 
     protected static ?int $sort = 1;
 
-    protected int | string | array $columnSpan = '1';
+    // protected int | string | array $columnSpan = '1';
 
     protected function getStats(): array
     {
@@ -117,8 +117,15 @@ class StatsGeneral extends BaseWidget
         ];
     }
 
-    public function getColumns(): int
-    {
-        return 3;
-    }
+    // public function getColumns(): int
+    // {
+    //     return 3;
+    // }
+
+    protected int | string | array $columnSpan = [
+        // 'xs' => 3,
+        'sm' => 3,
+        'md' => 1,
+        'xl' => 1,
+    ];
 }

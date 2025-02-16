@@ -438,22 +438,37 @@ class StatController extends Controller
                     
                     $promedio_ayer = $nro_productos_ayer / $clientes_ayer;
                     if ($promedio_hoy > $promedio_ayer) {
-                        $porcentaje = ($promedio_ayer * 100) / $promedio_hoy;
-                        $porcentaje = number_format($porcentaje, 2);
+                        if ($promedio_hoy == 0 && $promedio_ayer == 0) {
+                            $porcentaje = 0;
+                        }else {
+                            $porcentaje = ($promedio_ayer * 100) / $promedio_hoy;
+                            $porcentaje = number_format($porcentaje, 2);
+                            
+                        }
                         $icon = 'heroicon-m-arrow-trending-up';
                         $color = 'success';
                     }
 
                     if ($promedio_hoy < $promedio_ayer) {
-                        $porcentaje = ($promedio_hoy * 100) / $promedio_ayer;
-                        $porcentaje = number_format($porcentaje, 2);
+                        if ($promedio_hoy == 0 && $promedio_ayer == 0) {
+                            $porcentaje = 0;
+                        }else {
+                            $porcentaje = ($promedio_hoy * 100) / $promedio_ayer;
+                            $porcentaje = number_format($porcentaje, 2);
+                            
+                        }
                         $icon = 'heroicon-m-arrow-trending-down';
                         $color = 'danger';
                     }
 
                     if ($promedio_hoy == $promedio_ayer) {
-                        $porcentaje = ($promedio_ayer * 100) / $promedio_hoy;
-                        $porcentaje = number_format($porcentaje, 2);
+                        if ($promedio_hoy == 0 && $promedio_ayer == 0) {
+                            $porcentaje = 0;
+                        }else {
+                            $porcentaje = ($promedio_ayer * 100) / $promedio_hoy;
+                            $porcentaje = number_format($porcentaje, 2);
+                            
+                        }
                         $icon = 'heroicon-c-arrow-long-right';
                         $color = 'warning';
                     }

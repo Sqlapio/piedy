@@ -5,5 +5,5 @@
         {{-- <livewire:table-producto :add_servicio="$add_servicio" /> --}}
     </div>
     <div class="w-full h-28"></div>
-    <x-menu_table />
+    {{-- <x-menu_table /> --}}
 </div>

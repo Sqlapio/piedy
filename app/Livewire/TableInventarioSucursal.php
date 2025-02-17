@@ -175,6 +175,8 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                                                         Select::make('producto_id')
                                                             ->label('Producto')
                                                             ->options(Producto::all()->pluck('descripcion', 'id'))
+                                                            ->searchable()
+                                                            ->preload()
                                                             ->relationship(
                                                                 name: 'producto',
                                                                 modifyQueryUsing: fn(Builder $query) => $query->orderBy('descripcion'),

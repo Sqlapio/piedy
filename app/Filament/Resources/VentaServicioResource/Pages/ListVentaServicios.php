@@ -2,15 +2,19 @@
 
 namespace App\Filament\Resources\VentaServicioResource\Pages;
 
-use App\Filament\Resources\VentaServicioResource;
-use App\Models\VentaServicio;
 use Filament\Actions;
+use App\Models\VentaServicio;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ListRecords\Tab;
+use App\Filament\Resources\VentaServicioResource;
 use Filament\Pages\Concerns\ExposesTableToWidgets;
+use Filament\Widgets\Concerns\InteractsWithPageTable;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
+
 class ListVentaServicios extends ListRecords
 {
     use ExposesTableToWidgets;
+    use InteractsWithPageFilters;
 
     protected ?string $heading = 'Ventas Servicios';
 
@@ -28,12 +32,14 @@ class ListVentaServicios extends ListRecords
         ];
     }
 
-    protected function getHeaderWidgets(): array
+    protected function getFooterWidgets(): array
     {
         return [
             VentaServicioResource\Widgets\VentaServicioStats::class,
             VentaServicioResource\Widgets\VentaServicioComisionStats::class,
-            // VentaServicioResource\Widgets\VentaServicioPropinasStats::class,
+            VentaServicioResource\Widgets\VentaServiciosChart::make([
+                'filters_pages_resources' => $this->tableFilters['created_at'],
+            ]),
         ];
     }
 
@@ -51,12 +57,12 @@ class ListVentaServicios extends ListRecords
         return [
 
             'Todo' => ListRecords\Tab::make('Todo')->query(fn ($query) => $query->orderBy('created_at', 'desc')),
-            'Mes' => Tab::make()
-                ->query(fn ($query) => $query->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]))
-                ->badge(VentaServicio::query()->whereBetween('created_at',[now()->startOfMonth(), now()->endOfMonth()])->count()),
             'Hoy' => Tab::make()
                 ->query(fn ($query) => $query->whereDate('created_at', now()->toDateString()))
                 ->badge(VentaServicio::query()->whereDate('created_at', now()->toDateString())->count()),
+            'Nro. de Ventas del Mes' => Tab::make()
+                ->query(fn ($query) => $query->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]))
+                ->badge(VentaServicio::query()->whereBetween('created_at',[now()->startOfMonth(), now()->endOfMonth()])->count()),
             'Quincena 01/15' => Tab::make()
                 ->query(fn ($query) => $query->whereBetween('created_at', [$desde, $hasta]))
                 ->badge(VentaServicio::query()->whereBetween('created_at',[$desde, $hasta])->count()),

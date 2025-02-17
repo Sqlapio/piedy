@@ -7,58 +7,41 @@ use App\Models\VentaProducto;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
+use App\Filament\Resources\VentaProductoResource\Pages\ListVentaProductos;
 
 class ChartAverage extends ChartWidget
 {
-
     use InteractsWithPageFilters;
+
+    public array $filters_pages_resources;
     
     protected static ?string $heading = 'Average de ventas';
-
-    public ?string $filter = 'week';
 
     protected static ?string $maxHeight = '400px';
 
     protected int | string | array $columnSpan = 'full';
 
-    protected function getFilters(): ?array
+    protected function getTablePage(): string
     {
-        return [
-            'today' => 'Hoy',
-            'week'  => 'Semana',
-            'month' => 'Mes',
-            'year'  => 'Año',
-        ];
+        return ListVentaProductos::class;
     }
+
 
     protected function getData(): array
     {
+//  dd($this->filters_pages_resources);
 
-        $activeFilter = $this->filter;
 
-        if ($activeFilter === 'today') {
-            $rangeStartDate = now()->startOfDay();
-            $rangeEndDate = now()->endOfDay();
-        } elseif ($activeFilter === 'week') {
-            $rangeStartDate = now()->startOfWeek();
-            $rangeEndDate = now()->endOfWeek();
-        } elseif ($activeFilter === 'month') {
-            $rangeStartDate = now()->startOfMonth();
-            $rangeEndDate = now()->endOfMonth();
-        } elseif ($activeFilter === 'year') {
-            $rangeStartDate = now()->startOfYear();
-            $rangeEndDate = now()->endOfYear();
-        }
-
-        // $datos = VentaProducto::all()->select(['empleado_id', 'created_at'])->groupBy('empleado_id')->count();
-
+        $desde = $this->filters_pages_resources['desde'] == null ? now()->startOfYear() :  $this->filters_pages_resources['desde'] . ' 00:00:00';
+        $hasta = $this->filters_pages_resources['hasta'] == null ? now()->endOfYear() : $this->filters_pages_resources['hasta'] . ' 23:59:59';
+        
         $data = DB::table('venta_productos')
         ->select(DB::raw('COUNT(empleado_id) as cantidad, users.name as nombres', 'created_at'))
-        ->whereBetween('venta_productos.created_at', [$rangeStartDate, $rangeEndDate])
-            ->join('users', 'venta_productos.empleado_id', '=', 'users.id')
-            ->groupBy('empleado_id')
-            // ->take(10)
-            ->get();
+        ->join('users', 'venta_productos.empleado_id', '=', 'users.id')
+        ->whereBetween('venta_productos.created_at', [$desde, $hasta])
+        ->groupBy('empleado_id')
+        ->get();
+        // dd($data);
         // dd($data);
         $cantidad = $data->map(fn($data) => $data->cantidad);
         $labels = $data->map(fn($data) => $data->nombres);
@@ -68,8 +51,9 @@ class ChartAverage extends ChartWidget
                 [
                     'label' => 'Average de ventas',
                     'data' => $cantidad,
-                    'backgroundColor' => '#22c55e',
-                    'borderColor' => '#22c55e',
+                    'backgroundColor' => '#00ce0026',
+                    'borderColor' => '#00ce00',
+                    'fill' => true,
                 ]
             ],
             'labels' => $labels,

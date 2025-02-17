@@ -2,12 +2,13 @@
 
 namespace App\Filament\Resources\VentaServicioResource\Widgets;
 
-use App\Filament\Resources\VentaServicioResource\Pages\ListVentaServicios;
+use Flowframe\Trend\Trend;
 use App\Models\VentaServicio;
+use Illuminate\Support\Facades\DB;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\Concerns\InteractsWithPageTable;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
-use Filament\Widgets\StatsOverviewWidget\Stat;
-use Flowframe\Trend\Trend;
+use App\Filament\Resources\VentaServicioResource\Pages\ListVentaServicios;
 
 class VentaServicioStats extends BaseWidget
 {
@@ -46,29 +47,37 @@ class VentaServicioStats extends BaseWidget
         }
         //--------------------------------------------------------------------------------------
 
+        /**Clientes Atendidos */
+        //----------------------------------------------------------------------------------------------------------
+        $clientes = $this->getPageTableQuery()
+        ->select('cliente_id')
+        ->groupBy('cliente_id')
+        ->get();
+        //----------------------------------------------------------------------------------------------------------
+
         
 
         return [
 
-            Stat::make('TOTAL SERVICIOS', array_sum($count_servicios))
+            Stat::make('TOTAL SERVICIOS REALIZADOS', array_sum($count_servicios))
                 ->description('Total de servicios realizados')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('primary')
                 ->extraAttributes(['class' => 'col-span-2 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a]' ]),
 
-            Stat::make('CLIENTES ATENDIDOS', $this->getPageTableQuery()->distinct()->count('cliente_id'))
+            Stat::make('TOTAL CLIENTES ATENDIDOS', count($clientes))
                 ->description('Total de clientes atendidos')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('info')
                 ->extraAttributes(['class' => 'col-span-2 row-span-1 rounded-md text-center border-4 border-[#7B9AA6]']),
 
-            Stat::make('TOTAL USD($)', '$' . $this->getPageTableQuery()->sum('pago_usd'))
+            Stat::make('TOTAL PAGOS EN USD($)', '$' . $this->getPageTableQuery()->sum('pago_usd'))
                 ->description('Pago total en USD($)')
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('success')
                 ->extraAttributes(['class' => 'col-span-2 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
 
-            Stat::make('TOTAL BS.', 'BS.' . $this->getPageTableQuery()->sum('pago_bsd'))
+            Stat::make('TOTAL PAGOS EN BS.', 'BS.' . $this->getPageTableQuery()->sum('pago_bsd'))
                 ->description('Pago total en Bs')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('warning')

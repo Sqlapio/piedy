@@ -19,9 +19,9 @@ class ClientesDashChart extends ChartWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $heading = 'Clientes';
+    protected static ?string $heading = 'Agenda';
 
-    protected static ?string $maxHeight = '250px';
+    protected static ?string $maxHeight = '150px';
 
     protected static ?int $sort = 4;
 

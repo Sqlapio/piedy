@@ -19,7 +19,10 @@ class ProductosChart extends ChartWidget
 
     protected static ?string $maxHeight = '300px';
 
-    // protected int | string | array $columnSpan = '3';
+    protected int | string | array $columnSpan = [
+        'sm' => 2,
+        'xl' => 1,
+    ];
 
     protected static ?int $sort = 2;
 

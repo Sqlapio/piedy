@@ -16,6 +16,7 @@ class ListVentas extends ListRecords
     protected ?string $heading = 'Ventas Generales';
 
     protected int | string | array $columnSpan = [
+        'sm' => 1,
         'md' => 2,
         'xl' => 2,
     ];

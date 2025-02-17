@@ -40,6 +40,7 @@ class ClienteNuevoChart extends ChartWidget
         ->whereBetween('venta_servicios.created_at', [$start, $end])
         ->groupBy('fecha')
         ->get();
+        // dd($clientes);
         $data_clientes_atendidos = $clientes->map(fn($data) => $data->clientes);
         /**********************************************************************************************************/
 

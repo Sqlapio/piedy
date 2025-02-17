@@ -23,7 +23,7 @@ class ServiciosDashChart extends ChartWidget
     protected static ?string $maxHeight = '250px';
 
     protected static ?int $sort = 4;
-    
+
     // protected int | string | array $columnSpan = '1';
 
 
@@ -40,7 +40,7 @@ class ServiciosDashChart extends ChartWidget
             ->whereBetween('detalle_asignacions.created_at', [$start, $end])
             ->groupBy('servicio_id')
             ->orderBy('venta', 'desc')
-            ->take(20)
+            ->take(10)
             ->get();
 
 
@@ -83,7 +83,7 @@ class ServiciosDashChart extends ChartWidget
                         '#56737f'
                     ],
                     'borderColor' => '#ffff',
-                    'barPercentage' => 0.5,
+                    'barPercentage' => 0.7,
                 ],
 
             ],

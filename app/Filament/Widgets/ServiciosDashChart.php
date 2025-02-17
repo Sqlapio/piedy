@@ -22,9 +22,9 @@ class ServiciosDashChart extends ChartWidget
 
     protected static ?string $maxHeight = '250px';
 
-    protected static ?int $sort = 2;
-    
-    protected int | string | array $columnSpan = '1';
+    protected static ?int $sort = 4;
+
+    // protected int | string | array $columnSpan = '1';
 
 
     protected function getData(): array
@@ -41,7 +41,7 @@ class ServiciosDashChart extends ChartWidget
 
         if (count($data) == 0) {
             $this->columnSpan = 'full';
-        }        
+        }
 
         $data = DB::table('detalle_asignacions')
             ->select(DB::raw('COUNT(servicio_id) as venta, servicio_id, servicios.nombre_corto as descripcion', 'status', 'created_at', 'tipo'))
@@ -51,7 +51,7 @@ class ServiciosDashChart extends ChartWidget
             ->whereBetween('detalle_asignacions.created_at', [$start, $end])
             ->groupBy('servicio_id')
             ->orderBy('venta', 'desc')
-            ->take(20)
+            ->take(10)
             ->get();
 
 
@@ -94,7 +94,7 @@ class ServiciosDashChart extends ChartWidget
                         '#56737f'
                     ],
                     'borderColor' => '#ffff',
-                    'barPercentage' => 0.5,
+                    'barPercentage' => 0.7,
                 ],
 
             ],

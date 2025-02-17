@@ -20,7 +20,10 @@ class ServiciosChart extends ChartWidget
 
     protected static ?string $maxHeight = '300px';
 
-    protected int | string | array $columnSpan = '1';
+    protected int | string | array $columnSpan = [
+        'sm' => 2,
+        'xl' => 1,
+    ];
 
     public ?string $filter = 'week';
 

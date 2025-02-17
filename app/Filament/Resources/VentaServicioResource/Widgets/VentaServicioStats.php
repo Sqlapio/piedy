@@ -29,10 +29,28 @@ class VentaServicioStats extends BaseWidget
             )
             ->perMonth()
             ->count('cliente_id');
+        
+        //Logica para calculo de los servicios realizados
+        //-----------------------------------------------
+        //-------------------------------------------------------------------------------------
+        $count_servicios = [];
+        
+        $select_servicios = $this->getPageTableQuery()->with('detalle_asignaciones')->get()->toArray();
+        for ($i = 0; $i < count($select_servicios); $i++) {
+            for ($j = 0; $j < count($select_servicios[$i]['detalle_asignaciones']); $j++) {
+                    if($select_servicios[$i]['detalle_asignaciones'][$j]['tipo'] == 'servicio'){
+                        $count_servicios[] = 1;
+                    }
+                    
+                }
+        }
+        //--------------------------------------------------------------------------------------
+
+        
 
         return [
 
-            Stat::make('TOTAL SERVICIOS', $this->getPageTableQuery()->count('cliente_id'))
+            Stat::make('TOTAL SERVICIOS', array_sum($count_servicios))
                 ->description('Total de servicios realizados')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('primary')

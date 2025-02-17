@@ -42,9 +42,6 @@ class StatsGeneral extends BaseWidget
         $productos_usd          = StatController::total_productos_usd($start, $end, $sucursal_id =  null);
         $promedio_prod          = StatController::promedio_productos_cliente($start, $end, $sucursal_id =  null);
 
-        $clientes_atendidos     = StatController::clientes_atendidos($start, $end, $sucursal_id =  null);
-        $clientes_nuevos        = StatController::clientes_nuevos($start, $end, $sucursal_id =  null);
-        $clientes_recurrentes   = StatController::clientes_recurrentes($start, $end, $sucursal_id =  null);
 
         return [
 

@@ -66,4 +66,9 @@ class Venta extends Model
     {
         return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
     }
+
+    public function ventaServicio(): HasOne
+    {
+        return $this->hasOne(VentaServicio::class, 'cod_asignacion', 'cod_asignacion');
+    }
 }

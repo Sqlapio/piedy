@@ -34,6 +34,11 @@ class DetalleAsignacion extends Model
         'tipo'
     ];
 
+    public function ventaServicios(): BelongsTo
+    {
+        return $this->belongsTo(VentaServicio::class, 'cod_asignacion', 'cod_asignacion');
+    }
+
     public function cliente(): BelongsTo
     {
         return $this->belongsTo(Cliente::class, 'cliente_id', 'id');

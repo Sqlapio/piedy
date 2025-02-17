@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 use App\Models\Cita;
 use App\Models\User;
+use App\Models\Venta;
 use App\Livewire\Login;
 use App\Models\Cliente;
 use App\Models\TasaBcv;
@@ -15,6 +16,7 @@ use Flowframe\Trend\Trend;
 use App\Models\ServicioUser;
 use App\Models\CierreGeneral;
 use App\Models\PeriodoNomina;
+use App\Models\VentaProducto;
 use App\Models\VentaServicio;
 use App\Models\AsignarProducto;
 use Flowframe\Trend\TrendValue;
@@ -381,5 +383,18 @@ Route::get('/detalle/srv/{codigo}', [CajaController::class, 'detalleServicio'])-
 /**-------------------------------------------------------*/
 
 Route::get('/ex', function () {
+
+    $ven = Venta::whereBetween('created_at', ['2025-01-01 00:00:00', '2025-02-31 23:59:59'])
+    ->with('ventaServicio')
+    ->get();
+    // ->toArray();
+
+    // dd($ven);
+    dd($ven);  
+    for ($i=0; $i < count($ven); $i++) { 
+        # code...
+        $ven[$i] = $ven[$i]['cod_asignacion'];
+    }
+    dd(count($srv), count($prod), count($ven));   
         
 });

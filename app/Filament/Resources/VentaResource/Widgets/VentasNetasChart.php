@@ -80,10 +80,10 @@ class VentasNetasChart extends ChartWidget
                     'fill' => true,
                 ],
                 [
-                    'label' => 'Clientes Atendidos',
+                    'label' => 'Conversion Bsd/Usd',
                     'data' => $data3->map(fn(TrendValue $value) => $value->aggregate),
                     'backgroundColor' => '#00ce0026',
-                    'borderColor' => '#00ce00',
+                    'borderColor' => '#ff0000',
                     'fill' => true,
                 ],
 

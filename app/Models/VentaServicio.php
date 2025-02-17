@@ -45,7 +45,7 @@ class VentaServicio extends Model
         'responsable'
     ];
 
-    public function detalle_asignacions():HasMany
+    public function detalle_asignaciones():HasMany
     {
         return $this->hasMany(DetalleAsignacion::class, 'cod_asignacion', 'cod_asignacion');
     }

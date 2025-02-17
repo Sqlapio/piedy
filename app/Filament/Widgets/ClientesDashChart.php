@@ -19,9 +19,9 @@ class ClientesDashChart extends ChartWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $heading = 'Clientes';
+    protected static ?string $heading = 'Agenda';
 
-    protected static ?string $maxHeight = '250px';
+    protected static ?string $maxHeight = '150px';
 
     protected static ?int $sort = 2;
 
@@ -33,7 +33,7 @@ class ClientesDashChart extends ChartWidget
         $start = $this->filters['startDate'] == null ? now()->startOfDay()->format('Y-m-d') : date('Y-m-d', strtotime($this->filters['startDate']));
         $end = $this->filters['endDate'] == null ? now()->endOfDay() : $this->filters['endDate'] . ' 23:59:59';
 
-        
+
         $data = DB::table('venta_productos')
         ->select(DB::raw('SUM(cantidad) as venta, producto_id, productos.nombre_corto as descripcion'))
         ->join('productos', 'venta_productos.producto_id', '=', 'productos.id')
@@ -45,7 +45,7 @@ class ClientesDashChart extends ChartWidget
             $this->columnSpan = 'full';
         }
 
-        
+
         $citas_agendadas_bot = Cita::where('responsable', 'PiedyBot')
             ->where('fecha_formateada', $start)
             ->count();

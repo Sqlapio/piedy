@@ -54,7 +54,7 @@ class Dashboard extends \Filament\Pages\Dashboard
                             'sm' => 1,
                             'md' => 3,
                             'xl' => 3,
-                        ]) 
+                        ])
                         // ->visible(fn(Get $get):bool => $get('activar')),
             ]);
     }
@@ -82,9 +82,9 @@ class Dashboard extends \Filament\Pages\Dashboard
         }else{
             $widgets = [
                 StatsGeneral::class,
+                ClientesDashChart::class,
                 ServiciosDashChart::class,
                 ProductosDashChart::class,
-                ClientesDashChart::class,
                 ClienteNuevoChart::class,
 
             ];

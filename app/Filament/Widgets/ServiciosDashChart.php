@@ -22,15 +22,26 @@ class ServiciosDashChart extends ChartWidget
 
     protected static ?string $maxHeight = '250px';
 
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 2;
     
-    // protected int | string | array $columnSpan = '1';
+    protected int | string | array $columnSpan = '1';
 
 
     protected function getData(): array
     {
         $start = $this->filters['startDate'] == null ? now()->startOfDay() : $this->filters['startDate'] . ' 00:00:00';
         $end = $this->filters['endDate'] == null ? now()->endOfDay() : $this->filters['endDate'] . ' 23:59:59';
+
+        $data = DB::table('venta_productos')
+        ->select(DB::raw('SUM(cantidad) as venta, producto_id, productos.nombre_corto as descripcion'))
+        ->join('productos', 'venta_productos.producto_id', '=', 'productos.id')
+        ->whereBetween('venta_productos.created_at', [$start, $end])
+            ->groupBy('producto_id')
+            ->get();
+
+        if (count($data) == 0) {
+            $this->columnSpan = 'full';
+        }        
 
         $data = DB::table('detalle_asignacions')
             ->select(DB::raw('COUNT(servicio_id) as venta, servicio_id, servicios.nombre_corto as descripcion', 'status', 'created_at', 'tipo'))

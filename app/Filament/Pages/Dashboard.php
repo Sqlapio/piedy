@@ -74,8 +74,8 @@ class Dashboard extends \Filament\Pages\Dashboard
         if(count($data) == 0){
             $widgets = [
                 StatsGeneral::class,
-                ServiciosDashChart::class,
                 ClientesDashChart::class,
+                ServiciosDashChart::class,
                 ClienteNuevoChart::class,
 
             ];

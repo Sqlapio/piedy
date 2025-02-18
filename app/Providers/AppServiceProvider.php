@@ -2,13 +2,16 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Filament\Support\Colors\Color;
-use Filament\Support\Facades\FilamentColor;
-use Filament\Support\Assets\Css;
-use Filament\Support\Facades\FilamentAsset;
+use Doctrine\DBAL\Schema\View;
 use Filament\Support\Assets\Js;
+use Filament\Support\Assets\Css;
+use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\ServiceProvider;
+use Filament\Support\Facades\FilamentView;
+use Filament\Support\Facades\FilamentAsset;
+use Filament\Support\Facades\FilamentColor;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -38,6 +41,14 @@ class AppServiceProvider extends ServiceProvider
         FilamentAsset::register([
             Js::make('chart-js-plugins', Vite::asset('resources/js/filament-chart-js-plugins.js'))->module(),
         ]);
+
+        //RenderHook
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::FOOTER,
+            function () {
+                return view('footer');
+            }
+        );
 
     }
 

@@ -42,7 +42,6 @@ class StatsGeneral extends BaseWidget
         $productos_usd          = StatController::total_productos_usd($start, $end, $sucursal_id =  null);
         $promedio_prod          = StatController::promedio_productos_cliente($start, $end, $sucursal_id =  null);
 
-
         return [
 
             /**
@@ -64,7 +63,7 @@ class StatsGeneral extends BaseWidget
                 ->color($servicios_usd['color'])
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
 
-            Stat::make('PROMEDIO SERVICIO/CLIENTE', $promedio['promedio_hoy'])
+            Stat::make('PROMEDIO SERVICIO/CLIENTE', round($promedio['promedio_hoy'], 2))
                 ->description(round($promedio['porcentaje']) . '%', 2)
                 ->descriptionIcon($promedio['icon'])
                 ->color($promedio['color'])

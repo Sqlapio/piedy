@@ -64,7 +64,7 @@ class StatsGeneral extends BaseWidget
                 ->color($servicios_usd['color'])
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
 
-            Stat::make('PROMEDIO SERVICIO/CLIENTE', number_format($promedio['promedio_hoy'], 1))
+            Stat::make('PROMEDIO SERVICIO/CLIENTE', number_format($promedio['promedio_hoy'], 2))
                 ->description(round($promedio['porcentaje']) . '%', 2)
                 ->descriptionIcon($promedio['icon'])
                 ->color($promedio['color'])

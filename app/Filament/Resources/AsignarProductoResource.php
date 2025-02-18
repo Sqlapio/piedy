@@ -29,6 +29,20 @@ class AsignarProductoResource extends Resource
     {
         return $table
             ->columns([
+                
+                Tables\Columns\TextColumn::make('asignacion')
+                ->label('Asignacion')
+                ->badge()
+                ->icon(fn(string $state): string => match ($state) {
+                    'tienda' => 'heroicon-s-building-storefront',
+                    'tecnico' => 'heroicon-c-user-plus',
+                })
+                ->color(fn(string $state): string => match ($state) {
+                    'tienda' => 'warning',
+                    'tecnico' => 'success',
+                })
+                ->alignCenter()
+                ->sortable(),
 
                 Tables\Columns\TextColumn::make('producto.descripcion')
                     ->numeric()
@@ -36,8 +50,10 @@ class AsignarProductoResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cantidad')
-                    ->numeric()
-                    ->sortable(),
+                ->label('Cantidad')
+                ->alignCenter()
+                ->numeric()
+                ->sortable(),
                 Tables\Columns\TextColumn::make('responsable')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -52,8 +68,10 @@ class AsignarProductoResource extends Resource
                 Tables\Columns\TextColumn::make('sucursal.nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('servicios_facturados')
-                    ->numeric()
-                    ->sortable(),
+                ->label('Servicios o Dias ')
+                ->alignCenter()
+                ->numeric()
+                ->sortable(),
             ])
             ->filters([
                 //

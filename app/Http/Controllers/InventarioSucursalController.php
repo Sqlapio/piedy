@@ -59,8 +59,9 @@ class InventarioSucursalController extends Controller
 
     }
 
-    public static function asignar_producto($user_id, $cantidad, $producto_id, $sucursal)
+    public static function asignar_producto($data,$producto_id)
     {
+        // dd($data, $producto_id);
         try {
 
             $existencia_actual = InventarioSucursal::where('sucursal_id', Auth::user()->sucursal_id)
@@ -70,62 +71,120 @@ class InventarioSucursalController extends Controller
 
 
             //Validacion para saber si tenemos existencia para asignar el producto
-            if($cantidad > $existencia_actual){
+            if($data['cantidad'] > $existencia_actual){
                 throw new Exception("No hay suficiente existencia para realizar la asigancion", 401);
             }
 
-            //Buscamos el ultimo registro del usuario
-            $ultimo_registro = AsignarProducto::where('user_id', $user_id)
-            ->where('producto_id', $producto_id)
-            ->orderBy('created_at', 'desc')
-            ->first();
+            if($data['feedback'] == 'tienda'){
 
-            if($ultimo_registro != null) {
-                //Calculamos el total de servicios realizados entre la ultima fecha de entrega y la fecha actual
-                $total_servicios = DetalleAsignacion::where('empleado_id', $user_id)
-                ->whereBetween('created_at', [$ultimo_registro->created_at->format('Y-m-d').' 06:00:00.000', now()->format('Y-m-d H:m:s.000')])
-                ->where('status', 2)
-                ->count();
+                //Buscamos el ultimo registro del producto
+                $ultimo_registro = AsignarProducto::where('producto_id', $producto_id)
+                ->where('asignado_a_sucursal', $data['sucursal'])
+                ->orderBy('created_at', 'desc')
+                ->first();
 
-                $producto_asignado = new AsignarProducto();
-                $producto_asignado->user_id = $user_id;
-                $producto_asignado->producto_id = $producto_id;
-                $producto_asignado->cantidad = $cantidad;
-                $producto_asignado->fecha_entrega = now()->format('d-m-Y');
-                $producto_asignado->responsable = Auth::user()->name;
-                $producto_asignado->sucursal_id = Auth::user()->sucursal_id;
-                $producto_asignado->servicios_facturados = $total_servicios;
-                $producto_asignado->sucursal = $sucursal;
-                $producto_asignado->save();
+                if($ultimo_registro != null) {
+                    //Calculamos cuando dias han transcurrido desde la ultima asignacion del producto
+                    $diferencia = now()->diffInDays($ultimo_registro->created_at);
 
-                if ($producto_asignado->save()) {
-                    $existencia = InventarioSucursal::where('sucursal_id', Auth::user()->sucursal_id)
-                    ->where('producto_id', $producto_id)
-                    ->first();
-                    $existencia->cantidad = $existencia->cantidad - $cantidad;
-                    $existencia->save();
+                    $producto_asignado = new AsignarProducto();
+                    $producto_asignado->producto_id = $producto_id;
+                    $producto_asignado->cantidad = $data['cantidad'];
+                    $producto_asignado->fecha_entrega = now()->format('d-m-Y');
+                    $producto_asignado->responsable = Auth::user()->name;
+                    $producto_asignado->sucursal_id = Auth::user()->sucursal_id;
+                    $producto_asignado->servicios_facturados = $diferencia;
+                    $producto_asignado->asignado_a_sucursal =  $data['sucursal'];
+                    $producto_asignado->asignacion = $data['feedback'];
+                    $producto_asignado->save();
+
+                    if ($producto_asignado->save()) {
+                        $existencia = InventarioSucursal::where('sucursal_id', Auth::user()->sucursal_id)
+                            ->where('producto_id', $producto_id)
+                            ->first();
+                        $existencia->cantidad = $existencia->cantidad - $data['cantidad'];
+                        $existencia->save();
+                    }
+
+                }else{
+
+                    $producto_asignado = new AsignarProducto();
+                    $producto_asignado->producto_id = $producto_id;
+                    $producto_asignado->cantidad = $data['cantidad'];
+                    $producto_asignado->fecha_entrega = now()->format('d-m-Y');
+                    $producto_asignado->responsable = Auth::user()->name;
+                    $producto_asignado->sucursal_id = Auth::user()->sucursal_id;
+                    $producto_asignado->asignado_a_sucursal =  $data['sucursal'];
+                    $producto_asignado->asignacion = $data['feedback'];
+                    $producto_asignado->save();
+
+                    if ($producto_asignado->save()) {
+                        $existencia = InventarioSucursal::where('sucursal_id', Auth::user()->sucursal_id)
+                            ->where('producto_id', $producto_id)
+                            ->first();
+                        $existencia->cantidad = $existencia->cantidad - $data['cantidad'];
+                        $existencia->save();
+                    }
+                    
                 }
+                
+            }
 
-            }else{
-                $producto_asignado = new AsignarProducto();
-                $producto_asignado->user_id = $user_id;
-                $producto_asignado->producto_id = $producto_id;
-                $producto_asignado->cantidad = $cantidad;
-                $producto_asignado->fecha_entrega = now()->format('d-m-Y');
-                $producto_asignado->responsable = Auth::user()->name;
-                $producto_asignado->sucursal_id = Auth::user()->sucursal_id;
-                $producto_asignado->servicios_facturados = 0;
-                $producto_asignado->sucursal = $sucursal;
-                $producto_asignado->save();
+            if ($data['feedback'] == 'tecnico') {
 
-                if($producto_asignado->save()){
-                    $existencia = InventarioSucursal::where('sucursal_id', Auth::user()->sucursal_id)
+                //Buscamos el ultimo registro del usuario
+                $ultimo_registro = AsignarProducto::where('user_id', $data['user_id'])
                     ->where('producto_id', $producto_id)
+                    ->orderBy('created_at', 'desc')
                     ->first();
-                    $existencia->cantidad = $existencia->cantidad - $cantidad;
-                    $existencia->save();
-                }
 
+                if ($ultimo_registro != null) {
+                    //Calculamos el total de servicios realizados entre la ultima fecha de entrega y la fecha actual
+                    $total_servicios = DetalleAsignacion::where('empleado_id', $data['user_id'])
+                        ->whereBetween('created_at', [$ultimo_registro->created_at->format('Y-m-d') . ' 00:00:00.000', now()->format('Y-m-d') . ' 23:59:59.000'])
+                        ->where('status', 2)
+                        ->count();
+
+
+                    $producto_asignado = new AsignarProducto();
+                    $producto_asignado->user_id = $data['user_id'];
+                    $producto_asignado->producto_id = $producto_id;
+                    $producto_asignado->cantidad = $data['cantidad'];
+                    $producto_asignado->fecha_entrega = now()->format('d-m-Y');
+                    $producto_asignado->responsable = Auth::user()->name;
+                    $producto_asignado->sucursal_id = Auth::user()->sucursal_id;
+                    $producto_asignado->servicios_facturados = $total_servicios;
+                    $producto_asignado->asignacion = $data['feedback'];
+                    $producto_asignado->save();
+
+                    if ($producto_asignado->save()) {
+                        $existencia = InventarioSucursal::where('sucursal_id', Auth::user()->sucursal_id)
+                            ->where('producto_id', $producto_id)
+                            ->first();
+                        $existencia->cantidad = $existencia->cantidad - $data['cantidad'];
+                        $existencia->save();
+                    }
+                    
+                }else {
+
+                    $producto_asignado = new AsignarProducto();
+                    $producto_asignado->user_id = $data['user_id'];
+                    $producto_asignado->producto_id = $producto_id;
+                    $producto_asignado->cantidad = $data['cantidad'];
+                    $producto_asignado->fecha_entrega = now()->format('d-m-Y');
+                    $producto_asignado->responsable = Auth::user()->name;
+                    $producto_asignado->sucursal_id = Auth::user()->sucursal_id;
+                    $producto_asignado->asignacion = $data['feedback'];
+                    $producto_asignado->save();
+
+                    if ($producto_asignado->save()) {
+                        $existencia = InventarioSucursal::where('sucursal_id', Auth::user()->sucursal_id)
+                            ->where('producto_id', $producto_id)
+                            ->first();
+                        $existencia->cantidad = $existencia->cantidad - $data['cantidad'];
+                        $existencia->save();
+                    } 
+                }
             }
 
             Notification::make()

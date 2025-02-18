@@ -5,9 +5,11 @@ namespace App\Livewire;
 use App\Models\User;
 use Filament\Tables;
 use App\Models\Cliente;
+use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Livewire\Component;
 use App\Models\Producto;
+use App\Models\Sucursal;
 use App\Models\Inventario;
 use Filament\Tables\Table;
 use App\Models\Requisicion;
@@ -34,6 +36,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Actions\CreateAction;
 use Illuminate\Database\Eloquent\Builder;
 use App\Http\Controllers\ClienteController;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Tables\Columns\TextInputColumn;
 use Illuminate\Database\Eloquent\Collection;
 use App\Http\Controllers\RequisicionController;
@@ -41,7 +44,6 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 use App\Http\Controllers\NotificacionesController;
 use App\Http\Controllers\InventarioSucursalController;
-use App\Models\Sucursal;
 
 class TableInventarioSucursal extends Component implements HasForms, HasTable
 {
@@ -83,6 +85,7 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
             ])
             ->actions([
                 Action::make('asignar')
+                    ->label('Asignar Producto')
                     ->color('success')
                     ->visible(function (InventarioSucursal $record) {
                         if ($record->uso == 'consumo-interno') {
@@ -91,7 +94,6 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                             return false;
                         }
                     })
-                    ->label('Asignar Producto')
                     ->icon('heroicon-s-user-plus')
                     ->form([
                         Section::make('Formulario')
@@ -102,43 +104,91 @@ class TableInventarioSucursal extends Component implements HasForms, HasTable
                             ->schema([
                                 Grid::make()
                                     ->schema([
-                                        Select::make('user_id')
-                                            ->label('Selección del Técnico')
-                                            ->prefixIcon('heroicon-c-users')
-                                            ->options(User::whereBetween('rol_id', [1, 2])->where('status', 1)->pluck('name', 'id'))
-                                            ->searchable(),
-                                        Select::make('sucursal')
-                                            ->label('Selección de Sucursal')
-                                            ->prefixIcon('heroicon-c-users')
-                                            ->options(function () {
-                                                $user_auth = Auth::user()->sucursal_id;
-                                                return Sucursal::where('id', $user_auth)->pluck('nombre', 'nombre');
-                                                
+                                        ToggleButtons::make('feedback')
+                                            ->label('El producto es asignado a:?')
+                                            // ->hidden(fn() => Auth::user()->rol_id != 5 && Auth::user()->rol_id != 7)
+                                            ->options([
+                                                'tecnico' => 'Tecnico',
+                                                'tienda' => 'Tienda',
+                                            ])
+                                            ->options(function (Get $get) {
+                                                if(Auth::user()->rol_id == 5 || Auth::user()->rol_id == 7){
+                                                    return [
+                                                        'tecnico' => 'Tecnico',
+                                                        'tienda' => 'Tienda',
+                                                    ];
+                                                }else{
+                                                    return [
+                                                        'tecnico' => 'Tecnico',
+                                                    ];
+                                                }
                                             })
-                                            ->hidden(fn () => Auth::user()->rol_id != 5 && Auth::user()->rol_id != 7)
-                                            ->searchable(),
-                                        TextInput::make('cantidad')
-                                            ->label('Cantidad asignada')
-                                            ->prefixIcon('heroicon-c-credit-card')
-                                            ->hint('Nota: solo números enteros')
-                                            ->required()
-                                            ->rules(['required', 'numeric', 'integer'])
-                                            ->validationMessages([
-                                                'required' => 'Debe introducir la cantidad',
-                                                'numeric' => 'Campo numerico',
-                                                'integer' => 'Debe ser un número entero',
+                                            ->colors([
+                                                'tienda' => 'info',
+                                                'tecnico' => 'success',
+                                            ])
+                                            ->icons([
+                                                'tienda' => 'heroicon-o-pencil',
+                                                'tecnico' => 'heroicon-o-clock',
+                                            ])
+                                            ->columnSpanFull()
+                                            ->live()
+                                            ->inline(),
+                                            
+                                            //Seccion para asignar al tecnico
+                                            //--------------------------------------------------------------
+                                            Section::make()
+                                            ->hidden(fn (Get $get) => $get('feedback') != 'tecnico')
+                                            ->schema([
+                                                Select::make('user_id')
+                                                    ->label('Selección del Técnico')
+                                                    ->prefixIcon('heroicon-c-users')
+                                                    ->options(User::whereBetween('rol_id', [1, 2])->where('status', 1)->pluck('name', 'id'))
+                                                    // ->hidden()
+                                                    ->searchable(),
+                                                TextInput::make('cantidad')
+                                                    ->label('Cantidad asignada')
+                                                    ->prefixIcon('heroicon-c-credit-card')
+                                                    ->hint('Nota: solo números enteros')
+                                                    ->required()
+                                                    ->rules(['required', 'numeric', 'integer'])
+                                                    ->validationMessages([
+                                                        'required' => 'Debe introducir la cantidad',
+                                                        'numeric' => 'Campo numerico',
+                                                        'integer' => 'Debe ser un número entero',
+                                                    ]),
                                             ]),
-                                        
+
+                                            //Seccion para asignar a la tienda
+                                            //--------------------------------------------------------------
+                                            Section::make()
+                                            ->hidden(fn (Get $get) => $get('feedback') != 'tienda')
+                                            ->schema([
+                                                Select::make('sucursal')
+                                                    ->label('Selección de Sucursal')
+                                                    ->prefixIcon('heroicon-c-users')
+                                                    ->options(function () {
+                                                        $user_auth = Auth::user()->sucursal_id;
+                                                        return Sucursal::where('id', $user_auth)->pluck('nombre', 'nombre');
+                                                    })
+                                                    ->searchable(),
+                                                TextInput::make('cantidad')
+                                                    ->label('Cantidad asignada')
+                                                    ->prefixIcon('heroicon-c-credit-card')
+                                                    ->hint('Nota: solo números enteros')
+                                                    ->required()
+                                                    ->rules(['required', 'numeric', 'integer'])
+                                                    ->validationMessages([
+                                                        'required' => 'Debe introducir la cantidad',
+                                                        'numeric' => 'Campo numerico',
+                                                        'integer' => 'Debe ser un número entero',
+                                                    ]),
+                                            ]),
                                     ]),
                             ])
                     ])
                     ->action(function (InventarioSucursal $record, array $data) {
-                        InventarioSucursalController::asignar_producto(
-                            $data['user_id'],
-                            $data['cantidad'],
-                            $record->producto_id,
-                            $data['sucursal']
-                        );
+                        InventarioSucursalController::asignar_producto($data, $record->producto_id);
                     })
             ])
             ->headerActions([

@@ -45,8 +45,9 @@ class AsignarProductoResource extends Resource
                 ->sortable(),
 
                 Tables\Columns\TextColumn::make('producto.descripcion')
-                    ->numeric()
-                    ->sortable(),
+                ->label('Producto')
+                ->searchable()
+                ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cantidad')

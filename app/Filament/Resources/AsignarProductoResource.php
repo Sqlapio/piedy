@@ -2,16 +2,21 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AsignarProductoResource\Pages;
-use App\Filament\Resources\AsignarProductoResource\RelationManagers;
-use App\Models\AsignarProducto;
+use Carbon\Carbon;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\AsignarProducto;
+use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\AsignarProductoResource\Pages;
+use App\Filament\Resources\AsignarProductoResource\RelationManagers;
 
 class AsignarProductoResource extends Resource
 {
@@ -41,15 +46,17 @@ class AsignarProductoResource extends Resource
                     'tienda' => 'warning',
                     'tecnico' => 'success',
                 })
-                ->alignCenter()
-                ->sortable(),
+                ->searchable(isIndividual: true)
+                ->alignCenter(),
 
                 Tables\Columns\TextColumn::make('producto.descripcion')
                 ->label('Producto')
-                ->searchable()
-                ->sortable(),
+                ->searchable(isIndividual: true),
+                
                 Tables\Columns\TextColumn::make('user.name')
-                    ->searchable(),
+                ->label('Usuario')
+                ->searchable(isIndividual: true),
+                
                 Tables\Columns\TextColumn::make('cantidad')
                 ->label('Cantidad')
                 ->alignCenter()
@@ -75,8 +82,39 @@ class AsignarProductoResource extends Resource
                 ->sortable(),
             ])
             ->filters([
-                //
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('desde'),
+                        DatePicker::make('hasta'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['desde'] ?? null,
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['hasta'] ?? null,
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['desde'] ?? null) {
+                            $indicators['desde'] = 'Venta desde ' . Carbon::parse($data['desde'])->toFormattedDateString();
+                        }
+                        if ($data['hasta'] ?? null) {
+                            $indicators['hasta'] = 'Venta hasta ' . Carbon::parse($data['hasta'])->toFormattedDateString();
+                        }
+
+                        return $indicators;
+                    }),
             ])
+            ->filtersTriggerAction(
+                fn(Action $action) => $action
+                    ->button()
+                    ->label('Filtros'),
+            )
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])

@@ -190,14 +190,19 @@ class StatController extends Controller
             $rangeEndDate = $end == null ? now()->endOfDay() : $end;
 
             //Servicios y clientes para hoy
-            $nro_servicios_hoy  = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
-            $clientes_hoy       = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get();
-    
+            $nro_servicios_hoy  = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+            ->where('status', 2)
+            ->where('tipo', 'servicio')
+            ->count();
+            
+            $clientes_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get();
+
             $clientes_hoy = count($clientes_hoy);
 
             if ($clientes_hoy == 0) {
                 $promedio_hoy = 0;
             } else {
+
                 $promedio_hoy = $nro_servicios_hoy / $clientes_hoy;
 
                 //Fechas de Ayer

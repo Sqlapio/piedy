@@ -104,9 +104,6 @@ class InventarioResource extends Resource
         return $table
             ->query(Inventario::query()->orderBy('created_at', 'desc'))
             ->columns([
-                // Tables\Columns\ImageColumn::make('producto.image')
-                //     ->label('Imagen')
-                //     ->circular(),
                 Tables\Columns\TextColumn::make('producto.descripcion')
                     ->icon('heroicon-s-shopping-bag')
                     ->numeric()

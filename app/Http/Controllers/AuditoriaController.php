@@ -24,7 +24,7 @@ class AuditoriaController extends Controller
             //Son los que estan ubicados en la tabla de asignar_productos
             $productos = DB::table('asignar_productos')
                 ->select('producto_id as producto_id', DB::raw('sum(servicios_facturados) as cantidad_servicios'))
-                ->whereBetween('created_at', ['2025-01-01 00:00:00', '2025-02-19 23:59:59'])
+                ->whereBetween('created_at', [$fecha_ini.' 00:00:00', $fecha_fin.' 23:59:59'])
                 ->where('sucursal_id', $sucursal_id)
                 ->groupBy('producto_id')
                 ->get();

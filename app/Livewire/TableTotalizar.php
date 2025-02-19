@@ -276,7 +276,6 @@ class TableTotalizar extends Component implements HasForms, HasTable
                     ])->action(function (array $data, FacturacionMultiple $record) {
                         $data_fm = json_decode($record->cod_asignacion);
                         // dd($data_fm);
-                        // dd($data_fm);
                         for ($i = 0; $i < count($data_fm); $i++) {
                             //Dolares
                             if ($data['metodo_pago'] != '' &&  $data['metodo_pago_dos'] == '') {
@@ -379,11 +378,11 @@ class TableTotalizar extends Component implements HasForms, HasTable
                             //Dolasres y Bolivares
                             if ($data['metodo_pago'] != '' && $data['metodo_pago_dos'] != '') {
                                 $monto_bsd = Str::replace(',', '.', (Str::replace('.', '', $data['pago_bsd'])));
-                            
+
                                     $montos_srv = CajaController::calculo_porcentajes_srv_fm($data_fm[$i], $data['pago_usd'], $monto_bsd);
-                                    // dd($montos_srv);
-                                    $montos_prod = CajaController::calculo_porcentajes_prod($data_fm[$i], $data['pago_usd'], $monto_bsd);
-                                    // dd($montos_srv, $montos_prod);
+                                    
+                                    $montos_prod = CajaController::calculo_porcentajes_prod_fm($data_fm[$i], $data['pago_usd'], $monto_bsd);
+
                                     // dd($montos_srv, $montos_prod);
                                     $fm_multiMoneda = CajaController::multiple(
                                         $montos_srv['valor_usd'],

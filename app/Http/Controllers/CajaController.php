@@ -449,20 +449,21 @@ class CajaController extends Controller
         try {
 
             $total_venta = FacturacionMultiple::where('sucursal_id', Auth::user()->sucursal_id)->first()->venta_total_usd;
-
+            
             //Calculo de los porcentajes de venta por representacion
             $total_servicios = Disponible::where('cod_asignacion', $cod_asigancion)
                 ->where('sucursal_id', Auth::user()->sucursal_id)
                 ->where('status', 'cerrado')
                 ->first();
-
+            
             // $total_venta = $total_servicios->venta_total;
             $total_venta_srv = $total_servicios->acu_servicios;
-
+            
             $porcen_servicio = ($total_venta_srv * 100) / $total_venta;
+            
             //Calculo del equivalente en dolares
             $valor_usd = ($pago_usd * $porcen_servicio) / 100;
-
+            
             //Calculo del equivalente en bolivares
             $valor_bsd = ($pago_bsd * $porcen_servicio) / 100;
 
@@ -493,7 +494,7 @@ class CajaController extends Controller
                 ->where('sucursal_id', Auth::user()->sucursal_id)
                 ->where('status', 'cerrado')
                 ->first();
-            // dump($total_servicios);
+
             // $total_venta = $total_servicios->venta_total;
             $total_venta_prod = $total_servicios->acu_productos;
 
@@ -535,9 +536,11 @@ class CajaController extends Controller
                 ->first();
 
             $total_venta = $total_servicios->venta_total;
+
             $total_venta_srv = $total_servicios->acu_servicios;
 
             $porcen_servicio = ($total_venta_srv * 100) / $total_venta;
+
             //Calculo del equivalente en dolares
             $valor_usd = ($pago_usd * $porcen_servicio) / 100;
 
@@ -569,15 +572,15 @@ class CajaController extends Controller
                 ->where('sucursal_id', Auth::user()->sucursal_id)
                 ->where('status', 'cerrado')
                 ->first();
-            // dump($total_servicios);
+  
             $total_venta = $total_servicios->venta_total;
+  
             $total_venta_prod = $total_servicios->acu_productos;
 
             $porcen_prod = ($total_venta_prod * 100) / $total_venta;
 
             //Calculo del equivalente en dolares
             $valor_usd = ($pago_usd * $porcen_prod) / 100;
-
             //Calculo del equivalente en bolivares
             $valor_bsd = ($pago_bsd * $porcen_prod) / 100;
 

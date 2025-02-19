@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\LogController;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Collection;
+use App\Http\Controllers\AuditoriaController;
 use App\Http\Controllers\AnalisisReporteController;
 use App\Filament\Resources\NominaGeneralResource\Pages;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
@@ -146,8 +147,10 @@ class NominaGeneralResource extends Resource
                     ->action(function (Collection $records) {
                         // dd($records);
                         $cierre_periodo = AnalisisReporteController::cierre($records, $records->first()->fecha_ini, $records->first()->fecha_fin, $records->first()->cod_nomina);
+
+                        $auditoria = AuditoriaController::crear_asiento($records->first()->fecha_ini, $records->first()->fecha_fin, $records->first()->cod_nomina, $records->first()->sucursal_id);
                         
-                        if($cierre_periodo == true)
+                        if($cierre_periodo == true && $auditoria == true)
                         {
                             //Actualizamos el estatus de la nomina
                             $records->first()->status_id = 9;

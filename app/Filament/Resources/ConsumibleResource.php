@@ -50,21 +50,26 @@ class ConsumibleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('producto_id')
+                Tables\Columns\TextColumn::make('producto.descripcion')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('contenido_neto')
-                    ->numeric()
-                    ->sortable(),
+                    ->alignCenter()
+                    ->numeric(),
                 Tables\Columns\TextColumn::make('unidad')
+                    ->alignCenter()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('can_srv')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('Uso por Servicios')
+                    ->alignCenter()
+                    ->numeric(),
                 Tables\Columns\TextColumn::make('uso')
+                    ->label('Uso')
+                    ->alignCenter()
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tipo_uso')
+                    ->label('Usado por:')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -79,7 +84,7 @@ class ConsumibleResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

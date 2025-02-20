@@ -132,7 +132,7 @@ class ServicioResource extends Resource
                 TextColumn::make('rol.descripcion')->label('Tipo de servício')->searchable(),
                 TextColumn::make('costo')
                     ->color('success')
-                    ->money('USD')
+                    ->numeric()
                     ->searchable()
                     ->label('Costo($)'),
                 TextColumn::make('asignacion')

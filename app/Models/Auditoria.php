@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Auditoria extends Model
 {
@@ -28,4 +29,20 @@ class Auditoria extends Model
         'responsable',
         'observaciones',
     ];
+
+    /**
+     * Get the user that owns the Auditoria
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function producto(): BelongsTo
+    {
+        return $this->belongsTo(Producto::class, 'producto_id', 'id');
+    }
+
+    //RELACION UNO A UNO CON LA TABLA DE SUCURSALS
+    public function sucursal(): BelongsTo
+    {
+        return $this->belongsTo(Sucursal::class, 'sucursal_id', 'id');
+    }
 }

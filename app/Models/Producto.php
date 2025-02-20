@@ -177,5 +177,15 @@ class Producto extends Model
         return $this->hasMany(AsignarProducto::class, 'user_id', 'id');
     }
 
+    /**
+     * Get the user associated with the Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function auditoria(): HasOne
+    {
+        return $this->hasOne(Auditoria::class, 'id', 'prodcuto_id');
+    }
+
 
 }

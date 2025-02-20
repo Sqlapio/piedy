@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class LibroCompra extends Model
 {
@@ -41,6 +42,13 @@ class LibroCompra extends Model
         'base_imponible_internas', 
         'porcen_alicuota_internas', 
         'impuesto_iva_internas', 
-        'responsable'
+        'responsable',
+        'sucursal_id'
     ];
+
+    //RELACION UNO A UNO CON LA TABLA DE SUCURSALS
+    public function sucursal(): BelongsTo
+    {
+        return $this->belongsTo(Sucursal::class, 'sucursal_id', 'id');
+    }
 }

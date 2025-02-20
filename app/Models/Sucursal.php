@@ -204,4 +204,10 @@ class Sucursal extends Model
         return $this->belongsTo(Reporte::class, 'sucursal_id', 'id');
     }
 
+    // //RELACION UNO A UNO CON LA TABLA DE AUDITORIAS
+    // public function auditoria(): BelongsTo
+    // {
+    //     return $this->belongsTo(Auditoria::class, 'sucursal_id', 'id');
+    // }
+
 }

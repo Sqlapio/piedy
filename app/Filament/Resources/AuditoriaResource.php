@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AuditoriaResource\Pages;
-use App\Filament\Resources\AuditoriaResource\RelationManagers;
-use App\Models\Auditoria;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
+use App\Models\Auditoria;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\AuditoriaResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\AuditoriaResource\RelationManagers;
 
 class AuditoriaResource extends Resource
 {
@@ -20,55 +21,6 @@ class AuditoriaResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Módulo Contable';
-
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('cod_auditoria')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('fecha_ini')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('fecha_fin')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('sucursal_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('producto_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('contenido_neto')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('unidad')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('cantidad_solicitada')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('gasto_total_usd')
-                    ->numeric()
-                    ->default(0.00),
-                Forms\Components\TextInput::make('consumo_por_servicios')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('servicios_realizados')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('existencia_sucursal')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('existencia_central')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('responsable')
-                    ->required()
-                    ->maxLength(255),
-            ]);
-    }
 
     public static function table(Table $table): Table
     {
@@ -80,10 +32,10 @@ class AuditoriaResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('fecha_fin')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('sucursal_id')
+                Tables\Columns\TextColumn::make('sucursal.nombre')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('producto_id')
+                Tables\Columns\TextColumn::make('producto.descripcion')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('contenido_neto')
@@ -124,11 +76,12 @@ class AuditoriaResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
                 ]),
             ]);
     }

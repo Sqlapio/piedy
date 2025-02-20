@@ -4,11 +4,13 @@ namespace App\Filament\Resources;
 
 use Carbon\Carbon;
 use Filament\Forms;
+use App\Models\User;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\AsignarProducto;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\DB;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
@@ -47,16 +49,16 @@ class AsignarProductoResource extends Resource
                     'tienda' => 'warning',
                     'tecnico' => 'success',
                 })
-                ->searchable(isIndividual: true)
+                ->searchable()
                 ->alignCenter(),
 
                 Tables\Columns\TextColumn::make('producto.descripcion')
                 ->label('Producto')
-                ->searchable(isIndividual: true),
+                ->searchable(),
                 
                 Tables\Columns\TextColumn::make('user.name')
                 ->label('Usuario')
-                ->searchable(isIndividual: true),
+                ->searchable(),
                 
                 Tables\Columns\TextColumn::make('cantidad')
                 ->label('Cantidad')
@@ -110,6 +112,28 @@ class AsignarProductoResource extends Resource
 
                         return $indicators;
                     }),
+            SelectFilter::make('empleado')
+                ->options(function () {
+                    $users = User::whereBetween('rol_id', [1, 2])->get()->pluck('name', 'id');
+                    return $users;
+                })
+                ->attribute('user_id'),
+            SelectFilter::make('producto asigando')
+            ->options(function () {
+                $productos = DB::table('asignar_productos')
+                ->select('productos.descripcion as producto', 'asignar_productos.*')
+                ->join('productos', 'asignar_productos.producto_id', '=', 'productos.id')
+                ->groupby('asignar_productos.producto_id')
+                ->get()
+                ->pluck('producto', 'producto_id');
+                return $productos;
+
+            })
+            ->attribute('producto_id'),
+            SelectFilter::make('tienda')
+                ->relationship('sucursal', 'nombre')
+                ->attribute('sucursal_id'),
+
             ])
             ->filtersTriggerAction(
                 fn(Action $action) => $action

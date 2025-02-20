@@ -19,6 +19,8 @@ class AuditoriaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Módulo Contable';
+
     public static function form(Form $form): Form
     {
         return $form

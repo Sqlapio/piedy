@@ -57,6 +57,13 @@ class GastoResource extends Resource
                                 'required'  => 'Campo requerido',
                                 'numeric'    => 'Solo admite números',
                             ]),
+                        Forms\Components\TextInput::make('nro_control')
+                            ->label('Nro. de Control')
+                            ->prefixIcon('heroicon-c-tag')
+                            ->rules(['required', 'string', 'max:255'])
+                            ->validationMessages([
+                                'required'  => 'Campo requerido',
+                            ]),
 
                         Forms\Components\DatePicker::make('fecha_factura')
                             ->label('Fecha de Factura del gasto')
@@ -261,6 +268,10 @@ class GastoResource extends Resource
 
                 Tables\Columns\TextColumn::make('numero_factura_gasto')
                     ->label('Nro. Factura Gasto')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('nro_control')
+                    ->label('Nro. Control')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('descripcion')

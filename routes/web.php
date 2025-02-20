@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 use App\Models\Cita;
 use App\Models\User;
+use App\Models\Gasto;
 use App\Models\Venta;
 use App\Livewire\Login;
 use App\Models\Cliente;
@@ -384,8 +385,8 @@ Route::get('/detalle/srv/{codigo}', [CajaController::class, 'detalleServicio'])-
 
 Route::get('/ex', function () {
 
-    $info_producto = Producto::where('id', 67)->with('sucursal')->first();
-    $info = Inventario::find(8)->with('sucursal')->first();
-    dd($info_producto, $info);
+    $res = Gasto::latest()->first();
+
+    return $res;
         
 });

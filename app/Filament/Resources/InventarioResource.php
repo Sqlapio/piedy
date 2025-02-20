@@ -131,7 +131,8 @@ class InventarioResource extends Resource
                     ->icon('heroicon-o-square-3-stack-3d')
                     ->numeric()
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('almacen.nombre')
                     ->icon('heroicon-c-building-office-2')
                     ->numeric()
@@ -139,11 +140,22 @@ class InventarioResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('cantidad')
                     ->label('Existencia')
-                    ->icon('heroicon-o-square-3-stack-3d')
-                    ->color('success')
+                    ->color(function ($record) {
+                        return $record->cantidad <= $record->min ? 'bg-red-500' : 'bg-green-500';
+                    })
                     ->numeric()
+                    ->alignCenter()
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->extraAttributes(function ($record) {
+                        if ($record->cantidad <= 5) {
+                            return ['class' => 'bg-danger-500 dark:bg-danger-600'];
+                        }
+                        if ($record->cantidad > 5) {
+                            return ['class' => 'bg-green-500 dark:bg-green-600'];
+                        }
+                        return [];
+                    }), 
                 Tables\Columns\TextColumn::make('responsable')
                     ->label('Responsable')
                     ->color('primary')

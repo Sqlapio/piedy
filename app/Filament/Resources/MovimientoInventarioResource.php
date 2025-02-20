@@ -39,15 +39,13 @@ class MovimientoInventarioResource extends Resource
                 Tables\Columns\TextColumn::make('producto.descripcion')
                     ->icon('heroicon-s-shopping-bag')
                     ->numeric()
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('cantidad')
                     ->label('Cantidad')
                     ->icon('heroicon-o-square-3-stack-3d')
                     ->color('success')
                     ->numeric()
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('tipo_movimiento')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('codigo')
@@ -56,29 +54,27 @@ class MovimientoInventarioResource extends Resource
                     ->badge()
                     ->color('colorTwo')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('almacen.nombre')
+                    ->icon('heroicon-s-home')
+                    ->label('Almacen')
+                    ->numeric()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('sucursal.nombre')
                     ->icon('heroicon-c-building-office-2')
                     ->label('Sucursal')
                     ->numeric()
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('responsable')
                     ->label('Responsable')
                     ->color('primary')
                     ->icon('heroicon-m-user')
                     ->numeric()
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha de Creación')
                     ->icon('heroicon-s-calendar-days')
                     ->dateTime()
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
             ])
             ->filters([
                 Filter::make('created_at')

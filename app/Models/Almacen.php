@@ -61,4 +61,14 @@ class Almacen extends Model
     {
         return $this->belongsTo(Producto::class);
     }
+
+    /**
+     * Get the movimientoInventario that owns the movimientoInventario
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function movimientoInventario(): HasOne
+    {
+        return $this->hasOne(MovimientoInventario::class, 'id', 'alamcen_id');
+    }
 }

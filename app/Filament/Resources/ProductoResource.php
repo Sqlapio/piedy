@@ -312,50 +312,6 @@ class ProductoResource extends Resource
                 ActionGroup::make([
                     Tables\Actions\EditAction::make(),
                     Action::make('Entrada')
-                        ->icon('heroicon-s-calendar-days')
-                        ->model(Producto::class)
-                        ->form([
-                            Section::make('Formulario')
-                                ->description(function (Producto $record) {
-                                    return 'Mover a sucursal: ' . $record->descripcion;
-                                })
-                                ->icon('heroicon-s-clipboard-document-list')
-                                ->schema([
-                                    Grid::make()
-                                        ->schema([
-                                            TextInput::make('min')
-                                                ->label('Exitencia Minima en Almacen')
-                                                ->prefixIcon('heroicon-s-queue-list')
-                                                ->numeric(),
-                                            // ->required(),
-                                            Select::make('almacen_id')
-                                                ->prefixIcon('heroicon-m-list-bullet')
-                                                ->relationship('almacenes', 'nombre')
-                                                ->searchable()
-                                                ->preload()
-                                                ->createOptionForm([
-                                                    TextInput::make('nombre')
-                                                        ->required(),
-                                                ]),
-                                            // ->required(),,
-                                            TextInput::make('cantidad')
-                                                ->prefixIcon('heroicon-s-queue-list')
-                                                ->required()
-                                                ->numeric(),
-                                        ]),
-                                ])
-                        ])
-                        ->action(function (Producto $record, array $data) {
-                            InventarioController::entrada_directa(
-                                $record->id,
-                                $record->uso,
-                                $data['min'],
-                                $data['almacen_id'],
-                                $data['cantidad']
-                            );
-                        }),
-
-                Action::make('Mover a Consumible')
                     ->icon('heroicon-s-calendar-days')
                     ->model(Producto::class)
                     ->form([
@@ -367,21 +323,65 @@ class ProductoResource extends Resource
                             ->schema([
                                 Grid::make()
                                     ->schema([
-                                        TextInput::make('can_srv')
-                                            ->label('Cantidad por servicios')
+                                        TextInput::make('min')
+                                            ->label('Exitencia Minima en Almacen')
+                                            ->prefixIcon('heroicon-s-queue-list')
+                                            ->numeric(),
+                                        // ->required(),
+                                        Select::make('almacen_id')
+                                            ->prefixIcon('heroicon-m-list-bullet')
+                                            ->relationship('almacenes', 'nombre')
+                                            ->searchable()
+                                            ->preload()
+                                            ->createOptionForm([
+                                                TextInput::make('nombre')
+                                                    ->required(),
+                                            ]),
+                                        // ->required(),,
+                                        TextInput::make('cantidad')
                                             ->prefixIcon('heroicon-s-queue-list')
                                             ->required()
                                             ->numeric(),
-                                        Select::make('tipo_uso')
-                                            ->prefixIcon('heroicon-m-list-bullet')
-                                            ->options([
-                                                'tecnico' => 'Uso Tecnico',
-                                                'gerencia' => 'En Gerencia',
-                                            ])
-                                            ->searchable()
-                                            ->required(),
                                     ]),
                             ])
+                    ])
+                    ->action(function (Producto $record, array $data) {
+                        InventarioController::entrada_directa(
+                            $record->id,
+                            $record->uso,
+                            $data['min'],
+                            $data['almacen_id'],
+                            $data['cantidad']
+                        );
+                    }),
+
+                    Action::make('Mover a Consumible')
+                    ->icon('heroicon-s-calendar-days')
+                    ->model(Producto::class)
+                    ->form([
+                        Section::make('Formulario')
+                        ->description(function (Producto $record) {
+                            return 'Mover a sucursal: ' . $record->descripcion;
+                        })
+                        ->icon('heroicon-s-clipboard-document-list')
+                        ->schema([
+                            Grid::make()
+                                ->schema([
+                                    TextInput::make('can_srv')
+                                        ->label('Cantidad por servicios')
+                                        ->prefixIcon('heroicon-s-queue-list')
+                                        ->required()
+                                        ->numeric(),
+                                    Select::make('tipo_uso')
+                                        ->prefixIcon('heroicon-m-list-bullet')
+                                        ->options([
+                                            'tecnico' => 'Uso Tecnico',
+                                            'gerencia' => 'En Gerencia',
+                                        ])
+                                        ->searchable()
+                                        ->required(),
+                                ]),
+                        ])
                     ])
                     ->action(function (Producto $record, array $data) {
                         InventarioController::mover_a_consumible(

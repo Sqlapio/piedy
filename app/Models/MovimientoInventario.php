@@ -20,9 +20,12 @@ class MovimientoInventario extends Model
      */
     protected $fillable = [
         'producto_id',
+        'almacen_id',
         'venta_producto_id',
         'cod_asignacion',
         'cantidad',
+        'contenido_neto',
+        'unidad',
         'tipo_movimiento',
         'responsable',
     ];
@@ -48,12 +51,22 @@ class MovimientoInventario extends Model
     }
 
     /**
-     * Get the producto that owns the MovimientoInventario
+     * Get the sucursal that owns the MovimientoInventario
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function sucursal(): BelongsTo
     {
         return $this->belongsTo(Sucursal::class);
+    }
+
+    /**
+     * Get the almacen that owns the MovimientoInventario
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function almacen(): BelongsTo
+    {
+        return $this->belongsTo(Almacen::class);
     }
 }

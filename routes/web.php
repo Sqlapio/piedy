@@ -384,17 +384,8 @@ Route::get('/detalle/srv/{codigo}', [CajaController::class, 'detalleServicio'])-
 
 Route::get('/ex', function () {
 
-    $ven = Venta::whereBetween('created_at', ['2025-01-01 00:00:00', '2025-02-31 23:59:59'])
-    ->with('ventaServicio')
-    ->get();
-    // ->toArray();
-
-    // dd($ven);
-    dd($ven);  
-    for ($i=0; $i < count($ven); $i++) { 
-        # code...
-        $ven[$i] = $ven[$i]['cod_asignacion'];
-    }
-    dd(count($srv), count($prod), count($ven));   
+    $info_producto = Producto::where('id', 67)->with('sucursal')->first();
+    $info = Inventario::find(8)->with('sucursal')->first();
+    dd($info_producto, $info);
         
 });

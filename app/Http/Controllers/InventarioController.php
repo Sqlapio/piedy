@@ -12,6 +12,7 @@ use App\Models\SalidaInventario;
 use App\Models\EntradaInventario;
 use App\Models\InventarioSucursal;
 use App\Models\RecepcionInventario;
+use App\Models\MovimientoInventario;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
 
@@ -35,7 +36,7 @@ class InventarioController extends Controller
                 //Escribimos en la tabla de entradas
                 //la cantidad que fue movida del inventario principal al
                 //inventario de la sucursal
-                EntradaInventarioController::crear_entrada($inventario_id, $cantidad, 'reposicion');
+                EntradaInventarioController::crear_entrada($inventario_id, $cantidad);
 
                 Notification::make()
                     ->title('La Reposicion se realizo con éxito.')
@@ -120,6 +121,7 @@ class InventarioController extends Controller
 
     public static function entrada_directa($producto_id, $uso, $min, $almacen_id, $cantidad)
     {
+        //Como debo crear una tabla donde pueda almacenar las entradas, las salidas y las ventas de los productos almacenados en mi inventario?
 
         try {
 
@@ -129,27 +131,29 @@ class InventarioController extends Controller
                 Throw new Exception("El producto ya exite en el almacen", 401);
             }
 
+            $info_producto = Producto::where('id', $producto_id)->first();
+
             //Si el producto no exite en la sucursal
             //creamos un nuevo inventario
             $inventario = new Inventario();
             $inventario->producto_id = $producto_id;
             $inventario->almacen_id  = $almacen_id;
             $inventario->cantidad    = $cantidad;
-            $inventario->unidad      = Producto::where('id', $producto_id)->first()->unidad;
+            $inventario->unidad      = $info_producto->unidad;
             $inventario->uso         = $uso;
             $inventario->min         = $min;
             $inventario->responsable = Auth::user()->name;
             $inventario->save();
 
-
-            //Creamos la entrada en la tabla de inventario
-            $entrada = new EntradaInventario();
-            $entrada->cod_movimiento    = 'Psi-' . random_int(11111, 99999);
+            //creamos la entrada de inventario
+            $entrada = new MovimientoInventario();
+            $entrada->codigo            = 'PEI-' . random_int(11111, 99999);
             $entrada->almacen_id        = $almacen_id;
             $entrada->producto_id       = $producto_id;
             $entrada->cantidad          = $cantidad;
-            $entrada->unidad            = $inventario->unidad;
-            $entrada->tipo_movimiento   = 'primera carga';
+            $entrada->contenido_neto    = $info_producto->contenido_neto;
+            $entrada->unidad            = $info_producto->unidad;
+            $entrada->tipo_movimiento   = 'entrada';
             $entrada->responsable       = Auth::user()->name;
             $entrada->save();
 

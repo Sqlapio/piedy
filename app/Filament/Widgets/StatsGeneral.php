@@ -90,32 +90,12 @@ class StatsGeneral extends BaseWidget
                 ->color($promedio_prod['color'])
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
 
-
-            //Stat Clientes -----------------------------------------------------------------------------------------------
-            //-------------------------------------------------------------------------------------------------------------
-            // Stat::make('CLIENTES ATENDIDOS', $clientes_atendidos['clientes_atendidos_hoy'])
-            //     ->description(round($clientes_atendidos['porcentaje']) . '%')
-            //     ->descriptionIcon($clientes_atendidos['icon'])
-            //     ->color($clientes_atendidos['color'])
-            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
-
-            // Stat::make('CLIENTES NUEVOS', $clientes_nuevos['total_clientes_hoy'])
-            //     ->description(round($clientes_nuevos['porcentaje']) . '%')
-            //     ->descriptionIcon($clientes_nuevos['icon'])
-            //     ->color($clientes_nuevos['color'])
-            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
-
-            // Stat::make('CLIENTES RECURRENTES', $clientes_recurrentes['recurrentes_hoy'])
-            //     ->description(round($clientes_recurrentes['porcentaje']) . '%')
-            //     ->descriptionIcon($clientes_recurrentes['icon'])
-            //     ->color($clientes_recurrentes['color'])
-            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
         ];
     }
 
     protected int | string | array $columnSpan = [
         // 'xs' => 3,
-        'sm' => 3,
+        'sm' => 1,
         'md' => 1,
         'xl' => 1,
     ];

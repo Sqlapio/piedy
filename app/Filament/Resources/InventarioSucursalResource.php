@@ -90,6 +90,15 @@ class InventarioSucursalResource extends Resource
                     ->searchable()
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('contenido_neto')
+                    ->label('Contenido')
+                    ->searchable()
+                    ->alignCenter()
+                    ->numeric(),
+                Tables\Columns\TextColumn::make('unidad')
+                    ->searchable()
+                    ->alignCenter()
+                    ->numeric(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha de Creación')
                     ->searchable()

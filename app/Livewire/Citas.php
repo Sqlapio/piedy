@@ -294,7 +294,7 @@ class Citas extends Component implements HasForms, HasActions
                     DatePicker::make('nueva_fecha')
                         ->label('Nueva Fecha de cita')
                         ->prefixIcon('heroicon-s-calendar-days')
-                        ->minDate(now())
+                        // ->minDate(now())
                         ->format('Y-m-d')
                         ->required(),
                     Select::make('nueva_hora')

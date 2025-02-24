@@ -202,7 +202,7 @@
         </div>
 
         {{-- Cuarta linea --}}
-        @if(Auth::user()->rol_id == 5)
+        @if(Auth::user()->rol_id == 5 || Auth::user()->rol_id == 7)
             <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-2 mb-2 px-3 lg:h-[84px]">
                 {{-- Manejo de Efectivo --}}
                 <a href="{{ route('manejo-efectivo') }}" class="sm:col-start-3 sm:col-end-3md:col-start-3 md:col-end-3 lg:col-start-3 lg:col-end-3 cursor-pointer p-3 rounded-lg shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]" style="background-image: url('images/6.png');background-size: 100% 100%;">

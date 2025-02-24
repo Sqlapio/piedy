@@ -58,6 +58,9 @@ class InventarioSucursalResource extends Resource
             ->query(InventarioSucursal::query()->orderBy('created_at', 'desc'))
             ->columns([
                 Tables\Columns\TextColumn::make('producto.descripcion')
+                    ->description(function($record) {
+                        return $record->producto->contenido_neto.$record->producto->unidad;
+                    })
                     ->icon('heroicon-s-shopping-bag')
                     ->numeric()
                     ->searchable()
@@ -70,10 +73,18 @@ class InventarioSucursalResource extends Resource
                 Tables\Columns\TextColumn::make('cantidad')
                     ->label('Existencia')
                     ->searchable()
-                    ->icon('heroicon-o-square-3-stack-3d')
-                    ->color('success')
+                    ->alignCenter()
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->extraAttributes(function ($record) {
+                        if ($record->cantidad <= 5) {
+                            return ['class' => 'bg-danger-500 dark:bg-danger-600'];
+                        }
+                        if ($record->cantidad > 5) {
+                            return ['class' => 'bg-green-500 dark:bg-green-600'];
+                        }
+                        return [];
+                    }), 
                 Tables\Columns\TextColumn::make('uso')
                     ->icon('heroicon-s-truck')
                     ->searchable()

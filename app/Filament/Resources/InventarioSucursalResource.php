@@ -72,10 +72,10 @@ class InventarioSucursalResource extends Resource
                     ->numeric()
                     ->sortable(),
             TextInputColumn::make('cantidad')
-                    ->label('Existencia')
-                    ->searchable()
+                    ->label('Existencia'),
+                    // ->searchable()
                     // ->alignCenter()
-                    ->numeric(),
+                    // ->numeric(),
                     // ->sortable()
                     // ->extraAttributes(function ($record) {
                     //     if ($record->cantidad <= 5) {

@@ -385,8 +385,32 @@ Route::get('/detalle/srv/{codigo}', [CajaController::class, 'detalleServicio'])-
 
 Route::get('/ex', function () {
 
-    $res = Gasto::latest()->first();
+    $clientes_uno = VentaServicio::select('cliente_id')
+    ->whereBetween('created_at', ["2025-02-01 00:00:00", "2025-02-15 23:59:59"])
+    ->groupBy('cliente_id')
+    ->get()
+    ->toArray();
+    
+    $array = [];
+    for ($i = 0; $i < count($clientes_uno); $i++) {
+        $array[] = $clientes_uno[$i]['cliente_id'];
+    }
 
-    return $res;
+
+    $clientes_dos = VentaServicio::select('cliente_id')
+    ->whereBetween('created_at', ["2025-02-16 00:00:00", "2025-02-28 23:59:59"])
+    ->groupBy('cliente_id')
+    ->get()
+    ->toArray();
+
+    $array_dos = [];
+    for ($j = 0; $j < count($clientes_dos); $j++) {
+        $array_dos[] = $clientes_dos[$j]['cliente_id'];
+    }
+
+    
+    $diff_result = array_diff($array, $array_dos);
+    dd(count($diff_result));
+    return $diff_result;
         
 });

@@ -14,6 +14,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Columns\TextInputColumn;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
@@ -70,21 +71,21 @@ class InventarioSucursalResource extends Resource
                     ->searchable()
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('cantidad')
+            TextInputColumn::make('cantidad')
                     ->label('Existencia')
                     ->searchable()
-                    ->alignCenter()
-                    ->numeric()
-                    ->sortable()
-                    ->extraAttributes(function ($record) {
-                        if ($record->cantidad <= 5) {
-                            return ['class' => 'bg-danger-500 dark:bg-danger-600'];
-                        }
-                        if ($record->cantidad > 5) {
-                            return ['class' => 'bg-green-500 dark:bg-green-600'];
-                        }
-                        return [];
-                    }), 
+                    // ->alignCenter()
+                    ->numeric(),
+                    // ->sortable()
+                    // ->extraAttributes(function ($record) {
+                    //     if ($record->cantidad <= 5) {
+                    //         return ['class' => 'bg-danger-500 dark:bg-danger-600'];
+                    //     }
+                    //     if ($record->cantidad > 5) {
+                    //         return ['class' => 'bg-green-500 dark:bg-green-600'];
+                    //     }
+                    //     return [];
+                    // }), 
                 Tables\Columns\TextColumn::make('uso')
                     ->icon('heroicon-s-truck')
                     ->searchable()

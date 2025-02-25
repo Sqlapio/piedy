@@ -75,7 +75,7 @@ class ClienteNuevoChart extends ChartWidget
         /*********************************************************************************************************************************/
         $labels = $clientes->map(fn($data) => Carbon::parse($data->fecha)->isoFormat('dd, D'));
         /*********************************************************************************************************************************/
-        
+
         return [
             'datasets' => [
                 [
@@ -89,11 +89,13 @@ class ClienteNuevoChart extends ChartWidget
                     'label' => 'Clientes Recurentes',
                     'data' => $data_clientes_recurentes,
                     'borderColor' => '#ff0000',
+                    'backgroundColor' => '#ff000045',
                 ],
                 [
                     'label' => 'Clientes Nuevos',
                     'data' => $data_clientes_nuevos,
                     'borderColor' => '#0a0aff',
+                    'backgroundColor' => '#3b82f670',
                 ],
 
             ],
@@ -111,7 +113,7 @@ class ClienteNuevoChart extends ChartWidget
 
     protected function getType(): string
     {
-         return 'line';
+         return 'bar';
     }
 
 }

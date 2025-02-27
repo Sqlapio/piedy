@@ -15,6 +15,7 @@ use App\Models\InventarioSucursal;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
 use App\Http\Controllers\NotificacionesController;
+use App\Models\MovimientoInventarioSucursal;
 
 class VentaProductoController extends Controller
 {
@@ -122,14 +123,15 @@ class VentaProductoController extends Controller
                         }
                     }
 
-                    //Cargamos el movimiento de inventario en su tabla
-                    MovimientoInventarioController::registrar_movimiento(
-                        $producto->id,
-                        $item->cantidad,
-                        $venta_producto->sucursal_id,
-                        $codigoAsignacion,
-                        'Venta',
-                    );
+                    //creamos la entrada en la tabla de movimiento_inventario_sucursal
+                    $movimiento_inventario_sucursal = new MovimientoInventarioSucursal();
+                    $movimiento_inventario_sucursal->producto_id = $venta_producto->producto_id;
+                    $movimiento_inventario_sucursal->sucursal_id = auth()->user()->sucursal_id;
+                    $movimiento_inventario_sucursal->cantidad = $venta_producto->cantidad;
+                    $movimiento_inventario_sucursal->responsable = auth()->user()->name;
+                    $movimiento_inventario_sucursal->tipo_movimiento = 'salida';
+                    $movimiento_inventario_sucursal->consumo = 'venta';
+                    $movimiento_inventario_sucursal->save();
 
                     //Cargamos la venta en su tabla de ventas
                     VentaController::venta_producto(

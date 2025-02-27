@@ -45,6 +45,7 @@ use App\Http\Controllers\AsignacionController;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 use App\Http\Controllers\NotificacionesController;
+use App\Http\Controllers\DescuentoAutomaticoController;
 use Filament\Forms\Components\Actions\Action as HintAction;
 
 class TableDetalleAsignacion extends Component implements HasForms, HasTable
@@ -459,6 +460,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     LogController::log(Auth::user()->id, 'servicio facturado', 'facturacion de servicio en dolares: ' . $this->cod_asignacion, $response = null);
 
                                     ClienteController::add_visita($this->cliente_id);
+
+                                    DescuentoAutomaticoController::descuento_automatico($this->cod_asignacion);
 
                                     //Envio una notificacion por whatsaap
                                     $notificacion = NotificacionesController::notificacion_servicio_facturado($this->cod_asignacion);

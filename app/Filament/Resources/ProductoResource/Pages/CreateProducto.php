@@ -24,4 +24,10 @@ class CreateProducto extends CreateRecord
             ->body('El producto fue creado con exito.');
     }
 
+    //Registro despues de guardar el producto
+    protected function afterCreate()
+    {
+        
+    }
+
 }

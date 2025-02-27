@@ -4,8 +4,11 @@ namespace App\Filament\Resources;
 
 use Carbon\Carbon;
 use Filament\Tables;
+use Filament\Forms\Get;
 use Filament\Forms\Set;
 use App\Models\Producto;
+use App\Models\Servicio;
+use App\Models\Sucursal;
 use Filament\Forms\Form;
 use App\Models\Categoria;
 use App\Models\Inventario;
@@ -18,15 +21,16 @@ use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
+// use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-// use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\ToggleButtons;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use App\Http\Controllers\InventarioController;
 use App\Filament\Resources\ProductoResource\Pages;
@@ -60,6 +64,7 @@ class ProductoResource extends Resource
     {
         return $form
             ->schema([
+                
                 Section::make('REGISTRO DE PRODUCTOS')
                     ->description('Formulario de registro de productos para la venta y de consumo interno')
                     ->icon('heroicon-m-list-bullet')
@@ -130,6 +135,7 @@ class ProductoResource extends Resource
                             ->prefixIcon('heroicon-m-list-bullet')
                             ->label('Contenido Neto')
                             ->required()
+                            ->live()
                             ->numeric(),
 
                         Select::make('unidad')
@@ -180,6 +186,115 @@ class ProductoResource extends Resource
                             ->helperText('Este dato sera utilizado para el envio de notificaciones cuando el producto llegue a la cantidad minima en el almacen de la sucursal')
                             ->numeric(),
                     ])->columns(2),
+
+                Section::make('DESCUENTO AUTOMATICO')
+                    ->description('Informacion para aplicar el descuento automatico del inventario de la sucursal cuando se facture un servicio especifico.')
+                    ->icon('heroicon-m-list-bullet')
+                    ->schema([
+
+                        ToggleButtons::make('feedback')
+                            ->label('Aplicar descuento automatico?')
+                            ->boolean()
+                            ->inline()
+                            ->live()
+                            ->default(false)
+                            ->columnSpanFull(),
+
+                        Select::make('servicios')
+                            ->label('Servicio Facturado')   
+                            ->multiple()
+                            ->relationship(name: 'servicios', titleAttribute: 'descripcion')
+                            ->searchable()
+                            ->preload()
+                            ->hidden(function (Get $get) {
+                                if ($get('feedback') == false) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            })
+                            ->live()
+                            ->required()
+                            ->searchable(),
+
+                        TextInput::make('cant_desc_auto')
+                            ->prefixIcon('heroicon-s-pencil')
+                            ->label('Cantidad a descontar de forma automatica')
+                            ->hidden(function (Get $get) {
+                                if ($get('feedback') == false) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            })
+                            ->numeric(),
+
+                    ])->columns(2),
+
+                Section::make('PRODUCTO CONSUMIBLE')
+                    ->description('Informacion para aplicar reglas de consumo con respecto a la asignacion y el uso del tecnico.')
+                    ->icon('heroicon-m-list-bullet')
+                    ->schema([
+
+                        ToggleButtons::make('feedback_dos')
+                            ->label('Aplicar reglas de consumo?')
+                            ->boolean()
+                            ->inline()
+                            ->live()
+                            ->default(false)
+                            ->columnSpanFull(),
+
+                        Select::make('consumido_por')
+                            ->prefixIcon('heroicon-m-list-bullet')
+                            ->hidden(function (Get $get) {
+                                if ($get('feedback_dos') == false) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            })
+                            ->live()
+                            ->options([
+                                'tecnico' => 'Uso Tecnico',
+                                'tienda' => 'En Tienda',
+                            ])
+                            ->searchable(),
+
+                        TextInput::make('cant_consu_serv')
+                            ->label('Cantidad consumida por servicio/dia')
+                            ->prefixIcon('heroicon-s-queue-list')
+                            ->afterStateUpdated(function (Get $get, Set $set) {
+                                self::updateTotales($get, $set);
+                            })
+                            ->hidden(function (Get $get) {
+                                if ($get('feedback_dos') == false) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            })
+                            ->live(onBlur: true)
+                            ->numeric(),
+                            
+                        //calculo
+                        TextInput::make('uso_promedio_serv')
+                            ->label('Cantidad consumida por servicio/dia')
+                            ->prefixIcon('heroicon-s-queue-list')
+                            ->hidden(function (Get $get) {
+                                if ($get('feedback_dos') == false) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            })
+                            ->live()
+                            ->disabled()
+                            ->dehydrated()
+                            ->numeric()
+                            ->numeric(),
+
+                    ])->columns(3),
+                
             ]);
     }
 
@@ -420,5 +535,13 @@ class ProductoResource extends Resource
             'create' => Pages\CreateProducto::route('/create'),
             'edit' => Pages\EditProducto::route('/{record}/edit'),
         ];
+    }
+
+    public static function updateTotales(Get $get, Set $set): void
+    {
+        if ($get('feedback_dos') == true && $get('consumido_por') == 'tecnico') {
+            $set('uso_promedio_serv', round($get('contenido_neto') / $get('cant_consu_serv'), 2));
+        }
+
     }
 }

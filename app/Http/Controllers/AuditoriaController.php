@@ -51,11 +51,11 @@ class AuditoriaController extends Controller
                 $cantidad_solicitada_req    = $cantidad_solicitada[0]->cantidad == null ? 0 : $cantidad_solicitada[0]->cantidad;
                 $gasto_total_usd            = $cantidad_solicitada[0]->sub_total_gasto == null ? 0 : $cantidad_solicitada[0]->sub_total_gasto;
 
-                $producto_consumible = Consumible::where('producto_id', $productos[$i]->producto_id)->first();
+                // $producto_consumible = Consumible::where('producto_id', $productos[$i]->producto_id)->first();
 
-                if ($producto_consumible == null) {
-                    $producto_consumible = 0;
-                }
+                // if ($producto_consumible == null) {
+                //     $producto_consumible = 0;
+                // }
 
                 //creamos el asiento en la tabla de auditoria
                 $asiento = new Auditoria();
@@ -69,7 +69,7 @@ class AuditoriaController extends Controller
                 $asiento->unidad                = $producto->unidad;
                 $asiento->cantidad_solicitada   = $cantidad_solicitada_req;
                 $asiento->gasto_total_usd       = $gasto_total_usd;
-                $asiento->consumo_por_servicios = $producto_consumible;
+                $asiento->consumo_por_servicios = $producto->uso_promedio_serv;
                 $asiento->servicios_realizados  = $productos[$i]->cantidad_servicios;
                 $asiento->existencia_sucursal   = $existencia_sucursal;
                 $asiento->existencia_central    = $existencia_central;

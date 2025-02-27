@@ -11,6 +11,7 @@ use App\Models\DetalleAsignacion;
 use App\Models\InventarioSucursal;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
+use App\Models\MovimientoInventarioSucursal;
 
 class InventarioSucursalController extends Controller
 {
@@ -127,6 +128,9 @@ class InventarioSucursalController extends Controller
                     }
                     
                 }
+
+                //creamos la salida en la tabla de movimiento_inventario_sucursal
+                MovimientoInventarioSucursalController::crear_movimiento_inventario_sucursal($producto_id, $data['cantidad'], 'salida', 'tienda');
                 
             }
 
@@ -185,6 +189,10 @@ class InventarioSucursalController extends Controller
                         $existencia->save();
                     } 
                 }
+
+                //creamos la salida en la tabla de movimiento_inventario_sucursal
+                MovimientoInventarioSucursalController::crear_movimiento_inventario_sucursal($producto_id, $data['cantidad'], 'salida', 'tecnico');
+
             }
 
             Notification::make()
@@ -207,4 +215,5 @@ class InventarioSucursalController extends Controller
         }
 
     }
+    
 }

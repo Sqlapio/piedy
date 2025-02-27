@@ -145,35 +145,42 @@ class NominaGeneralResource extends Resource
                     ->icon('heroicon-m-lock-closed')
                     ->requiresConfirmation()
                     ->action(function (Collection $records) {
-                        // dd($records);
-                        $cierre_periodo = AnalisisReporteController::cierre($records, $records->first()->fecha_ini, $records->first()->fecha_fin, $records->first()->cod_nomina);
 
-                        $auditoria = AuditoriaController::crear_asiento($records->first()->fecha_ini, $records->first()->fecha_fin, $records->first()->cod_nomina, $records->first()->sucursal_id);
-                        
-                        if($cierre_periodo == true && $auditoria == true)
+                        if($records->first()->status_id == 9)
                         {
-                            //Actualizamos el estatus de la nomina
-                            $records->first()->status_id = 9;
-                            $records->first()->save();
-                            
-                            LogController::log(Auth::user()->id, 'cierre de periodo', 'Cierre de periodo desde: '. $records->first()->fecha_ini.' hasta: '. $records->first()->fecha_fin, $response = null);
-                            Notification::make()
-                            ->title('NOTIFICACIÓN')
-                            ->icon('heroicon-o-shield-check')
-                            ->iconColor('success')
-                            ->color('success')
-                            ->body('El periodo comprendido entre el: ' . $records->first()->fecha_ini . ' - ' . $records->first()->fecha_fin . ' fue cerrado con exito')
-                            ->send();
-                        }else{
                             Notification::make()
                             ->title('NOTIFICACIÓN')
                             ->icon('heroicon-o-shield-check')
                             ->iconColor('danger')
                             ->color('danger')
-                            ->body('La nomina debe estar es estatus Periodo-cerrado')
+                            ->body('La nomina ya esta cerrada, por favor comuniquese con el administrador.')
                             ->send();
                         }
-                         
+
+                        if ($records->first()->status_id == 8) 
+                        {
+                            
+                            $cierre_periodo = AnalisisReporteController::cierre($records, $records->first()->fecha_ini, $records->first()->fecha_fin, $records->first()->cod_nomina);
+                            
+                            $auditoria = AuditoriaController::crear_asiento($records->first()->fecha_ini, $records->first()->fecha_fin, $records->first()->cod_nomina, $records->first()->sucursal_id);
+                            
+                            if ($cierre_periodo == true && $auditoria == true) {
+                                //Actualizamos el estatus de la nomina
+                                $records->first()->status_id = 9;
+                                $records->first()->save();
+
+                                LogController::log(Auth::user()->id, 'cierre de periodo', 'Cierre de periodo desde: ' . $records->first()->fecha_ini . ' hasta: ' . $records->first()->fecha_fin, $response = null);
+                                Notification::make()
+                                    ->title('NOTIFICACIÓN')
+                                    ->icon('heroicon-o-shield-check')
+                                    ->iconColor('success')
+                                    ->color('success')
+                                    ->body('El periodo comprendido entre el: ' . $records->first()->fecha_ini . ' - ' . $records->first()->fecha_fin . ' fue cerrado con exito')
+                                    ->send();
+                            }
+                            
+                        } 
+                            
                     })->deselectRecordsAfterCompletion(),
 
                     ExportBulkAction::make()

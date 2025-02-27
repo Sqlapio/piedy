@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Producto extends Model
 {
@@ -39,7 +40,14 @@ class Producto extends Model
         'marca',
         'min',
         'max',
-        'existencia_min_sucursal'
+        'existencia_min_sucursal',
+        'cant_consu_serv',
+        'consumido_por',
+        'uso_promedio_serv',
+        'cant_desc_auto'
+        
+        
+        
     ];
 
     public function comision():BelongsTo
@@ -184,8 +192,27 @@ class Producto extends Model
      */
     public function auditoria(): HasOne
     {
-        return $this->hasOne(Auditoria::class, 'id', 'prodcuto_id');
+        return $this->hasOne(Auditoria::class, 'id', 'producto_id');
     }
+
+    /**
+     * The servicios that belong to the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function servicios(): BelongsToMany
+    {
+        return $this->belongsToMany(Servicio::class, 'producto_servicios')
+        ->using(ProductoServicio::class)
+            ->withPivot(['descripcion']);
+    }
+
+    //Relacion de UNO a MUCHOS con la tabla de movimiento_inventario_sucrsals
+    public function movimientoInventarioSucursales(): HasMany
+    {
+        return $this->hasMany(MovimientoInventarioSucursal::class, 'producto_id', 'id');
+    }
+
 
 
 }

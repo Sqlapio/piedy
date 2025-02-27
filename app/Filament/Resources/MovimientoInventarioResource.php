@@ -29,7 +29,9 @@ class MovimientoInventarioResource extends Resource
 
     protected static ?string $navigationGroup = 'Modulo de Inventario';
 
-    protected static ?int $navigationSort = 9;
+    protected static ?string $navigationLabel = 'Movimiento Inventario General';
+
+    protected static ?int $navigationSort = 5;
 
     public static function table(Table $table): Table
     {

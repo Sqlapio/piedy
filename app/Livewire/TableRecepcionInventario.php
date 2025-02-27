@@ -25,10 +25,12 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\MovimientoInventarioSucursal;
 use Illuminate\Database\Eloquent\Collection;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 use App\Http\Controllers\InventarioSucursalController;
+use App\Http\Controllers\MovimientoInventarioSucursalController;
 
 class TableRecepcionInventario extends Component implements HasForms, HasTable
 {
@@ -159,7 +161,7 @@ class TableRecepcionInventario extends Component implements HasForms, HasTable
                 ->icon('heroicon-c-cog-8-tooth')
                 ->color('success')
                 ->action(function (Collection $records) {
-
+                    // dd($records);
                     try {
 
                         $records = $records->toArray();
@@ -193,6 +195,9 @@ class TableRecepcionInventario extends Component implements HasForms, HasTable
                                 $producto_aceptado->user_accepted = auth()->user()->name;
                                 $producto_aceptado->status = 2;
                                 $producto_aceptado->save();
+
+                                //creamos la entrada en la tabla de movimiento_inventario_sucursal
+                                MovimientoInventarioSucursalController::crear_movimiento_inventario_sucursal($records[$i]['producto_id'], $records[$i]['cantidad'], 'entrada', 'recepcion-de-inventario');
 
                                 Notification::make()
                                     ->title('NOTIFICACIÓN')

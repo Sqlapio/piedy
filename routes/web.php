@@ -21,6 +21,8 @@ use App\Models\VentaProducto;
 use App\Models\VentaServicio;
 use App\Models\AsignarProducto;
 use Flowframe\Trend\TrendValue;
+use App\Models\ProductoServicio;
+use App\Models\SalidaInventario;
 use App\Mail\NotificacionesEmail;
 use App\Models\DetalleAsignacion;
 use App\Models\InventarioSucursal;
@@ -385,32 +387,53 @@ Route::get('/detalle/srv/{codigo}', [CajaController::class, 'detalleServicio'])-
 
 Route::get('/ex', function () {
 
-    $clientes_uno = VentaServicio::select('cliente_id')
-    ->whereBetween('created_at', ["2025-02-01 00:00:00", "2025-02-15 23:59:59"])
-    ->groupBy('cliente_id')
-    ->get()
+    // $clientes_uno = VentaServicio::select('cliente_id')
+    // ->whereBetween('created_at', ["2025-02-01 00:00:00", "2025-02-15 23:59:59"])
+    // ->groupBy('cliente_id')
+    // ->get()
+    // ->toArray();
+
+    // $array = [];
+    // for ($i = 0; $i < count($clientes_uno); $i++) {
+    //     $array[] = $clientes_uno[$i]['cliente_id'];
+    // }
+
+
+    // $clientes_dos = VentaServicio::select('cliente_id')
+    // ->whereBetween('created_at', ["2025-02-16 00:00:00", "2025-02-28 23:59:59"])
+    // ->groupBy('cliente_id')
+    // ->get()
+    // ->toArray();
+
+    // $array_dos = [];
+    // for ($j = 0; $j < count($clientes_dos); $j++) {
+    //     $array_dos[] = $clientes_dos[$j]['cliente_id'];
+    // }
+
+
+    // $diff_result = array_diff($array, $array_dos);
+    // dd(count($diff_result));
+    // return $diff_result;
+
+    // $salidas = SalidaInventario::all()->toArray();
+
+    // for ($i = 0; $i < count($salidas); $i++) {
+    //     $prod = Producto::where('id', $salidas[$i]['producto_id'])->first();
+    //     dd($prod);
+    //     $salidas_update = SalidaInventario::where('producto_id', $prod->id)->first();
+    //     $salidas_update->producto = $prod->descripcion;
+    //     $salidas_update->save();
+    // }
+
+    $servicio_id_facturado = Disponible::where('cod_asignacion',
+        'Pca-88919295'
+    )
+    // ->where('status', 'facturado')
+    ->get('servicio_id')
     ->toArray();
+    $producto_id = ProductoServicio::where('servicio_id', 4)->get();
+    dd($servicio_id_facturado[0]['servicio_id'], $producto_id->toArray());
+    dd('listo');
     
-    $array = [];
-    for ($i = 0; $i < count($clientes_uno); $i++) {
-        $array[] = $clientes_uno[$i]['cliente_id'];
-    }
-
-
-    $clientes_dos = VentaServicio::select('cliente_id')
-    ->whereBetween('created_at', ["2025-02-16 00:00:00", "2025-02-28 23:59:59"])
-    ->groupBy('cliente_id')
-    ->get()
-    ->toArray();
-
-    $array_dos = [];
-    for ($j = 0; $j < count($clientes_dos); $j++) {
-        $array_dos[] = $clientes_dos[$j]['cliente_id'];
-    }
-
-    
-    $diff_result = array_diff($array, $array_dos);
-    dd(count($diff_result));
-    return $diff_result;
         
 });

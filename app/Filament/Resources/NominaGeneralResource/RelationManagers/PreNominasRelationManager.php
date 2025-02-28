@@ -74,21 +74,22 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('comision_usd')
                 ->label('Comision(USD)')
-                ->numeric(decimalPlaces: 2, locale: 'es')
+                ->numeric()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('comision_bsd')
                 ->label('Comision(BSD)')
-                ->numeric(decimalPlaces: 2, locale: 'es')
+                ->numeric()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('comision_prod')
                 ->label('Comision Productos')
-                ->numeric(decimalPlaces: 2, locale: 'es')
+                ->numeric()
                     ->sortable(),
 
                 Tables\Columns\TextInputColumn::make('propinas_usd')
                 ->label('Propina(USD)')
+                ->numeric()
                 ->sortable()
                 ->afterStateUpdated(function ($record, $state) {
                     $record->total_usd = $state + $record->total_usd;
@@ -106,6 +107,7 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextInputColumn::make('propinas_bsd')
                 ->label('Propina(Bs.)')
+                ->numeric()
                 ->sortable()
                 ->afterStateUpdated(function ($record, $state) {
                     $record->total_bsd = $state + $record->total_bsd;
@@ -123,6 +125,7 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextInputColumn::make('asignaciones_usd')
                 ->label('Asignaciones(USD)')
+                ->numeric()
                 ->sortable()
                 ->afterStateUpdated(function ($record, $state) {
                     $record->total_usd = $state + $record->total_usd;
@@ -141,6 +144,7 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextInputColumn::make('asignaciones_bsd')
                 ->label('Asignaciones(Bs.)')
+                ->numeric()
                 ->afterStateUpdated(function ($record, $state) {
                     $record->total_bsd = $state + $record->total_bsd;
                     $record->save();
@@ -158,6 +162,7 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextInputColumn::make('deducciones_usd')
                 ->label('Deducciones(USD)')
+                ->numeric()
                 ->sortable()
                 ->afterStateUpdated(function ($record, $state) {
                     $record->total_usd = $record->total_usd - $state;
@@ -176,6 +181,7 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextInputColumn::make('deducciones_bsd')
                 ->label('Deducciones(Bs.)')
+                ->numeric()
                 ->sortable()
                     ->afterStateUpdated(function ($record, $state) {
                         $record->total_bsd = $record->total_bsd - $state;
@@ -203,43 +209,43 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('total_bsd')
                 ->label('Total(Bs.)')
-                ->numeric(decimalPlaces: 2, locale: 'es')
+                ->numeric()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_venta_sin_iva')
                 ->label('Venta sin IVA')
-                ->numeric(decimalPlaces: 2, locale: 'es')
+                ->numeric()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('iva')
                     ->label('IVA')
-                    ->numeric(decimalPlaces: 2, locale: 'es')
+                    ->numeric()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('retencion_isrl')
                 ->label('Retencion ISRL')
-                ->numeric(decimalPlaces: 2, locale: 'es')
+                ->numeric()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_usd')
                 ->label('Total a Pagar(USD)')
-                ->numeric(decimalPlaces: 2, locale: 'es')
+                ->numeric()
                 ->summarize(Sum::make()
                     ->label(('Total a Pagar($)'))
-                    ->numeric(decimalPlaces: 2, locale: 'es'))
+                    ->numeric())
                 ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_pagar_bsd')
                 ->label('Total A Pagar(Bs.)')
-                ->numeric(decimalPlaces: 2, locale: 'es')
+                ->numeric()
                 ->summarize(Sum::make()
                     ->label(('Total a Pagar(Bs.)'))
-                    ->numeric(decimalPlaces: 2, locale: 'es'))
+                    ->numeric())
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('conversion_a_usd')
                     ->label('Conversion($)')
-                    ->numeric(decimalPlaces: 2, locale: 'es')
+                    ->numeric()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
 

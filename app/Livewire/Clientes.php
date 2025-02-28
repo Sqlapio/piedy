@@ -18,6 +18,6 @@ class Clientes extends Component
 {
     public function render()
     {
-        return view('livewire.clientes');
+        return view('livewire.clientes'); 
     }
 }

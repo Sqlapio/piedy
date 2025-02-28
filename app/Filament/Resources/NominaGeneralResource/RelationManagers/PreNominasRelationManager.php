@@ -89,7 +89,7 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextInputColumn::make('propinas_usd')
                 ->label('Propina(USD)')
-                ->numeric()
+                
                 ->sortable()
                 ->afterStateUpdated(function ($record, $state) {
                     $record->total_usd = $state + $record->total_usd;
@@ -107,7 +107,7 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextInputColumn::make('propinas_bsd')
                 ->label('Propina(Bs.)')
-                ->numeric()
+                
                 ->sortable()
                 ->afterStateUpdated(function ($record, $state) {
                     $record->total_bsd = $state + $record->total_bsd;
@@ -125,7 +125,7 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextInputColumn::make('asignaciones_usd')
                 ->label('Asignaciones(USD)')
-                ->numeric()
+                
                 ->sortable()
                 ->afterStateUpdated(function ($record, $state) {
                     $record->total_usd = $state + $record->total_usd;
@@ -144,7 +144,7 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextInputColumn::make('asignaciones_bsd')
                 ->label('Asignaciones(Bs.)')
-                ->numeric()
+                
                 ->afterStateUpdated(function ($record, $state) {
                     $record->total_bsd = $state + $record->total_bsd;
                     $record->save();
@@ -162,7 +162,7 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextInputColumn::make('deducciones_usd')
                 ->label('Deducciones(USD)')
-                ->numeric()
+                
                 ->sortable()
                 ->afterStateUpdated(function ($record, $state) {
                     $record->total_usd = $record->total_usd - $state;
@@ -181,7 +181,7 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextInputColumn::make('deducciones_bsd')
                 ->label('Deducciones(Bs.)')
-                ->numeric()
+                
                 ->sortable()
                     ->afterStateUpdated(function ($record, $state) {
                         $record->total_bsd = $record->total_bsd - $state;

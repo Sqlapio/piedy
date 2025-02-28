@@ -7,8 +7,10 @@
      alt="Logo">
     <div class="ml-2 text-left">
         <div class="mt-2 text-sm text-black leading-7 font-bold">
-            BCV: {{ TasaBcv::first()->tasa }}Bs
+            BCV: 55.44Bs
         </div>
     </div>
 </div>
+
+{{-- {{ TasaBcv::first()->tasa }} --}}
 

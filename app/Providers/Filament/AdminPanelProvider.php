@@ -20,6 +20,7 @@ use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use App\Filament\Resources\VentaServicioResource;
+use App\Models\TasaBcv;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 
@@ -70,8 +71,8 @@ class AdminPanelProvider extends PanelProvider
         //             'name' => Str::of($hook)->remove('tables::'),
         //         ]);
         //     });
-        // } 
-        
+        // }
+
         return $panel
             ->default()
             ->id('admin')
@@ -142,16 +143,14 @@ class AdminPanelProvider extends PanelProvider
             ->spa()
             ->maxContentWidth(MaxWidth::Full)
             ->viteTheme('resources/css/filament/admin/theme.css')
-            ->databaseNotifications();
+            ->databaseNotifications()
             // ->renderHook(PanelsRenderHook::TOPBAR_END, function () {
             //     return Blade::render('<div style="padding: 2px; font-size: 10px;">{{ $text }}</div>', [
             //             'text' => 'Versión: 2.0'
             //         ]);
             // });
-            // ->renderHook(PanelsRenderHook::TOPBAR_END, function () {
-            //     return Blade::render('<div style="padding: 2px;">{{ $text }}</div>', [
-            //             'text' => Auth::user()->name,
-            //         ]);
-            // });
+            ->renderHook(PanelsRenderHook::TOPBAR_END, function () {
+                return view('topbar-end-bcv');
+            });
     }
 }

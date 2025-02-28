@@ -61,8 +61,8 @@ class PreNominaController extends Controller
                     //TOTAL CLIENTES ATENDIDOS
                     //---------------------------------------------------------------------------------------------
                     $preNomina->total_clientes_atendidos = VentaServicio::where('empleado_id', $item->id)
-                    ->where('sucursal_id', $sucursal_id)
-                    ->whereBetween('created_at', [$fecha_ini . ' 04:00:00.000', $fecha_fin . ' 23:59:59.000'])
+                        ->where('sucursal_id', $sucursal_id)
+                        ->whereBetween('created_at', [$fecha_ini . ' 04:00:00.000', $fecha_fin . ' 23:59:59.000'])
                         ->count();
 
 

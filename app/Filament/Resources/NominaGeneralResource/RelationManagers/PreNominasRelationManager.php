@@ -253,8 +253,8 @@ class PreNominasRelationManager extends RelationManager
                 ->label('Total General($)')
                 ->numeric(decimalPlaces: 2, locale: 'es')
                     ->summarize(Sum::make()
-                    ->numeric(decimalPlaces: 2, locale: 'es')
-                    ->label('Total General($)'))
+                    ->numeric()
+                    ->label('Total Nomina($)'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
@@ -337,11 +337,12 @@ class PreNominasRelationManager extends RelationManager
                             }
 
                             if ($item->rol_id == 3 || $item->rol_id == 7) {
-
+                                // dd($item);
                                 $item->total_bsd = $parametros->sueldo_gerente_tienda_usd * TasaBcv::all()->first()->tasa;
+                                $conversion_comision = $item->total_usd * TasaBcv::all()->first()->tasa;
 
                                 //Calculo de la conversion a dolares
-                                $item->total_pagar_bsd = $item->total_bsd;
+                                $item->total_pagar_bsd = $item->total_bsd + $conversion_comision;
                                 $item->conversion_a_usd = $parametros->sueldo_gerente_tienda_usd;
                                 $item->total_general_usd = $item->total_usd + $item->conversion_a_usd;
                             }
@@ -380,6 +381,7 @@ class PreNominasRelationManager extends RelationManager
                             'metodo_pago'           => 1,
                             'tasa_bcv'              => $tasa_bcv,
                             'responsable'           => Auth::user()->name,
+                            'created_at'            => now()->subDays(1),
                         ]);
                     })->deselectRecordsAfterCompletion(),
 
@@ -403,34 +405,6 @@ class PreNominasRelationManager extends RelationManager
                                 ->send();
                         }
                     })->deselectRecordsAfterCompletion(),
-
-                    // BulkAction::make('delete')
-                    // ->label('Reversar Pre-Cálculo')
-                    // ->color('primary')
-                    // ->icon('heroicon-c-arrow-uturn-left')
-                    // ->requiresConfirmation()
-                    // ->action(function (Collection $records) {
-                    //     //Eliminamos los datos seleccionados
-                    //     $records->each->delete();
-                    //     //log
-                    //     LogController::log(Auth::user()->id, 'reverso', 'reverso de calculo de nomina', $response = null);
-
-                    //     //Eliminamos el asiente generado por el calculo de nomina
-                    //     $nomina_general = NominaGeneral::where('cod_nomina', $records->first()->cod_nomina)->first();
-                    //     $nomina_general->delete();
-                    //     //log
-                    //     LogController::log(Auth::user()->id, 'reverso', 'reverso de nomina general', $response = null);
-
-                    //     //Eliminamos el asiento creado en la tabla de gastos
-                    //     $gastos = Gasto::where('numero_factura_gasto', 'Nom-' . $nomina_general->cod_nomina)->first();
-                    //     if(isset($gastos)) {
-                    //         $gastos->delete();
-                    //     }
-                    //     //log
-                    //     LogController::log(Auth::user()->id, 'reverso', 'reverso de gasto de nomina', $response = null);
-
-                    //     // $this->resetTable();
-                    // })->deselectRecordsAfterCompletion(), 
 
                     ExportBulkAction::make('exportar-excel')
                     ->label('Exportar Excel')

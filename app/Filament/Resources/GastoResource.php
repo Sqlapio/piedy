@@ -269,10 +269,11 @@ class GastoResource extends Resource
                 Tables\Columns\TextColumn::make('numero_factura_gasto')
                     ->label('Nro. Factura Gasto')
                     ->searchable(),
-
+                    
                 Tables\Columns\TextColumn::make('nro_control')
                     ->label('Nro. Control')
-                    ->searchable(),
+                    ->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('descripcion')
                     ->label('Descripcion del Gasto')
@@ -281,11 +282,14 @@ class GastoResource extends Resource
 
                 Tables\Columns\TextColumn::make('forma_pago')
                     ->label('Forma de Pago')
-                    ->searchable(),
-
-                Tables\Columns\TextColumn::make('fecha')
-                    ->label('Regiastrado el:')
-                    ->icon('heroicon-m-calendar-days')
+                    ->badge()
+                    ->icon(function (Gasto $record) {
+                        if ($record->forma_pago == 'bolivares') {
+                            return 'heroicon-m-credit-card';
+                        } else {
+                            return 'heroicon-s-currency-dollar';
+                        }
+                    })
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('fecha_factura')
@@ -296,6 +300,7 @@ class GastoResource extends Resource
                 Tables\Columns\TextColumn::make('almacen.nombre')
                     ->label('Almacen')
                     ->searchable(),
+                    
                 Tables\Columns\TextColumn::make('sucursal.nombre')
                     ->label('Sucursal')
                     ->searchable(),
@@ -303,6 +308,10 @@ class GastoResource extends Resource
                 Tables\Columns\TextColumn::make('responsable')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
+            Tables\Columns\TextColumn::make('created_at')
+                ->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('monto_usd')
                     ->icon('heroicon-s-currency-dollar')

@@ -29,14 +29,11 @@ class AuditoriaController extends Controller
                 ->groupBy('producto_id')
                 ->get();
 
-            // dd($productos, count($productos));
-
             for ($i = 0; $i < count($productos); $i++) {
 
                 $producto = Producto::find($productos[$i]->producto_id);
-                // dd($producto);
 
-                //Calculamos el cantidad general de solicitud del producto en la tabla de detalle requisiciones
+                //Calculamos la cantidad de solicitud del producto en la tabla de detalle requisiciones
                 $cantidad_solicitada = DB::table('detalle_requisicions')
                     ->select(DB::raw('sum(cantidad) as cantidad'), DB::raw('sum(sub_total) as sub_total_gasto'))
                     ->whereBetween('created_at', [$fecha_ini . ' 00:00:00', $fecha_fin . ' 23:59:59'])
@@ -44,18 +41,11 @@ class AuditoriaController extends Controller
                     ->get()
                     ->toArray();
 
-
                 $existencia_sucursal    = InventarioSucursal::where('sucursal_id', $sucursal_id)->where('producto_id', $productos[$i]->producto_id)->first();
                 $existencia_central     = Inventario::where('producto_id', $productos[$i]->producto_id)->first()->cantidad;
 
                 $cantidad_solicitada_req    = $cantidad_solicitada[0]->cantidad == null ? 0 : $cantidad_solicitada[0]->cantidad;
                 $gasto_total_usd            = $cantidad_solicitada[0]->sub_total_gasto == null ? 0 : $cantidad_solicitada[0]->sub_total_gasto;
-
-                // $producto_consumible = Consumible::where('producto_id', $productos[$i]->producto_id)->first();
-
-                // if ($producto_consumible == null) {
-                //     $producto_consumible = 0;
-                // }
 
                 //creamos el asiento en la tabla de auditoria
                 $asiento = new Auditoria();

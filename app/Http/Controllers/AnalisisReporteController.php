@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gasto;
+use App\Models\Compra;
 use App\Models\TasaBcv;
 use App\Models\PreNomina;
 use App\Models\Requisicion;
@@ -11,13 +12,14 @@ use App\Models\NominaGeneral;
 use App\Models\VentaProducto;
 use App\Models\VentaServicio;
 use App\Models\AnalisisReporte;
-use App\Models\Compra;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 class AnalisisReporteController extends Controller
 {
     public static function cierre($records, $fecha_ini, $fecha_fin, $cod_nomina)
     {
+        
         try {
             /**
              * Para ejecutar el cierre del periodo debemos cumplir con las siguientes restricciones:
@@ -25,28 +27,28 @@ class AnalisisReporteController extends Controller
              * 2.- El detalle generado por el calculo de la nomina, que es los empleados calculados
              * deben estar en estatus 8 = 'Nomina-totalizada'
              */
-            // dd($records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000');
 
             if ($records[0]->status_id == 8) {
 
                 $tasa_bcv = TasaBcv::where('fecha', date('d-m-Y'))->first()->tasa;
+                //testing
 
                 //SERVICIOS
                 //---------------------------------------------------------------------------------------------------------------------//
 
                 //USD
                 $venta_srv_usd = VentaServicio::where('sucursal_id', $records[0]->sucursal_id)
-                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
+                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 00:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
                     ->sum('pago_usd');
+                    //testing
 
                 //BSD
                 $venta_srv_bsd = VentaServicio::where('sucursal_id', $records[0]->sucursal_id)
-                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
+                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 00:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
                     ->sum('pago_bsd');
+                    //testing
 
                 $conversion_srv = $venta_srv_bsd / $tasa_bcv;
-
-                $total_venta_srv_usd = $venta_srv_usd + $conversion_srv;
 
                 //---------------------------------------------------------------------------------------------------------------------//
 
@@ -56,11 +58,11 @@ class AnalisisReporteController extends Controller
 
                 //USD
                 $venta_prod_usd = VentaProducto::where('sucursal_id', $records[0]->sucursal_id)
-                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
+                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 00:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
                     ->sum('montoUsd');
                 //BSD
                 $venta_prod_bsd = VentaProducto::where('sucursal_id', $records[0]->sucursal_id)
-                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
+                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 00:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
                     ->sum('montoBsd');
 
                 $conversion_prod = $venta_prod_bsd / $tasa_bcv;
@@ -75,15 +77,15 @@ class AnalisisReporteController extends Controller
 
                 //USD
                 $gastos_usd = Gasto::where('sucursal_id', $records[0]->sucursal_id)
-                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
+                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 00:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
                     ->sum('monto_usd');
                 //BSD
                 $gastos_bsd = Gasto::where('sucursal_id', $records[0]->sucursal_id)
-                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
+                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 00:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
                     ->sum('monto_bsd');
 
                 $total_gastos_usd = Gasto::where('sucursal_id', $records[0]->sucursal_id)
-                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
+                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 00:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
                     ->sum('conversion_a_usd');
 
                 $conversion_gastos = $gastos_bsd / $tasa_bcv;
@@ -96,7 +98,7 @@ class AnalisisReporteController extends Controller
 
                 //USD
                 $requisiciones_usd = Requisicion::where('sucursal_id', $records[0]->sucursal_id)
-                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
+                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 00:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
                     ->sum('total_usd');
                 //---------------------------------------------------------------------------------------------------------------------//
 
@@ -113,27 +115,27 @@ class AnalisisReporteController extends Controller
                 //--------------------------------------------------------------------------------------------------------------------//
                 //USD
                 $comisiones_srv_usd = VentaServicio::where('sucursal_id', $records[0]->sucursal_id)
-                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
+                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 00:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
                     ->sum('comision_dolares');
                     // dd($comisiones_srv_usd);
 
                 $comisiones_gte_srv_usd = VentaServicio::where('sucursal_id', $records[0]->sucursal_id)
-                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
+                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 00:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
                     ->sum('comision_gerente');
 
                 $comisiones_prod_usd = VentaProducto::where('sucursal_id', $records[0]->sucursal_id)
-                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
+                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 00:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
                     ->sum('comision_empleado');
 
                 $comisiones_gte_prod_usd = VentaProducto::where('sucursal_id', $records[0]->sucursal_id)
-                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
+                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 00:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
                     ->sum('comision_gerente');
 
                 $total_comisiones_usd = $comisiones_srv_usd + $comisiones_gte_srv_usd + $comisiones_prod_usd + $comisiones_gte_prod_usd;
 
                 //BSD
                 $comisiones_bsd = VentaServicio::where('sucursal_id', $records[0]->sucursal_id)
-                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 06:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
+                    ->whereBetween('created_at', [$records[0]->fecha_ini . ' 00:00:00.000', $records[0]->fecha_fin . ' 23:59:59.000'])
                     ->sum('comision_bolivares');
 
                 $conversion_comisiones = $comisiones_bsd / $tasa_bcv;
@@ -182,7 +184,7 @@ class AnalisisReporteController extends Controller
 
 
                 $analisis->sub_total_ingresos       = $analisis->venta_servicios_usd + $analisis->con_ven_srv_bsd_a_usd + $analisis->venta_productos_usd + $analisis->con_ven_prod_bsd_a_usd;
-                $analisis->sub_total_egresos        = $total_gastos_usd + $requisiciones_usd + $nomina_usd;
+                $analisis->sub_total_egresos        = $total_gastos_usd ;
 
                 $analisis->neto                     = $analisis->sub_total_ingresos - $analisis->sub_total_egresos;
                 $analisis->save();

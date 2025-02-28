@@ -40,7 +40,8 @@ class Gasto extends Model
         'total_gasto_bsd',
         'iva',
         'conversion_a_usd',
-        'nro_control'
+        'nro_control',
+        'created_at',
     ];
 
     /**

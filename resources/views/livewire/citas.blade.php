@@ -2,7 +2,7 @@
     <div class="p-5">
         @livewire('notifications')
         <h1 class="text-2xl mb-4 font-bold text-[#bd9c95]">Agenda de Citas</h1>
-            <div class="p-2 flex justify-between items-center">
+            <div class="p-2 flex justify-between items-center" style="position: absolute !important; z-index: 50 !important; width: 100%; max-width: 80rem; padding: 0 2.25rem 0 0;">
                 <div class="">
                   <x-select wire:change="$emit('selected', $event.target.value)" wire:model.live="mes" placeholder="Seleccion" :async-data="route('api.meses')" option-label="mes" option-value="numero" />
                 </div>
@@ -36,7 +36,7 @@
                 </div>
             </div>
         {{-- Citas agendadas --}}
-        <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7 {{ $opcion == 'mes' || $opcion == 'semana' ? '' : 'hidden'}}">
+        <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7 {{ $opcion == 'mes' || $opcion == 'semana' ? '' : 'hidden'}}" style="margin-top: 100px">
             @foreach ($array as $key => $item)
             <div class="flex rounded-lg {{ $largo }} p-2 flex-col border border-[#D9C3C1] bg-[#ffffff]" >
                 <div class="flex items-center mb-1 p-2 rounded-lg bg-[#7B9EA6] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">

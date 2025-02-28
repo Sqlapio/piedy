@@ -222,8 +222,11 @@ class ApiClientesController extends Controller
 
     public function meses(Request $request): Collection
     {
+        $mes_actual = date('m');
+
         return Mes::query()
             ->select('id','mes','numero')
+            ->where('numero', '>=', $mes_actual)
             ->orderBy('id', 'asc')
             ->when(
                 $request->search,
@@ -235,6 +238,7 @@ class ApiClientesController extends Controller
                 fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
                 fn (Builder $query) => $query->limit(12)
             )
+            ->take(4)
             ->get()
             ->map(function (Mes $mes) {
                 $mes->mes;

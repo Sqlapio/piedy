@@ -58,6 +58,10 @@
     @apply bg-[#7B95A6] !important;
 }
 
+.fi-topbar > nav {
+    @apply gap-x-2 !important;
+}
+
 .fi-ta-header-cell-sort-icon {
     @apply text-white !important;
 }

@@ -43,6 +43,7 @@ class RequisicionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Requisicion::query()->orderBy('created_at', 'desc'))
             ->columns([
                 Tables\Columns\TextColumn::make('codigo')
                     ->icon('heroicon-c-cog-8-tooth')
@@ -114,7 +115,7 @@ class RequisicionResource extends Resource
                     ->label('Filtros'),
             )
             ->actions([
-                
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

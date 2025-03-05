@@ -81,21 +81,21 @@ class ClienteNuevoChart extends ChartWidget
                 [
                     'label' => 'Clientes Atendidos',
                     'data' => $data_clientes_atendidos,
-                    'backgroundColor' => '#00ce0026',
-                    'borderColor' => '#00ce00',
+                    'backgroundColor' => '#99bcbf',
+                    'borderColor' => '#ffff',
                     'fill' => true,
                 ],
                 [
                     'label' => 'Clientes Recurentes',
                     'data' => $data_clientes_recurentes,
-                    'borderColor' => '#ff0000',
-                    'backgroundColor' => '#ff000045',
+                    'backgroundColor' => '#ab7e7a',
+                    'borderColor' => '#ffff',
                 ],
                 [
                     'label' => 'Clientes Nuevos',
                     'data' => $data_clientes_nuevos,
-                    'borderColor' => '#0a0aff',
-                    'backgroundColor' => '#3b82f670',
+                    'backgroundColor' => '#bf99a9',
+                    'borderColor' => '#ffff',
                 ],
 
             ],

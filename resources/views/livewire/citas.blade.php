@@ -2,7 +2,7 @@
     <div class="p-5">
         @livewire('notifications')
         <h1 class="text-2xl mb-4 font-bold text-[#bd9c95]">Agenda de Citas</h1>
-            <div class="p-2 flex justify-between items-center" style="position: absolute !important; z-index: 50 !important; width: 100%; max-width: 80rem; padding: 0 2.25rem 0 0;">
+            <div class="p-2 flex justify-between items-center" style="position: absolute !important; z-index: 40 !important; width: 100%; max-width: 80rem; padding: 0 2.25rem 0 0;">
                 <div class="">
                   <x-select wire:change="$emit('selected', $event.target.value)" wire:model.live="mes" placeholder="Seleccion" :async-data="route('api.meses')" option-label="mes" option-value="numero" />
                 </div>

@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class DetalleAsignacion extends Model
 {
@@ -31,6 +32,7 @@ class DetalleAsignacion extends Model
         'costo',
         'fecha',
         'status',
+        'sucursal_id',
         'tipo'
     ];
 
@@ -39,9 +41,9 @@ class DetalleAsignacion extends Model
         return $this->belongsTo(VentaServicio::class, 'cod_asignacion', 'cod_asignacion');
     }
 
-    public function cliente(): BelongsTo
+    public function cliente(): HasOne
     {
-        return $this->belongsTo(Cliente::class, 'cliente_id', 'id');
+        return $this->hasOne(Cliente::class, 'id', 'cliente_id');
     }
 
     public function empleado(): BelongsTo
@@ -52,11 +54,6 @@ class DetalleAsignacion extends Model
     public function servicio(): BelongsTo
     {
         return $this->belongsTo(Servicio::class, 'servicio_id', 'id');
-    }
-
-    public function producto(): BelongsTo
-    {
-        return $this->belongsTo(Producto::class, 'producto_id', 'id');
     }
 
     /**
@@ -87,5 +84,15 @@ class DetalleAsignacion extends Model
     public function detalleServicio(): BelongsTo
     {
         return $this->belongsTo(DetalleAsignacion::class, 'servicio_id', 'id');
+    }
+
+    public function sucursal(): HasOne
+    {
+        return $this->hasOne(Sucursal::class, 'id', 'sucursal_id');
+    }
+
+    public function producto(): HasOne
+    {
+        return $this->hasOne(Producto::class, 'id', 'producto_id');
     }
 }

@@ -195,3 +195,32 @@
 .fi-wi-stats-overview-stats-ctn {
     height: 100%;
 }
+
+.bg-a16d69 {
+    @apply border-[#a16d69] !important;
+}
+
+.bg-99bcbf {
+    @apply border-[#99bcbf] !important;
+}
+
+.bg-bf99a9 {
+    @apply border-[#bf99a9] !important;
+}
+
+.bg-bfaf99 {
+    @apply border-[#bfaf99] !important;
+}
+
+.bg-99a9bf {
+    @apply border-[#99a9bf] !important;
+}
+
+.bg-99bfaf {
+    @apply border-[#99bfaf] !important;
+}
+
+.bg-9c99bf {
+    @apply border-[#9c99bf] !important;
+}
+

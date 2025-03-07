@@ -25,23 +25,23 @@ class QuiropediaDosStats extends BaseWidget
     {
         return [
 
-            Stat::make('QUIROPEDIA PARA DEPORTISTA', $this->getPageTableQuery()->where('tipo', 'servicio')->where('servicio_id', 4)->where('status', 2)->count())
+            Stat::make('QUIROPEDIA MEDICA', $this->getPageTableQuery()->where('tipo', 'servicio')->where('servicio_id', 6)->where('status', 2)->count())
                 ->description('Total realizadas')
                 ->descriptionIcon('heroicon-m-user-group')
-                ->color('primary')
-                ->extraAttributes(['class' => 'col-span-2 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a]']),
+                ->color('info')
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 bg-99a9bf']),
 
             Stat::make('QUIROPEDIA PIE DIABETICO', $this->getPageTableQuery()->where('tipo', 'servicio')->where('servicio_id', 7)->where('status', 2)->count())
                 ->description('Total realizadas')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('info')
-                ->extraAttributes(['class' => 'col-span-2 row-span-1 rounded-md text-center border-4 border-[#7B9AA6]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 bg-99bfaf']),
 
             Stat::make('QUIROPEDIA PARA NIÑOS', $this->getPageTableQuery()->where('tipo', 'servicio')->where('servicio_id', 8)->where('status', 2)->count())
                 ->description('Total realizadas')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('success')
-                ->extraAttributes(['class' => 'col-span-2 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 bg-9c99bf']),
 
         ];
     }
@@ -49,9 +49,9 @@ class QuiropediaDosStats extends BaseWidget
     //getColumns()
     public function getColumns(): int
     {
-        return 4;
+        return 3;
     }
-    
-    
-    
+
+
+
 }

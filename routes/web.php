@@ -15,6 +15,7 @@ use App\Models\Disponible;
 use App\Models\Inventario;
 use Flowframe\Trend\Trend;
 use App\Models\ServicioUser;
+use Illuminate\Http\Request;
 use App\Models\CierreGeneral;
 use App\Models\PeriodoNomina;
 use App\Models\VentaProducto;
@@ -282,6 +283,21 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/l/srv', function () {
         return view('lista-servicio-empleado');
     })->name('lista-servicio-empleado');
+    /**-------------------------------------------------------*/
+
+    /**
+     * ---------------------------------------------------------
+     * RUTAS:
+     * Modulo del Asistencia
+     * ---------------------------------------------------------
+     */
+    Route::get('/ip', function (Request $request) {
+        //ip
+        dd($request->ip());
+    })->name('ip');
+    Route::get('/r/asistencia', function () {
+        return view('table-asistencia');    
+    })->name('r-aistencia');
     /**-------------------------------------------------------*/
 
 

@@ -272,4 +272,10 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAvatar
         return $this->belongsTo(PreNomina::class, 'user_id', 'id');
     }
 
+    //Relacion 1 - N con la tabla se asistencias
+    public function asistencias(): HasMany
+    {
+        return $this->hasMany(Asistencia::class, 'empleado_id', 'id');
+    }
+
 }

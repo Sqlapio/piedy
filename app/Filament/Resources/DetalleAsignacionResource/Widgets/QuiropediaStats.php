@@ -29,25 +29,27 @@ class QuiropediaStats extends BaseWidget
                 ->description('Total realizadas')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('primary')
-                ->extraAttributes(['class' => 'col-span-2 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a]']),
-
-            Stat::make('QUIROPEDIA MEDICA', $this->getPageTableQuery()->where('tipo', 'servicio')->where('servicio_id', 6)->where('status', 2)->count())
-                ->description('Total realizadas')
-                ->descriptionIcon('heroicon-m-user-group')
-                ->color('info')
-                ->extraAttributes(['class' => 'col-span-2 row-span-1 rounded-md text-center border-4 border-[#7B9AA6]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 bg-a16d69']),
 
             Stat::make('QUIROPEDIA AVANZADA VIP', $this->getPageTableQuery()->where('tipo', 'servicio')->where('servicio_id', 2)->where('status', 2)->count())
                 ->description('Total realizadas')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('success')
-                ->extraAttributes(['class' => 'col-span-2 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 bg-99bcbf']),
+
+            Stat::make('QUIROPEDIA PARA DEPORTISTA', $this->getPageTableQuery()->where('tipo', 'servicio')->where('servicio_id', 4)->where('status', 2)->count())
+                ->description('Total realizadas')
+                ->descriptionIcon('heroicon-m-user-group')
+                ->color('primary')
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 bg-bf99a9']),
 
             Stat::make('QUIROPEDIA REJUVENECEDORA', $this->getPageTableQuery()->where('tipo', 'servicio')->where('servicio_id', 3)->where('status', 2)->count())
                 ->description('Total realizadas')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('warning')
-                ->extraAttributes(['class' => 'col-span-2 row-span-1 rounded-md text-center border-4 border-[#9bad699e]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 bg-bfaf99']),
+
+
 
         ];
     }

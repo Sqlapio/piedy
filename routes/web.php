@@ -30,6 +30,7 @@ use App\Models\InventarioSucursal;
 use App\Models\NotificacionMasiva;
 use Illuminate\Support\Facades\DB;
 use App\Models\MovimientoMembresia;
+use Illuminate\Support\Facades\Log;
 use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -292,9 +293,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
      * ---------------------------------------------------------
      */
     Route::get('/ip', function (Request $request) {
-        //ip
-        dd($request->ip());
+        Log::info('User IP: ' . $request->ip() . ' - ' .  Auth::user()->name);
+        return 'Gracias por visitarnos';
     })->name('ip');
+    
     Route::get('/r/asistencia', function () {
         return view('table-asistencia');    
     })->name('r-aistencia');

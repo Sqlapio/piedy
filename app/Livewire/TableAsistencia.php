@@ -38,22 +38,32 @@ class TableAsistencia extends Component implements HasForms, HasTable
                     ->label('Empleado')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('tipo_registro')
-                    ->label('Tipo de registro')
+                Tables\Columns\TextColumn::make('entrada')
+                    ->label('Entrada')
+                    ->alignCenter()
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'entrada' => 'success',
-                        'salida' => 'danger',
+                        '1' => 'success',
+                        '0' => 'warnnig',
+                    })
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('salida')
+                    ->label('Salida')
+                    ->alignCenter()
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        '1' => 'danger',
+                        '0' => 'warnnig',
                     })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Fecha')
+                    ->label('Entrada')
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Salida')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
             ->filters([
                 //

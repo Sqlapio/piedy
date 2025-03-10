@@ -16,7 +16,9 @@ class Asistencia extends Model
         'empleado_id',
         'dia',
         'hora',
-        'tipo_registro'
+        'entrada',
+        'fecha',
+        'salida'
     ];
 
     public function empleado():BelongsTo

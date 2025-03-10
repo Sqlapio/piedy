@@ -157,17 +157,14 @@ class PreNominaController extends Controller
                     $preNomina->total_servicios = VentaServicio::where('responsable_id', $item->id)
                         ->where('sucursal_id', $sucursal_id)
                         ->where('comision_gerente', '!=', 0)
-                        ->whereBetween('created_at', [$fecha_ini . ' 04:00:00.000', $fecha_fin . ' 23:59:59.000'])
+                        ->whereBetween('created_at', [$fecha_ini . ' 00:00:00.000', $fecha_fin . ' 23:59:59.000'])
                         ->count();
-                    // dump($preNomina->total_servicios);
 
                     //Total productos vendidos
                     $preNomina->total_productos = VentaProducto::where('gerente_id', $item->id)
                         ->where('sucursal_id', $sucursal_id)
-                        ->where('empleado_id', null)
-                        ->whereBetween('created_at', [$fecha_ini . ' 04:00:00.000', $fecha_fin . ' 23:59:59.000'])
+                        ->whereBetween('created_at', [$fecha_ini . ' 00:00:00.000', $fecha_fin . ' 23:59:59.000'])
                         ->count();
-                    // dump($preNomina->total_productos);
 
                     /**
                      * CALCULO PARA LOS SERVICIOS REALIZADOS

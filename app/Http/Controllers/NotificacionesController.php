@@ -296,8 +296,8 @@ class NotificacionesController extends Controller
                 # code...
                 $params = array(
                     'token' => env('TOKEN_API_WHATSAPP'),
-                    // 'to' => $user_phone[$i]['telefono'],
-                    'to' => '+584247667265',
+                    'to' => $user_phone[$i]['telefono'],
+                    // 'to' => '+584247667265',
                     'image' => env('APP_URL') . '/storage/' . $image,
                     // 'image' => env('IMAGE_PROMOCION'),
 

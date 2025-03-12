@@ -160,12 +160,34 @@ class TableCliente extends Component implements HasForms, HasTable
                                             ]),
 
                                         //Telefono
+                                        Select::make('country_code')
+                                            ->label('Código de país')
+                                            ->options([
+                                                '+1' => '🇺🇸 +1 (EE.UU.)',
+                                                '+58' => '🇻🇪 +58 (Venezuela)',
+                                                '+52' => '🇲🇽 +52 (México)',
+                                                '+34' => '🇪🇸 +34 (España)',
+                                                '+55' => '🇧🇷 +55 (Brasil)',
+                                                '+44' => '🇬🇧 +44 (Reino Unido)',
+                                                '+33' => '🇫🇷 +33 (Francia)',
+                                                '+49' => '🇩🇪 +49 (Alemania)',
+                                            ])
+                                            ->searchable()
+                                            ->default('+58')
+                                            ->required(),
+                                            
                                         TextInput::make('telefono')
                                             ->label('Teléfono')
+                                            ->tel()
+                                            ->afterStateUpdated(function ($state, callable $set, Get $get) {
+                                                $countryCode = $get('country_code');
+
+                                                if ($countryCode) {
+                                                    $cleanNumber = ltrim(preg_replace('/[^0-9]/', '', $state), '0');
+                                                    $set('telefono', $countryCode . $cleanNumber);
+                                                }
+                                            })
                                             ->prefixIcon('heroicon-c-device-phone-mobile')
-                                            ->mask(RawJs::make(<<<'JS'
-                                                $input.startsWith('1') ? '19999999999' : '9999-9999999'
-                                            JS))
                                             ->unique(column: 'telefono')
                                             ->rules(['required'])
                                             ->validationMessages([
@@ -173,6 +195,7 @@ class TableCliente extends Component implements HasForms, HasTable
                                                 'unique'    => 'El número de teléfono esta duplicado',
                                             ]),
 
+                                            
                                     ]),
                                 ])
                         ])

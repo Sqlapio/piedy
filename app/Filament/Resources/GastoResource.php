@@ -196,8 +196,21 @@ class GastoResource extends Resource
                         })
                         ->placeholder('0.00'),
 
+                        Forms\Components\TextInput::make('exento')
+                            ->label('Exento(Bs.)')
+                            ->prefixIcon('heroicon-m-credit-card')
+                            ->hidden(function (Get $get) {
+                                if ($get('forma_pago') == 'bolivares') {
+                                    return false;
+                                } else {
+                                    return true;
+                                }
+                            })
+                            ->numeric()
+                            ->placeholder('0.00'),
+
                         Forms\Components\TextInput::make('monto_bsd')
-                        ->label('Monto en BSD(Bs.)')
+                        ->label('Base imponible(Bs.)')
                         ->prefixIcon('heroicon-m-credit-card')
                         ->hidden(function (Get $get) {
                             if ($get('forma_pago') == 'bolivares') {
@@ -404,13 +417,19 @@ class GastoResource extends Resource
     public static function updateTotales(Get $get, Set $set): void
     {
         $parametro_iva = ConfiguracionNomina::first()->iva;
-        
-        if($get('feedback') == true){ 
+
+        if ($get('feedback') == true && $get('exento') == null) {
             $iva = $get('monto_bsd') * $parametro_iva;
             $set('iva', round($iva, 2));
             $set('total_gasto_bsd',  round(($get('monto_bsd') + $iva), 2));
             $set('conversion_a_usd', round($get('total_gasto_bsd') / $get('tasa_bcv'), 2));
-            
+        }
+
+        if ($get('feedback') == true && $get('exento') != null) {
+            $iva = $get('monto_bsd') * $parametro_iva;
+            $set('iva', round($iva, 2));
+            $set('total_gasto_bsd',  round(($get('monto_bsd') + $iva + $get('exento')), 2));
+            $set('conversion_a_usd', round($get('total_gasto_bsd') / $get('tasa_bcv'), 2));
         }
         
         if ($get('feedback') == false && $get('forma_pago') == 'dolares') {

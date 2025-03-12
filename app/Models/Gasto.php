@@ -39,6 +39,7 @@ class Gasto extends Model
         'almacen_id',
         'total_gasto_bsd',
         'iva',
+        'exento',
         'conversion_a_usd',
         'nro_control',
         'created_at',

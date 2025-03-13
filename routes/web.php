@@ -296,9 +296,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Log::info('User IP: ' . $request->ip() . ' - ' .  Auth::user()->name);
         return 'Gracias por visitarnos';
     })->name('ip');
-    
+
     Route::get('/r/asistencia', function () {
-        return view('table-asistencia');    
+        return view('table-asistencia');
     })->name('r-aistencia');
     /**-------------------------------------------------------*/
 
@@ -405,53 +405,44 @@ Route::get('/detalle/srv/{codigo}', [CajaController::class, 'detalleServicio'])-
 
 Route::get('/ex', function () {
 
-    // $clientes_uno = VentaServicio::select('cliente_id')
-    // ->whereBetween('created_at', ["2025-02-01 00:00:00", "2025-02-15 23:59:59"])
-    // ->groupBy('cliente_id')
-    // ->get()
-    // ->toArray();
+    $query = Cliente::all();
+    foreach($query as $item) {
+         if($item->telefono){
+             $res0424 = str_contains($item->telefono, "0424");
+             if($res0424) {
+                 $item->telefono = '+58'.ltrim(preg_replace('/[^0-9]/', '', $item->telefono), '0');
+                 $item->save();
+             }
 
-    // $array = [];
-    // for ($i = 0; $i < count($clientes_uno); $i++) {
-    //     $array[] = $clientes_uno[$i]['cliente_id'];
-    // }
-
-
-    // $clientes_dos = VentaServicio::select('cliente_id')
-    // ->whereBetween('created_at', ["2025-02-16 00:00:00", "2025-02-28 23:59:59"])
-    // ->groupBy('cliente_id')
-    // ->get()
-    // ->toArray();
-
-    // $array_dos = [];
-    // for ($j = 0; $j < count($clientes_dos); $j++) {
-    //     $array_dos[] = $clientes_dos[$j]['cliente_id'];
-    // }
+             $res0414 = str_contains($item->telefono, "0414");
+             if($res0414) {
+                 $item->telefono = '+58'.ltrim(preg_replace('/[^0-9]/', '', $item->telefono), '0');
+                 $item->save();
+             }
 
 
-    // $diff_result = array_diff($array, $array_dos);
-    // dd(count($diff_result));
-    // return $diff_result;
+             $res0426 = str_contains($item->telefono, "0426");
+             if($res0426) {
+                 $item->telefono = '+58'.ltrim(preg_replace('/[^0-9]/', '', $item->telefono), '0');
+                 $item->save();
+             }
 
-    // $salidas = SalidaInventario::all()->toArray();
 
-    // for ($i = 0; $i < count($salidas); $i++) {
-    //     $prod = Producto::where('id', $salidas[$i]['producto_id'])->first();
-    //     dd($prod);
-    //     $salidas_update = SalidaInventario::where('producto_id', $prod->id)->first();
-    //     $salidas_update->producto = $prod->descripcion;
-    //     $salidas_update->save();
-    // }
+             $res0416 = str_contains($item->telefono, "0416");
+             if($res0416) {
+                 $item->telefono = '+58'.ltrim(preg_replace('/[^0-9]/', '', $item->telefono), '0');
+                 $item->save();
+             }
 
-    $servicio_id_facturado = Disponible::where('cod_asignacion',
-        'Pca-88919295'
-    )
-    // ->where('status', 'facturado')
-    ->get('servicio_id')
-    ->toArray();
-    $producto_id = ProductoServicio::where('servicio_id', 4)->get();
-    dd($servicio_id_facturado[0]['servicio_id'], $producto_id->toArray());
+             $res0412 = str_contains($item->telefono, "0412");
+             if($res0412) {
+                 $item->telefono = '+58'.ltrim(preg_replace('/[^0-9]/', '', $item->telefono), '0');
+                 $item->save();
+             }
+         }
+    }
+
     dd('listo');
-    
-        
+
+
 });

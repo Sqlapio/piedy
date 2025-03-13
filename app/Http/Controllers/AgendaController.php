@@ -248,7 +248,7 @@ class AgendaController extends Controller
             $nueva_cita->fecha_formateada = $nueva_fecha;
             $nueva_cita->hora = date('h:i a', strtotime($hora));
             $nueva_cita->save();
-
+ 
 
             $data = [
                 'id'                => $nueva_cita->id,

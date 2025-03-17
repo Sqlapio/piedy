@@ -40,7 +40,7 @@ class TableCliente extends Component implements HasForms, HasTable
         return $table
             ->heading('CLIENTES')
             ->description('Tabla de gestión de clientes')
-            ->query(Cliente::query()->orderBy('created_at', 'desc'))
+            ->query(Cliente::select('id', 'nombre', 'cedula', 'telefono', 'email'))
             ->columns([
                     TextInputColumn::make('nombre')
                         ->label('Nombre')

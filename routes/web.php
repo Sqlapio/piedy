@@ -34,6 +34,7 @@ use Illuminate\Support\Facades\Log;
 use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\LoginController;
@@ -405,44 +406,30 @@ Route::get('/detalle/srv/{codigo}', [CajaController::class, 'detalleServicio'])-
 
 Route::get('/ex', function () {
 
-    $query = Cliente::all();
-    foreach($query as $item) {
-         if($item->telefono){
-             $res0424 = str_contains($item->telefono, "0424");
-             if($res0424) {
-                 $item->telefono = '+58'.ltrim(preg_replace('/[^0-9]/', '', $item->telefono), '0');
-                 $item->save();
-             }
+    // Cache::get('clientes');
 
-             $res0414 = str_contains($item->telefono, "0414");
-             if($res0414) {
-                 $item->telefono = '+58'.ltrim(preg_replace('/[^0-9]/', '', $item->telefono), '0');
-                 $item->save();
-             }
+    // $startTime = microtime(true);
 
+    // $clientes = Cliente::all();
 
-             $res0426 = str_contains($item->telefono, "0426");
-             if($res0426) {
-                 $item->telefono = '+58'.ltrim(preg_replace('/[^0-9]/', '', $item->telefono), '0');
-                 $item->save();
-             }
+    // $endTime = microtime(true);
+
+    // $executionTime1 = $endTime - $startTime;
+
+    // $startTime2 = microtime(true);
+
+    // $value = Cache::remember('clientes', 1200, function () {
+    //     return DB::table('clientes')->get();
+    // });
+
+    // $endTime2 = microtime(true);
+
+    // $executionTime2 = $endTime2 - $startTime2;
 
 
-             $res0416 = str_contains($item->telefono, "0416");
-             if($res0416) {
-                 $item->telefono = '+58'.ltrim(preg_replace('/[^0-9]/', '', $item->telefono), '0');
-                 $item->save();
-             }
-
-             $res0412 = str_contains($item->telefono, "0412");
-             if($res0412) {
-                 $item->telefono = '+58'.ltrim(preg_replace('/[^0-9]/', '', $item->telefono), '0');
-                 $item->save();
-             }
-         }
-    }
-
-    dd('listo');
-
+    // dump("Query took 1 " . $executionTime1 . "Query took 2 " . $executionTime2);
+    // $value2 = Cache::get('clientes');
+    
+    // dd($value->dump(), $value2->dump());
 
 });

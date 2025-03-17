@@ -12,11 +12,13 @@ use Filament\Tables\Table;
 use Filament\Support\RawJs;
 use App\Models\ServicioUser;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
+use Illuminate\Support\Facades\Cache;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
 use App\Http\Controllers\LogController;
@@ -35,12 +37,21 @@ class TableCliente extends Component implements HasForms, HasTable
     use InteractsWithForms;
     use InteractsWithTable;
 
+    public $query;
+
+    public function mount()
+    {
+        Cache::remember('clientes', 1200, function () {
+            return DB::table('clientes')->select('id', 'nombre', 'cedula', 'telefono', 'email')->orderBy('id', 'desc')->get();
+        });
+    }
+
     public function table(Table $table): Table
     {
         return $table
             ->heading('CLIENTES')
             ->description('Tabla de gestión de clientes')
-            ->query(Cliente::select('id', 'nombre', 'cedula', 'telefono', 'email'))
+            ->query(Cliente::select('id', 'nombre', 'cedula', 'telefono', 'email')->orderBy('id', 'desc'))
             ->columns([
                     TextInputColumn::make('nombre')
                         ->label('Nombre')

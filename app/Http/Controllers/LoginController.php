@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Exception;
-use Filament\Http\Responses\Auth\Contracts\LogoutResponse;
-use Filament\Notifications\Notification;
+use App\Models\User;
+use WireUi\Traits\Actions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Redirect;
-use WireUi\Traits\Actions;
+use Filament\Http\Responses\Auth\Contracts\LogoutResponse;
 
 class LoginController extends Controller
 {
@@ -134,6 +135,8 @@ class LoginController extends Controller
          * Lógica para colocar el usuario inactivo en base de datos
          */
         $user = Auth::user();
+
+        Cache::forget('clientes');
 
         $request->session()->invalidate();
 

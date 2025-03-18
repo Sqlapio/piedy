@@ -760,7 +760,7 @@ class StatController extends Controller
             $rangeEndDate = $end == null ? now()->endOfDay() : $end;
 
             $disponible = Disponible::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('empleado_id')->where('status','activo')->get()->toArray();
-
+            // dd($disponible);
             $count_disponible = [];
 
             for ($i = 0; $i < count($disponible); $i++) {
@@ -773,8 +773,8 @@ class StatController extends Controller
                 
             }
 
-            $total = array_sum($count_disponible);
-            
+            $total = count($count_disponible);
+
             $result = [
                 'total' => $total,
             ];
@@ -805,7 +805,7 @@ class StatController extends Controller
                 }
             }
 
-            $total = array_sum($count_disponible);
+            $total = count($count_disponible);
 
             $result = [
                 'total' => $total,

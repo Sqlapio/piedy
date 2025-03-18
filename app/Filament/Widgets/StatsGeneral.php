@@ -90,8 +90,28 @@ class StatsGeneral extends BaseWidget
                 ->color($promedio_prod['color'])
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
 
-        ];
-    }
+                //Stat Productos -----------------------------------------------------------------------------------------------
+            //--------------------------------------------------------------------------------------------------------------
+            Stat::make('PRODUCTOS VENDIDOS', $productos['productos_hoy'])
+            ->description(round($productos['porcentaje']) . '%')
+            ->descriptionIcon($productos['icon'])
+            ->color($productos['color'])
+            ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#d7c2c0] content-center']),
+
+            Stat::make('TOTAL PRODUCTOS($)', $productos_usd['total_productos_hoy'] . $productos_usd['letra'])
+                ->description(round($productos_usd['porcentaje']) . '%')
+                ->descriptionIcon($productos_usd['icon'])
+                ->color($productos_usd['color'])
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#d7c2c0] content-center']),
+
+            Stat::make('PROMEDIO PRODUCTO/CLIENTE', number_format($promedio_prod['promedio_hoy'], 1))
+                ->description(round($promedio_prod['porcentaje']) . '%')
+                ->descriptionIcon($promedio_prod['icon'])
+                ->color($promedio_prod['color'])
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#d7c2c0] content-center']),
+
+            ];
+        }
 
     protected int | string | array $columnSpan = [
         // 'xs' => 3,

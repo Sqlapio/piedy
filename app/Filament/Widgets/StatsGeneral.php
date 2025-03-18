@@ -92,22 +92,22 @@ class StatsGeneral extends BaseWidget
 
                 //Stat Productos -----------------------------------------------------------------------------------------------
             //--------------------------------------------------------------------------------------------------------------
-            Stat::make('PRODUCTOS VENDIDOS', $productos['productos_hoy'])
-            ->description(round($productos['porcentaje']) . '%')
-            ->descriptionIcon($productos['icon'])
-            ->color($productos['color'])
+            Stat::make('QUROPEDISTAS', $productos['productos_hoy'])
+            ->description('ACTIVOS')
+            // ->descriptionIcon($productos['icon'])
+            ->color('success')
             ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#d7c2c0] content-center']),
 
-            Stat::make('TOTAL PRODUCTOS($)', $productos_usd['total_productos_hoy'] . $productos_usd['letra'])
-                ->description(round($productos_usd['porcentaje']) . '%')
-                ->descriptionIcon($productos_usd['icon'])
-                ->color($productos_usd['color'])
+            Stat::make('MANICURISTAS', $productos_usd['total_productos_hoy'] . $productos_usd['letra'])
+                ->description('ACTIVOS')
+                // ->descriptionIcon($productos_usd['icon'])
+                ->color('success')
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#d7c2c0] content-center']),
 
-            Stat::make('PROMEDIO PRODUCTO/CLIENTE', number_format($promedio_prod['promedio_hoy'], 1))
-                ->description(round($promedio_prod['porcentaje']) . '%')
-                ->descriptionIcon($promedio_prod['icon'])
-                ->color($promedio_prod['color'])
+            Stat::make('TOTAL', number_format($promedio_prod['promedio_hoy'], 1))
+                ->description('SERVICIOS ACTIVOS')
+                // ->descriptionIcon($promedio_prod['icon'])
+                ->color('success')
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#d7c2c0] content-center']),
 
             ];

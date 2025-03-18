@@ -432,4 +432,6 @@ Route::get('/ex', function () {
     
     // dd($value->dump(), $value2->dump());
 
+    dd(Cliente::cacheClientes());
+
 });

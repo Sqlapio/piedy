@@ -42,6 +42,9 @@ class StatsGeneral extends BaseWidget
         $productos_usd          = StatController::total_productos_usd($start, $end, $sucursal_id =  null);
         $promedio_prod          = StatController::promedio_productos_cliente($start, $end, $sucursal_id =  null);
 
+        $quiropedistas          = StatController::quiropedista_activo($start, $end, $sucursal_id =  null);
+        $manicuristas           = StatController::manicurista_activo($start, $end, $sucursal_id =  null);
+
         return [
 
             /**
@@ -92,19 +95,19 @@ class StatsGeneral extends BaseWidget
 
                 //Stat Productos -----------------------------------------------------------------------------------------------
             //--------------------------------------------------------------------------------------------------------------
-            Stat::make('QUROPEDISTAS', $productos['productos_hoy'])
+            Stat::make('QUROPEDISTAS', $quiropedistas['total'])
             ->description('ACTIVOS')
             // ->descriptionIcon($productos['icon'])
             ->color('success')
             ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#d7c2c0] content-center']),
 
-            Stat::make('MANICURISTAS', $productos_usd['total_productos_hoy'] . $productos_usd['letra'])
+            Stat::make('MANICURISTAS', $manicuristas['total'])
                 ->description('ACTIVOS')
                 // ->descriptionIcon($productos_usd['icon'])
                 ->color('success')
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#d7c2c0] content-center']),
 
-            Stat::make('TOTAL', number_format($promedio_prod['promedio_hoy'], 1))
+            Stat::make('TOTAL', $quiropedistas['total'] + $manicuristas['total'])
                 ->description('SERVICIOS ACTIVOS')
                 // ->descriptionIcon($promedio_prod['icon'])
                 ->color('success')

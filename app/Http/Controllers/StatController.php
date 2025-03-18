@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Cliente;
 use App\Models\TasaBcv;
 use App\Models\Disponible;
@@ -698,6 +699,165 @@ class StatController extends Controller
                     array_push($clientes_recurrentes_ayer, $cliente->id);
                 }
 
+            }
+
+            $recurrentes_hoy = count($clientes_recurrentes_hoy);
+            $recurrentes_ayer = count($clientes_recurrentes_ayer);
+
+
+            if ($recurrentes_hoy > $recurrentes_ayer) {
+                $porcentaje = ($recurrentes_ayer * 100) / $recurrentes_hoy;
+                $porcentaje = number_format($porcentaje, 2);
+                $icon       = 'heroicon-m-arrow-trending-up';
+                $color      = 'success';
+            }
+
+            if ($recurrentes_hoy < $recurrentes_ayer) {
+                $porcentaje = ($recurrentes_hoy * 100) / $recurrentes_ayer;
+                $porcentaje = number_format($porcentaje, 2);
+                $icon       = 'heroicon-m-arrow-trending-down';
+                $color      = 'danger';
+            }
+
+            if ($recurrentes_hoy == $recurrentes_ayer) {
+                if ($recurrentes_hoy == 0 && $recurrentes_ayer == 0) {
+                    $porcentaje = 0;
+                    $icon = 'heroicon-c-arrow-long-right';
+                    $color = 'danger';
+                } else {
+                    $porcentaje = ($recurrentes_ayer * 100) / $recurrentes_hoy;
+                    $porcentaje = number_format($porcentaje, 2);
+                    $icon       = 'heroicon-c-arrow-long-right';
+                    $color      = 'warning';
+                }
+            }
+
+            $result = [
+                'recurrentes_hoy'   => $recurrentes_hoy,
+                'porcentaje'        => $porcentaje,
+                'icon'              => $icon,
+                'color'             => $color,
+            ];
+
+            return $result;
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+    /**Fin---------------------------------------------------- 
+     * -------------------------------------------------------
+     */
+
+    /**
+     * Grupo de funcion para sl calculo de los clientes
+     * ----------------------------------------------------------
+     */
+    static function quiropedista_activo($start, $end, $sucursal_id)
+    {
+        try {
+
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate = $end == null ? now()->endOfDay() : $end;
+
+            $disponible = Disponible::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('empleado_id')->where('status','activo')->get()->toArray();
+
+            $count_disponible = [];
+
+            for ($i = 0; $i < count($disponible); $i++) {
+                $user = User::where('id', $disponible[$i]['empleado_id'])->first()->rol_id;
+                if(isset($user) and $user == 2){
+                    array_push($count_disponible, $user);
+                }else{
+                    break;
+                }
+                
+            }
+
+            $total = array_sum($count_disponible);
+            
+            $result = [
+                'total' => $total,
+            ];
+
+            return $result;
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+    }
+
+    static function manicurista_activo($start, $end, $sucursal_id)
+    {
+        try {
+
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate = $end == null ? now()->endOfDay() : $end;
+
+            $disponible = Disponible::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('empleado_id')->where('status', 'activo')->get()->toArray();
+
+            $count_disponible = [];
+
+            for ($i = 0; $i < count($disponible); $i++) {
+                $user = User::where('id', $disponible[$i]['empleado_id'])->first()->rol_id;
+                if (isset($user) and $user == 1) {
+                    array_push($count_disponible, $user);
+                } else {
+                    break;
+                }
+            }
+
+            $total = array_sum($count_disponible);
+
+            $result = [
+                'total' => $total,
+            ];
+
+            return $result;
+            
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+    }
+
+    static function total_servicios_activos($start, $end, $sucursal_id)
+    {
+        try {
+
+            //code...
+            // $rangeStartDate = now()->startOfDay();
+            // $rangeEndDate = now()->endOfDay();
+
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate = $end == null ? now()->endOfDay() : $end;
+
+            $clientes_recurrentes_hoy = [];
+
+            //clientes para hoy
+            $recurrentes_hoy  = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get();
+            for ($i = 0; $i < count($recurrentes_hoy); $i++) {
+
+                $recurrentes_hoy[$i] = $recurrentes_hoy[$i]->cliente_id;
+                $cliente = Cliente::where('id', $recurrentes_hoy[$i])->first();
+                if ($cliente->visitas > 1) {
+                    array_push($clientes_recurrentes_hoy, $cliente->id);
+                }
+            }
+
+
+            //Fechas de Ayer
+            $rangeStartDate = now()->subMonth()->startOfDay();
+            $rangeEndDate   = now()->subMonth()->endOfDay();
+
+            $clientes_recurrentes_ayer = [];
+
+            //Cliente recurrente ayer
+            $recurrentes_ayer  = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get();
+            for ($i = 0; $i < count($recurrentes_ayer); $i++) {
+
+                $recurrentes_ayer[$i] = $recurrentes_ayer[$i]->cliente_id;
+                $cliente = Cliente::where('id', $recurrentes_ayer[$i])->first();
+                if ($cliente->visitas > 1) {
+                    array_push($clientes_recurrentes_ayer, $cliente->id);
+                }
             }
 
             $recurrentes_hoy = count($clientes_recurrentes_hoy);

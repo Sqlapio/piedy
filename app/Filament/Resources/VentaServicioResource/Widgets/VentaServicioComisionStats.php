@@ -44,13 +44,13 @@ class VentaServicioComisionStats extends BaseWidget
                 ->description('Comisión total por pago en dolares (40%)')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('success')
-                ->extraAttributes(['class' => 'col-span-6 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
 
             Stat::make('COMISION EN BOLIVARES (BS.)', $this->getPageTableQuery()->sum('comision_bolivares'))
                 ->description('Comisión total por pago en bolivares (40%)')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('info')
-                ->extraAttributes(['class' => 'col-span-6 row-span-1 rounded-md text-center border-4 border-[#9bad699e]']),
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#9bad699e]']),
         ];
     }
 

@@ -170,7 +170,7 @@ class StatsGeneralDos extends BaseWidget
              * -----------
              */
 
-            Stat::make('CLIENTES ATENDIDOS', '15478.59')
+            Stat::make('CLIENTES ATENDIDO', '15478.59')
                 ->description('4% de descuento')
                 ->color('success')
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 border-2 border-gray-300 rounded-md text-center']),

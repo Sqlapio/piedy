@@ -120,8 +120,8 @@ class ServiciosChart extends ChartWidget
         ],
         'plugins' => [
             'legend' => [
-                'position' => 'left',
-                'align' => 'start',
+                'position' => 'bottom',
+                'align' => 'center',
             ],
         ],
     ];   // protected function getOptions(): RawJs

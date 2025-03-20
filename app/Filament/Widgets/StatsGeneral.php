@@ -104,11 +104,11 @@ class StatsGeneral extends BaseWidget
                 ->color('success')
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#d7c2c0] content-center']),
 
-            Stat::make('TOTAL', number_format($promedio_prod['promedio_hoy'], 1))
-                ->description('SERVICIOS ACTIVOS')
-                // ->descriptionIcon($promedio_prod['icon'])
-                ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#d7c2c0] content-center']),
+            // Stat::make('TOTAL', number_format($promedio_prod['promedio_hoy'], 1))
+            //     ->description('SERVICIOS ACTIVOS')
+            //     // ->descriptionIcon($promedio_prod['icon'])
+            //     ->color('success')
+            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#d7c2c0] content-center']),
 
             ];
         }
@@ -117,6 +117,7 @@ class StatsGeneral extends BaseWidget
         // 'xs' => 3,
         'sm' => 1,
         'md' => 1,
+        'lg' => 1,
         'xl' => 1,
     ];
 }

@@ -29,19 +29,19 @@ class QuiropediaDosStats extends BaseWidget
                 ->description('Total realizadas')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('info')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 bg-99a9bf']),
+                ->extraAttributes(['class' => 'col-span-4 row-span-1 rounded-md text-center border-4 bg-99a9bf']),
 
             Stat::make('QUIROPEDIA PIE DIABETICO', $this->getPageTableQuery()->where('tipo', 'servicio')->where('servicio_id', 7)->where('status', 2)->count())
                 ->description('Total realizadas')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('info')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 bg-99bfaf']),
+                ->extraAttributes(['class' => 'col-span-4 row-span-1 rounded-md text-center border-4 bg-99bfaf']),
 
             Stat::make('QUIROPEDIA PARA NIÑOS', $this->getPageTableQuery()->where('tipo', 'servicio')->where('servicio_id', 8)->where('status', 2)->count())
                 ->description('Total realizadas')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 bg-9c99bf']),
+                ->extraAttributes(['class' => 'col-span-4 row-span-1 rounded-md text-center border-4 bg-9c99bf']),
 
         ];
     }

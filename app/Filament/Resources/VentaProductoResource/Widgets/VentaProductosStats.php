@@ -29,13 +29,13 @@ class VentaProductosStats extends BaseWidget
             ->description('Cantidad Total de productos vendidos')
             ->descriptionIcon('heroicon-m-user-group')
             ->color('primary')
-            ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
+            ->extraAttributes(['class' => 'col-span-6 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
 
             Stat::make('TOTAL VENTA($)', '$' . $this->getPageTableQuery()->sum('total_venta'))
             ->description('Total de productos vendidos')
             ->descriptionIcon('heroicon-m-user-group')
             ->color('primary')
-            ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6]']),
+            ->extraAttributes(['class' => 'col-span-6 row-span-1 rounded-md text-center border-4 border-[#7B9AA6]']),
 
         ];
     }

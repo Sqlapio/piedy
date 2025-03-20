@@ -224,3 +224,8 @@
     @apply border-[#9c99bf] !important;
 }
 
+.fi-wi-stats-overview-stats-ctn {
+    @apply md:grid-cols-12 !important;
+    @apply lg:grid-cols-12 !important;
+    @apply xl:grid-cols-12 !important;
+}

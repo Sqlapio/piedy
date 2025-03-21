@@ -35,7 +35,6 @@ class AsistenciaController extends Controller
                     $asistencia->save();
     
                     return true;
-                    
                 }
                     
             }else{
@@ -69,8 +68,8 @@ class AsistenciaController extends Controller
                 if (isset($asistencia)) {
                     $asistencia->salida = '1';
                     $asistencia->save();
-
                     return true;
+                    
                 } else {
                     throw new Exception("El empleado no tiene registro de entrada");
                     

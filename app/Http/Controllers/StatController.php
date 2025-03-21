@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Cliente;
 use App\Models\TasaBcv;
@@ -11,6 +12,8 @@ use Illuminate\Http\Request;
 use App\Models\VentaProducto;
 use App\Models\VentaServicio;
 use App\Models\DetalleAsignacion;
+use App\Models\ConfiguracionNomina;
+use Barryvdh\Debugbar\Facades\Debugbar;
 
 class StatController extends Controller
 {
@@ -25,68 +28,20 @@ class StatController extends Controller
 
             //code...
             
-            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
-            $rangeEndDate = $end == null ? now()->endOfDay() : $end;
+                $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+                $rangeEndDate = $end == null ? now()->endOfDay() : $end;
 
-            // dd($rangeStartDate, $rangeEndDate);
-            $servicios_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
-            ->where('status', 2)
-            ->where('tipo', 'servicio')
-            ->count();
-            // dd($servicios_hoy);
+                // dd($rangeStartDate, $rangeEndDate);
+                $servicios_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+                ->where('status', 2)
+                ->where('tipo', 'servicio')
+                ->count();
+                // dd($servicios_hoy);
 
-            //Caculo del porcentaje de servicios facturados comparado con el dia anterior
-            $rangeStartDate = now()->subMonth()->startOfDay();
-            $rangeEndDate = now()->subMonth()->endOfDay();
-
-            $servicios_ayer = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
-            ->where('status', 2)
-            ->where('tipo', 'servicio')
-            ->count();
-
-            // dd($servicios_hoy, $servicios_ayer);
-
-            if ($servicios_hoy == 0 || $servicios_ayer == 0) {
-                $result = [
-                    'servicios_hoy'  => 0,
-                    'porcentaje'     => 0,
-                    'icon'           => 'heroicon-c-arrow-long-right',
-                    'color'          => 'danger'
-                ];
-                // dd($result);
-                return $result;
-            } else {
-
-                if ($servicios_hoy > $servicios_ayer) {
-                    $porcentaje = ($servicios_ayer * 100) / $servicios_hoy;
-                    $porcentaje = number_format($porcentaje, 2);
-                    $icon   = 'heroicon-m-arrow-trending-up';
-                    $color = 'success';
-                }
-
-                if ($servicios_hoy < $servicios_ayer) {
-                    $porcentaje = ($servicios_hoy * 100) / $servicios_ayer;
-                    $porcentaje = number_format($porcentaje, 2);
-                    $icon = 'heroicon-m-arrow-trending-down';
-                    $color = 'danger';
-                }
-
-                if ($servicios_hoy == $servicios_ayer) {
-                    $porcentaje = ($servicios_ayer * 100) / $servicios_hoy;
-                    $porcentaje = number_format($porcentaje, 2);
-                    $icon = 'heroicon-c-arrow-long-right';
-                    $color = 'warning';
-                }
-
-                $result = [
+                return $result = [
                     'servicios_hoy' => $servicios_hoy,
-                    'porcentaje' => $porcentaje,
-                    'icon' => $icon,
-                    'color' => $color
                 ];
-                // dd($result);
-                return $result;
-            }
+
         } catch (\Throwable $th) {
             dd($th);
         }
@@ -96,84 +51,68 @@ class StatController extends Controller
     {
         try {
 
-            $tasa = TasaBcv::all()->first()->tasa;
+                $tasa = TasaBcv::all()->first()->tasa;
+                $porcen_depreciacion = ConfiguracionNomina::all()->first()->porcen_depreciacion;
 
-            //code...
-            // $rangeStartDate = now()->startOfDay();
-            // $rangeEndDate = now()->endOfDay();
+                $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+                $rangeEndDate = $end == null ? now()->endOfDay() : $end;
+                $total_hoy_usd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
+                $total_hoy_bsd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
+                
 
-            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
-            $rangeEndDate = $end == null ? now()->endOfDay() : $end;
+                //CALCULO DE LA DEPRECIACION
+                //--------------------------------------------------------------------------------
+                $depreciacion_bsd = ($total_hoy_bsd * $porcen_depreciacion) / 100;
+                // Debugbar::info($depreciacion_bsd);
 
-            $total_hoy_usd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
-            $total_hoy_bsd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
-            $conversion_hoy = $total_hoy_bsd / $tasa;
+                $depreciacion_a_usd = $depreciacion_bsd / $tasa;
+                // Debugbar::info($depreciacion_a_usd);
 
-            $total_hoy = $total_hoy_usd + $conversion_hoy;
+                $total_hoy = $total_hoy_usd + $depreciacion_a_usd;
+                //--------------------------------------------------------------------------------
 
-            if ($total_hoy > 1000) {
-                $total_hoy_div = round($total_hoy) / 1000;
-                $letra = 'K';
-            } elseif ($total_hoy > 1000000) {
-                $total_hoy_div = round($total_hoy) / 1000000;
-                $letra = 'M';
-            } else {
-                $total_hoy_div = round($total_hoy);
-                $letra = '';
-            }
 
-            //Caculo del porcentaje de servicios facturados comparado con el dia anterior
-            $rangeStartDate = now()->subMonth()->startOfDay();
-            $rangeEndDate = now()->subMonth()->endOfDay();
+                //SERVICIOS FATURADOS ANUAL HASTA LA FECHA ACTUAL
+                //-------------------------------------------------------------------------------------------------
+                $rangeStartDate = now()->subMonth()->startOfYear();
+                $rangeEndDate = now()->subMonth()->endOfYear();
+                $total_anual_usd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
+                $total_anual_bsd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
 
-            $total_ayer_usd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
-            $total_ayer_bsd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
-            $conversion_ayer = $total_hoy_bsd / $tasa;
+                $depreciacion_anual_bsd = ($total_anual_bsd * $porcen_depreciacion) / 100;
+                // Debugbar::info($depreciacion_anual_bsd);
 
-            $total_ayer = $total_ayer_usd + $conversion_ayer;
+                $depreciacion_anual_a_usd = $depreciacion_anual_bsd / $tasa;
+                // Debugbar::info($depreciacion_anual_a_usd);
 
-            if ($total_hoy == 0 || $total_ayer == 0) {
-                $result = [
-                    'total_hoy'     => 0,
-                    'porcentaje'    => 0,
-                    'icon'          => 'heroicon-c-arrow-long-right',
-                    'color'         => 'danger',
-                    'letra'         => ''
-                ];
+                $total_anual = $total_anual_usd + $depreciacion_anual_a_usd;
+                // Debugbar::info($total_anual_usd, $total_anual_bsd);
+                //-------------------------------------------------------------------------------------------------
 
-                return $result;
-            } else {
-                if ($total_hoy > $total_ayer) {
-                    $porcentaje = ($total_ayer * 100) / $total_hoy;
-                    $porcentaje = number_format($porcentaje, 2);
-                    $icon = 'heroicon-m-arrow-trending-up';
+
+                //CALCULO DEL PROMEDIO DE SERVICIO HASTA EL DIA ACTUAL
+                //-------------------------------------------------------------------------------------------------
+                $porcentaje = $total_hoy * 100 / $total_anual;
+                if ($porcentaje > 50) {
+                    $icon   = 'heroicon-m-arrow-trending-up';
                     $color = 'success';
                 }
-
-                if ($total_hoy < $total_ayer) {
-                    $porcentaje = ($total_hoy * 100) / $total_ayer;
-                    $porcentaje = number_format($porcentaje, 2);
-                    $icon = 'heroicon-m-arrow-trending-down';
+                if ($porcentaje < 50) {
                     $color = 'danger';
+                    $icon = 'heroicon-m-arrow-trending-down';
                 }
+                // Debugbar::info($porcentaje, $promedio_hoy);
+                //--------------------------------------------------------------------------------------------------
 
-                if ($total_hoy == $total_ayer) {
-                    $porcentaje = ($total_ayer * 100) / $total_hoy;
-                    $porcentaje = number_format($porcentaje, 2);
-                    $icon = 'heroicon-c-arrow-long-right';
-                    $color = 'warning';
-                }
-
-                $result = [
-                    'total_hoy' => $total_hoy_div,
+                return $result = [
+                    'total_hoy' => $total_hoy,
                     'porcentaje' => $porcentaje,
                     'icon' => $icon,
                     'color' => $color,
-                    'letra' => $letra
+                    // 'letra' => $letra
                 ];
 
-                return $result;
-            }
+
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -183,10 +122,6 @@ class StatController extends Controller
     {
         try {
 
-            //code...
-            // $rangeStartDate = now()->startOfDay();
-            // $rangeEndDate = now()->endOfDay();
-
             $rangeStartDate = $start == null ? now()->startOfDay() : $start;
             $rangeEndDate = $end == null ? now()->endOfDay() : $end;
 
@@ -195,65 +130,128 @@ class StatController extends Controller
             ->where('status', 2)
             ->where('tipo', 'servicio')
             ->count();
-            
-            $clientes_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get();
 
+            $clientes_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get();
             $clientes_hoy = count($clientes_hoy);
+
+            //SERVICIOS y CLIENTES FATURADOS DEL AÑO EN CURSO
+            //-------------------------------------------------------------------------------------------------
+            $rangeStartDate = now()->subMonth()->startOfYear();
+            $rangeEndDate = now()->subMonth()->endOfYear();
+            $nro_servicios_anual = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+                ->where('status', 2)
+                ->where('tipo', 'servicio')
+                ->count();
+            $clientes_anual = count(VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get());
+            // $clientes_anual = count($clientes_hoy);
+            Debugbar::info($clientes_anual, $nro_servicios_anual);
+            //--------------------------------------------------------------------------------------------------
 
             if ($clientes_hoy == 0) {
                 $promedio_hoy = 0;
             } else {
 
                 $promedio_hoy = $nro_servicios_hoy / $clientes_hoy;
+                $promedio_anual = $nro_servicios_anual / $clientes_anual;
 
-                //Fechas de Ayer
-                $rangeStartDate = now()->subMonth()->startOfDay();
-                $rangeEndDate   = now()->subMonth()->endOfDay();
-
-                //Servicios y clientes para Ayer
-                $nro_servicios_ayer = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->count();
-                $clientes_ayer      = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get();
-
-                $clientes_ayer = count($clientes_ayer);
-                // dd($nro_servicios_ayer, $clientes_ayer);
-                $promedio_ayer = $nro_servicios_ayer / $clientes_ayer;
-
-                if ($promedio_hoy > $promedio_ayer) {
-                    $porcentaje = ($promedio_ayer * 100) / $promedio_hoy;
-                    $porcentaje = number_format($porcentaje, 2);
-                    $icon = 'heroicon-m-arrow-trending-up';
-                    $color = 'success';
-                }
-
-                if ($promedio_hoy < $promedio_ayer) {
-                    $porcentaje = ($promedio_hoy * 100) / $promedio_ayer;
-                    $porcentaje = number_format($porcentaje, 2);
-                    $icon = 'heroicon-m-arrow-trending-down';
-                    $color = 'danger';
-                }
-
-                if ($promedio_hoy == $promedio_ayer) {
-                    if ($promedio_hoy == 0 && $promedio_ayer == 0) {
-                        $porcentaje = 0;
-                        $icon = 'heroicon-c-arrow-long-right';
-                        $color = 'danger';
-                    } else {
-                        $porcentaje = ($promedio_ayer * 100) / $promedio_hoy;
-                        $porcentaje = number_format($porcentaje, 2);
-                        $icon = 'heroicon-c-arrow-long-right';
-                        $color = 'warning';
+                //CALCULO DEL PROMEDIO DE SERVICIO HASTA EL DIA ACTUAL
+                //-------------------------------------------------------------------------------------------------
+                if ($promedio_anual < 1) {
+                    $porcentaje = $promedio_hoy * 100 / $promedio_anual;
+                    if ($promedio_hoy > 50) {
+                        $icon   = 'heroicon-m-arrow-trending-up';
+                        $color = 'success';
                     }
+                    if ($promedio_hoy < 50) {
+                        $color = 'danger';
+                        $icon = 'heroicon-m-arrow-trending-down';
+                    }
+                } else {
+                    $porcentaje = 0;
+                    $icon   = 'heroicon-s-shield-exclamation';
+                    $color = 'warning';
                 }
+                //--------------------------------------------------------------------------------------------------
             }
 
-            $result = [
+            // Debugbar::info($promedio_hoy, $promedio_anual);
+
+           
+            
+            
+
+            return $result = [
                 'promedio_hoy' => $promedio_hoy,
                 'porcentaje' => $porcentaje ?? 0,
-                'icon' => isset($icon) ? $icon : 'heroicon-s-shield-exclamation',
-                'color' => isset($color) ? $color : 'warning', //$color,
+                'icon' => $icon ?? 'heroicon-s-shield-exclamation',
+                'color' => $color ?? 'warning',
             ];
 
-            return $result;
+
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+    }
+
+    static function promedio_servicio_anual($start, $end, $sucursal_id)
+    {
+        try {
+
+            //SERVICIOS FATURADOS ANUAL HASTA LA FECHA ACTUAL
+            //-------------------------------------------------------------------------------------------------
+            $rangeStartDate = now()->subMonth()->startOfYear();
+            $rangeEndDate = now()->subMonth()->endOfYear();
+            $servicios_anual = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+                ->where('status', 2)
+                ->where('tipo', 'servicio')
+                ->count();
+            // Debugbar::info($servicios_anual);
+            //-------------------------------------------------------------------------------------------------
+            
+
+            //NUMERO DE DIAS TRANSCURRIDOS
+            //-----------------------------------------------------------------------------------------
+            $total_dias_transcurridos =  Carbon::now()->diffInDays(now()->subMonth()->startOfYear());
+            // Debugbar::info($total_dias_transcurridos);
+            //-----------------------------------------------------------------------------------------
+            
+
+            //SERVICIOS FATURADOS DEL DIA EN CURSO
+            //-------------------------------------------------------------------------------------------------
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate   = $end == null ? now()->endOfDay() : $end;
+            $servicios_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+                ->where('status', 2)
+                ->where('tipo', 'servicio')
+                ->count();
+            // Debugbar::info($servicios_hoy);
+            //--------------------------------------------------------------------------------------------------
+
+
+            //CALCULO DEL PROMEDIO DE SERVICIO HASTA EL DIA ACTUAL
+            //-------------------------------------------------------------------------------------------------
+            $promedio_hoy = $servicios_hoy / $total_dias_transcurridos;
+            Debugbar::info($promedio_hoy, round($promedio_hoy));
+
+            $porcentaje = $promedio_hoy * 100 / $servicios_anual;
+            if($promedio_hoy > 50){
+                $icon   = 'heroicon-m-arrow-trending-up';
+                $color = 'success';
+            }
+            if ($promedio_hoy < 50) {
+                $color = 'danger';
+                $icon = 'heroicon-m-arrow-trending-down';
+            }
+            // Debugbar::info($porcentaje, $promedio_hoy);
+            //--------------------------------------------------------------------------------------------------
+
+            return $result = [
+                'porcentaje' => $porcentaje ?? 0,
+                'icon' => $icon ?? 'heroicon-s-shield-exclamation',
+                'color' => $color ?? 'warning',
+            ];
+
+            
         } catch (\Throwable $th) {
             dd($th);
         }
@@ -272,56 +270,58 @@ class StatController extends Controller
     {
         try {
 
-            //code...
-            // $rangeStartDate = now()->startOfDay();
-            // $rangeEndDate = now()->endOfDay();
+            //PRODUCTOS FATURADOS ANUAL HASTA LA FECHA ACTUAL
+            //-------------------------------------------------------------------------------------------------
+            $rangeStartDate = now()->subMonth()->startOfYear();
+            $rangeEndDate = now()->subMonth()->endOfYear();
+            $productos_anual = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('cantidad');
+            Debugbar::info($productos_anual);
+            //-------------------------------------------------------------------------------------------------
 
             $rangeStartDate = $start == null ? now()->startOfDay() : $start;
             $rangeEndDate = $end == null ? now()->endOfDay() : $end;
             
             $productos_hoy = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('cantidad');
 
-            //Caculo del porcentaje de productos facturados comparado con el dia anterior
-            $rangeStartDate = now()->subMonth()->startOfDay();
-            $rangeEndDate = now()->subMonth()->endOfDay();
+            //PRODUCTOS FATURADOS ANUAL HASTA LA FECHA ACTUAL
+            //-------------------------------------------------------------------------------------------------
+            $rangeStartDate = now()->subMonth()->startOfYear();
+            $rangeEndDate = now()->subMonth()->endOfYear();
+            $productos_anual = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('cantidad');
+            // Debugbar::info($servicios_anual);
+            //-------------------------------------------------------------------------------------------------
 
-            $productos_ayer = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('cantidad');
 
-            if ($productos_hoy > $productos_ayer) {
-                $porcentaje = ($productos_ayer * 100) / $productos_hoy;
-                $porcentaje = number_format($porcentaje, 2);
-                $icon = 'heroicon-m-arrow-trending-up';
+            //NUMERO DE DIAS TRANSCURRIDOS
+            //-----------------------------------------------------------------------------------------
+            $total_dias_transcurridos =  Carbon::now()->diffInDays(now()->subMonth()->startOfYear());
+            // Debugbar::info($total_dias_transcurridos);
+            //-----------------------------------------------------------------------------------------
+
+
+            //CALCULO DEL PROMEDIO DE SERVICIO HASTA EL DIA ACTUAL
+            //-------------------------------------------------------------------------------------------------
+            $promedio_hoy = $productos_hoy / $total_dias_transcurridos;
+            Debugbar::info($promedio_hoy, round($promedio_hoy));
+
+            $porcentaje = $promedio_hoy * 100 / $productos_anual;
+            if ($promedio_hoy > 50) {
+                $icon   = 'heroicon-m-arrow-trending-up';
                 $color = 'success';
             }
-
-            if ($productos_hoy < $productos_ayer) {
-                $porcentaje = ($productos_hoy * 100) / $productos_ayer;
-                $porcentaje = number_format($porcentaje, 2);
-                $icon = 'heroicon-m-arrow-trending-down';
+            if ($promedio_hoy < 50) {
                 $color = 'danger';
+                $icon = 'heroicon-m-arrow-trending-down';
             }
 
-            if ($productos_hoy == $productos_ayer) {
-                if ($productos_hoy == 0 && $productos_ayer == 0) {
-                    $porcentaje = 0;
-                    $icon = 'heroicon-c-arrow-long-right';
-                    $color = 'danger';
-                } else {
-                    $porcentaje = ($productos_ayer * 100) / $productos_hoy;
-                    $porcentaje = number_format($porcentaje, 2);
-                    $icon = 'heroicon-c-arrow-long-right';
-                    $color = 'warning';
-                }
-            }
-
-            $result = [
+            return $result = [
                 'productos_hoy' => $productos_hoy,
                 'porcentaje' => $porcentaje,
                 'icon' => $icon,
                 'color' => $color
             ];
 
-            return $result;
+
         } catch (\Throwable $th) {
             dd($th);
         }
@@ -331,70 +331,67 @@ class StatController extends Controller
     {
         try {
 
-            //code...
-            // $rangeStartDate = now()->startOfDay();
-            // $rangeEndDate = now()->endOfDay();
+            $tasa = TasaBcv::all()->first()->tasa;
+            $porcen_depreciacion = ConfiguracionNomina::all()->first()->porcen_depreciacion;
 
             $rangeStartDate = $start == null ? now()->startOfDay() : $start;
             $rangeEndDate = $end == null ? now()->endOfDay() : $end;
 
-            $total_productos_hoy = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('total_venta');
+            $total_productos_hoy_usd = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('montoUSD');
+            $total_productos_hoy_bsd = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('montoBSD');
 
-            if ($total_productos_hoy > 1000) {
-                // dd(ctype_digit($total_productos_hoy));
-                // dd($total_productos_hoy, round($total_productos_hoy));
-                $total_productos_hoy_div = round($total_productos_hoy) / 1000;
-                $letra = 'K';
-            } elseif ($total_productos_hoy > 1000000) {
-                $total_productos_hoy_div = round($total_productos_hoy) / 1000000;
-                $letra = 'M';
-            } else {
-                $total_productos_hoy_div = round($total_productos_hoy);
-                $letra = '';
-            }
+            //CALCULO DE LA DEPRECIACION
+            //--------------------------------------------------------------------------------
+            $depreciacion_bsd = ($total_productos_hoy_bsd * $porcen_depreciacion) / 100;
+            // Debugbar::info($depreciacion_bsd);
 
-            //Caculo del porcentaje de servicios facturados comparado con el dia anterior
-            $rangeStartDate = now()->subMonth()->startOfDay();
-            $rangeEndDate = now()->subMonth()->endOfDay();
+            $depreciacion_a_usd = $depreciacion_bsd / $tasa;
+            // Debugbar::info($depreciacion_a_usd);
 
-            $total_productos_ayer = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('total_venta');
+            $total_hoy = $total_productos_hoy_usd + $depreciacion_a_usd;
+            //--------------------------------------------------------------------------------
 
-            if ($total_productos_hoy > $total_productos_ayer) {
-                $porcentaje = ($total_productos_ayer * 100) / $total_productos_hoy;
-                $porcentaje = number_format($porcentaje, 2);
-                $icon = 'heroicon-m-arrow-trending-up';
+
+            //SERVICIOS FATURADOS ANUAL HASTA LA FECHA ACTUAL
+            //-------------------------------------------------------------------------------------------------
+            $rangeStartDate = now()->subMonth()->startOfYear();
+            $rangeEndDate = now()->subMonth()->endOfYear();
+            $total_productos_anual_usd = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('montoUSD');
+            $total_productos_anual_bsd = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('montoBSD');
+
+            $depreciacion_anual_bsd = ($total_productos_anual_bsd * $porcen_depreciacion) / 100;
+            // Debugbar::info($depreciacion_anual_bsd);
+
+            $depreciacion_anual_a_usd = $depreciacion_anual_bsd / $tasa;
+            // Debugbar::info($depreciacion_anual_a_usd);
+
+            $total_anual = $total_productos_anual_usd + $depreciacion_anual_a_usd;
+            // Debugbar::info($total_anual_usd, $total_anual_bsd);
+            //-------------------------------------------------------------------------------------------------
+
+
+            //CALCULO DEL PROMEDIO DE SERVICIO HASTA EL DIA ACTUAL
+            //-------------------------------------------------------------------------------------------------
+            $porcentaje = $total_hoy * 100 / $total_anual;
+            if ($porcentaje > 50) {
+                $icon   = 'heroicon-m-arrow-trending-up';
                 $color = 'success';
             }
-
-            if ($total_productos_hoy < $total_productos_ayer) {
-                $porcentaje = ($total_productos_hoy * 100) / $total_productos_ayer;
-                $porcentaje = number_format($porcentaje, 2);
-                $icon = 'heroicon-m-arrow-trending-down';
+            if ($porcentaje < 50) {
                 $color = 'danger';
+                $icon = 'heroicon-m-arrow-trending-down';
             }
+            // Debugbar::info($porcentaje, $promedio_hoy);
+            //--------------------------------------------------------------------------------------------------
 
-            if ($total_productos_hoy == $total_productos_ayer) {
-                if ($total_productos_hoy == 0 && $total_productos_ayer == 0) {
-                    $porcentaje = 0;
-                    $icon = 'heroicon-c-arrow-long-right';
-                    $color = 'danger';
-                } else {
-                    $porcentaje = ($total_productos_ayer * 100) / $total_productos_hoy;
-                    $porcentaje = number_format($porcentaje, 2);
-                    $icon = 'heroicon-c-arrow-long-right';
-                    $color = 'warning';
-                }
-            }
-
-            $result = [
-                'total_productos_hoy' => $total_productos_hoy_div,
+            return $result = [
+                'total_productos_hoy' => $total_hoy,
                 'porcentaje' => $porcentaje,
                 'icon' => $icon,
                 'color' => $color,
-                'letra' => $letra
             ];
 
-            return $result;
+
         } catch (\Throwable $th) {
             dd($th);
         }

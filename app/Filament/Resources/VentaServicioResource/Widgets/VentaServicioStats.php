@@ -71,13 +71,13 @@ class VentaServicioStats extends BaseWidget
                 ->color('info')
                 ->extraAttributes(['class' => 'col-span-2 row-span-1 rounded-md text-center border-4 border-[#7B9AA6]']),
 
-            Stat::make('TOTAL PAGOS EN USD($)', '$' . $this->getPageTableQuery()->sum('pago_usd'))
+            Stat::make('TOTAL INGRESOS EN USD($)', '$' . $this->getPageTableQuery()->sum('pago_usd'))
                 ->description('Pago total en USD($)')
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('success')
                 ->extraAttributes(['class' => 'col-span-2 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
 
-            Stat::make('TOTAL PAGOS EN BS.', 'BS.' . $this->getPageTableQuery()->sum('pago_bsd'))
+            Stat::make('TOTAL INGRESOS EN BS.', 'BS.' . $this->getPageTableQuery()->sum('pago_bsd'))
                 ->description('Pago total en Bs')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('warning')

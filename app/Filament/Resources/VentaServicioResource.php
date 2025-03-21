@@ -46,8 +46,7 @@ class VentaServicioResource extends Resource
                 Tables\Columns\TextColumn::make('empleado.name')
                     ->icon('heroicon-s-user-plus')
                     ->color('colorTree')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
 
                 TextColumn::make('cliente.nombre')
                     ->toggleable(isToggledHiddenByDefault: false)
@@ -58,7 +57,8 @@ class VentaServicioResource extends Resource
                     ->icon('heroicon-s-building-office-2')
                     ->color('colorTree')
                     ->numeric()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')->searchable()
                     ->label('Fecha de venta')
@@ -90,7 +90,7 @@ class VentaServicioResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('pago_usd')->money('USD')
-                    ->label(('Pagos($)'))
+                    ->label(('Pagos en Dolares($)'))
                     ->summarize(Sum::make()
                         ->label(('Total'))
                         ->money('USD'))
@@ -99,7 +99,7 @@ class VentaServicioResource extends Resource
 
                 TextColumn::make('pago_bsd')
                     ->toggleable(isToggledHiddenByDefault: false)
-                    ->label(('Pagos(Bs.)'))
+                    ->label(('Pagos en Bolivares(Bs.)'))
                     ->summarize(Sum::make()
                         ->label(('Total')))
                     ->alignCenter()

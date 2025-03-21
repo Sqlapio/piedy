@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Asistencia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Filament\Notifications\Notification;
 
 class AsistenciaController extends Controller
@@ -16,12 +17,12 @@ class AsistenciaController extends Controller
     {
         try {
 
-            $user = User::where('cedula', $cedula)->where('id', Auth::user()->id)->first();
+            $user = User::select('id', 'cedula', 'name')->where('cedula', $cedula)->first();
 
             if(isset($user)){
 
                 //Restriccion para evitar duplicados
-                $asistencia = Asistencia::where('empleado_id', $user->id)->where('fecha', now()->format('d-m-Y'))->where('salida', '1')->first();
+                $asistencia = Asistencia::where('empleado_id', $user->id)->where('fecha', now()->format('d-m-Y'))->where('entrada', '1')->first();
         
                 if (isset($asistencia)) {
                     throw new Exception("El empleado ya ha registrado su entrada");
@@ -29,18 +30,16 @@ class AsistenciaController extends Controller
                 } else {
                     $asistencia = new Asistencia();
                     $asistencia->empleado_id = $user->id;
-                    $asistencia->dia = date('m');
-                    $asistencia->entrada = 1;
+                    $asistencia->entrada = '1';
                     $asistencia->fecha = now()->format('d-m-Y');
                     $asistencia->save();
     
                     return true;
                     
                 }
-                
-                
+                    
             }else{
-                throw new Exception("La informacion del empleado no coincide con el usuario activo");
+                throw new Exception("La informacion del empleado no fue encontrada, favor verifique la informacion");
                 return false;
             }
             
@@ -60,29 +59,25 @@ class AsistenciaController extends Controller
     {
         try {
 
-            $user = User::where('cedula', $cedula)->where('id', Auth::user()->id)->first();
+            $user = User::select('id', 'cedula', 'name')->where('cedula', $cedula)->first();
 
             if (isset($user)) {
 
                 //Restriccion para evitar duplicados
-                $asistencia = Asistencia::where('empleado_id', $user->id)->where('fecha', now()->format('d-m-Y'))->where('salida', '1')->first();
+                $asistencia = Asistencia::where('empleado_id', $user->id)->where('fecha', now()->format('d-m-Y'))->where('entrada', '1')->first();
 
                 if (isset($asistencia)) {
-                    throw new Exception("El empleado ya ha registrado su salida");
-                    return false;
-                    
-                } else {
-                    $asistencia = Asistencia::where('empleado_id', $user->id)->where('fecha', now()->format('d-m-Y'))->first();
-                    $asistencia->salida = 1;
+                    $asistencia->salida = '1';
                     $asistencia->save();
-    
+
                     return true;
+                } else {
+                    throw new Exception("El empleado no tiene registro de entrada");
                     
                 }
-
                 
             } else {
-                throw new Exception("La informacion del empleado no coincide con el usuario activo");
+                throw new Exception("La informacion del empleado no fue encontrada, favor verifique la informacion");
                 return false;
             }
             

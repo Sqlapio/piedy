@@ -42,11 +42,6 @@ class VentaResource extends Resource
                 ->label('Codigo Asignacion')
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('sucursal.nombre')
-                ->label('Sucursal')
-                    ->numeric()
-                    ->sortable(),
-
                 Tables\Columns\TextColumn::make('responsable')
                     ->label('Responsable')
                     ->searchable(),

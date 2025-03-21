@@ -21,14 +21,7 @@ class ListVentas extends ListRecords
         'xl' => 2,
     ];
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            // Actions\CreateAction::make(),
-        ];
-    }
-
-    protected function getFooterWidgets(): array
+    protected function getHeaderWidgets(): array
     {
         return [
             VentaResource\Widgets\ServiciosChart::class,

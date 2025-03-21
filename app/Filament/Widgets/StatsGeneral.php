@@ -37,6 +37,7 @@ class StatsGeneral extends BaseWidget
         $servicios              = StatController::servicios_facturados($start, $end, $sucursal_id =  null);
         $servicios_usd          = StatController::total_servicios_usd($start, $end, $sucursal_id =  null);
         $promedio               = StatController::promedio_servicio_cliente($start, $end, $sucursal_id =  null);
+        $promedio_anual         = StatController::promedio_servicio_anual($start, $end, $sucursal_id =  null);
 
         $productos              = StatController::productos_facturados($start, $end, $sucursal_id =  null);
         $productos_usd          = StatController::total_productos_usd($start, $end, $sucursal_id =  null);
@@ -55,19 +56,19 @@ class StatsGeneral extends BaseWidget
             //Stat Servicios -----------------------------------------------------------------------------------------------
             //--------------------------------------------------------------------------------------------------------------
             Stat::make('SERVICIOS', $servicios['servicios_hoy'])
-                ->description(round($servicios['porcentaje']) . '%')
-                ->descriptionIcon($servicios['icon'])
-                ->color($servicios['color'])
+                ->description(number_format($promedio_anual['porcentaje'], 2) . '% ')
+                ->descriptionIcon($promedio_anual['icon'])
+                ->color($promedio_anual['color'])
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
 
-            Stat::make('TOTAL SERVICIOS($)', $servicios_usd['total_hoy'] . $servicios_usd['letra'])
+            Stat::make('TOTAL SERVICIOS($)', number_format($servicios_usd['total_hoy'], 2))
                 ->description(round($servicios_usd['porcentaje']) . '%')
                 ->descriptionIcon($servicios_usd['icon'])
                 ->color($servicios_usd['color'])
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
 
-            Stat::make('PROMEDIO SERVICIO/CLIENTE', round($promedio['promedio_hoy'], 2))
-                ->description($promedio['porcentaje']. '% ')
+            Stat::make('PROMEDIO SERVICIO/CLIENTE', round($promedio['promedio_hoy']))
+                ->description(round($promedio['porcentaje']). '% ')
                 ->descriptionIcon($promedio['icon'])
                 ->color($promedio['color'])
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
@@ -76,12 +77,12 @@ class StatsGeneral extends BaseWidget
             //Stat Productos -----------------------------------------------------------------------------------------------
             //--------------------------------------------------------------------------------------------------------------
             Stat::make('PRODUCTOS VENDIDOS', $productos['productos_hoy'])
-                ->description(round($productos['porcentaje']) . '%')
+                ->description(number_format($productos['porcentaje'], 2) . '%')
                 ->descriptionIcon($productos['icon'])
                 ->color($productos['color'])
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
 
-            Stat::make('TOTAL PRODUCTOS($)', $productos_usd['total_productos_hoy'] . $productos_usd['letra'])
+            Stat::make('TOTAL PRODUCTOS($)', number_format($productos_usd['total_productos_hoy'], 2))
                 ->description(round($productos_usd['porcentaje']) . '%')
                 ->descriptionIcon($productos_usd['icon'])
                 ->color($productos_usd['color'])

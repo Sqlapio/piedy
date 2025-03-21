@@ -33,7 +33,7 @@ class ListVentaServicios extends ListRecords
         ];
     }
 
-    protected function getFooterWidgets(): array
+    protected function getHeaderWidgets(): array
     {
         return [
             VentaServicioResource\Widgets\VentaServicioStats::class,

@@ -28,31 +28,31 @@ class VentaServicioComisionStats extends BaseWidget
         return ListVentaServicios::class;
     }
 
-    protected function getStats(): array
-    {
-        $data = Trend::model(VentaServicio::class)
-            ->between(
-                start: now()->subYear(),
-                end: now(),
-            )
-            ->perMonth()
-            ->count('cliente_id');
+    // protected function getStats(): array
+    // {
+    //     $data = Trend::model(VentaServicio::class)
+    //         ->between(
+    //             start: now()->subYear(),
+    //             end: now(),
+    //         )
+    //         ->perMonth()
+    //         ->count('cliente_id');
 
-        return [
+    //     return [
 
-            Stat::make('COMISION EN DOLARES ($)', $this->getPageTableQuery()->sum('comision_dolares'))
-                ->description('Comisión total por pago en dolares (40%)')
-                ->descriptionIcon('heroicon-m-user-group')
-                ->color('success')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
+    //         Stat::make('COMISION EN DOLARES ($)', $this->getPageTableQuery()->sum('comision_dolares'))
+    //             ->description('Comisión total por pago en dolares (40%)')
+    //             ->descriptionIcon('heroicon-m-user-group')
+    //             ->color('success')
+    //             ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#bf9c999e]']),
 
-            Stat::make('COMISION EN BOLIVARES (BS.)', $this->getPageTableQuery()->sum('comision_bolivares'))
-                ->description('Comisión total por pago en bolivares (40%)')
-                ->descriptionIcon('heroicon-m-user-group')
-                ->color('info')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#9bad699e]']),
-        ];
-    }
+    //         Stat::make('COMISION EN BOLIVARES (BS.)', $this->getPageTableQuery()->sum('comision_bolivares'))
+    //             ->description('Comisión total por pago en bolivares (40%)')
+    //             ->descriptionIcon('heroicon-m-user-group')
+    //             ->color('info')
+    //             ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#9bad699e]']),
+    //     ];
+    // }
 
     public function getColumns(): int
     {

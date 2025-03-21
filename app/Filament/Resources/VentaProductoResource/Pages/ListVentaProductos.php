@@ -26,7 +26,7 @@ class ListVentaProductos extends ListRecords
         ];
     }
 
-    protected function getFooterWidgets(): array
+    protected function getHeaderWidgets(): array
     {
         // dd($this->tableFilters);
         return [

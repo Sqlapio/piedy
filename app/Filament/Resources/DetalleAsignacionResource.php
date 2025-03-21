@@ -33,44 +33,38 @@ class DetalleAsignacionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('cod_asignacion')
-                ->label('Codigo Asignacion')
+
+                Tables\Columns\TextColumn::make('cliente.nombre')
+                    ->numeric()
+                    ->sortable()
                     ->searchable(),
-                // Tables\Columns\TextColumn::make('cod_prod_serv')
-                //     ->label('Codigo Producto/Servicio')
-                //     ->sortable()
-                //     ->searchable(),
+
                 Tables\Columns\TextColumn::make('empleado.name')
                     ->label('Empleado')
                     ->numeric()
                     ->sortable()    
                     ->searchable(),
+                Tables\Columns\TextColumn::make('tipo')
+                    ->label('Producto/Servicio')
+                    ->badge()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('servicio.descripcion')
                     ->label('Servicio')
                     ->numeric()
                     ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('cliente.nombre')
-                    ->numeric()
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('costo')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Fecha Asignacion')
-                    ->dateTime()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('tipo')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('responsable')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('sucursal.nombre')
-                    ->numeric()
-                    ->sortable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('producto.descripcion')
                     ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\TextColumn::make('costo')
+                    ->label('Costo($)')
+                    ->numeric()
                     ->sortable(),
+
             ])
             ->groups([
                 Group::make('servicio_id')

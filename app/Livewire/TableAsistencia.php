@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Filament\Tables;
+use Filament\Forms\Get;
 use Livewire\Component;
 use App\Models\Asistencia;
 use Filament\Tables\Table;
@@ -58,12 +59,17 @@ class TableAsistencia extends Component implements HasForms, HasTable
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Entrada')
+                    ->badge()
+                    ->color('success')
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Salida')
+                    ->badge()
+                    ->color('warning')
                     ->dateTime()
                     ->sortable(),
+                    
             ])
             ->filters([
                 //

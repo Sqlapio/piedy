@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('asistencias', function (Blueprint $table) {
             $table->id();
             $table->integer('empleado_id');
-            $table->string('dia');
-            $table->string('horas');
-            $table->string('tipo_registro');
+            $table->string('entrada');
+            $table->string('salida');
             $table->timestamps();
         });
     }

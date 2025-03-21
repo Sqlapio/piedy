@@ -432,6 +432,12 @@ Route::get('/ex', function () {
     
     // dd($value->dump(), $value2->dump());
 
+    $citas = Cita::select('cedula')
+    ->where('cedula', '!=', null)
+    ->where('responsable', 'PiedyBot')
+    ->whereBetween('created_at', [now()->startOfYear(), now()->endOfYear()])->get()->toArray();
+    dd($citas);
+
     dd(Cliente::cacheClientes());
 
 });

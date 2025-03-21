@@ -61,7 +61,7 @@ class StatsGeneral extends BaseWidget
                 ->color($promedio_anual['color'])
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
 
-            Stat::make('TOTAL SERVICIOS($)', number_format($servicios_usd['total_hoy'], 2))
+            Stat::make('TOTAL SERVICIOS EN DOLARES($)', number_format($servicios_usd['total_hoy'], 2))
                 ->description(round($servicios_usd['porcentaje']) . '%')
                 ->descriptionIcon($servicios_usd['icon'])
                 ->color($servicios_usd['color'])
@@ -82,7 +82,7 @@ class StatsGeneral extends BaseWidget
                 ->color($productos['color'])
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
 
-            Stat::make('TOTAL PRODUCTOS($)', number_format($productos_usd['total_productos_hoy'], 2))
+            Stat::make('TOTAL PRODUCTOS EN DOLARES($)', number_format($productos_usd['total_productos_hoy'], 2))
                 ->description(round($productos_usd['porcentaje']) . '%')
                 ->descriptionIcon($productos_usd['icon'])
                 ->color($productos_usd['color'])

@@ -52,10 +52,7 @@ class TableAsistencia extends Component implements HasForms, HasTable
                     ->label('Salida')
                     ->alignCenter()
                     ->badge()
-                    ->color(fn(string $state): string => match ($state) {
-                        '1' => 'danger',
-                        '0' => 'warnnig',
-                    })
+                    ->color('warning')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Entrada')

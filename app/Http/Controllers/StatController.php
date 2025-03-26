@@ -58,11 +58,12 @@ class StatController extends Controller
                 $rangeEndDate = $end == null ? now()->endOfDay() : $end;
                 $total_hoy_usd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
                 $total_hoy_bsd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
-                
+                // Debugbar::info($total_hoy_usd, $total_hoy_bsd);
 
-                //CALCULO DE LA DEPRECIACION
-                //--------------------------------------------------------------------------------
-                $depreciacion_bsd = ($total_hoy_bsd * $porcen_depreciacion) / 100;
+
+            //CALCULO DE LA DEPRECIACION
+            //--------------------------------------------------------------------------------
+            $depreciacion_bsd = ($total_hoy_bsd * $porcen_depreciacion) / 100;
                 // Debugbar::info($depreciacion_bsd);
 
                 $depreciacion_a_usd = $depreciacion_bsd / $tasa;
@@ -144,7 +145,7 @@ class StatController extends Controller
                 ->count();
             $clientes_anual = count(VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->groupBy('cliente_id')->get());
             // $clientes_anual = count($clientes_hoy);
-            Debugbar::info($clientes_anual, $nro_servicios_anual);
+            // Debugbar::info($clientes_anual, $nro_servicios_anual);
             //--------------------------------------------------------------------------------------------------
 
             if ($clientes_hoy == 0) {
@@ -231,7 +232,7 @@ class StatController extends Controller
             //CALCULO DEL PROMEDIO DE SERVICIO HASTA EL DIA ACTUAL
             //-------------------------------------------------------------------------------------------------
             $promedio_hoy = $servicios_hoy / $total_dias_transcurridos;
-            Debugbar::info($promedio_hoy, round($promedio_hoy));
+            // Debugbar::info($promedio_hoy, round($promedio_hoy));
 
             $porcentaje = $promedio_hoy * 100 / $servicios_anual;
             if($promedio_hoy > 50){
@@ -275,7 +276,7 @@ class StatController extends Controller
             $rangeStartDate = now()->subMonth()->startOfYear();
             $rangeEndDate = now()->subMonth()->endOfYear();
             $productos_anual = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('cantidad');
-            Debugbar::info($productos_anual);
+            // Debugbar::info($productos_anual);
             //-------------------------------------------------------------------------------------------------
 
             $rangeStartDate = $start == null ? now()->startOfDay() : $start;
@@ -302,7 +303,7 @@ class StatController extends Controller
             //CALCULO DEL PROMEDIO DE SERVICIO HASTA EL DIA ACTUAL
             //-------------------------------------------------------------------------------------------------
             $promedio_hoy = $productos_hoy / $total_dias_transcurridos;
-            Debugbar::info($promedio_hoy, round($promedio_hoy));
+            // Debugbar::info($promedio_hoy, round($promedio_hoy));
 
             $porcentaje = $promedio_hoy * 100 / $productos_anual;
             if ($promedio_hoy > 50) {
@@ -903,4 +904,248 @@ class StatController extends Controller
     /**Fin---------------------------------------------------- 
      * -------------------------------------------------------
      */
+
+    static function total_clientes($start, $end, $sucursal_id)
+    {
+        try {
+
+            //code...
+            // $rangeStartDate = now()->startOfDay();
+            // $rangeEndDate = now()->endOfDay();
+
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate = $end == null ? now()->endOfDay() : $end;
+
+            $clientes_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+                ->groupBy('cliente_id')
+                ->get();
+
+            $clientes_hoy = count($clientes_hoy);
+
+            //PRODUCTOS FATURADOS ANUAL HASTA LA FECHA ACTUAL
+            //-------------------------------------------------------------------------------------------------
+            $rangeStartDate = now()->subMonth()->startOfYear();
+            $rangeEndDate = now()->subMonth()->endOfYear();
+            $clientes_anual = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+                ->groupBy('cliente_id')
+                ->get();
+
+            $clientes_anual = count($clientes_anual);
+            // Debugbar::info($servicios_anual);
+            //-------------------------------------------------------------------------------------------------
+
+
+            //NUMERO DE DIAS TRANSCURRIDOS
+            //-----------------------------------------------------------------------------------------
+            $total_dias_transcurridos =  Carbon::now()->diffInDays(now()->subMonth()->startOfYear());
+            // Debugbar::info($total_dias_transcurridos);
+            //-----------------------------------------------------------------------------------------
+
+
+            //CALCULO DEL PROMEDIO DE SERVICIO HASTA EL DIA ACTUAL
+            //-------------------------------------------------------------------------------------------------
+            $promedio_hoy = $clientes_hoy / $total_dias_transcurridos;
+            // Debugbar::info($promedio_hoy, round($promedio_hoy));
+
+            $porcentaje = $promedio_hoy * 100 / $clientes_anual;
+            if ($promedio_hoy > 50) {
+                $icon   = 'heroicon-m-arrow-trending-up';
+                $color = 'success';
+            }
+            if ($promedio_hoy < 50) {
+                $color = 'danger';
+                $icon = 'heroicon-m-arrow-trending-down';
+            }
+
+            return $result = [
+                'clientes_hoy'      => $clientes_hoy,
+                'porcentaje'        => $porcentaje,
+                'icon' => isset($icon) ? $icon : 'heroicon-s-shield-exclamation',
+                'color' => isset($color) ? $color : 'warning', //$color,
+            ];
+
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    static function servicios_facturados_usd($start, $end, $sucursal_id)
+    {
+        // dd($start, $end);
+        try {
+
+            //code...
+
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate   = $end == null ? now()->endOfDay() : $end;
+
+            // dd($rangeStartDate, $rangeEndDate);
+            $servicios_usd_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
+
+            //SERVICIOS FATURADOS ANUAL HASTA LA FECHA ACTUAL
+            //-------------------------------------------------------------------------------------------------
+            $rangeStartDate = now()->startOfYear();
+            $rangeEndDate = now()->endOfYear();
+            $servicios_usd_anual = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
+            //-------------------------------------------------------------------------------------------------
+
+
+            //NUMERO DE DIAS TRANSCURRIDOS
+            //-----------------------------------------------------------------------------------------
+            $total_dias_transcurridos =  Carbon::now()->diffInDays(now()->subMonth()->startOfYear());
+            // Debugbar::info($total_dias_transcurridos);
+            //-----------------------------------------------------------------------------------------
+
+
+            //CALCULO DEL PROMEDIO DE SERVICIO HASTA EL DIA ACTUAL
+            //-------------------------------------------------------------------------------------------------
+            $promedio_hoy = $servicios_usd_hoy / $total_dias_transcurridos;
+            // Debugbar::info($promedio_hoy, round($promedio_hoy));
+
+            $porcentaje = $promedio_hoy * 100 / $servicios_usd_anual;
+            if ($promedio_hoy > 50) {
+                $icon   = 'heroicon-m-arrow-trending-up';
+                $color = 'success';
+            }
+            if ($promedio_hoy < 50) {
+                $color = 'danger';
+                $icon = 'heroicon-m-arrow-trending-down';
+            }
+            // Debugbar::info($porcentaje, $promedio_hoy);
+            //--------------------------------------------------------------------------------------------------
+
+            return $result = [
+                'servicios_usd_hoy' => $servicios_usd_hoy,
+                'porcentaje'        => $porcentaje ?? 0,
+                'icon'              => $icon ?? 'heroicon-s-shield-exclamation',
+                'color'             => $color ?? 'warning',
+            ];
+
+
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+    }
+
+    static function servicios_facturados_bsd($start, $end, $sucursal_id)
+    {
+        // dd($start, $end);
+        try {
+
+            //code...
+
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate   = $end == null ? now()->endOfDay() : $end;
+
+            // dd($rangeStartDate, $rangeEndDate);
+            $servicios_bsd_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
+
+            //SERVICIOS FATURADOS ANUAL HASTA LA FECHA ACTUAL
+            //-------------------------------------------------------------------------------------------------
+            $rangeStartDate = now()->startOfYear();
+            $rangeEndDate = now()->endOfYear();
+            $servicios_bsd_anual = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
+            //-------------------------------------------------------------------------------------------------
+
+
+            //NUMERO DE DIAS TRANSCURRIDOS
+            //-----------------------------------------------------------------------------------------
+            $total_dias_transcurridos =  Carbon::now()->diffInDays(now()->subMonth()->startOfYear());
+            // Debugbar::info($total_dias_transcurridos);
+            //-----------------------------------------------------------------------------------------
+
+
+            //CALCULO DEL PROMEDIO DE SERVICIO HASTA EL DIA ACTUAL
+            //-------------------------------------------------------------------------------------------------
+            $promedio_hoy = $servicios_bsd_hoy / $total_dias_transcurridos;
+            // Debugbar::info($promedio_hoy, round($promedio_hoy));
+
+            $porcentaje = $promedio_hoy * 100 / $servicios_bsd_anual;
+            if ($promedio_hoy > 50) {
+                $icon   = 'heroicon-m-arrow-trending-up';
+                $color = 'success';
+            }
+            if ($promedio_hoy < 50) {
+                $color = 'danger';
+                $icon = 'heroicon-m-arrow-trending-down';
+            }
+            // Debugbar::info($porcentaje, $promedio_hoy);
+            //--------------------------------------------------------------------------------------------------
+
+            return $result = [
+                'servicios_usd_hoy' => $servicios_bsd_hoy,
+                'porcentaje'        => $porcentaje ?? 0,
+                'icon'              => $icon ?? 'heroicon-s-shield-exclamation',
+                'color'             => $color ?? 'warning',
+            ];
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+    }
+
+    static function total_servicios_usd_bcv($start, $end, $sucursal_id)
+    {
+        try {
+
+            $tasa = TasaBcv::all()->first()->tasa;
+            $porcen_depreciacion = ConfiguracionNomina::all()->first()->porcen_depreciacion;
+
+            $rangeStartDate = $start == null ? now()->startOfDay() : $start;
+            $rangeEndDate = $end == null ? now()->endOfDay() : $end;
+            $total_hoy_usd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
+            $total_hoy_bsd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
+            // Debugbar::info($total_hoy_usd, $total_hoy_bsd);
+
+
+            //CALCULO DE LA DEPRECIACION
+            //--------------------------------------------------------------------------------
+            $conversion_bsd_usd = $total_hoy_bsd / $tasa;
+            // Debugbar::info($depreciacion_bsd);
+
+            $total_hoy_usd_bsd = $total_hoy_usd + $conversion_bsd_usd;
+
+
+            //SERVICIOS FATURADOS ANUAL HASTA LA FECHA ACTUAL
+            //-------------------------------------------------------------------------------------------------
+            $rangeStartDate = now()->subMonth()->startOfYear();
+            $rangeEndDate = now()->subMonth()->endOfYear();
+            $total_anual_usd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
+            $total_anual_bsd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
+
+            //CALCULO DE LA DEPRECIACION
+            //--------------------------------------------------------------------------------
+            $conversion_anual_bsd_usd = $total_anual_bsd / $tasa;
+            // Debugbar::info($depreciacion_bsd);
+
+            $total_anual_usd_bsd = $total_anual_usd + $conversion_anual_bsd_usd;
+
+
+            //CALCULO DEL PROMEDIO DE SERVICIO HASTA EL DIA ACTUAL
+            //-------------------------------------------------------------------------------------------------
+            $porcentaje = $total_hoy_usd_bsd * 100 / $total_anual_usd_bsd;
+            if ($porcentaje > 50) {
+                $icon   = 'heroicon-m-arrow-trending-up';
+                $color = 'success';
+            }
+            if ($porcentaje < 50) {
+                $color = 'danger';
+                $icon = 'heroicon-m-arrow-trending-down';
+            }
+            // Debugbar::info($porcentaje, $promedio_hoy);
+            //--------------------------------------------------------------------------------------------------
+
+            return $result = [
+                'total_hoy_usd_bsd' => $total_hoy_usd_bsd,
+                'porcentaje' => $porcentaje,
+                'icon' => isset($icon) ? $icon : 'heroicon-s-shield-exclamation',
+                'color' => isset($color) ? $color : 'warning', //$color,
+                // 'letra' => $letra
+            ];
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+     
 }

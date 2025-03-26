@@ -46,6 +46,13 @@ class StatsGeneral extends BaseWidget
         $quiropedistas          = StatController::quiropedista_activo($start, $end, $sucursal_id =  null);
         $manicuristas           = StatController::manicurista_activo($start, $end, $sucursal_id =  null);
 
+        $total_clientes         = StatController::total_clientes($start, $end, $sucursal_id =  null);
+
+        $servicios_facturados_usd = StatController::servicios_facturados_usd($start, $end, $sucursal_id =  null);
+        $servicios_facturados_bsd = StatController::servicios_facturados_bsd($start, $end, $sucursal_id =  null);
+
+        $total_servicios_usd_bcv = StatController::total_servicios_usd_bcv($start, $end, $sucursal_id =  null);
+        
         return [
 
             /**
@@ -55,44 +62,69 @@ class StatsGeneral extends BaseWidget
 
             //Stat Servicios -----------------------------------------------------------------------------------------------
             //--------------------------------------------------------------------------------------------------------------
-            Stat::make('SERVICIOS', $servicios['servicios_hoy'])
+            Stat::make('SERVICIOS FACTURADOS', $servicios['servicios_hoy'])
                 ->description(number_format($promedio_anual['porcentaje'], 2) . '% ')
                 ->descriptionIcon($promedio_anual['icon'])
                 ->color($promedio_anual['color'])
                 ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
 
-            Stat::make('TOTAL SERVICIOS EN DOLARES($)', number_format($servicios_usd['total_hoy'], 2))
+            Stat::make('CLIENTES ATENDIDOS', $total_clientes['clientes_hoy'])
+                ->description(number_format($total_clientes['porcentaje'], 2) . '% ')
+                ->descriptionIcon($total_clientes['icon'])
+                ->color($total_clientes['color'])
+                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
+
+
+            Stat::make('TOTAL INGRESOS EN USD($)', number_format($servicios_facturados_usd['servicios_usd_hoy'], 2))
+                ->description(round($servicios_facturados_usd['porcentaje']) . '%')
+                ->descriptionIcon($servicios_facturados_usd['icon'])
+                ->color($servicios_facturados_usd['color'])
+                ->extraAttributes(['class' => 'md:col-span-2 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
+                
+            Stat::make('TOTAL INGRESOS EN VES(Bs.)', number_format($servicios_facturados_bsd['servicios_usd_hoy'], 2))
+                ->description(round($servicios_facturados_bsd['porcentaje']) . '%')
+                ->descriptionIcon($servicios_facturados_bsd['icon'])
+                ->color($servicios_facturados_bsd['color'])
+                ->extraAttributes(['class' => 'md:col-span-2 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
+
+            Stat::make('INGRESOS TOTALES EN DIVISAS A BCV($)', number_format($total_servicios_usd_bcv['total_hoy_usd_bsd'], 2))
+                ->description(round($total_servicios_usd_bcv['porcentaje']) . '%')
+                ->descriptionIcon($total_servicios_usd_bcv['icon'])
+                ->color($total_servicios_usd_bcv['color'])
+                ->extraAttributes(['class' => 'md:col-span-2 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
+
+            Stat::make('INGRESOS TOTALES EN DIVISAS A PARALELO($)', number_format($servicios_usd['total_hoy'], 2))
                 ->description(round($servicios_usd['porcentaje']) . '%')
                 ->descriptionIcon($servicios_usd['icon'])
                 ->color($servicios_usd['color'])
                 ->extraAttributes(['class' => 'md:col-span-2 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
 
-            Stat::make('PROMEDIO SERVICIO/CLIENTE', round($promedio['promedio_hoy']))
-                ->description(round($promedio['porcentaje']). '% ')
-                ->descriptionIcon($promedio['icon'])
-                ->color($promedio['color'])
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
+            // Stat::make('PROMEDIO SERVICIO/CLIENTE', round($promedio['promedio_hoy']))
+            //     ->description(round($promedio['porcentaje']). '% ')
+            //     ->descriptionIcon($promedio['icon'])
+            //     ->color($promedio['color'])
+            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
 
 
             //Stat Productos -----------------------------------------------------------------------------------------------
             //--------------------------------------------------------------------------------------------------------------
-            Stat::make('PRODUCTOS VENDIDOS', $productos['productos_hoy'])
-                ->description(number_format($productos['porcentaje'], 2) . '%')
-                ->descriptionIcon($productos['icon'])
-                ->color($productos['color'])
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
+            // Stat::make('PRODUCTOS VENDIDOS', $productos['productos_hoy'])
+            //     ->description(number_format($productos['porcentaje'], 2) . '%')
+            //     ->descriptionIcon($productos['icon'])
+            //     ->color($productos['color'])
+            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
 
-            Stat::make('TOTAL PRODUCTOS EN DOLARES($)', number_format($productos_usd['total_productos_hoy'], 2))
-                ->description(round($productos_usd['porcentaje']) . '%')
-                ->descriptionIcon($productos_usd['icon'])
-                ->color($productos_usd['color'])
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
+            // Stat::make('TOTAL PRODUCTOS EN DOLARES($)', number_format($productos_usd['total_productos_hoy'], 2))
+            //     ->description(round($productos_usd['porcentaje']) . '%')
+            //     ->descriptionIcon($productos_usd['icon'])
+            //     ->color($productos_usd['color'])
+            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
 
-            Stat::make('CHATBOTS ATENDIDOS', number_format($promedio_prod['promedio_hoy'], 1))
-                ->description(round($promedio_prod['porcentaje']) . '%')
-                ->descriptionIcon($promedio_prod['icon'])
-                ->color($promedio_prod['color'])
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
+            // Stat::make('CHATBOTS ATENDIDOS', number_format($promedio_prod['promedio_hoy'], 1))
+            //     ->description(round($promedio_prod['porcentaje']) . '%')
+            //     ->descriptionIcon($promedio_prod['icon'])
+            //     ->color($promedio_prod['color'])
+            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
 
                 //Stat Productos -----------------------------------------------------------------------------------------------
             //--------------------------------------------------------------------------------------------------------------

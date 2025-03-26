@@ -196,6 +196,10 @@
     height: 100%;
 }
 
+.fi-wi-stats-overview-stats-ctn {
+    @apply md:grid-cols-4 !important;
+}
+
 .bg-a16d69 {
     @apply border-[#a16d69] !important;
 }

@@ -29,7 +29,7 @@ class QuiropediaDosStats extends BaseWidget
                 ->description('Total realizadas')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('info')
-                ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 bg-99a9bf']),
+                ->extraAttributes(['class' => 'col-span-2 row-span-1 rounded-md text-center border-4 bg-99a9bf']),
 
             Stat::make('QUIROPEDIA PIE DIABETICO', $this->getPageTableQuery()->where('tipo', 'servicio')->where('servicio_id', 7)->where('status', 2)->count())
                 ->description('Total realizadas')

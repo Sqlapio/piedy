@@ -79,31 +79,29 @@ class StatsGeneral extends BaseWidget
                 ->description(round($servicios_facturados_usd['porcentaje']) . '%')
                 ->descriptionIcon($servicios_facturados_usd['icon'])
                 ->color($servicios_facturados_usd['color'])
-                ->extraAttributes(['class' => 'md:col-span-2 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
+                ->extraAttributes(['class' => 'md:col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
                 
             Stat::make('TOTAL INGRESOS EN VES(Bs.)', number_format($servicios_facturados_bsd['servicios_usd_hoy'], 2))
                 ->description(round($servicios_facturados_bsd['porcentaje']) . '%')
                 ->descriptionIcon($servicios_facturados_bsd['icon'])
                 ->color($servicios_facturados_bsd['color'])
-                ->extraAttributes(['class' => 'md:col-span-2 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
+                ->extraAttributes(['class' => 'md:col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
 
             Stat::make('INGRESOS TOTALES EN DIVISAS A BCV($)', number_format($total_servicios_usd_bcv['total_hoy_usd_bsd'], 2))
                 ->description(round($total_servicios_usd_bcv['porcentaje']) . '%')
                 ->descriptionIcon($total_servicios_usd_bcv['icon'])
                 ->color($total_servicios_usd_bcv['color'])
-                ->extraAttributes(['class' => 'md:col-span-2 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
-
+                ->extraAttributes(['class' => 'md:col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
             Stat::make('INGRESOS TOTALES EN DIVISAS A PARALELO($)', number_format($servicios_usd['total_hoy'], 2))
                 ->description(round($servicios_usd['porcentaje']) . '%')
                 ->descriptionIcon($servicios_usd['icon'])
                 ->color($servicios_usd['color'])
-                ->extraAttributes(['class' => 'md:col-span-2 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
-
+                ->extraAttributes(['class' => 'md:col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
             // Stat::make('PROMEDIO SERVICIO/CLIENTE', round($promedio['promedio_hoy']))
             //     ->description(round($promedio['porcentaje']). '% ')
             //     ->descriptionIcon($promedio['icon'])
             //     ->color($promedio['color'])
-            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#3ec7d28a] content-center']),
+            //     ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
 
 
             //Stat Productos -----------------------------------------------------------------------------------------------
@@ -126,7 +124,7 @@ class StatsGeneral extends BaseWidget
             //     ->color($promedio_prod['color'])
             //     ->extraAttributes(['class' => 'col-span-1 row-span-1 rounded-md text-center border-4 border-[#7B9AA6] content-center']),
 
-                //Stat Productos -----------------------------------------------------------------------------------------------
+            //Stat Productos -----------------------------------------------------------------------------------------------
             //--------------------------------------------------------------------------------------------------------------
             Stat::make('QUROPEDISTAS', $quiropedistas['total'])
                 ->description('ACTIVOS')

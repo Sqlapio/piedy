@@ -56,16 +56,14 @@ class MovimientoInventarioSucursalResource extends Resource
                 Tables\Columns\TextColumn::make('sucursal.nombre')
                     ->label('Sucursal')
                     ->icon('heroicon-s-building-office-2')
-                    ->numeric()
                     ->sortable(),
                     
                 Tables\Columns\TextColumn::make('producto.descripcion')
-                    ->numeric()
                     ->sortable(),
                     
                 Tables\Columns\TextColumn::make('cantidad')
                     ->alignCenter()
-                    ->numeric(),
+                    ->sortable(),
                     
                 Tables\Columns\TextColumn::make('tipo_movimiento')
                     ->label('Tipo')
@@ -88,7 +86,6 @@ class MovimientoInventarioSucursalResource extends Resource
                     ->dateTime()
                     ->icon('heroicon-m-calendar-days')
                     ->sortable(),
-
                 Tables\Columns\TextColumn::make('responsable')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('updated_at')

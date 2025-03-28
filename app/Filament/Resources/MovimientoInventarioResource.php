@@ -40,7 +40,6 @@ class MovimientoInventarioResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('producto.descripcion')
                     ->icon('heroicon-s-shopping-bag')
-                    ->numeric()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cantidad')
                     ->label('Cantidad')
@@ -59,18 +58,15 @@ class MovimientoInventarioResource extends Resource
                 Tables\Columns\TextColumn::make('almacen.nombre')
                     ->icon('heroicon-s-home')
                     ->label('Almacen')
-                    ->numeric()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('sucursal.nombre')
                     ->icon('heroicon-c-building-office-2')
                     ->label('Sucursal')
-                    ->numeric()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('responsable')
                     ->label('Responsable')
                     ->color('primary')
                     ->icon('heroicon-m-user')
-                    ->numeric()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha de Creación')

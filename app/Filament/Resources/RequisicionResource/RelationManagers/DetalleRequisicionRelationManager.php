@@ -64,6 +64,12 @@ class DetalleRequisicionRelationManager extends RelationManager
                         }
                     })
                     ->searchable(),
+                Tables\Columns\TextColumn::make('producto_id')
+                    ->label('#PROD-ID')
+                    ->alignCenter()
+                    ->badge()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('producto.descripcion')
                     ->description(fn($record) => $record->observacion)
                     ->icon('heroicon-c-truck')

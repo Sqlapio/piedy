@@ -32,11 +32,11 @@ class StatController extends Controller
                 $rangeEndDate = $end == null ? now()->endOfDay() : $end;
 
                 // dd($rangeStartDate, $rangeEndDate);
-                $servicios_hoy = DetalleAsignacion::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
-                ->where('status', 2)
-                ->where('tipo', 'servicio')
+                $servicios_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+                ->groupBy('cliente_id')
+                ->get()
                 ->count();
-                // dd($servicios_hoy);
+                
 
                 return $result = [
                     'servicios_hoy' => $servicios_hoy,

@@ -13,6 +13,7 @@ use App\Models\VentaProducto;
 use App\Models\VentaServicio;
 use App\Models\DetalleAsignacion;
 use App\Models\ConfiguracionNomina;
+use Illuminate\Support\Facades\Log;
 use Barryvdh\Debugbar\Facades\Debugbar;
 
 class StatController extends Controller
@@ -32,14 +33,23 @@ class StatController extends Controller
                 $rangeEndDate = $end == null ? now()->endOfDay() : $end;
 
                 // dd($rangeStartDate, $rangeEndDate);
-                $servicios_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
-                ->groupBy('cliente_id')
-                ->get()
-                ->count();
+                // $servicios_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
+                // ->groupBy('cliente_id')
+                // ->get()
+                // ->count();
+                $total = [];
+                $servicios_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->get();
+                foreach ($servicios_hoy as $key => $value) {
+                    $servicios_hoy[$key]->servicios = json_decode($value->servicios);
+                    //contamos los servicios
+                    $servicios_hoy[$key]->total_servicios = count($servicios_hoy[$key]->servicios);
+                    array_push($total, $servicios_hoy[$key]->total_servicios);
+                }
                 
-
+                $total_hoy = array_sum($total);
+                
                 return $result = [
-                    'servicios_hoy' => $servicios_hoy,
+                    'servicios_hoy' => $total_hoy,
                 ];
 
         } catch (\Throwable $th) {

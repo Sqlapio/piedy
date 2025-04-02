@@ -3,18 +3,25 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Gasto;
 use App\Models\TasaBcv;
 use App\Models\Producto;
+use App\Models\Servicio;
 use App\Models\Inventario;
 use App\Models\Requisicion;
 use Illuminate\Http\Request;
+use App\Models\AsignarProducto;
+use App\Models\DetalleAsignacion;
 use App\Models\DetalleRequisicion;
 use App\Models\InventarioSucursal;
 use App\Models\RecepcionInventario;
+use Illuminate\Support\Facades\Log;
+use App\Models\MovimientoInventario;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
+use App\Models\MovimientoInventarioSucursal;
 
 class RequisicionController extends Controller
 {
@@ -284,6 +291,120 @@ class RequisicionController extends Controller
                 ->body($th->getMessage())
                 ->persistent()
                 ->send();
+        }
+    }
+
+    static function auditoria($records)
+    {
+        try {
+
+            /**
+             * Ordenar los registros por fecha de creacion de menor a mayor
+             */
+            $requisiciones = $records->sortBy('created_at')->toArray();
+            $posicion = count($requisiciones) - 1;
+            $date_start = Carbon::parse($requisiciones[$posicion]['created_at'])->format('Y-m-d');
+            
+            /**
+             * Agrupar los producto por requisicion
+             * @return Array $requisiciones
+             */
+            $requisiciones = array_map(function ($requisicion) {
+                return [
+                    'codigo' => $requisicion['codigo'],
+                    'fecha'  => $requisicion['created_at'],
+                ];
+            }, $requisiciones);
+            //---------------------------------------------------------------------------------------------------------------------------------------------------------
+            // Log::info($requisiciones);
+            /**
+             * Buscamos los productos de la requisicion en la tabla de detalle_requisicions y los agrupamos por porducto_id
+             */
+            $productos_array = [];
+            for ($i = 0; $i < count($requisiciones); $i++) {
+                $detalleRequisiciones = DetalleRequisicion::where('codigo', $requisiciones[$i]['codigo'])->groupBy('producto_id')->get('producto_id')->toArray();
+
+                //Tomamos el producto_id y lo agregamos al productos_array si existe sino no lo agregamos
+                foreach ($detalleRequisiciones as $detalleRequisicion) {
+                    if (!in_array($detalleRequisicion['producto_id'], $productos_array)) {
+                        array_push($productos_array, $detalleRequisicion['producto_id']);
+                    }
+                }
+            }
+            //---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+            /**
+             * Bucamos la existencia de cada producto en la tabla de inventario_sucursals
+             */
+            $inventario_sucursals = [];
+            for ($i = 0; $i < count($productos_array); $i++) {
+                $array = InventarioSucursal::where('producto_id', $productos_array[$i])->with('producto')->first();
+                if (isset($array)) {
+                    array_push($inventario_sucursals, $array->toArray());
+                }
+            }
+
+            $map_productos = array_map(function ($inventario_sucursals) {
+                return [
+                    'producto_id' => $inventario_sucursals['producto_id'],
+                    'cantidad'  => $inventario_sucursals['cantidad'],
+                    'producto'    => $inventario_sucursals['producto']['descripcion'],
+                ];
+            }, $inventario_sucursals);
+            //---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+            /**
+             * Porductos en el movimiento de inventario
+             */
+            $movimientos = [];
+            for ($i = 0; $i < count($productos_array); $i++) {
+                $array_mov = MovimientoInventarioSucursal::select('producto_id', 'cantidad', 'tipo_movimiento', 'consumo')
+                ->whereBetween('created_at', [$date_start . ' 00:00:00', Carbon::now()])
+                ->where('producto_id', $productos_array[$i])
+                ->where('tipo_movimiento', 'salida')
+                ->with('producto')
+                ->first();
+
+                if (isset($array_mov)) {
+                    array_push($movimientos, $array_mov->toArray());
+                }
+            }
+
+            $map_productos_mov = array_map(function ($movimientos) {
+                return [
+                    'producto_id'       => $movimientos['producto_id'],
+                    'cantidad'          => $movimientos['cantidad'],
+                    'producto'          => $movimientos['producto']['descripcion'],
+                    'precio_venta'      => $movimientos['producto']['costo'],
+                    'tipo_movimiento'   => $movimientos['tipo_movimiento'],
+                    'consumo'           => $movimientos['consumo'],
+                ];
+            }, $movimientos);
+
+            //---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+            /**
+             * Buscamos los servicios de la requisicion en la tabla de detalle_requisicions y los agrupamos por porducto_id
+             */
+            $servicios = Servicio::select('id', 'descripcion')->get()->toArray();
+            $ser = [];
+            //contamos los servicios en la tabla de detalle de asigancion
+            for ($i = 0; $i < count($servicios); $i++) {
+                $count = DetalleAsignacion::whereBetween('created_at', [$date_start .' 00:00:00', Carbon::now()])->where('servicio_id', $servicios[$i]['id'])->count();
+                if($count != 0){
+                    array_push($ser, [
+                        'descripcion' => $servicios[$i]['descripcion'], 
+                        'cantidad' => $count
+                    ]); //array_push($servicios, $servicios[$i]['id']);
+                }
+            }
+            //---------------------------------------------------------------------------------------------------------------------------------------------------------
+            dd($date_start, Carbon::now(), $map_productos, $ser);
+            
+            
+        } catch (\Throwable $th) {
+            dd($th);
+            LogController::log(1, 'excepcion(detalleRequisicion Link externo)', $th->getMessage(), $response = null);
         }
     }
 }

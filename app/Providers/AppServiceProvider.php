@@ -36,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
             'colorFour' => Color::hex('#D9C3C1'),
             'colorFive' => Color::hex('#F2F2F2'),
             'colorDisabled' => Color::hex('#A9A9A9'),
+            'colorDanger' => Color::hex('#b30000'),
         ]);
 
         FilamentAsset::register([

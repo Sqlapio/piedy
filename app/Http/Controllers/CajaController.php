@@ -10,6 +10,7 @@ use App\Models\Disponible;
 use App\Models\MetodoPago;
 use App\Models\DetalleAsignacion;
 use App\Models\InventarioSucursal;
+use App\Models\ConfiguracionNomina;
 use App\Models\FacturacionMultiple;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
@@ -42,7 +43,7 @@ class CajaController extends Controller
                     $venta_producto->costo_producto     = $producto->precio_venta;
                     $venta_producto->metodo_pago        = $metodoUsd;
                     $venta_producto->metodoUsd          = MetodoPago::find($metodo_pago)->descripcion;
-                    $venta_producto->comision_gerente   = (($valores['porcen_producto_gte'] * $producto->precio_venta) / 100) * $item->cantidad;
+                    $venta_producto->comision_gerente   = 0.00;
                     $venta_producto->comision_empleado  = (($valores['porcen_producto_emp'] * $producto->precio_venta) / 100) * $item->cantidad;
                     $venta_producto->fecha_venta        = now()->format('d-m-Y');
                     $venta_producto->cantidad           = $item->cantidad;
@@ -52,6 +53,11 @@ class CajaController extends Controller
                     $venta_producto->cliente_id         = $valores['info_cliente_user']->cliente_id;
                     $venta_producto->empleado_id        = $valores['info_cliente_user']->empleado_id;
                     $venta_producto->montoUsd           = $producto->precio_venta * $item->cantidad;
+                    
+                    //Impuestos US$
+                    $venta_producto->base_imponible_usd       = $venta_producto->montoUsd / 1.19;
+                    $venta_producto->iva_usd                  = $venta_producto->base_imponible_usd * 0.16 ?? 0.00;
+                    $venta_producto->igtf                     = $venta_producto->base_imponible_usd * 0.03 ?? 0.00;
                     $venta_producto->save();
 
                     //Descuento la cantidad vendida de la exitencia del producto por sucursal
@@ -157,6 +163,8 @@ class CajaController extends Controller
             //Valores necesarios para realizar los asientos
             $valores = UtilsController::info($cod_asignacion);
 
+            $descuento = ConfiguracionNomina::select('iva_nomina', 'igtf')->first(); // IVA = 1.16
+
             /**
              * Calculo de los productos
              * y crear asiento en la tabla de venta Productos
@@ -176,7 +184,7 @@ class CajaController extends Controller
                     $venta_producto->costo_producto     = $producto->precio_venta;
                     $venta_producto->metodo_pago        = 'Bsd';
                     $venta_producto->metodoBsd          = MetodoPago::find($metodo_pago_dos)->descripcion;
-                    $venta_producto->comision_gerente   = (($valores['porcen_producto_gte'] * $producto->precio_venta) / 100) * $item->cantidad;
+                    $venta_producto->comision_gerente   = 0.00;
                     $venta_producto->comision_empleado  = (($valores['porcen_producto_emp'] * $producto->precio_venta) / 100) * $item->cantidad;
                     $venta_producto->fecha_venta        = now()->format('d-m-Y');
                     $venta_producto->cantidad           = $item->cantidad;
@@ -186,6 +194,10 @@ class CajaController extends Controller
                     $venta_producto->cliente_id         = $valores['info_cliente_user']->cliente_id;
                     $venta_producto->empleado_id        = $valores['info_cliente_user']->empleado_id;
                     $venta_producto->montoBsd           = ($producto->precio_venta * $item->cantidad) * $tasa;
+
+                    //Impuestos VES
+                    $venta_producto->base_imponible_bsd       = $venta_producto->montoBsd / $descuento->iva_nomina;
+                    $venta_producto->iva_bsd                  = $venta_producto->base_imponible_bsd * 0.16 ?? 0.00;
                     $venta_producto->save();
 
                     //Descuento la cantidad vendida de la exitencia del producto por sucursal
@@ -223,6 +235,7 @@ class CajaController extends Controller
                 );
 
                 //Asiento en la tabla de ventas Servicios
+                //-------------------------------------------------
                 VentaServicioController::venta_servicio_bsd(
                     $metodo_pago_dos,
                     $cod_asignacion,
@@ -240,6 +253,7 @@ class CajaController extends Controller
                 );
 
                 //Asiento tabla de Venta
+                //----------------------------------------------------------------------------------------------------------
                 VentaController::venta($cod_asignacion, $valores['total_venta'], $metodo_pago = 'N/A', $metodo_pago_dos);
 
                 return true;
@@ -288,11 +302,13 @@ class CajaController extends Controller
 
     static function multiple($monto_srv_usd, $monto_srv_bsd, $monto_prod_usd, $monto_prod_bsd, $cod_asignacion, $metodo_pago, $metodo_pago_dos, $ref_zelle, $ref_pago_movil, $ref_debito_credito, $nro_tarjeta, $propina_usd, $propina_bsd, $pro_ref_debito_credito, $pro_nro_tarjeta)
     {
-        // dd($monto_usd, $monto_bsd, $cod_asignacion,$metodo_pago, $metodo_pago_dos, $ref_zelle , $ref_pago_movil , $ref_debito_credito , $nro_tarjeta );
+
         try {
-            // dd('function multiple', $monto_usd, $monto_bsd);
+
             //Valores necesarios para realizar los asientos
             $valores = UtilsController::info($cod_asignacion);
+
+            $descuento = ConfiguracionNomina::select('iva_nomina', 'igtf')->first(); // IVA = 1.16
 
             /**
              * Calculo de los productos
@@ -312,7 +328,7 @@ class CajaController extends Controller
                     $venta_producto->metodo_pago        = 'Multiple';
                     $venta_producto->metodoUsd          = MetodoPago::find($metodo_pago)->descripcion;
                     $venta_producto->metodoBsd          = MetodoPago::find($metodo_pago_dos)->descripcion;
-                    $venta_producto->comision_gerente   = (($valores['porcen_producto_gte'] * $producto->precio_venta) / 100) * $item->cantidad;
+                    $venta_producto->comision_gerente   = 0.00;
                     $venta_producto->comision_empleado  = (($valores['porcen_producto_emp'] * $producto->precio_venta) / 100) * $item->cantidad;
                     $venta_producto->fecha_venta        = now()->format('d-m-Y');
                     $venta_producto->cantidad           = $item->cantidad;
@@ -321,8 +337,17 @@ class CajaController extends Controller
                     $venta_producto->sucursal_id        = Auth::user()->sucursal->id;
                     $venta_producto->cliente_id         = $valores['info_cliente_user']->cliente_id;
                     $venta_producto->empleado_id        = $valores['info_cliente_user']->empleado_id;
+                    
                     $venta_producto->montoUsd           = $monto_prod_usd;
+                    //Impuestos US$
+                    $venta_producto->base_imponible_usd       = $venta_producto->montoUsd / 1.19;
+                    $venta_producto->iva_usd                  = $venta_producto->base_imponible_usd * 0.16 ?? 0.00;
+                    $venta_producto->igtf                     = $venta_producto->base_imponible_usd * 0.03 ?? 0.00;
+                    
                     $venta_producto->montoBsd           = $monto_prod_bsd;
+                    //Impuestos VES
+                    $venta_producto->base_imponible_bsd       = $venta_producto->montoBsd / $descuento->iva_nomina;
+                    $venta_producto->iva_bsd                  = $venta_producto->base_imponible_bsd * 0.16 ?? 0.00;
 
                     $venta_producto->save();
 

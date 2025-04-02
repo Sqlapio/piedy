@@ -429,15 +429,29 @@ Route::get('/ex', function () {
 
     // dump("Query took 1 " . $executionTime1 . "Query took 2 " . $executionTime2);
     // $value2 = Cache::get('clientes');
-    
+
     // dd($value->dump(), $value2->dump());
 
-    $citas = Cita::select('cedula')
-    ->where('cedula', '!=', null)
-    ->where('responsable', 'PiedyBot')
-    ->whereBetween('created_at', [now()->startOfYear(), now()->endOfYear()])->get()->toArray();
-    dd($citas);
+    // $citas = Cita::select('cedula')
+    // ->where('cedula', '!=', null)
+    // ->where('responsable', 'PiedyBot')
+    // ->whereBetween('created_at', [now()->startOfYear(), now()->endOfYear()])->get()->toArray();
+    // dd($citas);
 
-    dd(Cliente::cacheClientes());
+    // dd(Cliente::cacheClientes());
+
+    // $array = [];    
+    // $prueba = VentaServicio::whereBetween('created_at', [now()->startOfYear(), now()->endOfYear()])->get();
+    // foreach ($prueba as $key => $value) {
+    //     $prueba[$key]->servicios = json_decode($value->servicios);
+    //     //contamos los servicios
+    //     $prueba[$key]->total_servicios = count($prueba[$key]->servicios);
+    //     array_push($array, $prueba[$key]->total_servicios);
+    // }
+    // dd(array_sum($array));
+
+    $r = InventarioSucursal::where('producto_id', 90)->with('producto')->first();
+    dd($r);
+    
 
 });

@@ -9,12 +9,16 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\Requisicion;
 use Filament\Resources\Resource;
+use App\Models\DetalleRequisicion;
+use App\Models\InventarioSucursal;
+use Illuminate\Support\Collection;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Contracts\View\View;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use App\Http\Controllers\RequisicionController;
 use App\Filament\Resources\RequisicionResource\Pages;
 use App\Filament\Resources\RequisicionResource\RelationManagers\DetalleRequisicionRelationManager;
 
@@ -120,6 +124,15 @@ class RequisicionResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('auditar')
+                    ->label('Auditar Requisiciones')
+                    ->icon('heroicon-s-exclamation-triangle')
+                    ->color('colorDanger')
+                    ->action(function (Collection $records) {
+
+                       $auditoria = RequisicionController::auditoria($records);
+                        
+                    }),
                 ]),
             ]);
     }

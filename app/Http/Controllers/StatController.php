@@ -32,15 +32,11 @@ class StatController extends Controller
                 $rangeStartDate = $start == null ? now()->startOfDay() : $start;
                 $rangeEndDate = $end == null ? now()->endOfDay() : $end;
 
-                // dd($rangeStartDate, $rangeEndDate);
-                // $servicios_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])
-                // ->groupBy('cliente_id')
-                // ->get()
-                // ->count();
                 $total = [];
                 $servicios_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->get();
                 foreach ($servicios_hoy as $key => $value) {
                     $servicios_hoy[$key]->servicios = json_decode($value->servicios);
+                    
                     //contamos los servicios
                     $servicios_hoy[$key]->total_servicios = count($servicios_hoy[$key]->servicios);
                     array_push($total, $servicios_hoy[$key]->total_servicios);

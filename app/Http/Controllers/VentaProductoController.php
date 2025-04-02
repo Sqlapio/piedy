@@ -74,8 +74,8 @@ class VentaProductoController extends Controller
                     $venta_producto->metodoUsd          = MetodoPago::where('id', $metodoUsd)->first()->descripcion;
                     $venta_producto->montoUsd           = $producto->precio_venta * $item->cantidad;
 
-                    $venta_producto->comision_gerente   = ($porComGte * $producto->precio_venta) / 100;
-                    $venta_producto->comision_empleado  = ($empleado_id == null) ? 0.00 : ($porComEmp * $producto->precio_venta) / 100;
+                    $venta_producto->comision_gerente   = ($empleado_id == null) ?($porComGte * $producto->precio_venta) / 100 : 0.00;
+                    $venta_producto->comision_empleado  = ($empleado_id != null) ? ($porComEmp * $producto->precio_venta) / 100 : 0.00;
 
                     $venta_producto->fecha_venta        = now()->format('d-m-Y');
                     $venta_producto->cantidad           = $item->cantidad;
@@ -208,8 +208,8 @@ class VentaProductoController extends Controller
                 $venta_producto->costo_producto     = $producto->precio_venta;
 
                 $venta_producto->metodoBsd          = MetodoPago::where('id', $metodoBsd)->first()->descripcion;;
-                $venta_producto->comision_gerente   = ($porComGte * $producto->precio_venta) / 100;
-                $venta_producto->comision_empleado  = ($empleado_id == null) ? 0.00 : ($porComEmp * $producto->precio_venta) / 100;
+                $venta_producto->comision_gerente   = ($empleado_id == null) ? ($porComGte * $producto->precio_venta) / 100 : 0.00;
+                $venta_producto->comision_empleado  = ($empleado_id != null) ? ($porComEmp * $producto->precio_venta) / 100 : 0.00;
 
                 $venta_producto->fecha_venta        = now()->format('d-m-Y');
                 $venta_producto->cantidad           = $item->cantidad;
@@ -359,8 +359,8 @@ class VentaProductoController extends Controller
                 $venta_producto->montoUsd           = $montoUsd;
                 $venta_producto->montoBsd           = $montoBsd;
 
-                $venta_producto->comision_gerente   = ($porComGte * $producto->precio_venta) / 100;
-                $venta_producto->comision_empleado  = ($empleado_id == null) ? 0.00 : ($porComEmp * $producto->precio_venta) / 100;
+                $venta_producto->comision_gerente   = ($empleado_id == null) ? ($porComGte * $producto->precio_venta) / 100 : 0.00;
+                $venta_producto->comision_empleado  = ($empleado_id != null) ? ($porComEmp * $producto->precio_venta) / 100 : 0.00;
 
                 $venta_producto->fecha_venta        = now()->format('d-m-Y');
                 $venta_producto->cantidad           = $item->cantidad;

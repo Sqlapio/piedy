@@ -311,6 +311,9 @@ class PreNominasRelationManager extends RelationManager
             ->actions([])
             ->bulkActions([
                 BulkActionGroup::make([
+                    
+                    //Totaliza Nomina
+                    //-----------------------------------------------
                     BulkAction::make('totalizar')
                     ->label('Totalizar Nómina')
                     ->color('success')
@@ -384,7 +387,10 @@ class PreNominasRelationManager extends RelationManager
                             'created_at'            => now()->subDays(1),
                         ]);
                     })->deselectRecordsAfterCompletion(),
-
+                    //-----------------------------------------------
+                    
+                    //Generar PDF
+                    //-----------------------------------------------
                     BulkAction::make('generar-pdf')
                     ->label('Generar PDFs')
                     ->color('danger')
@@ -405,9 +411,13 @@ class PreNominasRelationManager extends RelationManager
                                 ->send();
                         }
                     })->deselectRecordsAfterCompletion(),
+                    //-----------------------------------------------
 
+                    //Exportar Excel
+                    //-----------------------------------------------
                     ExportBulkAction::make('exportar-excel')
                     ->label('Exportar Excel')
+                    //-----------------------------------------------
                 ]),
             ])
             ->striped()

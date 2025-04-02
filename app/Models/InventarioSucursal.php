@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class InventarioSucursal extends Model
 {
@@ -44,6 +45,16 @@ class InventarioSucursal extends Model
     public function sucursal(): BelongsTo
     {
         return $this->belongsTo(Sucursal::class, 'sucursal_id', 'id');
+    }
+
+    /**
+     * Get the prodcuto that owns the InventarioSucursal
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function prod(): HasOne
+    {
+        return $this->hasOne(Producto::class, 'id', 'producto_id');
     }
 
 }

@@ -122,7 +122,7 @@ class AsignacionController extends Controller
             ->where('sucursal_id', Auth::user()->sucursal_id)
             ->where('status', 1)
             ->first();
-            if ($existeServicio) {
+            if ($existeServicio && $servicio->duplicar == 0) {
                 throw new Exception("El servicio ya se encuentra asignado a dicho cliente. Por favor intente con otro", 401);
             }
 

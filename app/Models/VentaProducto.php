@@ -33,7 +33,12 @@ class VentaProducto extends Model
         'total_venta',
         'cantidad',
         'responsable',
-        'sucursal_id'
+        'sucursal_id',
+        'impuesto_igft',
+        'base_imponible_usd',
+        'base_imponible_bsd',
+        'iva_usd',
+        'iva_bsd',
     ];
 
     /**

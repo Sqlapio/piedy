@@ -28,7 +28,7 @@ class VentaServicioController extends Controller
             $facturar->pago_usd                 = $costo_total_servicios;
             $facturar->base_imponible_usd       = $costo_total_servicios / 1.19;
             $facturar->iva_usd                  = $facturar->base_imponible_usd * 0.16 ?? 0.00;
-            $facturar->igtf                     = $facturar->base_imponible_usd * 0.03 ?? 0.00;
+            $facturar->impuesto_igft            = $facturar->base_imponible_usd * 0.03 ?? 0.00;
             $facturar->comision_dolares         = $comision_total / 1.19;
             $facturar->comision_gerente         = $comision_gerente;
             $facturar->empleado_id              = $info_serv_empleado->empleado_id;
@@ -46,6 +46,7 @@ class VentaServicioController extends Controller
             $facturar->save();
 
         } catch (\Throwable $th) {
+            dd($th);
             LogController::log(Auth::user()->id, 'excepcion-VentaServicioController(venta_servicio_usd)', $th->getMessage(), $response = null);
 
             Notification::make()
@@ -121,7 +122,7 @@ class VentaServicioController extends Controller
             //impuestos en USD
             $facturar->base_imponible_usd       = $monto_usd / 1.19;
             $facturar->iva_usd                  = $facturar->base_imponible_usd * 0.16 ?? 0.00;
-            $facturar->igtf                     = $facturar->base_imponible_usd * 0.03 ?? 0.00;
+            $facturar->impuesto_igft            = $facturar->base_imponible_usd * 0.03 ?? 0.00;
             
             //impuestos en VES
             $facturar->pago_bsd                 = $monto_bsd;

@@ -42,7 +42,12 @@ class VentaServicio extends Model
         'propina_usd',
         'propina_bsd',
         'referencia_propina',
-        'responsable'
+        'responsable',
+        'impuesto_igft',
+        'base_imponible_usd',
+        'base_imponible_bsd',
+        'iva_usd',
+        'iva_bsd',
     ];
 
     public function detalle_asignaciones():HasMany

@@ -27,6 +27,7 @@ class MovimientoInventarioSucursalResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
+            ->query()->orderBy('created_at', 'desc')
             ->schema([
                 Forms\Components\TextInput::make('sucursal_id')
                     ->required()

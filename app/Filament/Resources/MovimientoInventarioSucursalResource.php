@@ -56,14 +56,14 @@ class MovimientoInventarioSucursalResource extends Resource
                 Tables\Columns\TextColumn::make('sucursal.nombre')
                     ->label('Sucursal')
                     ->icon('heroicon-s-building-office-2')
-                    ->sortable(),
+                    ->searchable(),
                     
                 Tables\Columns\TextColumn::make('producto.descripcion')
-                    ->sortable(),
+                    ->searchable(),
                     
                 Tables\Columns\TextColumn::make('cantidad')
                     ->alignCenter()
-                    ->sortable(),
+                    ->searchable(),
                     
                 Tables\Columns\TextColumn::make('tipo_movimiento')
                     ->label('Tipo')

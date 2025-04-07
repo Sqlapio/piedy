@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Venta;
 use App\Models\Cliente;
 use App\Models\TasaBcv;
 use App\Models\Disponible;
@@ -987,13 +988,22 @@ class StatController extends Controller
             $rangeEndDate   = $end == null ? now()->endOfDay() : $end;
 
             // dd($rangeStartDate, $rangeEndDate);
-            $servicios_usd_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
+            $servicios_usd_hoy      = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
+            $productos_usd_hoy      = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('montoUsd');
+            $total_propinas_usd_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('propina_usd');
+
+            $neto_usd_hoy = $servicios_usd_hoy + $productos_usd_hoy + $total_propinas_usd_hoy;
 
             //SERVICIOS FATURADOS ANUAL HASTA LA FECHA ACTUAL
             //-------------------------------------------------------------------------------------------------
             $rangeStartDate = now()->startOfYear();
             $rangeEndDate = now()->endOfYear();
-            $servicios_usd_anual = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
+            $servicios_usd_anual        = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
+            $productos_usd_anual        = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('montoUsd');
+            $total_propinas_usd_anual   = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('propina_usd');
+
+            $neto_usd_anual = $servicios_usd_anual + $productos_usd_anual + $total_propinas_usd_anual;
+
             //-------------------------------------------------------------------------------------------------
 
 
@@ -1006,10 +1016,10 @@ class StatController extends Controller
 
             //CALCULO DEL PROMEDIO DE SERVICIO HASTA EL DIA ACTUAL
             //-------------------------------------------------------------------------------------------------
-            $promedio_hoy = $servicios_usd_hoy / $total_dias_transcurridos;
+            $promedio_hoy = $neto_usd_hoy / $total_dias_transcurridos;
             // Debugbar::info($promedio_hoy, round($promedio_hoy));
 
-            $porcentaje = $promedio_hoy * 100 / $servicios_usd_anual;
+            $porcentaje = $promedio_hoy * 100 / $neto_usd_anual;
             if ($promedio_hoy > 50) {
                 $icon   = 'heroicon-m-arrow-trending-up';
                 $color = 'success';
@@ -1022,7 +1032,7 @@ class StatController extends Controller
             //--------------------------------------------------------------------------------------------------
 
             return $result = [
-                'servicios_usd_hoy' => $servicios_usd_hoy,
+                'servicios_usd_hoy' => $neto_usd_hoy,
                 'porcentaje'        => $porcentaje ?? 0,
                 'icon'              => $icon ?? 'heroicon-s-shield-exclamation',
                 'color'             => $color ?? 'warning',
@@ -1045,13 +1055,21 @@ class StatController extends Controller
             $rangeEndDate   = $end == null ? now()->endOfDay() : $end;
 
             // dd($rangeStartDate, $rangeEndDate);
-            $servicios_bsd_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
+            $servicios_bsd_hoy      = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
+            $productos_bsd_hoy      = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('montoBsd');
+            $total_propinas_bsd_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('propina_bsd');
+
+            $neto_bsd_hoy = $servicios_bsd_hoy + $productos_bsd_hoy + $total_propinas_bsd_hoy;
 
             //SERVICIOS FATURADOS ANUAL HASTA LA FECHA ACTUAL
             //-------------------------------------------------------------------------------------------------
             $rangeStartDate = now()->startOfYear();
             $rangeEndDate = now()->endOfYear();
             $servicios_bsd_anual = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
+            $productos_bsd_anual      = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('montoBsd');
+            $total_propinas_bsd_anual = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('propina_bsd');
+
+            $neto_bsd_anual = $servicios_bsd_anual + $productos_bsd_anual + $total_propinas_bsd_anual;
             //-------------------------------------------------------------------------------------------------
 
 
@@ -1064,10 +1082,10 @@ class StatController extends Controller
 
             //CALCULO DEL PROMEDIO DE SERVICIO HASTA EL DIA ACTUAL
             //-------------------------------------------------------------------------------------------------
-            $promedio_hoy = $servicios_bsd_hoy / $total_dias_transcurridos;
+            $promedio_hoy = $neto_bsd_hoy / $total_dias_transcurridos;
             // Debugbar::info($promedio_hoy, round($promedio_hoy));
 
-            $porcentaje = $promedio_hoy * 100 / $servicios_bsd_anual;
+            $porcentaje = $promedio_hoy * 100 / $neto_bsd_anual;
             if ($promedio_hoy > 50) {
                 $icon   = 'heroicon-m-arrow-trending-up';
                 $color = 'success';
@@ -1080,7 +1098,7 @@ class StatController extends Controller
             //--------------------------------------------------------------------------------------------------
 
             return $result = [
-                'servicios_usd_hoy' => $servicios_bsd_hoy,
+                'servicios_usd_hoy' => $neto_bsd_hoy,
                 'porcentaje'        => $porcentaje ?? 0,
                 'icon'              => $icon ?? 'heroicon-s-shield-exclamation',
                 'color'             => $color ?? 'warning',
@@ -1094,22 +1112,64 @@ class StatController extends Controller
     {
         try {
 
-            $tasa = TasaBcv::all()->first()->tasa;
             $porcen_depreciacion = ConfiguracionNomina::all()->first()->porcen_depreciacion;
-
+            
             $rangeStartDate = $start == null ? now()->startOfDay() : $start;
             $rangeEndDate = $end == null ? now()->endOfDay() : $end;
-            $total_hoy_usd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
-            $total_hoy_bsd = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
+            $tasa_bcv = TasaBcv::all()->first()->tasa;
+            
+            $tasa = Venta::select('tasa_bcv')->whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->orderBy('created_at', 'desc')->first();
+
+            isset($tasa) ? $tasa = $tasa->tasa_bcv : $tasa = $tasa_bcv;
+
+            //SERVICIOS Y PRODUCTOS FATURADOS HOY
+            //------------------------------------------------------------------------------------------------------------------------
+            //BSD
+            $servicios_bsd_hoy      = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
+            $productos_bsd_hoy      = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('montoBsd');
+            $total_propinas_bsd_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('propina_bsd');
+
+            $neto_bsd_hoy = $servicios_bsd_hoy + $productos_bsd_hoy + $total_propinas_bsd_hoy;
+
+            //USD
+            $servicios_usd_hoy      = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
+            $productos_usd_hoy      = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('montoUsd');
+            $total_propinas_usd_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('propina_usd');
+
+            $neto_usd_hoy = $servicios_usd_hoy + $productos_usd_hoy + $total_propinas_usd_hoy;
+            //----------------------------------------------------------------------------------------------------------------------------
+
+
+
+            //SERVICIOS Y PRODUCTOS FATURADOS ANUAL
+            //------------------------------------------------------------------------------------------------------------------------
+            $rangeStartDate = now()->startOfYear();
+            $rangeEndDate = now()->endOfYear();
+            //BSD
+            $servicios_bsd_hoy      = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_bsd');
+            $productos_bsd_hoy      = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('montoBsd');
+            $total_propinas_bsd_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('propina_bsd');
+
+            $neto_bsd_anual = $servicios_bsd_hoy + $productos_bsd_hoy + $total_propinas_bsd_hoy;
+
+            //USD
+            $servicios_usd_hoy      = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('pago_usd');
+            $productos_usd_hoy      = VentaProducto::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('montoUsd');
+            $total_propinas_usd_hoy = VentaServicio::whereBetween('created_at', [$rangeStartDate, $rangeEndDate])->sum('propina_usd');
+
+            $neto_usd_anual = $servicios_usd_hoy + $productos_usd_hoy + $total_propinas_usd_hoy;
+            //----------------------------------------------------------------------------------------------------------------------------
             // Debugbar::info($total_hoy_usd, $total_hoy_bsd);
 
 
             //CALCULO DE LA DEPRECIACION
             //--------------------------------------------------------------------------------
-            $conversion_bsd_usd = $total_hoy_bsd / $tasa;
+            $conversion_bsd_usd = $neto_bsd_hoy / $tasa;
+            $conversion_anual_bsd_usd = $neto_bsd_anual / $tasa;
             // Debugbar::info($depreciacion_bsd);
 
-            $total_hoy_usd_bsd = $total_hoy_usd + $conversion_bsd_usd;
+            $neto_hoy_usd_bsd = $neto_usd_hoy + $conversion_bsd_usd;
+            $neto_anual_usd_bsd = $neto_usd_anual + $conversion_anual_bsd_usd;
 
 
             //SERVICIOS FATURADOS ANUAL HASTA LA FECHA ACTUAL
@@ -1121,15 +1181,15 @@ class StatController extends Controller
 
             //CALCULO DE LA DEPRECIACION
             //--------------------------------------------------------------------------------
-            $conversion_anual_bsd_usd = $total_anual_bsd / $tasa;
+            $conversion_anual_bsd_usd = $neto_bsd_anual / $tasa;
             // Debugbar::info($depreciacion_bsd);
 
-            $total_anual_usd_bsd = $total_anual_usd + $conversion_anual_bsd_usd;
+            $total_anual_usd_bsd = $neto_usd_anual + $conversion_anual_bsd_usd;
 
 
             //CALCULO DEL PROMEDIO DE SERVICIO HASTA EL DIA ACTUAL
             //-------------------------------------------------------------------------------------------------
-            $porcentaje = $total_hoy_usd_bsd * 100 / $total_anual_usd_bsd;
+            $porcentaje = $neto_hoy_usd_bsd * 100 / $neto_anual_usd_bsd;
             if ($porcentaje > 50) {
                 $icon   = 'heroicon-m-arrow-trending-up';
                 $color = 'success';
@@ -1142,7 +1202,7 @@ class StatController extends Controller
             //--------------------------------------------------------------------------------------------------
 
             return $result = [
-                'total_hoy_usd_bsd' => $total_hoy_usd_bsd,
+                'total_hoy_usd_bsd' => $neto_hoy_usd_bsd,
                 'porcentaje' => $porcentaje,
                 'icon' => isset($icon) ? $icon : 'heroicon-s-shield-exclamation',
                 'color' => isset($color) ? $color : 'warning', //$color,

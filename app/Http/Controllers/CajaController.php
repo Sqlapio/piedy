@@ -57,7 +57,7 @@ class CajaController extends Controller
                     //Impuestos US$
                     $venta_producto->base_imponible_usd       = $venta_producto->montoUsd / 1.19;
                     $venta_producto->iva_usd                  = $venta_producto->base_imponible_usd * 0.16 ?? 0.00;
-                    $venta_producto->impuesto_igtf                     = $venta_producto->base_imponible_usd * 0.03 ?? 0.00;
+                    $venta_producto->impuesto_usd            = $venta_producto->base_imponible_usd * 0.03 ?? 0.00;
                     $venta_producto->save();
 
                     //Descuento la cantidad vendida de la exitencia del producto por sucursal
@@ -342,7 +342,7 @@ class CajaController extends Controller
                     //Impuestos US$
                     $venta_producto->base_imponible_usd       = $venta_producto->montoUsd / 1.19;
                     $venta_producto->iva_usd                  = $venta_producto->base_imponible_usd * 0.16 ?? 0.00;
-                    $venta_producto->impuesto_igtf                     = $venta_producto->base_imponible_usd * 0.03 ?? 0.00;
+                    $venta_producto->impuesto_usd            = $venta_producto->base_imponible_usd * 0.03 ?? 0.00;
                     
                     $venta_producto->montoBsd           = $monto_prod_bsd;
                     //Impuestos VES

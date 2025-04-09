@@ -34,7 +34,7 @@ class VentaProducto extends Model
         'cantidad',
         'responsable',
         'sucursal_id',
-        'impuesto_igft',
+        'impuesto_usd',
         'base_imponible_usd',
         'base_imponible_bsd',
         'iva_usd',

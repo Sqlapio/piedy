@@ -43,7 +43,7 @@ class VentaServicio extends Model
         'propina_bsd',
         'referencia_propina',
         'responsable',
-        'impuesto_igft',
+        'impuesto_usd',
         'base_imponible_usd',
         'base_imponible_bsd',
         'iva_usd',

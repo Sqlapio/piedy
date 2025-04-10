@@ -331,7 +331,7 @@ class RequisicionController extends Controller
                     }
                 }
             }
-            Log::info($productos_array);
+            // Log::info($productos_array);
             //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
             /**
@@ -352,7 +352,34 @@ class RequisicionController extends Controller
                     'producto'    => $inventario_sucursals['producto']['descripcion'],
                 ];
             }, $inventario_sucursals);
-            Log::info($map_productos);
+
+            /**
+             * Bucamos los movimientos de inventario en la sucursal
+             */
+            $movimento_inventario__sucursals = [];
+            for ($i = 0; $i < count($productos_array); $i++) {
+                $array_mov_inv_sucur = MovimientoInventarioSucursal::select('producto_id', 'cantidad', 'tipo_movimiento', 'consumo', 'created_at', 'responsable')
+                    ->whereBetween('created_at', [$date_start . ' 00:00:00', Carbon::now()])
+                    ->where('producto_id', $productos_array[$i])
+                    ->where('tipo_movimiento', 'salida')
+                    ->with('producto')
+                    ->first();
+
+                if (isset($array_mov_inv_sucur)) {
+                    array_push($movimento_inventario__sucursals, $array_mov_inv_sucur->toArray());
+                }
+            }
+
+            $map_productos_mov_inv_sucur = array_map(function ($movimento_inventario__sucursals) {
+                return [
+                    'producto_id'       => $movimento_inventario__sucursals['producto_id'],
+                    'cantidad'          => $movimento_inventario__sucursals['cantidad'],
+                    'tipo_movimiento'   => $movimento_inventario__sucursals['tipo_movimiento'],
+                    'fecha'             => $movimento_inventario__sucursals['created_at'],
+                    'consumo'           => $movimento_inventario__sucursals['consumo'],
+                    'responsable'       => $movimento_inventario__sucursals['responsable'],
+                ];
+            }, $movimento_inventario__sucursals);
             //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
             /**
@@ -360,7 +387,7 @@ class RequisicionController extends Controller
              */
             $movimientos = [];
             for ($i = 0; $i < count($productos_array); $i++) {
-                $array_mov = MovimientoInventarioSucursal::select('producto_id', 'cantidad', 'tipo_movimiento', 'consumo')
+                $array_mov = MovimientoInventario::select('producto_id', 'cantidad', 'tipo_movimiento', 'created_at')
                 ->whereBetween('created_at', [$date_start . ' 00:00:00', Carbon::now()])
                 ->where('producto_id', $productos_array[$i])
                 ->where('tipo_movimiento', 'salida')
@@ -379,10 +406,10 @@ class RequisicionController extends Controller
                     'producto'          => $movimientos['producto']['descripcion'],
                     'precio_venta'      => $movimientos['producto']['costo'],
                     'tipo_movimiento'   => $movimientos['tipo_movimiento'],
-                    'consumo'           => $movimientos['consumo'],
+                    'fecha'             => $movimientos['created_at'],
                 ];
             }, $movimientos);
-            Log::info($map_productos_mov);
+            // Log::info($map_productos_mov);
 
             //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -402,7 +429,7 @@ class RequisicionController extends Controller
                 }
             }
             //---------------------------------------------------------------------------------------------------------------------------------------------------------
-            Log::info($servicios_array);
+            // Log::info($servicios_array);
             /**
              * Creamos los registros en las tabla correspondientes
              * @param $date_start
@@ -418,6 +445,12 @@ class RequisicionController extends Controller
 
             //Informacion de los servicios
             $audServicios = DetalleAuditoriaServicioController::crearDetalle($servicios_array, $auditoria['auditoria_id']);
+
+            //Informacion de los Movimientos de inventario del almacen central
+            $audMovInvGral = DetalleMovimientoInventarioGeneralController::crearDetalle($map_productos_mov, $auditoria['auditoria_id']);
+
+            //Informacion de los Movimientos de inventario de la sucursal
+            $audMovInvSucur = DetalleMovimientoInventarioSucursalController::crearDetalle($map_productos_mov_inv_sucur, $auditoria['auditoria_id']);
 
             
             

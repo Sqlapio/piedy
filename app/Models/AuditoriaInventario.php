@@ -44,6 +44,26 @@ class AuditoriaInventario extends Model
         return $this->hasMany(DetalleAuditoriaProducto::class, 'auditoria_inventario_id', 'id');
     }
 
+    /**
+     * Get all of the comments for the AuditoriaInventario
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function detalleMovimientosInventarioGeneral(): HasMany
+    {
+        return $this->hasMany(DetalleMovimientoInventarioGeneral::class, 'auditoria_inventario_id', 'id');
+    }
+
+    /**
+     * Get all of the comments for the AuditoriaInventario
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function detalleMovimientosInventarioSucursal(): HasMany
+    {
+        return $this->hasMany(DetalleMovimientoInventarioSucursal::class, 'auditoria_inventario_id', 'id');
+    }
+
     
 
     

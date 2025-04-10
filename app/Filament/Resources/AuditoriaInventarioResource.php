@@ -15,6 +15,8 @@ use App\Filament\Resources\AuditoriaInventarioResource\Pages;
 use App\Filament\Resources\AuditoriaInventarioResource\RelationManagers;
 use App\Filament\Resources\AuditoriaInventarioResource\RelationManagers\DetalleProductosRelationManager;
 use App\Filament\Resources\AuditoriaInventarioResource\RelationManagers\DetalleServiciosRelationManager;
+use App\Filament\Resources\AuditoriaInventarioResource\RelationManagers\DetalleMovimientosInventarioGeneralRelationManager;
+use App\Filament\Resources\AuditoriaInventarioResource\RelationManagers\DetalleMovimientosInventarioSucursalRelationManager;
 
 class AuditoriaInventarioResource extends Resource
 {
@@ -95,6 +97,8 @@ class AuditoriaInventarioResource extends Resource
         return [
             DetalleProductosRelationManager::class,
             DetalleServiciosRelationManager::class,
+            DetalleMovimientosInventarioGeneralRelationManager::class,
+            DetalleMovimientosInventarioSucursalRelationManager::class,
             
         ];
     }

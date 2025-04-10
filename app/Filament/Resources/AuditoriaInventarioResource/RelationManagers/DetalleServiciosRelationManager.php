@@ -16,6 +16,9 @@ class DetalleServiciosRelationManager extends RelationManager
 {
     protected static string $relationship = 'detalleServicios';
 
+    protected static ?string $title = 'Servicios';
+
+
     public function table(Table $table): Table
     {
         return $table

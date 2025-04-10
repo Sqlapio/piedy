@@ -7,14 +7,17 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class DetalleAuditoriaProducto extends Model
+class DetalleMovimientoInventarioGeneral extends Model
 {
     use HasFactory;
+
+    protected $table = 'detalle_movimiento_inventario_generals';
 
     protected $fillable = [
         'auditoria_inventario_id',
         'producto_id',
         'cantidad',
+        'fecha_movimiento',
     ];
 
     /**
@@ -24,7 +27,7 @@ class DetalleAuditoriaProducto extends Model
      */
     public function auditoriaInventario(): BelongsTo
     {
-        return $this->belongsTo(AuditoriaInventario::class, 'foreign_key', 'other_key');
+        return $this->belongsTo(AuditoriaInventario::class);
     }
 
     /**
@@ -36,5 +39,4 @@ class DetalleAuditoriaProducto extends Model
     {
         return $this->hasOne(Producto::class, 'id', 'producto_id');
     }
-
 }

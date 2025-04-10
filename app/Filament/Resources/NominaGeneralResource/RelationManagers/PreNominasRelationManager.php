@@ -20,8 +20,10 @@ use App\Http\Controllers\LogController;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Exports\PreNominaExporter;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Illuminate\Database\Eloquent\Collection;
@@ -58,70 +60,44 @@ class PreNominasRelationManager extends RelationManager
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('total_clientes_atendidos')
-                ->label('Clientes Atendidos')
+                ->label('Clientes')
                 ->numeric()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_servicios')
-                ->label('Servicios Realizados')
+                ->label('Servicios')
                 ->numeric()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_productos')
-                ->label('Productos Vendidos')
+                ->label('Productos')
                 ->numeric()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('comision_usd')
                 ->label('Comision(USD)')
-                ->numeric()
+                ->money('USD')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('comision_bsd')
                 ->label('Comision(BSD)')
-                ->numeric()
+                ->money('VES')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('comision_prod')
                 ->label('Comision Productos')
-                ->numeric()
+                ->money('USD')
                     ->sortable(),
 
-                Tables\Columns\TextInputColumn::make('propinas_usd')
-                ->label('Propina(USD)')
-                
-                ->sortable()
-                ->afterStateUpdated(function ($record, $state) {
-                    $record->total_usd = $state + $record->total_usd;
-                    $record->save();
-                    //log
-                    LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego propina en dolares: ' . $state, $response = null);
-                })
-                ->disabled(function ($record) {
-                    if ($record->status_id == 8) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }),
+                Tables\Columns\TextColumn::make('propinas_usd')
+                    ->label('Propina(USD)')
+                    ->money('USD')
+                    ->sortable(),
 
-                Tables\Columns\TextInputColumn::make('propinas_bsd')
-                ->label('Propina(Bs.)')
-                
-                ->sortable()
-                ->afterStateUpdated(function ($record, $state) {
-                    $record->total_bsd = $state + $record->total_bsd;
-                    $record->save();
-                    //log
-                    LogController::log(Auth::user()->id, 'update pre-nomina', 'agrego propina en bolivares: ' . $state, $response = null);
-                })
-                ->disabled(function ($record) {
-                    if ($record->status_id == 8) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }),
+                Tables\Columns\TextColumn::make('propinas_bsd')
+                    ->label('Propina(Bs.)')
+                    ->money('VES')
+                    ->sortable(),
 
                 Tables\Columns\TextInputColumn::make('asignaciones_usd')
                 ->label('Asignaciones(USD)')
@@ -209,27 +185,27 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('total_bsd')
                 ->label('Total(Bs.)')
-                ->numeric()
+                ->money('USD')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_venta_sin_iva')
                 ->label('Venta sin IVA')
-                ->numeric()
+                ->money('VES')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('iva')
                     ->label('IVA')
-                    ->numeric()
+                    ->money('VES')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('retencion_isrl')
                 ->label('Retencion ISRL')
-                ->numeric()
+                ->money('VES')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_usd')
                 ->label('Total a Pagar(USD)')
-                ->numeric()
+                ->money('USD')
                 ->summarize(Sum::make()
                     ->label(('Total a Pagar($)'))
                     ->numeric())
@@ -237,7 +213,7 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('total_pagar_bsd')
                 ->label('Total A Pagar(Bs.)')
-                ->numeric()
+                ->money('VES')
                 ->summarize(Sum::make()
                     ->label(('Total a Pagar(Bs.)'))
                     ->numeric())
@@ -245,15 +221,15 @@ class PreNominasRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('conversion_a_usd')
                     ->label('Conversion($)')
-                    ->numeric()
+                    ->money('USD')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_general_usd')
                 ->label('Total General($)')
-                ->numeric(decimalPlaces: 2, locale: 'es')
+                ->money('USD')
                     ->summarize(Sum::make()
-                    ->numeric()
+                    ->money('USD')
                     ->label('Total Nomina($)'))
                     ->sortable(),
 
@@ -308,7 +284,10 @@ class PreNominasRelationManager extends RelationManager
                     ->button()
                     ->label('Filtros'),
             )
-            ->actions([])
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(PreNominaExporter::class)
+            ])
             ->bulkActions([
                 BulkActionGroup::make([
                     
@@ -416,8 +395,10 @@ class PreNominasRelationManager extends RelationManager
                     //Exportar Excel
                     //-----------------------------------------------
                     ExportBulkAction::make('exportar-excel')
-                    ->label('Exportar Excel')
+                    ->label('Exportar Excel'),
                     //-----------------------------------------------
+
+                    
                 ]),
             ])
             ->striped()

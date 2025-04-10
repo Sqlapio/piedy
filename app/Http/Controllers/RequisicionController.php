@@ -331,6 +331,7 @@ class RequisicionController extends Controller
                     }
                 }
             }
+            Log::info($productos_array);
             //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
             /**
@@ -351,6 +352,7 @@ class RequisicionController extends Controller
                     'producto'    => $inventario_sucursals['producto']['descripcion'],
                 ];
             }, $inventario_sucursals);
+            Log::info($map_productos);
             //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
             /**
@@ -380,6 +382,7 @@ class RequisicionController extends Controller
                     'consumo'           => $movimientos['consumo'],
                 ];
             }, $movimientos);
+            Log::info($map_productos_mov);
 
             //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -387,19 +390,35 @@ class RequisicionController extends Controller
              * Buscamos los servicios de la requisicion en la tabla de detalle_requisicions y los agrupamos por porducto_id
              */
             $servicios = Servicio::select('id', 'descripcion')->get()->toArray();
-            $ser = [];
+            $servicios_array = [];
             //contamos los servicios en la tabla de detalle de asigancion
             for ($i = 0; $i < count($servicios); $i++) {
                 $count = DetalleAsignacion::whereBetween('created_at', [$date_start .' 00:00:00', Carbon::now()])->where('servicio_id', $servicios[$i]['id'])->count();
                 if($count != 0){
-                    array_push($ser, [
+                    array_push($servicios_array, [
                         'descripcion' => $servicios[$i]['descripcion'], 
                         'cantidad' => $count
                     ]); //array_push($servicios, $servicios[$i]['id']);
                 }
             }
             //---------------------------------------------------------------------------------------------------------------------------------------------------------
-            dd($date_start, Carbon::now(), $map_productos, $ser);
+            Log::info($servicios_array);
+            /**
+             * Creamos los registros en las tabla correspondientes
+             * @param $date_start
+             * @param $map_productos
+             * @param $servicios_array
+             */
+
+            //Informacion principal al generar la auditoria
+            $fecha_hoy = Carbon::now();
+            $auditoria = AuditoriaInventarioController::crearAuditoria($date_start, $fecha_hoy, $requisiciones);
+            //Informacion de los productos
+            $audProductos = DetalleAuditoriaProductoController::crearDetalle($map_productos, $auditoria['auditoria_id']);
+
+            //Informacion de los servicios
+            $audServicios = DetalleAuditoriaServicioController::crearDetalle($servicios_array, $auditoria['auditoria_id']);
+
             
             
         } catch (\Throwable $th) {

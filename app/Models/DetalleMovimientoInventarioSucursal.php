@@ -19,6 +19,8 @@ class DetalleMovimientoInventarioSucursal extends Model
         'consumo',
         'cantidad',
         'fecha_movimiento',
+        'costo',
+        'total',
     ];
 
     /**

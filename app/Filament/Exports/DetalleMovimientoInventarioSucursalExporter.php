@@ -24,9 +24,13 @@ class DetalleMovimientoInventarioSucursalExporter extends Exporter
             ExportColumn::make('producto.descripcion'),
             ExportColumn::make('consumo'),
             ExportColumn::make('cantidad')
-            ->label('Cantidad Saliente'),
+                ->numeric(),
+            ExportColumn::make('costo')
+                ->numeric(),
+            ExportColumn::make('total')
+                ->numeric(),
             ExportColumn::make('fecha_movimiento')
-            ->label('Fecha de Salida'),
+                ->label('Fecha de Salida'),
             ExportColumn::make('responsable'),
         ];
     }

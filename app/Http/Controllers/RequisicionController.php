@@ -376,10 +376,13 @@ class RequisicionController extends Controller
                     'cantidad'          => $movimento_inventario__sucursals['cantidad'],
                     'tipo_movimiento'   => $movimento_inventario__sucursals['tipo_movimiento'],
                     'fecha'             => $movimento_inventario__sucursals['created_at'],
+                    'costo'             => $movimento_inventario__sucursals['producto']['costo'],
+                    'total'             => $movimento_inventario__sucursals['cantidad'] * $movimento_inventario__sucursals['producto']['costo'],
                     'consumo'           => $movimento_inventario__sucursals['consumo'],
                     'responsable'       => $movimento_inventario__sucursals['responsable'],
                 ];
             }, $movimento_inventario__sucursals);
+            Log::info($map_productos_mov_inv_sucur);
             //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
             /**

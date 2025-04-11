@@ -22,7 +22,12 @@ class DetalleMovimientoInventarioGeneralExporter extends Exporter
             ExportColumn::make('id')
                 ->label('ID'),
             ExportColumn::make('producto.descripcion'),
-            ExportColumn::make('cantidad'),
+            ExportColumn::make('cantidad')
+                ->numeric(),
+            ExportColumn::make('costo')
+                ->numeric(),
+            ExportColumn::make('total')
+                ->numeric(),
             ExportColumn::make('fecha_movimiento'),
         ];
     }

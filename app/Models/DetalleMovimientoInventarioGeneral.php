@@ -18,6 +18,8 @@ class DetalleMovimientoInventarioGeneral extends Model
         'producto_id',
         'cantidad',
         'fecha_movimiento',
+        'costo',
+        'total'
     ];
 
     /**

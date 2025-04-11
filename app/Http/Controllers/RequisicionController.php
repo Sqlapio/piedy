@@ -404,12 +404,13 @@ class RequisicionController extends Controller
                     'producto_id'       => $movimientos['producto_id'],
                     'cantidad'          => $movimientos['cantidad'],
                     'producto'          => $movimientos['producto']['descripcion'],
-                    'precio_venta'      => $movimientos['producto']['costo'],
+                    'costo'             => $movimientos['producto']['costo'],
+                    'total'             => $movimientos['cantidad'] * $movimientos['producto']['costo'],
                     'tipo_movimiento'   => $movimientos['tipo_movimiento'],
                     'fecha'             => $movimientos['created_at'],
                 ];
             }, $movimientos);
-            // Log::info($map_productos_mov);
+            Log::info($map_productos_mov);
 
             //---------------------------------------------------------------------------------------------------------------------------------------------------------
 

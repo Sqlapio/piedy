@@ -18,10 +18,12 @@ class DetalleMovimientoInventarioGeneralController extends Controller
 
                 for ($i = 0; $i < count($movimientos); $i++) {
                     $detalle = new DetalleMovimientoInventarioGeneral();
-                    $detalle->auditoria_inventario_id = $auditoria_id;
-                    $detalle->producto_id = $movimientos[$i]['producto_id'];
-                    $detalle->cantidad = $movimientos[$i]['cantidad'];
-                    $detalle->fecha_movimiento = $movimientos[$i]['fecha'];
+                    $detalle->auditoria_inventario_id   = $auditoria_id;
+                    $detalle->producto_id               = $movimientos[$i]['producto_id'];
+                    $detalle->cantidad                  = $movimientos[$i]['cantidad'];
+                    $detalle->costo                     = $movimientos[$i]['costo'] > 0 ? $movimientos[$i]['costo'] : 0.00;
+                    $detalle->total                     = $movimientos[$i]['total'] > 0 ? $movimientos[$i]['total'] : 0.00;
+                    $detalle->fecha_movimiento          = $movimientos[$i]['fecha'];
                     $detalle->save();
                 }
             });

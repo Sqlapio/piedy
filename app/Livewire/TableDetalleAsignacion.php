@@ -432,7 +432,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                 ])
                         ])
                         ->action(function (array $data) {
-
+                                // dd($data);
                             //Dolares
                             if ($data['metodo_pago'] != '' &&  $data['metodo_pago_dos'] == '') {
                                 $dolares = CajaController::dolares(
@@ -560,7 +560,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
 
                                 $montos_srv = CajaController::calculo_porcentajes_srv($this->cod_asignacion, $data['pago_usd'], $monto_bsd);
                                 $montos_prod = CajaController::calculo_porcentajes_prod($this->cod_asignacion, $data['pago_usd'], $monto_bsd);
-                                // dd($montos);
+  
                                 $multiple = CajaController::multiple(
                                     $montos_srv['valor_usd'],
                                     $montos_srv['valor_bsd'],

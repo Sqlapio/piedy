@@ -656,53 +656,35 @@ class UtilsController extends Controller
         try {
 
             $tasa_bcv = TasaBcv::all()->first()->tasa;
+            $total_venta_bolivares = $total_venta * $tasa_bcv;
+            
+            /**Porcentajes de venta */
+            $porcen_pago_dolares = $monto_usb * 100 / $total_venta;
+            $porcen_pago_bolivares = $monto_bsd * 100 / $total_venta_bolivares;
 
-            //1.- Calculo de los porcentajes de representacion
-            //% quiropedia basica
-            $por_quirop_basica = ($quirop_basica * 100) / $total_venta;
+            /**Desglose de comisiones para la quiropedia */
+            $_40porcen_quiropedia = ($porcen_vip_emp * $quirop_basica) / 100;
+            $_10porcen_productos_adicionales = ($porcen_adi_emp * $srvs_adicional) / 100;
 
-            //% servicios adicionales
-            $por_serv_adicionales = ($srvs_adicional * 100) / $total_venta;
+            $total_comisiones_dolares = $_40porcen_quiropedia + $_10porcen_productos_adicionales;
+            $total_comisiones_bolivares = $total_comisiones_dolares * $tasa_bcv;
+            
 
-            //2.- Calculo de los porcentajes sobre el monto pagado por el cliente
-            //Calculo para el pago el dolares
-            $calculoUno = ($por_quirop_basica * $monto_usb) / 100;
-            $calculoDos = ($por_serv_adicionales * $monto_usb) / 100;
+            /**Calculo de comisiones de acuerdo al pago del cliente, usando el porcentaje de representacion */
+            $comision_dolares = $porcen_pago_dolares * $total_comisiones_dolares / 100;
+            $comision_bolivares = $porcen_pago_bolivares * $total_comisiones_bolivares / 100;
 
-            //Calculo para el pago el bolivares
-            $calculoTres = ($por_quirop_basica * $monto_bsd) / 100;
-            $calculoCuatro = ($por_serv_adicionales * $monto_bsd) / 100;
-
-            //3.- Calculo de las comisiones para cada monto pagado por el cliente
-            //Calculo para el pago el dolares (40% para el empleado)
-            $comision_dolares_uno = ($porcen_vip_emp * $calculoUno) / 100;
-
-            //Calculo para el pago el dolares (10% para el empleado)
-            $comision_dolares_dos = ($porcen_adi_emp * $calculoDos) / 100;
-
-            //3.- Calculo de las comisiones para cada monto pagado por el cliente
-            //Calculo para el pago el bolivares (40% para el empleado)
-            $comision_bolivares_uno = ($porcen_vip_emp * $calculoTres) / 100;
-
-
-            //Calculo para el pago el bolivares (10% para el empleado)
-            $comision_bolivares_dos = ($porcen_adi_emp * $calculoCuatro) / 100;
-
-
-            //4.- Calculo de comisones totales
-            $comision_total_dolares = $comision_dolares_uno + ($comision_bolivares_uno / $tasa_bcv);
-            $comision_total_bolivares = ($comision_dolares_dos / $tasa_bcv) + $comision_bolivares_dos;
-
+            /**Calculo de comisiones para el gerente */
             $total_servicio = $quirop_basica + $srvs_adicional;
             $comision_gerente = ($porcen_vip_gte * $total_servicio) / 100;
 
 
             return $res = [
-                'comision_dolares'      => $comision_total_dolares,
-                'comision_bolivares'    => $comision_total_bolivares,
+                'comision_dolares'      => $comision_dolares,
+                'comision_bolivares'    => $comision_bolivares,
                 'comision_gerente'      => $comision_gerente
             ];
-            //code...
+
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion-UtilsController(calculo_vip_multiple)', $th->getMessage(), $response = null);
             Notification::make()

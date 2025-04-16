@@ -302,7 +302,7 @@ class CajaController extends Controller
 
     static function multiple($monto_srv_usd, $monto_srv_bsd, $monto_prod_usd, $monto_prod_bsd, $cod_asignacion, $metodo_pago, $metodo_pago_dos, $ref_zelle, $ref_pago_movil, $ref_debito_credito, $nro_tarjeta, $propina_usd, $propina_bsd, $pro_ref_debito_credito, $pro_nro_tarjeta)
     {
-
+        //  dump($monto_srv_usd, $monto_srv_bsd);
         try {
 
             //Valores necesarios para realizar los asientos
@@ -375,12 +375,12 @@ class CajaController extends Controller
             if (Servicio::find($valores['servicio_id'])->asignacion == 'vip') {
                 //4.- Calculo de los servicios adicionales si existen!
                 $serv_adicionales = $valores['costo_total_servicios'] - $valores['costo_quiropedia_basica'];
-                // dd($valores['costo_total_servicios'], $valores['costo_quiropedia_basica']);
+                $venta_total = $valores['costo_total_servicios'];
                 //Calculo de Comision
                 $calculos = UtilsController::calculo_vip_multiple(
                     $monto_srv_usd,
                     $monto_srv_bsd,
-                    $valores['total_venta'],
+                    $venta_total,
                     $valores['costo_quiropedia_basica'],
                     $serv_adicionales,
                     $valores['porcen_vip_emp'],
@@ -417,11 +417,14 @@ class CajaController extends Controller
             }
 
             if (Servicio::find($valores['servicio_id'])->asignacion == 'general') {
+                // dd($valores['total_venta']);
                 //Calculo de Comision
+                $venta_total = $valores['costo_total_servicios'];
+                dd($venta_total);
                 $calculos = UtilsController::calculo_general_multiple(
                     $monto_srv_usd,
                     $monto_srv_bsd,
-                    $valores['total_venta'],
+                    $venta_total,
                     $valores['porcen_vip_emp'],
                     $valores['costo_total_servicios'],
                 );
@@ -452,6 +455,7 @@ class CajaController extends Controller
 
                 return true;
             }
+            
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion-CajaController(multiple)', $th->getMessage(), $response = null);
             Notification::make()
@@ -559,23 +563,21 @@ class CajaController extends Controller
                 ->where('sucursal_id', Auth::user()->sucursal_id)
                 ->where('status', 'cerrado')
                 ->first();
+            $venta_total = $total_servicios->venta_total;
+            $venta_total_servicios = $total_servicios->acu_servicios;
+            
+            /**Calculo en porcentaje de representacion de los servicios asociados en el pago */
+            $porcen_servicios = ($venta_total_servicios * 100) / $venta_total;
 
-            $total_venta = $total_servicios->venta_total;
-
-            $total_venta_srv = $total_servicios->acu_servicios;
-
-            $porcen_servicio = ($total_venta_srv * 100) / $total_venta;
-
-            //Calculo del equivalente en dolares
-            $valor_usd = ($pago_usd * $porcen_servicio) / 100;
-
-            //Calculo del equivalente en bolivares
-            $valor_bsd = ($pago_bsd * $porcen_servicio) / 100;
+            /**Calculo de los los pagos que representan los servicios en dolares y en bolivares */
+            $valor_usd = ($pago_usd * $porcen_servicios) / 100;
+            $valor_bsd = ($pago_bsd * $porcen_servicios) / 100;
 
             return $array = [
                 'valor_usd' => $valor_usd,
                 'valor_bsd' => $valor_bsd
             ];
+            
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion-CajaController(multiple)', $th->getMessage(), $response = null);
             Notification::make()
@@ -589,7 +591,7 @@ class CajaController extends Controller
 
     static function calculo_porcentajes_prod($cod_asigancion, $pago_usd, $pago_bsd)
     {
-
+        // dump( 'productos',$cod_asigancion, $pago_usd, $pago_bsd);
         try {
 
             //Calculo de los porcentajes de venta por representacion
@@ -597,22 +599,21 @@ class CajaController extends Controller
                 ->where('sucursal_id', Auth::user()->sucursal_id)
                 ->where('status', 'cerrado')
                 ->first();
-  
-            $total_venta = $total_servicios->venta_total;
-  
-            $total_venta_prod = $total_servicios->acu_productos;
+            $venta_total = $total_servicios->venta_total;
+            $venta_total_productos = $total_servicios->acu_productos;
 
-            $porcen_prod = ($total_venta_prod * 100) / $total_venta;
+            /**Calculo en porcentaje de representacion de los servicios asociados en el pago */
+            $porcen_productos = ($venta_total_productos * 100) / $venta_total;
 
-            //Calculo del equivalente en dolares
-            $valor_usd = ($pago_usd * $porcen_prod) / 100;
-            //Calculo del equivalente en bolivares
-            $valor_bsd = ($pago_bsd * $porcen_prod) / 100;
+            /**Calculo de los los pagos que representan los servicios en dolares y en bolivares */
+            $valor_usd = ($pago_usd * $porcen_productos) / 100;
+            $valor_bsd = ($pago_bsd * $porcen_productos) / 100;
 
             return $array = [
                 'valor_usd' => $valor_usd,
                 'valor_bsd' => $valor_bsd
             ];
+            
         } catch (\Throwable $th) {
             LogController::log(Auth::user()->id, 'excepcion-CajaController(multiple)', $th->getMessage(), $response = null);
             Notification::make()

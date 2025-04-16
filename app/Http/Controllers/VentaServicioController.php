@@ -130,7 +130,7 @@ class VentaServicioController extends Controller
             $facturar->iva_bsd                  = $facturar->base_imponible_bsd * 0.16 ?? 0.00;
             
             //comisiones
-            $facturar->comision_dolares         = $comision_dolares / 1.19; // IVA = 16%(1.16) + IGTF = 3%(1.03)
+            $facturar->comision_dolares         = $comision_dolares / 1.19;
             $facturar->comision_bolivares       = $comision_bolivares / $descuento->iva_nomina;
             
             $facturar->comision_gerente         = $comision_gerente;

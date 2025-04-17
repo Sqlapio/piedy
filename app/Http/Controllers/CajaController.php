@@ -420,7 +420,7 @@ class CajaController extends Controller
                 // dd($valores['total_venta']);
                 //Calculo de Comision
                 $venta_total = $valores['costo_total_servicios'];
-                dd($venta_total);
+                
                 $calculos = UtilsController::calculo_general_multiple(
                     $monto_srv_usd,
                     $monto_srv_bsd,

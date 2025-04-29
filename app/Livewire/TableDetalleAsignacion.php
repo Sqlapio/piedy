@@ -119,6 +119,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                         try {
 
                             foreach ($records as $record) {
+                                
                                 $serv_disponible = Disponible::where('cod_asignacion', $record->cod_asignacion)
                                     ->where('cliente_id',  $record->cliente_id)
                                     ->where('sucursal_id', Auth::user()->sucursal_id)
@@ -128,7 +129,9 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     $serv_disponible->acu_servicios = $serv_disponible->acu_servicios - $record->costo;
                                     $serv_disponible->venta_total   = $serv_disponible->venta_total - $record->costo;
                                     $serv_disponible->save();
-
+                                    
+                                    $record->delete();
+                                    
                                     Notification::make()
                                         ->title('NOTIFICACIÓN')
                                         ->icon('heroicon-m-shield-check')
@@ -136,6 +139,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->color('success')
                                         ->body('El servicio fue eliminado correctamente!')
                                         ->send();
+
                                 }
 
                                 if ($record->tipo == 'producto') {
@@ -143,6 +147,8 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                     $serv_disponible->venta_total   = $serv_disponible->venta_total - $record->costo;
                                     $serv_disponible->save();
 
+                                    $record->delete();
+                                    
                                     Notification::make()
                                         ->title('NOTIFICACIÓN')
                                         ->icon('heroicon-m-shield-check')
@@ -150,9 +156,9 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                                         ->color('success')
                                         ->body('El producto fue eliminado correctamente!')
                                         ->send();
+                                        
                                 }
 
-                                $record->delete();
                             }
                         } catch (\Throwable $th) {
                             LogController::log(Auth::user()->id, 'excepcion-TableDetalleAsignacion(Eliminación de Item)', $th->getMessage(), $response = null);
@@ -788,7 +794,7 @@ class TableDetalleAsignacion extends Component implements HasForms, HasTable
                         ->color('danger')
                         ->hidden(! ( auth()->user()->rol_id == 3 || auth()->user()->rol_id == 5))
                         ->action(function (array $data) {
-                            
+
                             $servicios_asignados = DetalleAsignacion::where('cod_asignacion', $this->cod_asignacion)->count();
                             $status_de_asignacion = Disponible::where('cod_asignacion', $this->cod_asignacion)->first()->status;
                             

@@ -143,6 +143,8 @@ class AsignacionController extends Controller
             ->where('cliente_id', $cliente_id)
             ->first();
 
+            $serv_disponible->servicio_id     = $asigna_servicio->servicio_id;
+            $serv_disponible->cod_prod_serv   = $asigna_servicio->cod_prod_serv;
             $serv_disponible->acu_servicios   += $servicio->costo;
             $serv_disponible->venta_total     = $serv_disponible->acu_servicios + $serv_disponible->acu_productos;
             $serv_disponible->save();

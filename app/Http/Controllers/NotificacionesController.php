@@ -334,7 +334,7 @@ class NotificacionesController extends Controller
                 if (isset($res['error'])) {
                     array_push($response_err, $res['error']);
                 }
-                dd($response_ok, $response_err);
+                // dd($response_ok, $response_err);
             }
 
             LogController::log(Auth::user()->id, 'mensajes enviados', 'servicio masivo WhatsApp. Total enviados: '.count($response_ok), $response = null);
